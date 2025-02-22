@@ -1,0 +1,29 @@
+---
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const { title, content } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<div
+  x-data="{ expanded: false }"
+  class="listCard"
+  :class="expanded ? 'border-gradient' : ''"
+>
+  <button
+    class="hover:fancy font-semibold px-6 py-4 w-full flex justify-between gap-4"
+    :class="expanded ? 'fancy' : ''"
+    @click="expanded = ! expanded"
+  >
+    <spa class="text-left">{t(title)}</spa>
+    <i
+      class="transition-all h-fit my-auto"
+      :class="expanded ? 'rotate-[60deg]' : ''">▼</i
+    >
+  </button>
+
+  <div x-show="expanded" x-collapse x-cloak>
+    <p class="px-6 pb-4 m-0">{t(content)}</p>
+  </div>
+</div>

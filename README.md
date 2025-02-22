@@ -1,48 +1,86 @@
-# Astro Starter Kit: Basics
+# Astro Spark Template
 
-```sh
-npm create astro@latest -- --template basics
+Astro Spark is a modern starter template optimized for static sites, built using Astro.
+
+Demo available at https://www.spark.rubenwinant.be/en
+
+## Features
+
+- Astro for blazing-fast static site generation.
+- Alpine.js: Lightweight JS for simple interactivity without overhead.
+- Tailwind CSS: Utility-first CSS framework for rapid UI development.
+- MDX Support: Write components directly within Markdown.
+- Sitemap Generator: Automatically generates a sitemap for SEO.
+- SEO Optimized: Meta tags, Open Graph, and structured data support.
+- Responsive Design: Out-of-the-box mobile responsiveness.
+- 
+
+## Installation
+
+First, clone the repository and navigate to the project folder:
+
+```
+git clone https://github.com/Ruben-Winant/astro_spark_template
+cd astro_spark_template
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+Next, install the necessary dependencies:
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+```
+npm install
+```
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+## Usage
 
-## 🚀 Project Structure
+To start the development server, run:
 
-Inside of your Astro project, you'll see the following folders and files:
+```
+npm run dev
+```
 
-```text
-/
-├── public/
-│   └── favicon.svg
+This will launch a local development server accessible at `http://localhost:3000`, allowing you to see changes in real-time.
+
+To build the project for production:
+
+```
+npm run build
+```
+
+This will create an optimized static site in the `dist/` folder.
+
+## Scripts
+
+- `npm run dev`: Starts the development server.
+- `npm run build`: Builds the project for production.
+- `npm run preview`: Previews the production build locally.
+- `npm run astro ...`: Use this for custom Astro commands.
+
+## Project Structure
+
+```
+├── public/ # Static assets (e.g., images, fonts)
 ├── src/
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
+│ ├── components/ # Reusable components (e.g., buttons, headers)
+│ ├── layouts/ # Layouts for different page types
+│ ├── pages/ # Your page content (in .astro or .mdx)
+│ ├── styles/ # Global CSS or Tailwind styles
+│ └── content/ # MDX content, easily extendable
+├── package.json # Project scripts and dependencies
+└── astro.config.mjs # Astro configuration
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+- `components/`: Contains reusable components like navigation, buttons, etc.
+- `layouts/`: Defines page layouts (e.g., blog post, homepage).
+- `pages/`: All your main site pages (e.g., /index.astro, /about.astro).
+- `content/`: For MDX-based content management.
+- `styles/`: Custom global styles using Tailwind CSS.
 
-## 🧞 Commands
+## Customization
 
-All commands are run from the root of the project, from a terminal:
+- Styling: Modify src/styles and tweak Tailwind CSS as needed.
+- MDX Pages: Easily add interactive React components within your Markdown using MDX.
+- SEO Tags: Adjust meta tags in each page or globally in layouts/.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## Contributing
 
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Contributions, issues, and feature requests are welcome! Feel free to check the issues page.

@@ -1,0 +1,132 @@
+---
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<nav
+  class="container my-4 relative bg-white z-[100]"
+  x-data="{ expanded: false }"
+>
+  <ul class="flex items-center justify-center gap-4 w-full z-10">
+    <li class="mr-auto">
+      <a data-astro-prefetch href={`/${lang}/`} class="flex gap-1 font-semibold"
+        ><img
+          src="/favicon.svg"
+          alt="spark logo"
+          width="20"
+          height="20"
+        />Spark</a
+      >
+    </li>
+    <li class="hidden md:block">
+      <a data-astro-prefetch class="link" href={`/${lang}/blog/`}
+        >{t("nav.blog")}</a
+      >
+    </li>
+    <li class="hidden md:block">
+      <a data-astro-prefetch class="link" href={`/${lang}/components/`}
+        >{t("nav.components")}</a
+      >
+    </li>
+    <li class="hidden md:block">
+      <a data-astro-prefetch class="link" href={`/${lang}/faq/`}
+        >{t("nav.faq")}</a
+      >
+    </li>
+    <li class="hidden md:block">
+      <a data-astro-prefetch class="link" href={`/${lang}/contact/`}
+        >{t("nav.contact")}</a
+      >
+    </li>
+    <li class="flex md:hidden">
+      <button
+        title="menu"
+        type="button"
+        class="w-8 my-auto"
+        @click="expanded = !expanded"
+      >
+        <svg
+          class="hb"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 10 10"
+          stroke="#000"
+          stroke-width=".6"
+          fill="rgba(0,0,0,0)"
+          stroke-linecap="round"
+          style="cursor: pointer"
+        >
+          <path d="M2,3L5,3L8,3M2,5L8,5M2,7L5,7L8,7">
+            <animate
+              dur="0.2s"
+              attributeName="d"
+              values="M2,3L5,3L8,3M2,5L8,5M2,7L5,7L8,7;M3,3L5,5L7,3M5,5L5,5M3,7L5,5L7,7"
+              fill="freeze"
+              begin="start.begin"></animate>
+            <animate
+              dur="0.2s"
+              attributeName="d"
+              values="M3,3L5,5L7,3M5,5L5,5M3,7L5,5L7,7;M2,3L5,3L8,3M2,5L8,5M2,7L5,7L8,7"
+              fill="freeze"
+              begin="reverse.begin"></animate>
+          </path>
+          <rect width="10" height="10" stroke="none">
+            <animate dur="2s" id="reverse" attributeName="width" begin="click"
+            ></animate>
+          </rect>
+          <rect width="10" height="10" stroke="none">
+            <animate
+              dur="0.001s"
+              id="start"
+              attributeName="width"
+              values="10;0"
+              fill="freeze"
+              begin="click"></animate>
+            <animate
+              dur="0.001s"
+              attributeName="width"
+              values="0;10"
+              fill="freeze"
+              begin="reverse.begin"></animate>
+          </rect>
+        </svg>
+      </button>
+    </li>
+  </ul>
+  <ul
+    x-show="expanded"
+    x-cloak
+    x-collapse
+    class="transition-all flex flex-col justify-center items-center gap-2 pt-2 pb-4 drop-shadow-md bg-white absolute -left-4 -right-4 md:hidden"
+  >
+    <li class="flex w-full">
+      <a
+        data-astro-prefetch
+        class="link py-2 mx-auto w-full text-center"
+        href={`/${lang}/blog/`}>{t("nav.blog")}</a
+      >
+    </li>
+    <li class="flex w-full">
+      <a
+        data-astro-prefetch
+        class="link py-2 mx-auto w-full text-center"
+        href={`/${lang}/components/`}>{t("nav.components")}</a
+      >
+    </li>
+    <li class="flex w-full">
+      <a
+        data-astro-prefetch
+        class="link py-2 mx-auto w-full text-center"
+        href={`/${lang}/faq/`}>{t("nav.faq")}</a
+      >
+    </li>
+    <li class="flex w-full">
+      <a
+        data-astro-prefetch
+        class="link py-2 mx-auto w-full text-center"
+        href={`/${lang}/contact/`}>{t("nav.contact")}</a
+      >
+    </li>
+  </ul>
+</nav>

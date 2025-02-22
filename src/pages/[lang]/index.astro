@@ -1,0 +1,202 @@
+---
+import IconCard from "../../components/IconCard.astro";
+import { getLangFromUrl, useTranslations, LOCALES } from "../../i18n/utils";
+import Layout from "../../layouts/Layout.astro";
+import TextCard from "../../components/TextCard.astro";
+import AutoSlider from "../../components/AutoSlider.astro";
+import FullWidthBanner from "../../components/FullWidthBanner.astro";
+import CardGrid from "../../components/CardGrid.astro";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+export const prerender = true;
+export async function getStaticPaths() {
+  return Object.keys(LOCALES).map((lang) => {
+    return { params: { lang } };
+  });
+}
+---
+
+<Layout
+  title={t("layout.test")}
+  lang={lang}
+  description={t("hero.description")}
+>
+  <main class="container mx-auto">
+    <section class="flex items-center gap-8">
+      <div>
+        <h1>
+          <span class="fancy">Spark</span>, {t("hero.title")}
+        </h1>
+        <p>{t("hero.description")}</p>
+      </div>
+      <div class="relative hidden md:block">
+        <img src="/favicon.svg" alt="spark logo" width="182" height="242" />
+      </div>
+    </section>
+
+    <CardGrid title="test.cardGridTitle">
+      <a slot="upper-row" href={`/${lang}/contact/`} class="card">
+        <div class="flex items-baseline justify-between">
+          <h3>{t("test.cardGridTitle1")}</h3>
+          <i
+            ><img
+              src="/icons/link.svg"
+              alt=""
+              class="w-5"
+              width="20"
+              height="20"
+            /></i
+          >
+        </div>
+        <p>{t("test.cardGridDescription1")}</p>
+      </a>
+      <a slot="upper-row" href={`/${lang}/blog/`} class="card">
+        <div class="flex items-baseline justify-between">
+          <h3>{t("test.cardGridTitle2")}</h3>
+          <i
+            ><img
+              src="/icons/link.svg"
+              alt=""
+              class="w-5"
+              width="20"
+              height="20"
+            /></i
+          >
+        </div>
+        <p>{t("test.cardGridDescription2")}</p>
+      </a>
+      <a slot="lower-row" href={`/${lang}/components`} class="card">
+        <div class="flex items-baseline justify-between">
+          <h3>{t("test.cardGridTitle3")}</h3>
+          <i
+            ><img
+              src="/icons/link.svg"
+              alt=""
+              class="w-5"
+              width="20"
+              height="20"
+            /></i
+          >
+        </div>
+        <p class="m-0 mt-1">{t("test.cardGridDescription3")}</p>
+      </a>
+      <a slot="lower-row" href={`/${lang}/faq`} class="card">
+        <div class="flex items-baseline justify-between">
+          <h3>{t("test.cardGridTitle4")}</h3>
+          <i
+            ><img
+              src="/icons/link.svg"
+              alt=""
+              class="w-5"
+              width="20"
+              height="20"
+            /></i
+          >
+        </div>
+        <p>{t("test.cardGridDescription4")}</p>
+      </a>
+      <div slot="lower-row" class="card">
+        <h3>{t("test.cardGridTitle5")}</h3>
+        <p>{t("test.cardGridDescription5")}</p>
+      </div>
+    </CardGrid>
+
+    <section>
+      <h2>{t("integration.title")}</h2>
+      <p>{t("integration.description")}</p>
+      <ul
+        class="mb-4 grid grid-cols-3 md:grid-cols-4 lg:flex flex-wrap gap-4 py-4 w-full"
+      >
+        <IconCard
+          href="https://docs.astro.build/en/guides/integrations-guide/alpinejs/"
+          title="Alpine.js"
+          imgHref="/icons/alpinejs.svg"
+          imgAlt="alpine.js integration guide"
+        />
+        <IconCard
+          href="https://docs.astro.build/en/guides/integrations-guide/mdx/"
+          title="MDX"
+          imgHref="/icons/mdx.svg"
+          imgAlt="MDX integration guide"
+        />
+        <IconCard
+          href="https://docs.astro.build/en/guides/integrations-guide/sitemap/"
+          title="Sitemap"
+          imgHref="/icons/sitemap.svg"
+          imgAlt="sitemap integration guide"
+        />
+        <IconCard
+          href="https://docs.astro.build/en/guides/integrations-guide/tailwind/"
+          title="Tailwind"
+          imgHref="/icons/tailwind.svg"
+          imgAlt="tailwind integration guide"
+        />
+        <IconCard
+          href="https://docs.astro.build/en/guides/integrations-guide/vercel/"
+          title="Vercel"
+          imgHref="/icons/vercel.svg"
+          imgAlt="vercel integration guide"
+        />
+        <IconCard
+          href="https://github.com/mailersend/mailersend-nodejs?tab=readme-ov-file#send-a-template-based-email"
+          title="MailerSend"
+          imgHref="/icons/mailerSend.svg"
+          imgAlt="mailerSend documentation"
+        />
+      </ul>
+    </section>
+
+    <AutoSlider title={t("slider.title")}>
+      <TextCard
+        icon="/icons/zero.svg"
+        title={t("slider.card_1_title")}
+        description={t("slider.card_1_description")}
+      />
+      <TextCard
+        icon="/icons/pointer.svg"
+        title={t("slider.card_2_title")}
+        description={t("slider.card_2_description")}
+      />
+      <TextCard
+        icon="/icons/globe.svg"
+        title={t("slider.card_3_title")}
+        description={t("slider.card_3_description")}
+      />
+      <TextCard
+        icon="/icons/tailwind.svg"
+        title={t("slider.card_4_title")}
+        description={t("slider.card_4_description")}
+      />
+      <TextCard
+        icon="/icons/search.svg"
+        title={t("slider.card_5_title")}
+        description={t("slider.card_5_description")}
+      />
+      <!-- some duplicates needed to make sure row is full -->
+      <TextCard
+        icon="/icons/zero.svg"
+        title={t("slider.card_1_title")}
+        description={t("slider.card_1_description")}
+      />
+      <TextCard
+        icon="/icons/pointer.svg"
+        title={t("slider.card_2_title")}
+        description={t("slider.card_2_description")}
+      />
+      <TextCard
+        icon="/icons/globe.svg"
+        title={t("slider.card_3_title")}
+        description={t("slider.card_3_description")}
+      />
+    </AutoSlider>
+
+    <FullWidthBanner
+      title="test.fullWidthBannerTitle"
+      description="test.fullWidthBannerDescription"
+      ctaTitle="test.button"
+      ctaLink="#"
+    />
+  </main>
+</Layout>
