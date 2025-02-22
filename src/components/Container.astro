@@ -1,0 +1,9 @@
+---
+import { cn } from "../utils/utils";
+
+const { class: className } = Astro.props;
+---
+
+<div class={cn("container mx-auto", className)}>
+    <slot />
+</div>
