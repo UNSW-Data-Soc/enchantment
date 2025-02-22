@@ -17,5 +17,5 @@ h4 {
 }
 
 blockquote {
-  @apply border-l-5 pl-4 font-light sm:text-xl border-gray-200;
+  @apply border-l-5 pl-4 font-light sm:text-xl border-gray-200 py-2;
 }

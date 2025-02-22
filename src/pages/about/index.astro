@@ -10,76 +10,84 @@ import Layout from '../../layouts/Layout.astro';
         <p>What we really do. Learn about the society that continually seeks the best for students.</p>
     </Header>
         
-    <Container>
+    <Container class="space-y-6 py-6 max-w-3xl text-justify">
         <blockquote>
             Uniting mathematicians, econometricians and computer scientists, UNSW DataSoc seeks to empower our members with knowledge and skills of data science, machine learning and artificial intelligence.
         </blockquote>
 
-        <h2>Affiliated with</h2>
-        <div class="flex w-full flex-row justify-around [&>img]:h-[100px]">
-            <img src="/about/unsw-maths.png" alt="UNSW Sydney School of Mathematics and Statistics" />
-            <img src="/about/arc.png" alt="UNSW Arc Clubs" />
-        </div>
+        <section>
+            <h2>Affiliated with</h2>
+            <div class="flex w-full flex-row justify-between [&>img]:h-[100px]">
+                <img src="/about/unsw-maths.png" alt="UNSW Sydney School of Mathematics and Statistics" />
+                <img src="/about/arc.png" alt="UNSW Arc Clubs" />
+            </div>
+        </section>
 
 
-        <h2>Our Goals</h2>
-        <div>
-            <div>
-                <img src="/about/lightbulb-idea.png" alt="" />
-                <p>DataSoc aims to become Australia's leading student run society platform in assisting students on achieving their data science career goals.</p>
+        <section class="space-y-4">
+            <h2>Our Goals</h2>
+            <div class="space-y-1">
+                <div class="flex flex-row gap-4 justify-left items-center">
+                    <img src="/about/lightbulb-idea.png" alt="" />
+                    <p>DataSoc aims to become Australia's leading student run society platform in assisting students on achieving their data science career goals.</p>
+                </div>
+                <div class="flex flex-row gap-4 justify-left items-center">
+                    <img src="/about/bulletin-board.png" alt="" />
+                    <p>We strive to create the data science related opportunities for students in their studies and careers alike. We host information sessions, networking evenings, and many more career-focused events that could help open new pathways for students.</p>
+                </div>
+                <div class="flex flex-row gap-4 justify-left items-center">
+                    <img src="/about/graphic-design.png" alt="" />
+                    <p>We aim to enrich students' lives with a sense of community and diversity among UNSW data science students. We host a list of various social activities such as BBQs, competitions, etc. that welcome everyone to attend and meet like minded people.</p>
+                </div>
+                <div class="flex flex-row gap-4 justify-left items-center">
+                    <img src="/about/zoom.png" alt="" />
+                    <p>We want to support data science students in their studies with DataSoc's help sessions, workshops and peer supporters.</p>
+                </div>
             </div>
-            <div>
-                <img src="/about/bulletin-board.png" alt="" />
-                <p>We strive to create the data science related opportunities for students in their studies and careers alike. We host information sessions, networking evenings, and many more career-focused events that could help open new pathways for students.</p>
-            </div>
-            <div>
-                <img src="/about/graphic-design.png" alt="" />
-                <p>We aim to enrich students' lives with a sense of community and diversity among UNSW data science students. We host a list of various social activities such as BBQs, competitions, etc. that welcome everyone to attend and meet like minded people.</p>
-            </div>
-            <div>
-                <img src="/about/zoom.png" alt="" />
-                <p>We want to support data science students in their studies with DataSoc's help sessions, workshops and peer supporters.</p>
-            </div>
-        </div>
+        </section>
 
         <p>
             With this, DataSoc aims to make your university experience even more fun and fulfilling, whilst maximizing your employment opportunity and career progression in data science.
         </p>
 
-        <p>"Opportunities don't happen. You create them."</p>
+        <p class="text-center font-bold text-2xl">"Opportunities don't happen. You create them."</p>
 
-        <h2>Our Values</h2>
-        <p>Our successes to date could not have be achieved without our thriving subcommittee teams year after year. Here are our core values that persists amongst all portfolios:</p>
-        <div>
-            <img src="/about/book.png" alt="" />
-            <div>
-                <p>Learn continuously and effectively</p>
-                <p>We seek to provide innovative and meaningful experiences for students, adapting to change and committing to ongoing development. We highly encourage you to actively seek ways to improve and find new ways to solve problems.</p>
+        <section class="space-y-4">
+            <h2>Our Values</h2>
+            <p>Our successes to date could not have be achieved without our thriving subcommittee teams year after year. Here are our core values that persists amongst all portfolios:</p>
+            <div class="flex flex-row justify-between gap-4 items-center">
+                <img src="/about/book.png" alt="" />
+                <div>
+                    <p class="font-bold">Learn continuously and effectively</p>
+                    <p>We seek to provide innovative and meaningful experiences for students, adapting to change and committing to ongoing development. We highly encourage you to actively seek ways to improve and find new ways to solve problems.</p>
+                </div>
             </div>
-        </div>
-        <div>
-            <img src="/about/coffee.png" alt="" />
-            <div>
-                <p>Have a good time</p>
-                <p>At DataSoc, it is important to us that every experience here is a constructive and positive one. After every event and every meeting, we want you all to be leaving with a smile and a new friend!</p>
+            <div class="flex flex-row justify-between gap-4 items-center">
+                <img src="/about/coffee.png" alt="" />
+                <div>
+                    <p class="font-bold">Have a good time</p>
+                    <p>At DataSoc, it is important to us that every experience here is a constructive and positive one. After every event and every meeting, we want you all to be leaving with a smile and a new friend!</p>
+                </div>
             </div>
-        </div>
-        <div>
-            <img src="/about/thumbs-up.png" alt="" />
-            <div>
-                <p>Be the best at what you do</p>
-                <p>What distinguishes DataSoc members from others, despite having all different areas and expertise? It's the passion that we bring to everything we do. We approach every task with confidence, seize all opportunities and never settle for "acceptable".</p>
+            <div class="flex flex-row justify-between gap-4 items-center">
+                <img src="/about/thumbs-up.png" alt="" />
+                <div>
+                    <p class="font-bold">Be the best at what you do</p>
+                    <p>What distinguishes DataSoc members from others, despite having all different areas and expertise? It's the passion that we bring to everything we do. We approach every task with confidence, seize all opportunities and never settle for "acceptable".</p>
+                </div>
             </div>
-        </div>
-        <div>
-            <img src="/about/sunglasses.png" alt="" />
-            <div>
-                <p>Take ownership and be transparent</p>
-                <p>As the DataSoc team, we celebrate the individual work and achievement of others, but must also be accountable for the tasks to which we have committed and see through what we started.</p>
+            <div class="flex flex-row justify-between gap-4 items-center">
+                <img src="/about/sunglasses.png" alt="" />
+                <div>
+                    <p class="font-bold">Take ownership and be transparent</p>
+                    <p>As the DataSoc team, we celebrate the individual work and achievement of others, but must also be accountable for the tasks to which we have committed and see through what we started.</p>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <h2>Our History</h2>
+        <section>
+            <h2>Our History</h2>
+        </section>
     </Container>
 
 </Layout>
