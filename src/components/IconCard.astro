@@ -32,10 +32,12 @@ const { href, title, imgHref, imgAlt } = Astro.props;
   <a
     href={href}
     target="_blank"
-    class="grid grid-cols-3 grid-rows-3 w-full h-full p-4 place-content-center relative"
+    class="mb-4 flex flex-wrap gap-4 py-4 w-full justify-between"
+
     ><div
-      class="w-full h-full absolute bg-[url(/noise.svg)] opacity-0 group-focus-within:opacity-50 group-hover:opacity-50 rounded-md"
-    >
+      class="absolute inset-0 bg-[url(/noise.svg)] bg-contain bg-center opacity-0 group-focus-within:opacity-50 group-hover:opacity-50 rounded-md pointer-events-none"
+    
+      >
     </div>
     <div class="w-4/5 row-span-2 col-span-3 mx-auto z-10">
       <img

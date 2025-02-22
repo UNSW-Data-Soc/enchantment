@@ -12,22 +12,91 @@ const blogPosts = await getCollection("blog", ({ data }) => {
 
 <Layout title={`Blog`} lang={lang}>
   <main class="container mx-auto">
-    <h1>Blog</h1>
-    <ul>
+    <h1 class="text-4xl font-bold mb-8">Blog Posts</h1>
+
+    <section class="space-y-12">
       {
         blogPosts.map((p) => (
-          <li>
-            <a class="link flex justify-between items-center" href={p.slug}>
-              <span>{p.data.title}</span>
-              <div class="hidden md:block">
-                <span>
-                  {calculateReadingTime(p.body)} min - {p.data.date}
-                </span>
-              </div>
-            </a>
-          </li>
+          <article class="mb-12 p-6 border rounded-lg shadow-lg bg-white">
+            <h2 class="text-2xl font-semibold mb-2">{p.data.title}</h2>
+            <p class="text-sm text-gray-500 mb-4">
+              {calculateReadingTime(p.body)} min read - {p.data.date} by {p.data.author}
+            </p>
+
+            <!-- Directly embedding the blog content -->
+            <div class="blog-content space-y-4">
+              <h1>{p.data.title}</h1>
+
+              <p>If you're new to web development or content creation, you might have come across two terms: <strong>Markdown</strong> and <strong>MDX</strong>. In this post, we’ll explain the basics of both and show you how to get started.</p>
+
+              <h2>What is Markdown?</h2>
+              <p>Markdown is a lightweight markup language that allows you to format text using plain text syntax. It's widely used for writing documentation, blog posts, and README files.</p>
+
+              <p>Here's an example of Markdown syntax:</p>
+              <ul>
+                <li><strong>Bold text</strong>: <code>**Bold**</code></li>
+                <li><em>Italic text</em>: <code>*Italic*</code></li>
+                <li><a href="https://example.com">Links</a>: <code>[Link text](https://example.com)</code></li>
+                <li>Headings:
+                  <ul>
+                    <li><code># Heading 1</code></li>
+                    <li><code>## Heading 2</code></li>
+                    <li><code>### Heading 3</code></li>
+                  </ul>
+                </li>
+              </ul>
+
+              <h3>Example</h3>
+              <pre><code># My First Blog Post
+
+Welcome to my blog! This is an example of a Markdown file. Below is a list:
+
+- Item 1
+- Item 2
+- Item 3
+              </code></pre>
+
+              <h2>What is MDX?</h2>
+              <p>MDX is an extension of Markdown that allows you to embed JSX (JavaScript XML) directly into your Markdown files. This makes it possible to mix standard Markdown content with dynamic components, making it a powerful tool for modern web development.</p>
+
+              <p>However, if you're just starting out, you can use MDX exactly like Markdown without any JSX components. It works just fine with the basics.</p>
+
+              <h3>Example</h3>
+              <pre><code>---
+title: "My MDX Post"
+---
+
+# Hello World
+
+This is an example MDX post. It behaves just like Markdown, but I can later add components if needed.
+              </code></pre>
+
+              <h3>Why Use MDX?</h3>
+              <p>The main advantage of MDX is that it gives you the flexibility to write simple content using Markdown but allows for dynamic content later on. It's commonly used in static site generators like Astro, Next.js, and Gatsby.</p>
+
+              <h3>Getting Started</h3>
+              <p>To create a basic MDX post, you just need to:</p>
+              <ol>
+                <li>Create a <code>.mdx</code> file.</li>
+                <li>Write Markdown content as usual.</li>
+                <li>Optionally, add JSX components later when you’re comfortable with the basics.</li>
+              </ol>
+
+              <p>That’s all you need to get started with MDX and Markdown. In future posts, we’ll dive deeper into how you can use MDX to create dynamic and interactive blog posts.</p>
+
+              <h3>Key Elements</h3>
+              <ul>
+                <li><strong>Basic Markdown features</strong> like headings, bold, italics, lists, and links.</li>
+                <li><strong>MDX frontmatter</strong> (<code>---</code>) for metadata (title, description, etc.).</li>
+                <li>No custom components or JSX, ensuring compatibility across different MDX parsers.</li>
+              </ul>
+
+              <p>This post covers the basics and will work smoothly without custom components or advanced features. You can use it as a foundation for learning or sharing MDX and Markdown tips.</p>
+            </div>
+
+          </article>
         ))
       }
-    </ul>
+    </section>
   </main>
 </Layout>

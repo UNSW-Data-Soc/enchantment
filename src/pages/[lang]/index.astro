@@ -27,12 +27,12 @@ export async function getStaticPaths() {
     <section class="flex items-center gap-8">
       <div>
         <h1>
-          <span class="fancy">Spark</span>, {t("hero.title")}
+          <span class="fancy">DataSoc</span>, {t("hero.title")}
         </h1>
         <p>{t("hero.description")}</p>
       </div>
       <div class="relative hidden md:block">
-        <img src="/favicon.svg" alt="spark logo" width="182" height="242" />
+        <img src="/datasoclogo.png" alt="spark logo" width="182" height="242" />
       </div>
     </section>
 
@@ -107,13 +107,14 @@ export async function getStaticPaths() {
       <h2>{t("integration.title")}</h2>
       <p>{t("integration.description")}</p>
       <ul
-        class="mb-4 grid grid-cols-3 md:grid-cols-4 lg:flex flex-wrap gap-4 py-4 w-full"
+        class="mb-4 flex flex-wrap gap-4 py-4 w-full justify-between"
+
       >
         <IconCard
-          href="https://docs.astro.build/en/guides/integrations-guide/alpinejs/"
-          title="Alpine.js"
-          imgHref="/icons/alpinejs.svg"
-          imgAlt="alpine.js integration guide"
+          href="https://www.atlassian.com/"
+          title="Atlassian"
+          imgHref="/icons/horizontal-logo-gradient-blue-atlassian.png"
+          imgAlt="Atlassian"
         />
         <IconCard
           href="https://docs.astro.build/en/guides/integrations-guide/mdx/"

@@ -21,6 +21,8 @@ export function useTranslations(lang?: UiType) {
     key: keyof (typeof ui)[typeof DEFAULT_LOCALE],
     ...args: any[]
   ) {
+    const lang = "en"; // or another valid language code
+    const DEFAULT_LOCALE = "en";
     let translation =
       ui[lang ?? DEFAULT_LOCALE][key] || ui[DEFAULT_LOCALE][key];
     if (args.length > 0) {
