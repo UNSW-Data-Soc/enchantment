@@ -19,3 +19,7 @@ h4 {
 blockquote {
   @apply border-l-5 pl-4 font-light sm:text-xl border-gray-200 py-2;
 }
+
+.blur-xs {
+  filter: blur(1px); /* You can adjust the pixel value for an even smaller blur */
+}

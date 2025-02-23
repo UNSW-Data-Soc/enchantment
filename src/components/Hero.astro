@@ -1,65 +1,52 @@
-<div class="bg-white">
-    <header class="absolute inset-x-0 top-0 z-50">
-      <!-- Mobile menu, show/hide based on menu open state. -->
-      <div class="lg:hidden" role="dialog" aria-modal="true">
-        <!-- Background backdrop, show/hide based on slide-over state. -->
-        <div class="fixed inset-0 z-50"></div>
-        <div class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-          <div class="flex items-center justify-between">
-            <a href="#" class="-m-1.5 p-1.5">
-              <span class="sr-only">Your Company</span>
-              <img class="h-8 w-auto" src="/solidlogo.png" alt="">
-            </a>
-            <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
-              <span class="sr-only">Close menu</span>
-              <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          <div class="mt-6 flow-root">
-            <div class="-my-6 divide-y divide-gray-500/10">
-              <div class="space-y-2 py-6">
-                <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Product</a>
-                <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Features</a>
-                <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Marketplace</a>
-                <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Company</a>
-              </div>
-              <div class="py-6">
-                <a href="#" class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Log in</a>
-              </div>
-            </div>
-          </div>
+<div class="relative bg-white">
+  <header class="absolute inset-x-0 top-0 z-50">
+    <!-- Mobile menu, show/hide based on menu open state. -->
+    <div class="lg:hidden" role="dialog" aria-modal="true">
+      <div class="fixed inset-0 z-50"></div>
+      <div class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+        <div class="flex items-center justify-between">
+          <a href="#" class="-m-1.5 p-1.5">
+            <span class="sr-only">UNSW DataSoc</span>
+            <img class="h-8 w-auto" src="/solidlogo.png" alt="">
+          </a>
+          <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
+            <span class="sr-only">Close menu</span>
+            <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <div class="relative isolate h-auto">
-      <img class="absolute -z-10 top-0 left-0 right-0" src="/coverphotos/coverphoto-250222-00.png" />
-      <div class="bg-[#0005] w-full h-full">
-        <div class="mx-auto max-w-2xl py-16 sm:py-24 lg:py-28">
-           <div class="hidden sm:mb-8 sm:flex sm:justify-center">
-          <div class="relative rounded-full px-3 py-1 text-2xl text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20 ">
-            Checkout our 2025 First Year Guide!  <a href="https://drive.google.com/file/d/1wR9QEjfXN083SalIQWsshq-KWSPsXtmj/view?usp=sharing" class="font-semibold text-indigo-600 text-2xl"><span class="absolute inset-0" aria-hidden="true"></span> Read more <span aria-hidden="true">&rarr;</span></a>
-          </div>
-        </div>
-          <div class="text-center">
-            <h1 class="text-5xl font-bold tracking-tight text-balance text-gray-900 sm:text-7xl" style="font-size: 5vw;">
-            UNSW DataSoc
-          </h1>
-          <p class="mt-8 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8">Uniting students with a passion for data science, machine learning and artificial intelligence.</p>
-          <div class="mt-10 flex items-center justify-center gap-x-6">
-              <a href="#" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Join Now</a>
-              <a href="#" class="text-sm/6 font-semibold text-white">About us <span aria-hidden="true">→</span></a>
-          </div>
-        </div>
-        <div class="absolute inset-x-0 top-20 -z-10 transform-gpu overflow-hidden blur-2xl sm:top-40" aria-hidden="true">
-          <div class="relative left-[calc(50%+5rem)] aspect-1155/678 w-[30rem] -translate-x-1/2 rotate-[25deg] bg-linear-to-tr from-[#129bd0] to-[#9f62a2] opacity-40 sm:left-[calc(50%+10rem)] sm:w-[60rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
-        </div>
+  <!-- Hero Section -->
+  <div class="relative h-screen flex items-center justify-center">
+    <img class="absolute inset-0 w-full h-full object-cover" src="/coverphotos/coverphoto-250222-00.png" alt="Cover Photo">
+    <div class="absolute inset-0" style="background-color: rgba(45, 43, 43, 0.5);"></div>
 
+    <!-- <div class="hero-overlay bg-opacity-60 h-[70vh]"></div> Adjust bg-opacity for stronger shadow -->
+
+    <!-- Hero Content -->
+    <div class="relative text-center text-white px-6 py-16 sm:py-24 lg:py-28">
+      <div class="hidden sm:mb-8 sm:flex sm:justify-center">
+        <div class="relative rounded-full px-3 py-1 text-2xl text-gray-200 ring-1 ring-gray-200/50 hover:ring-gray-200 hover:scale-105 transition-transform duration-300 ease-in-out">
+          Checkout our 2025 First Year Guide!
+          <a href="https://drive.google.com/file/d/1wR9QEjfXN083SalIQWsshq-KWSPsXtmj/view?usp=sharing" class="font-semibold text-indigo-300 hover:text-indigo-500">
+            <span aria-hidden="true"></span>Read more →
+          </a>
+        </div>        
       </div>
-      <div class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
-        <div class="relative left-[calc(50%-20rem)] aspect-1155/678 w-[36.125rem] -translate-x-1/2 bg-linear-to-tr from-[#e04552] to-[#9f62a2] opacity-40 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+      <h1 class="text-5xl font-bold tracking-tight sm:text-7xl" style="font-size: 5vw;">
+        UNSW Data Science Society
+      </h1>      
+      <p class="mt-8 text-lg font-medium sm:text-xl">
+        Uniting students with a passion for data science, machine learning, and artificial intelligence.
+      </p>
+      <div class="mt-10 flex items-center justify-center gap-x-6">
+        <a href="https://forms.gle/3s3r3BAKBuur8LeS9" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500 hover:ring-gray-200 hover:scale-105 transition-transform duration-300 ease-in-out">Join Now</a>
+        <a href="/about" class="text-sm font-semibold text-white hover:ring-gray-200 hover:scale-105 transition-transform duration-300 ease-in-out">About us →</a>
       </div>
     </div>
   </div>
+</div>
