@@ -1,4 +1,5 @@
 ---
+import Navbar from "../components/Navbar.astro";
 import "../styles/global.css";
 ---
 
@@ -12,8 +13,12 @@ import "../styles/global.css";
 		<title>Astro Basics</title>
 	</head>
 	<body>
-		
-		<slot />
+		<div class="fixed top-0 left-0 right-0 z-50">
+			<Navbar />
+		</div>
+		<div class="pt-14"> <!-- padding for navbar -->
+			<slot />
+		</div>
 	</body>
 </html>
 
