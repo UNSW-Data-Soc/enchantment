@@ -14,11 +14,24 @@
       </button>
     </div>
     <div class="hidden lg:flex lg:gap-x-12">
-      <a href="/about" class="text-sm/6 font-semibold text-gray-900">About</a>
-      <a href="/updates" class="text-sm/6 font-semibold text-gray-900">Updates</a>
-      <a href="/sponsors" class="text-sm/6 font-semibold text-gray-900">Sponsors</a>
-      <a href="/contact" class="text-sm/6 font-semibold text-gray-900">Resources</a>
-      <a href="/publications" class="text-sm/6 font-semibold text-gray-900">Publications</a>
+      <a href="/about" class="text-sm font-semibold text-gray-900">About</a>
+      <a href="/updates" class="text-sm font-semibold text-gray-900">Updates</a>
+      <a href="/sponsors" class="text-sm font-semibold text-gray-900">Sponsors</a>
+      <a href="/contact" class="text-sm font-semibold text-gray-900">Resources</a>
+      <div class="relative group">
+        <a href="/publication/FirstYearGuide" class="text-sm font-semibold text-gray-900 flex items-center">
+          Publications
+          <svg class="ml-1 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M5.23 7.21a.75.75 0 011.06-.02L10 10.67l3.71-3.48a.75.75 0 111.04 1.08l-4.25 4a.75.75 0 01-1.04 0l-4.25-4a.75.75 0 01-.02-1.06z"/>
+          </svg>
+        </a>
+        <!-- Dropdown Menu -->
+        <div class="absolute left-0 mt-2 w-48 rounded-md bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-500">
+          <a href="/publication/FirstYearGuide" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">First Year Guide</a>
+          <a href="/publication/CareersGuide" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Careers Guide</a>
+        </div>
+      </div>
+      <!-- <a href="/publications" class="text-sm/6 font-semibold text-gray-900">Publications</a> -->
     </div>
     <div class="hidden lg:flex lg:flex-1 lg:justify-end">
       <a href="#" class="text-sm/6 font-semibold text-gray-900">Contact Us</a>

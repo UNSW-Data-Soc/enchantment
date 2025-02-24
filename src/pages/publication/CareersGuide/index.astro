@@ -1,0 +1,44 @@
+---
+import Container from '../../../components/Container.astro';
+import Header from '../../../components/Header.astro';
+import Layout from '../../../layouts/Layout.astro';
+
+import {
+  CAREERS_GUIDE,
+  CAREERS_GUIDE_2021,
+} from "../../../utils/utils";
+---
+
+<Layout>
+    <Header>
+        <h1>Careers Guide</h1>
+        <p>Data Science can be difficult to navigate career-wise. With so many options, it's easy to get swept away in a tide of information.</p>
+        <p>
+        That's why DataSoc's collated everything you need to get off the ground in our trusty Careers Guide! We've got useful rundowns of the data industry landscape, practical tips on job searching, as well as insider info from sponsors and students alike.
+        </p>
+        <p>
+        If you're looking for a place to start, some extra information, and some guidance from experienced professionals, have a check out of our Careers Guide! 
+        </p>
+    </Header>
+        
+    <Container class="space-y-6 py-6 max-w-3xl text-justify">
+        <blockquote>
+            <p>
+                If you are interested, you can also view our past Career's Guide
+            </p>
+        </blockquote>
+        <a href={CAREERS_GUIDE_2021} class="flex items-center justify-center rounded-lg bg-gray-500 px-4 py-2 text-white font-semibold shadow-md hover:bg-red-400 hover:shadow-lg transition duration-300">
+            Past Careers Guide
+        </a>
+
+        </div>
+        <section>
+            <h2>NEW Careers Guide</h2>
+            <p>Proudly made by the 2024 DataSoc Team</p>
+            <div class="flex items-center justify-center p-6 align-baseline">
+                <iframe class="h-screen w-2/3" src={CAREERS_GUIDE} />
+            </div>
+        </section>
+    </Container>
+
+</Layout>
