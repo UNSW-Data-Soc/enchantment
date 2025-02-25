@@ -1,0 +1,25 @@
+---
+const { borderColor = "border-green-500", hoverGradientFrom = "from-green-400", hoverGradientTo = "to-blue-500", title, description } = Astro.props;
+---
+
+<div
+  class={`group relative bg-white dark:bg-[#2A2A2A] p-8 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-l-4 ${borderColor} overflow-hidden`}
+>
+  <div
+    class={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r ${hoverGradientFrom} ${hoverGradientTo}`}
+  ></div>
+  <div class="relative z-10 pl-6">
+    <svg
+      class={`w-12 h-12 mb-4 ${borderColor.replace("border-", "text-")}`}
+      fill="none"
+      stroke="currentColor"
+      viewBox="bg-gray-200"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+    </svg>
+    <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">{title}</h3>
+    <p class="text-sm text-gray-600 dark:text-gray-300">{description}</p>
+  </div>
+</div>
