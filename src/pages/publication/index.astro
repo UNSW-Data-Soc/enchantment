@@ -2,7 +2,6 @@
 import Container from '../../components/Container.astro';
 import Header from '../../components/Header.astro';
 import Layout from '../../layouts/Layout.astro';
-import Card from '../../components/Card.astro';
 
 import {
   FYG_2021_LINK,
@@ -19,6 +18,12 @@ import {
     <p>This is our publication hub!</p>
   </Header>
 
+  <div class="absolute inset-x-0 -top-40 -z-100 transform-gpu overflow-hidden blur-3xl sm:-top-50" aria-hidden="true">
+    <div class="relative left-[calc(50%-11rem)] aspect-1155/678 w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-linear-to-tr from-[#f5b100] to-[#e04552] opacity-50 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+  </div>
+  <div class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-50rem)]" aria-hidden="true">
+    <div class="relative left-[calc(50%+20rem)] aspect-1155/678 w-[36.125rem] -translate-x-1/2 bg-linear-to-tr from-[#129bd0] to-[#e04552] opacity-150 sm:left-[calc(50%+50rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+  </div> 
   <div class="mt-6 grid grid-cols-3 gap-6 max-w-6xl mx-auto">
     <div class="bg-gray-700 text-white p-6 rounded-lg hover:shadow-lg flex flex-col">
       <h2 class="font-bold text-xl">First Year Guide</h2>
