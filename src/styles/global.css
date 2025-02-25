@@ -23,3 +23,20 @@ blockquote {
 .blur-xs {
   filter: blur(1px); /* You can adjust the pixel value for an even smaller blur */
 }
+
+@media (max-width: 1000px) {
+  .responsive-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* 1 column */
+    padding: 2rem;
+    /* gap: 9.5rem; Adds space between grid items */
+
+  }
+}
+
+@media (min-width: 1000px) {
+  .responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+  }
+}
