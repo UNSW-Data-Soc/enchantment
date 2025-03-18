@@ -1,62 +1,86 @@
-<div class="bg-white py-24 sm:py-32">
-  <div class="relative isolate px-6 pt-14 lg:px-8">
-    <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
-      <div class="relative left-[calc(50%-11rem)] aspect-1155/678 w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-linear-to-tr from-[#f5b100] to-[#e04552] opacity-50 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+---
+import Container from '../../components/Container.astro';
+import Header from '../../components/Header.astro';
+import Layout from '../../layouts/Layout.astro';
+
+import {
+  FYG_2021_LINK,
+  FYG_2022_LINK,
+  FYG_2023_LINK,
+  FYG_2024_LINK,
+  FYG_2025_LINK,
+} from "../../utils/utils";
+---
+
+<Layout>
+  <Header>
+    <h1>DataSoc's Sponsorships</h1>
+    <p>DataSoc wouldn't be DataSoc without the amazing companies we've worked with throughout our journey as a society. With more and more data-oriented decisions and predictions made everyday, the demand for talented Data Science graduates is growing.
+    </p>
+    <p>It's our long term goal to help our members become as capable they can be, and it wouldn't be possible without the continued support from industry.
+    </p>
+    <p>Interested in sponsoring? Reach out to external@unswdata.com
+    </p>
+  </Header>
+  
+  <div class="bg-white py-24 sm:py-5">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <h1 class="text-center text-lg/8 z-10 font-semibold text-gray-900">Proudly sponsored by</h1>
+      <!-- <div class="mx-auto mt-10 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-5"> -->
+        <h3 class="text-center text-2xl font-bold text-gray-800 mt-10">Major Sponsors</h3>
+        <div class="mx-auto mt-6 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-4">
+
+          <!-- Atlassian -->
+          <a href="https://www.atlassian.com/" target="_blank" rel="noopener noreferrer">
+            <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 scale-70 hover:scale-80 transition-transform duration-300 ease-in-out" src="/icons/atlassian.png" alt="Atlassian" width="158" height="48">
+          </a>
+
+          <!-- Quantium -->
+          <a href="https://www.quantium.com/" target="_blank" rel="noopener noreferrer">
+            <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 hover:scale-110 transition-transform duration-300 ease-in-out" src="/icons/quantium.svg" alt="Quantium" width="158" height="48">
+          </a>
+
+          <!-- Resolution Life -->
+          <a href="https://www.resolutionlife.com/" target="_blank" rel="noopener noreferrer">
+            <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 scale-70 hover:scale-80 transition-transform duration-300 ease-in-out mt-[-5px]" src="/icons/ResolutionLife_Logo.png" alt="Resolution Life" width="158" height="48">
+          </a>
+
+          <!-- Allianz -->
+          <a href="https://www.allianz.com/" target="_blank" rel="noopener noreferrer">
+            <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 scale-90 hover:scale-100 transition-transform duration-300 ease-in-out" src="/icons/allianz.png" alt="Allianz" width="158" height="48">
+          </a>
+        </div>
+
+        <!-- Partner Sponsorship Section -->
+        <h3 class="text-center text-2xl font-bold text-gray-800 mt-16">Partner Sponsors</h3>
+        <div class="mx-auto mt-6 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-5">
+
+          <!-- Aurora -->
+          <a href="https://auroraer.com/" target="_blank" rel="noopener noreferrer">
+            <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 scale-80 hover:scale-90 transition-transform duration-300 ease-in-out" src="/icons/Aurora-Logotype-RGB.png" alt="Microsoft" width="158" height="48">
+          </a>
+
+          <!-- BCG -->
+          <a href="https://www.bcg.com/" target="_blank" rel="noopener noreferrer">
+            <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 scale-180 hover:scale-190 transition-transform duration-300 ease-in-out" src="/icons/BGG-Logo.png" alt="Boston Consulting Group" width="158" height="48">
+          </a>
+
+          <!-- Data Army -->
+          <a href="https://dataarmy.io/" target="_blank" rel="noopener noreferrer">
+            <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 scale-80 hover:scale-90 transition-transform duration-300 ease-in-out" src="/icons/data army .png" alt="Data Army" width="158" height="48">
+          </a>
+
+          <!-- Jane St -->
+          <a href="https://www.janestreet.com/" target="_blank" rel="noopener noreferrer">
+            <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 scale-80 hover:scale-90 transition-transform duration-300 ease-in-out" src="/icons/janest.png" alt="Jane Street" width="158" height="48">
+          </a>
+
+          <!-- Vivcourt -->
+          <a href="https://www.vivcourt.com/" target="_blank" rel="noopener noreferrer">
+            <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 scale-220 hover:scale-250 transition-transform duration-300 ease-in-out mt-[-25px]" src="/icons/viv.png" alt="VivCourt" width="158" height="48"> 
+          </a>
+        </div>
     </div>
-
-  <div class="mx-auto max-w-7xl px-6 lg:px-8">
-    <h2 class="text-center text-lg/8 font-semibold text-gray-900">Proudly sponsored by</h2>
-    <!-- <div class="mx-auto mt-10 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-5"> -->
-      <h3 class="text-center text-2xl font-bold text-gray-800 mt-10">Major Sponsorship</h3>
-      <div class="mx-auto mt-6 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-
-        <!-- Atlassian -->
-        <a href="https://www.atlassian.com/" target="_blank" rel="noopener noreferrer">
-          <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 scale-70 hover:scale-80 transition-transform duration-300 ease-in-out" src="/icons/atlassian.png" alt="Atlassian" width="158" height="48">
-        </a>
-
-        <!-- Quantium -->
-        <a href="https://www.quantium.com/" target="_blank" rel="noopener noreferrer">
-          <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 hover:scale-110 transition-transform duration-300 ease-in-out" src="/icons/quantium.svg" alt="Quantium" width="158" height="48">
-        </a>
-
-        <!-- Resolution Life -->
-        <a href="https://www.resolutionlife.com/" target="_blank" rel="noopener noreferrer">
-          <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 scale-70 hover:scale-80 transition-transform duration-300 ease-in-out" src="/icons/ResolutionLife_Logo.png" alt="Resolution Life" width="158" height="48">
-        </a>
-      </div>
-
-      <!-- Partner Sponsorship Section -->
-      <h3 class="text-center text-2xl font-bold text-gray-800 mt-16">Partner Sponsorship</h3>
-      <div class="mx-auto mt-6 grid max-w-lg grid-cols-4 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-5">
-
-        <!-- Aurora -->
-        <a href="https://auroraer.com/" target="_blank" rel="noopener noreferrer">
-          <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 scale-80 hover:scale-90 transition-transform duration-300 ease-in-out" src="/icons/Aurora-Logotype-RGB.png" alt="Microsoft" width="158" height="48">
-        </a>
-
-        <!-- BCG -->
-        <a href="https://www.bcg.com/" target="_blank" rel="noopener noreferrer">
-          <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 scale-180 hover:scale-190 transition-transform duration-300 ease-in-out" src="/icons/BGG-Logo.png" alt="Boston Consulting Group" width="158" height="48">
-        </a>
-
-        <!-- Data Army -->
-        <a href="https://dataarmy.io/" target="_blank" rel="noopener noreferrer">
-          <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 scale-80 hover:scale-90 transition-transform duration-300 ease-in-out" src="/icons/data army .png" alt="Data Army" width="158" height="48">
-        </a>
-
-        <!-- Jane St -->
-        <a href="https://www.janestreet.com/" target="_blank" rel="noopener noreferrer">
-          <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 scale-90 hover:scale-100 transition-transform duration-300 ease-in-out" src="/icons/janest.png" alt="Jane Street" width="158" height="48">
-        </a>
-
-        <!-- Vivcourt -->
-        <a href="https://www.vivcourt.com/" target="_blank" rel="noopener noreferrer">
-          <img class="col-span-2 max-h-12 w-full object-contain lg:col-span-1 scale-180 hover:scale-260 transition-transform duration-300 ease-in-out" src="/icons/VivCourt_nobackground.webp" alt="VivCourt" width="158" height="48"> 
-        </a>
-      </div>
-      <div class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
-        <div class="relative left-[calc(50%+20rem)] aspect-1155/678 w-[36.125rem] -translate-x-1/2 bg-linear-to-tr from-[#129bd0] to-[#e04552] opacity-90 sm:left-[calc(50%+50rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
-      </div> 
   </div>
-</div>
+
+</Layout>
