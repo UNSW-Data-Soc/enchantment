@@ -7,17 +7,38 @@ import "../styles/global.css";
 <!doctype html>
 <html lang="en">
 	<head>
+		
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>Astro Basics</title>
+		<script>
+			// Execute after DOM is fully loaded
+			document.addEventListener('DOMContentLoaded', () => {
+			  // Look for common modal/popup elements and hide them
+			  const possibleModals = document.querySelectorAll('.modal, .popup, .sidebar, [class*="datasoc"]');
+			  possibleModals.forEach(el => {
+				(el as HTMLElement).style.display = 'none';
+			  });
+			});
+		  </script>
 	</head>
 	<body>
+		<script>
+			// Execute after DOM is fully loaded
+			document.addEventListener('DOMContentLoaded', () => {
+			  // Look for common modal/popup elements and hide them
+			  const possibleModals = document.querySelectorAll('.modal, .popup, .sidebar, [class*="datasoc"]');
+			  possibleModals.forEach(el => {
+				(el as HTMLElement).style.display = 'none';
+			  });
+			});
+		  </script>
 		<div class="fixed top-0 left-0 right-0 z-50">
 			<Navbar />
 		</div>
-		<div class="pt-14"> <!-- padding for navbar -->
+		<div class="pt-16"> <!-- padding for navbar -->
 			<slot />
 		</div>
 		<Footer />

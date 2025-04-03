@@ -37,4 +37,41 @@
   <div class="hidden lg:flex lg:flex-1 lg:justify-end">
     <a href="#" class="text-sm/6 font-semibold text-gray-900">Contact Us</a>
   </div>
+  <script>
+    // Select the button and the menu
+    const menuButton = document.querySelector('.lg\\:hidden button');
+    const menuItems = document.querySelector('.hidden.lg\\:flex');
+    
+    // Create mobile menu container if it doesn't exist
+    let mobileMenu = document.querySelector('.mobile-menu-container');
+    if (!mobileMenu) {
+      mobileMenu = document.createElement('div');
+      mobileMenu.className = 'mobile-menu-container fixed inset-0 bg-white z-50 transform translate-x-full transition-transform duration-300 ease-in-out lg:hidden';
+      
+      // Clone desktop menu items for mobile
+      if (menuItems) {
+        const mobileMenuContent = menuItems.cloneNode(true);
+        mobileMenuContent.className = 'flex flex-col p-6 space-y-4';
+        mobileMenu.appendChild(mobileMenuContent);
+      }
+      
+      // Add close button
+      const closeButton = document.createElement('button');
+      closeButton.className = 'absolute top-4 right-4 p-2';
+      closeButton.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+      closeButton.addEventListener('click', () => {
+        mobileMenu.classList.add('translate-x-full');
+      });
+      
+      mobileMenu.prepend(closeButton);
+      document.body.appendChild(mobileMenu);
+    }
+    
+    // Toggle mobile menu when button is clicked
+    if (menuButton) {
+      menuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('translate-x-full');
+      });
+    }
+  </script>
 </nav>

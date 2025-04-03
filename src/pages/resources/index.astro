@@ -3,49 +3,270 @@ import Layout from '../../layouts/Layout.astro';
 ---
 
 <Layout>
-  <div class="min-h-screen flex flex-col items-center bg-gradient-to-b from-[#E6E0FF] to-[#F4F1FF] p-8">
-    <!-- Hero Section -->
-    <div class="relative w-full max-w-5xl text-center">
-      <h1 class="text-6xl font-extrabold text-gray-900 tracking-tight drop-shadow-md">EXCELLR</h1>
-      <p class="text-lg text-gray-700 mt-3">Your gateway to mastering Data Science</p>
+<div class="min-h-screen flex flex-col items-center bg-gradient-to-b from-[#E6E0FF] to-[#F4F1FF] p-8">
+  <!-- Hero Section -->
+  <div class="relative w-full max-w-5xl text-center">
+    <h1 class="text-6xl font-extrabold text-gray-900 tracking-tight drop-shadow-md">EXCELLR</h1>
+    <p class="text-lg text-gray-700 mt-3">Your gateway to mastering Data Science</p>
+    <!-- Background Effect -->
+    <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-[350px] h-[120px] bg-purple-400 opacity-30 blur-3xl rounded-full"></div>
+  </div>
 
-      <!-- Background Effect -->
-      <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-[350px] h-[120px] bg-purple-400 opacity-30 blur-3xl rounded-full"></div>
-    </div>
-
-    <!-- Quick Start Topics -->
-    <div class="mt-12 flex gap-6">
-      <a href="/resources/pandas" class="group relative px-8 py-4 bg-purple-600 text-white text-lg font-semibold rounded-lg shadow-xl transition-transform transform hover:scale-105 hover:shadow-2xl">
-        Pandas for Python
-        <span class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-white opacity-0 group-hover:opacity-100 transition-opacity"></span>
-      </a>
-      <a href="/resources/matplotlib" class="group relative px-8 py-4 bg-purple-600 text-white text-lg font-semibold rounded-lg shadow-xl transition-transform transform hover:scale-105 hover:shadow-2xl">
-        Matplotlib for Python
-        <span class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-white opacity-0 group-hover:opacity-100 transition-opacity"></span>
-      </a>
-      <a href="/resources/sql" class="group relative px-8 py-4 bg-purple-600 text-white text-lg font-semibold rounded-lg shadow-xl transition-transform transform hover:scale-105 hover:shadow-2xl">
-        SQL for Data Science
-        <span class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-white opacity-0 group-hover:opacity-100 transition-opacity"></span>
-      </a>
-    </div>
+  <!-- Quick Start Topics -->
+  <div class="mt-12 flex gap-6">
+    <a href="/resources/pandas" class="group relative px-8 py-4 bg-purple-600 text-white text-lg font-semibold rounded-lg shadow-xl transition-transform transform hover:scale-105 hover:shadow-2xl">
+      Pandas for Python
+      <span class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-white opacity-0 group-hover:opacity-100 transition-opacity"></span>
+    </a>
+    <a href="/resources/matplotlib" class="group relative px-8 py-4 bg-purple-600 text-white text-lg font-semibold rounded-lg shadow-xl transition-transform transform hover:scale-105 hover:shadow-2xl">
+      Matplotlib for Python
+      <span class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-white opacity-0 group-hover:opacity-100 transition-opacity"></span>
+    </a>
+    <a href="/resources/sql" class="group relative px-8 py-4 bg-purple-600 text-white text-lg font-semibold rounded-lg shadow-xl transition-transform transform hover:scale-105 hover:shadow-2xl">
+      SQL for Data Science
+      <span class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-white opacity-0 group-hover:opacity-100 transition-opacity"></span>
+    </a>
+  </div>
 
     <!-- Animated Divider -->
-    <div class="mt-12 w-40 h-1 bg-purple-500 opacity-75 rounded-full animate-pulse"></div>
+<div class="mt-12 w-40 h-1 bg-purple-500 opacity-75 rounded-full animate-pulse"></div>
 
-    <!-- Workshop Resources Section -->
-    <div class="mt-12 text-center">
-      <h2 class="text-3xl font-semibold text-gray-800">Missed out on one of our workshops?</h2>
-      <p class="text-gray-600 mt-2">Browse through all of our learning resources from previous events!</p>
+<!-- Workshop Resources Section -->
+<div class="mt-12 text-center">
+  <h2 class="text-3xl font-semibold text-gray-800">Missed out on one of our workshops?</h2>
+  <p class="text-gray-600 mt-2">Browse through all of our learning resources from previous events!</p>
+</div>
+
+<!-- Resource Cards -->
+<div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
+      
+  <!-- Chatbot Chronicles Repo -->
+  <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+    <div class="flex justify-between items-start mb-1">
+      <h3 class="text-base font-s">Chatbot Chronicles Repo</h3>
+      <a href="#" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </a>
     </div>
-
-    <!-- Resource Cards -->
-    <div class="grid grid-cols-3 gap-6 mt-8">
-      <div class="w-40 h-40 bg-white border border-purple-400 rounded-lg shadow-md hover:scale-105 transition-transform"></div>
-      <div class="w-40 h-40 bg-white border border-purple-400 rounded-lg shadow-md hover:scale-105 transition-transform"></div>
-      <div class="w-40 h-40 bg-white border border-purple-400 rounded-lg shadow-md hover:scale-105 transition-transform"></div>
-      <div class="w-40 h-40 bg-white border border-purple-400 rounded-lg shadow-md hover:scale-105 transition-transform"></div>
-      <div class="w-40 h-40 bg-white border border-purple-400 rounded-lg shadow-md hover:scale-105 transition-transform"></div>
-      <div class="w-40 h-40 bg-white border border-purple-400 rounded-lg shadow-md hover:scale-105 transition-transform"></div>
+    <p class="text-xs text-gray-500 mb-2">a year ago</p>
+    <p class="text-sm text-gray-700 mb-3">Workshop GitHub Repo for creating LLM chatbots!</p>
+    <div class="flex flex-wrap gap-1">
+      <span class="bg-purple-500 text-white px-2 py-0.5 text-xs rounded-full">Programming</span>
+      <span class="bg-orange-500 text-white px-2 py-0.5 text-xs rounded-full">Data Science</span>
+      <span class="bg-green-700 text-white px-2 py-0.5 text-xs rounded-full">Python</span>
     </div>
   </div>
-</Layout>
+
+  <!-- Python for Everybody Course -->
+  <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+    <div class="flex justify-between items-start mb-1">
+      <h3 class="text-base font-semibold">Python for Everybody on Coursera (For Free)</h3>
+      <a href="#" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </a>
+    </div>
+    <p class="text-xs text-gray-500 mb-2">a year ago</p>
+    <p class="text-sm text-gray-700 mb-3">
+      This specialisation course by the University of Michigan is one of the most highly rated python courses out there. It's got no prerequisites, and is a great place to start. Don't feel pressured to finish it all! Building projects >>> Tutorial Hell :)
+    </p>
+    <div class="flex flex-wrap gap-1">
+      <span class="bg-teal-600 text-white px-2 py-0.5 text-xs rounded-full">Course</span>
+      <span class="bg-purple-500 text-white px-2 py-0.5 text-xs rounded-full">Programming</span>
+      <span class="bg-green-700 text-white px-2 py-0.5 text-xs rounded-full">Python</span>
+    </div>
+  </div>
+
+  <!-- DATA1001 Revision -->
+  <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+    <div class="flex justify-between items-start mb-1">
+      <h3 class="text-base font-semibold">DATA1001 Revision</h3>
+      <a href="#" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </a>
+    </div>
+    <p class="text-xs text-gray-500 mb-2">4 years ago</p>
+    <p class="text-sm text-gray-700 mb-3">
+      2 hour workshop summarising week 1 to 10 content of DATA1001...
+    </p>
+    <div class="flex flex-wrap gap-1">
+      <span class="bg-orange-500 text-white px-2 py-0.5 text-xs rounded-full">Data Science</span>
+      <span class="bg-teal-600 text-white px-2 py-0.5 text-xs rounded-full">Course</span>
+    </div>
+  </div>
+
+  <!-- Data Cleaning in Python -->
+  <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+    <div class="flex justify-between items-start mb-1">
+      <h3 class="text-base font-semibold">Data Cleaning in Python</h3>
+      <a href="#" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </a>
+    </div>
+    <p class="text-xs text-gray-500 mb-2">4 years ago</p>
+    <p class="text-sm text-gray-700 mb-3">
+      Guide to remove and modify incomplete or inconsistent data
+    </p>
+    <div class="flex flex-wrap gap-1">
+      <span class="bg-purple-500 text-white px-2 py-0.5 text-xs rounded-full">Programming</span>
+      <span class="bg-green-700 text-white px-2 py-0.5 text-xs rounded-full">Python</span>
+    </div>
+  </div>
+
+  <!-- A Guide to SQL -->
+  <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+    <div class="flex justify-between items-start mb-1">
+      <h3 class="text-base font-semibold">A Guide to SQL</h3>
+      <a href="#" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </a>
+    </div>
+    <p class="text-xs text-gray-500 mb-2">4 years ago</p>
+    <p class="text-sm text-gray-700 mb-3">
+      Learn the most widely-implemented language used to search or manage data
+    </p>
+    <div class="flex flex-wrap gap-1">
+      <span class="bg-blue-600 text-white px-2 py-0.5 text-xs rounded-full">SQL</span>
+      <span class="bg-purple-500 text-white px-2 py-0.5 text-xs rounded-full">Programming</span>
+    </div>
+  </div>
+
+  <!-- Starter-thon R Workshop -->
+  <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+    <div class="flex justify-between items-start mb-1">
+      <h3 class="text-base font-semibold">Starter-thon R Workshop</h3>
+      <a href="#" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </a>
+    </div>
+    <p class="text-xs text-gray-500 mb-2">4 years ago</p>
+    <p class="text-sm text-gray-700 mb-3">
+      Overview of Regression Models, Data Manipulation and Data Visualisation
+    </p>
+    <div class="flex flex-wrap gap-1">
+      <span class="bg-purple-500 text-white px-2 py-0.5 text-xs rounded-full">Programming</span>
+      <span class="bg-yellow-700 text-white px-2 py-0.5 text-xs rounded-full">R</span>
+    </div>
+  </div>
+
+  <!-- Introduction to R -->
+  <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+    <div class="flex justify-between items-start mb-1">
+      <h3 class="text-base font-semibold">Introduction to R</h3>
+      <a href="#" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </a>
+    </div>
+    <p class="text-xs text-gray-500 mb-2">4 years ago</p>
+    <p class="text-sm text-gray-700 mb-3">
+      Beginner's Guide to R programming
+    </p>
+    <div class="flex flex-wrap gap-1">
+      <span class="bg-purple-500 text-white px-2 py-0.5 text-xs rounded-full">Programming</span>
+      <span class="bg-yellow-700 text-white px-2 py-0.5 text-xs rounded-full">R</span>
+    </div>
+  </div>
+
+  <!-- Python Essentials & Python in Practice -->
+  <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+    <div class="flex justify-between items-start mb-1">
+      <h3 class="text-base font-semibold">Python Essentials & Python in Practice</h3>
+      <a href="#" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </a>
+    </div>
+    <p class="text-xs text-gray-500 mb-2">4 years ago</p>
+    <p class="text-sm text-gray-700 mb-3">
+      Python basics and its practical applications in manipulating large datasets
+    </p>
+    <div class="flex flex-wrap gap-1">
+      <span class="bg-purple-500 text-white px-2 py-0.5 text-xs rounded-full">Programming</span>
+      <span class="bg-green-700 text-white px-2 py-0.5 text-xs rounded-full">Python</span>
+    </div>
+  </div>
+
+  <!-- Demystifying Data Science -->
+  <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+    <div class="flex justify-between items-start mb-1">
+      <h3 class="text-base font-semibold">Demystifying Data Science</h3>
+      <a href="#" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </a>
+    </div>
+    <p class="text-xs text-gray-500 mb-2">4 years ago</p>
+    <p class="text-sm text-gray-700 mb-3">
+      Wondering where the sexiest job of the 21st century can take you? Look no further!
+    </p>
+    <div class="flex flex-wrap gap-1">
+      <span class="bg-orange-500 text-white px-2 py-0.5 text-xs rounded-full">Data Science</span>
+    </div>
+  </div>
+  <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+    <div class="flex justify-between items-start mb-1">
+      <h3 class="text-base font-semibold">Demystifying Data Science</h3>
+      <a href="#" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </a>
+    </div>
+    <p class="text-xs text-gray-500 mb-2">4 years ago</p>
+    <p class="text-sm text-gray-700 mb-3">
+      Wondering where the sexiest job of the 21st century can take you? Look no further!
+    </p>
+    <div class="flex flex-wrap gap-1">
+      <span class="bg-orange-500 text-white px-2 py-0.5 text-xs rounded-full">Data Science</span>
+    </div>
+  </div>
+  <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+    <div class="flex justify-between items-start mb-1">
+      <h3 class="text-base font-semibold">Demystifying Data Science</h3>
+      <a href="#" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </a>
+    </div>
+    <p class="text-xs text-gray-500 mb-2">4 years ago</p>
+    <p class="text-sm text-gray-700 mb-3">
+      Wondering where the sexiest job of the 21st century can take you? Look no further!
+    </p>
+    <div class="flex flex-wrap gap-1">
+      <span class="bg-orange-500 text-white px-2 py-0.5 text-xs rounded-full">Data Science</span>
+    </div>
+  </div>
+  <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+    <div class="flex justify-between items-start mb-1">
+      <h3 class="text-base font-semibold">Demystifying Data Science</h3>
+      <a href="#" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </a>
+    </div>
+    <p class="text-xs text-gray-500 mb-2">4 years ago</p>
+    <p class="text-sm text-gray-700 mb-3">
+      Wondering where the sexiest job of the 21st century can take you? Look no further!
+    </p>
+    <div class="flex flex-wrap gap-1">
+      <span class="bg-orange-500 text-white px-2 py-0.5 text-xs rounded-full">Data Science</span>
+    </div>
+  </div>
+</div>
