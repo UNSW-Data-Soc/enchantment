@@ -1,0 +1,57 @@
+---
+export interface Event {
+  id: string;
+  name: string;
+  cover?: { source: string };
+  place?: { name: string };
+  start_time: string;
+  link?: string;
+}
+
+export let upcomingEvents: Event[] = [];
+export let pastEvents: Event[] = [];
+---
+
+<h2 class="text-center text-xl font-bold text-gray-900 mb-6">Upcoming Events</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+  {upcomingEvents.length > 0 ? upcomingEvents.map(event => (
+    <a href={event.link} target="_blank" rel="noopener noreferrer" class="card">
+      <img src={event.cover?.source || '/default.jpg'} alt={event.name} />
+      <h3 class="text-lg font-semibold text-gray-800 mt-2">{event.name}</h3>
+      <p class="text-gray-600">{event.place?.name || 'Location not specified'}</p>
+      <p class="text-gray-500">{new Date(event.start_time).toLocaleString()}</p>
+    </a>
+  )) : <p class="col-span-full text-center text-gray-500">No upcoming events.</p>}
+</div>
+
+<h2 class="text-center text-xl font-bold text-gray-900 mb-6">Past Events</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  {pastEvents.length > 0 ? pastEvents.map(event => (
+    <a href={event.link} target="_blank" rel="noopener noreferrer" class="card">
+      <img src={event.cover?.source || '/default.jpg'} alt={event.name} />
+      <h3 class="text-lg font-semibold text-gray-800 mt-2">{event.name}</h3>
+      <p class="text-gray-600">{event.place?.name || 'Location not specified'}</p>
+      <p class="text-gray-500">{new Date(event.start_time).toLocaleString()}</p>
+    </a>
+  )) : <p class="col-span-full text-center text-gray-500">No past events.</p>}
+</div>
+
+<style>
+  .card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  .card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+</style>

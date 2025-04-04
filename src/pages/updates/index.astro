@@ -1,0 +1,42 @@
+---
+import Container from '../../components/Container.astro';
+import Header from '../../components/Header.astro';
+import Layout from '../../layouts/Layout.astro';
+import EventsCarousel from '../../components/EventsCarousel.astro';
+import { fetchEvents } from '../../api/api.ts';
+
+interface Event {
+  id: string;
+  name: string;
+  cover?: { source: string };
+  place?: { name: string };
+  start_time: string;
+  link?: string;
+}
+
+const events: { upcomingEvents: Event[]; pastEvents: Event[] } = await fetchEvents()
+  .then(async response => {
+    if (!response.ok) {
+      console.error('Error fetching events:', await response.text());
+      return { upcomingEvents: [], pastEvents: [] };
+    }
+    return response.json() as Promise<{ upcomingEvents: Event[]; pastEvents: Event[] }>;
+  })
+  .catch(error => {
+    console.error('Error fetching events:', error);
+    return { upcomingEvents: [], pastEvents: [] };
+  });
+---
+
+<Layout>
+  <Header>
+    <h1>Our Events</h1>
+    <p>Discover the latest and past events we have hosted. Stay updated and join us for upcoming experiences!</p>
+  </Header>
+
+  <div class="bg-white py-24 sm:py-5">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <EventsCarousel upcomingEvents={events.upcomingEvents} pastEvents={events.pastEvents} />
+    </div>
+  </div>
+</Layout>
