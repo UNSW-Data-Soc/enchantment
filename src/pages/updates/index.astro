@@ -2,7 +2,6 @@
 import Container from '../../components/Container.astro';
 import Header from '../../components/Header.astro';
 import Layout from '../../layouts/Layout.astro';
-import EventsCarousel from '../../components/EventsCarousel.astro';
 import { fetchEvents } from '../../api/api.ts';
 
 interface Event {
@@ -36,7 +35,41 @@ const events: { upcomingEvents: Event[]; pastEvents: Event[] } = await fetchEven
 
   <div class="bg-white py-24 sm:py-5">
     <div class="mx-auto max-w-7xl px-6 lg:px-8">
-      <EventsCarousel upcomingEvents={events.upcomingEvents} pastEvents={events.pastEvents} />
+        <h2 class="text-center text-xl font-bold text-gray-900 mb-6">Upcoming Events</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        {events.upcomingEvents?.length ? events.upcomingEvents.map(event => (
+            <a href={`https://www.facebook.com/events/${event.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="card block transform transition-transform duration-300 hover:scale-105">
+
+                <img src={event.cover?.source || '/default.jpg'} alt={event.name} class="rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105" />
+
+                <h3 class="text-lg font-semibold text-gray-800 mt-2">{event.name}</h3>
+                <p class="text-gray-600">{event.place?.name || 'Location not specified'}</p>
+                <p class="text-gray-500">{new Date(event.start_time).toLocaleString()}</p>
+
+            </a>
+        )) : <p class="col-span-full text-center text-gray-500">No upcoming events.</p>}
+        </div>
+
+        <h2 class="text-center text-xl font-bold text-gray-900 mb-6">Past Events</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        {events.pastEvents?.length ? events.pastEvents.map(event => (
+            <a href={`https://www.facebook.com/events/${event.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="card block transform transition-transform duration-300 hover:scale-105">
+
+                <img src={event.cover?.source || '/default.jpg'} alt={event.name} class="rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105" />
+
+                <h3 class="text-lg font-semibold text-gray-800 mt-2">{event.name}</h3>
+                <p class="text-gray-600">{event.place?.name || 'Location not specified'}</p>
+                <p class="text-gray-500">{new Date(event.start_time).toLocaleString()}</p>
+
+            </a>
+        )) : <p class="col-span-full text-center text-gray-500">No Past events.</p>}
+        </div>
     </div>
   </div>
 </Layout>
