@@ -1,0 +1,65 @@
+<!-- Mobile Navbar Header -->
+<header class="fixed top-0 left-0 right-0 z-50 w-full bg-white px-4 py-4 flex items-center justify-between lg:hidden">
+  <a href="/" class="flex items-center space-x-2">
+    <img class="h-8 w-auto" src="/logo.png" alt="DataSoc Logo" />
+    <span class="text-lg font-bold text-gray-700"></span>
+  </a>
+  <button id="open-menu" type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
+    <span class="sr-only">Open menu</span>
+    <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+    </svg>
+  </button>
+</header>
+
+<!-- Mobile Sidebar -->
+<div id="mobile-menu" class="lg:hidden fixed top-0 right-0 h-full w-1/2 z-[9999] bg-white px-6 pt-20 pb-6 transform translate-x-full transition-transform duration-300 ease-in-out shadow-lg">
+  <div class="flex items-center justify-between mb-6">
+    <a href="/" class="-m-1.5 p-1.5">
+      <img class="h-8 w-auto" src="/logo.png" alt="UNSW DataSoc" />
+    </a>
+    <button id="close-menu" type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
+      <span class="sr-only">Close menu</span>
+      <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+  <nav class="space-y-4 text-gray-900 font-semibold text-lg">
+    <a href="/about" class="block">About</a>
+    <a href="/updates" class="block">Updates</a>
+    <a href="/sponsorships/sponsorship" class="block">Sponsorships</a>
+    <a href="/resources" class="block">Resources</a>
+    <div class="group">
+      <div class="flex items-center justify-between">
+        <span class="block">Publications</span>
+        <svg class="ml-1 h-5 w-5 transition-transform group-hover:rotate-180" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M5.23 7.21a.75.75 0 011.06-.02L10 10.67l3.71-3.48a.75.75 0 111.04 1.08l-4.25 4a.75.75 0 01-1.04 0l-4.25-4a.75.75 0 01-.02-1.06z"/>
+        </svg>
+      </div>
+      <div class="mt-2 ml-2 space-y-2 pl-2 border-l border-gray-300">
+        <a href="/publication" class="block text-sm text-gray-700">Publication</a>
+        <a href="/publication/FirstYearGuide" class="block text-sm text-gray-700">First Year Guide</a>
+        <a href="/publication/CareersGuide" class="block text-sm text-gray-700">Careers Guide</a>
+      </div>
+    </div>
+    <a href="/contact" class="block">Contact Us</a>
+  </nav>
+</div>
+
+<!-- Toggle Script -->
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const openBtn = document.getElementById('open-menu');
+    const closeBtn = document.getElementById('close-menu');
+    const sidebar = document.getElementById('mobile-menu');
+
+    openBtn?.addEventListener('click', () => {
+      sidebar.classList.remove('translate-x-full');
+    });
+
+    closeBtn?.addEventListener('click', () => {
+      sidebar.classList.add('translate-x-full');
+    });
+  });
+</script>
