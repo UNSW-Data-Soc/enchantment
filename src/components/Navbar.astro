@@ -1,23 +1,21 @@
-<nav class="flex items-center justify-between p-6 py-4 lg:px-8 bg-[#fffb] backdrop-blur-md" aria-label="Global">
+<!-- Desktop Navbar (hidden on mobile) -->
+<nav class="hidden lg:flex items-center justify-between px-6 py-4 lg:px-8 bg-[#fffb] backdrop-blur-md fixed top-0 inset-x-0 z-40" aria-label="Global">
+  <!-- Logo -->
   <div class="flex lg:flex-1">
     <a href="/" class="-m-1.5 p-1.5">
       <span class="sr-only">DataSoc</span>
       <img class="h-8 w-auto" src="/logo.png" alt="logo">
     </a>
   </div>
-  <div class="flex lg:hidden">
-    <button type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
-      <span class="sr-only">Open main menu</span>
-      <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-      </svg>
-    </button>
-  </div>
-  <div class="hidden lg:flex lg:gap-x-12">
+
+  <!-- Navigation Links -->
+  <div class="lg:flex lg:gap-x-12">
     <a href="/about" class="text-sm font-semibold text-gray-900">About</a>
     <a href="/updates" class="text-sm font-semibold text-gray-900">Updates</a>
     <a href="/sponsorships/sponsorship" class="text-sm font-semibold text-gray-900">Sponsorships</a>
     <a href="/resources" class="text-sm font-semibold text-gray-900">Resources</a>
+    
+    <!-- Dropdown Menu -->
     <div class="relative group">
       <a href="/publication" class="text-sm font-semibold text-gray-900 flex items-center">
         Publications
@@ -25,16 +23,15 @@
           <path d="M5.23 7.21a.75.75 0 011.06-.02L10 10.67l3.71-3.48a.75.75 0 111.04 1.08l-4.25 4a.75.75 0 01-1.04 0l-4.25-4a.75.75 0 01-.02-1.06z"/>
         </svg>
       </a>
-      <!-- Dropdown Menu -->
-      <div class="absolute left-0 mt-2 w-48 rounded-md bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-500">
+      <div class="absolute left-0 mt-2 w-48 rounded-md bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300">
         <a href="/publication" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Publication</a>
         <a href="/publication/FirstYearGuide" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">First Year Guide</a>
         <a href="/publication/CareersGuide" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Careers Guide</a>
       </div>
     </div>
-    <!-- <a href="/publications" class="text-sm/6 font-semibold text-gray-900">Publications</a> -->
   </div>
-  <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-    <a href="#" class="text-sm/6 font-semibold text-gray-900">Contact Us</a>
+  <!-- Right-aligned item -->
+  <div class="lg:flex lg:flex-1 lg:justify-end">
+    <a href="/contact" class="text-sm font-semibold text-gray-900">Contact Us</a>
   </div>
 </nav>
