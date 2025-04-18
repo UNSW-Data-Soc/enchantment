@@ -33,6 +33,11 @@ export async function sendEmail(fullName: string, email: string, phone: string, 
     throw new Error("Missing email credentials in environment variables.");
   }
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    throw new Error("Invalid email, please try again.")
+  }
+
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
