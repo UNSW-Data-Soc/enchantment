@@ -1,33 +1,58 @@
-export async function sendForm() {
-    let form = document.getElementById('contact-form') as HTMLFormElement;
+import * as nodemailer from "nodemailer";
+import * as dotenv from "dotenv";
 
-    const firstName = (form.querySelector('input[name="firstName"]') as HTMLInputElement).value;
-    const lastName = (form.querySelector('input[name="lastName"]') as HTMLInputElement).value;
-    const email = (form.querySelector('input[name="email"]') as HTMLInputElement).value;
-    const message = (form.querySelector('input[name="message"]') as HTMLInputElement).value;
+dotenv.config();
 
-    const url = `https://docs.google.com/forms/d/e/1FAIpQLSeWO2PL1yY-SgEukHpIv7ZbSX1Wsebm0mhUqjAyYIsIWxd7pw/formResponse?usp=pp_url`
+export async function triggerApi(event: Event) {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+
+    const fullNameInput = form.elements.namedItem('fullName') as HTMLInputElement;
+    const fullName = fullNameInput.value;
+    const emailInput = form.elements.namedItem('email') as HTMLInputElement;
+    const email = emailInput.value;
+    const phoneInput = form.elements.namedItem('phone') as HTMLInputElement;
+    const phone = phoneInput.value;
+    const messageInput = form.elements.namedItem('message') as HTMLInputElement;
+    const message = messageInput.value;
 
     try {
-        const formData = new URLSearchParams();
-        formData.append('entry.2024169628', firstName);
-        formData.append('entry.2050194094', lastName);
-        formData.append('entry.1682895332', email);
-        formData.append('entry.1330885331', message);
-        console.log(formData.toString());
-
-        const response = await fetch(url, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: formData.toString(),
-        });
-        return response;
-
+        await sendEmail(fullName, email, phone, message);
+        console.log("Email sent successfully!");
     } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-        return new Response(JSON.stringify({ error: errorMessage }), { status: 500 });
+        console.error("Failed to send email:", error);
     }
+
+}
+
+export async function sendEmail(fullName: string, email: string, phone: string, message: string) {
+  const sender = process.env.EMAIL_SENDER;
+  const password = process.env.EMAIL_PASSWORD;
+
+  if (!sender || !password) {
+    throw new Error("Missing email credentials in environment variables.");
+  }
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: sender,
+      pass: password,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.CONTACT_EMAIL_SENDER,
+    to: "hello@unswdata.com",
+    subject: `Contact Form`,
+    text: `
+    Name: ${fullName}
+    Email: ${email}
+
+    ${message}
+    `,
+  };
+
+  const info = await transporter.sendMail(mailOptions);
+  console.log("Email sent:", info.response);
 }
