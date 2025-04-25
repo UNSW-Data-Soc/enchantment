@@ -6,7 +6,6 @@ import cloudflare from "@astrojs/cloudflare";
 
 import alpinejs from "@astrojs/alpinejs";
 
-import react from "@astrojs/react";
 
 // https://astro.build/config
 export default defineConfig({
@@ -22,5 +21,5 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  integrations: [alpinejs(), react()],
+  integrations: [alpinejs()],
 });
