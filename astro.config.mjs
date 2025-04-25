@@ -4,9 +4,12 @@ import tailwindcss from "@tailwindcss/vite";
 
 import cloudflare from "@astrojs/cloudflare";
 
+import alpinejs from "@astrojs/alpinejs";
+
+
 // https://astro.build/config
 export default defineConfig({
-  output: "server",
+  output: "static",
 
   adapter: cloudflare({
     platformProxy: {
@@ -17,4 +20,6 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+
+  integrations: [alpinejs()],
 });
