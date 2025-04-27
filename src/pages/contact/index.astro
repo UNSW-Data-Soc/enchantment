@@ -1,6 +1,5 @@
 ---
 import Container from '../../components/Container.astro';
-import Header from '../../components/Header.astro';
 import Layout from '../../layouts/Layout.astro';
 ---
 
@@ -47,7 +46,7 @@ import Layout from '../../layouts/Layout.astro';
       </div>
     </div>
     
-    <!-- Scroll Down Arrow - REPLACED WITH IMAGE -->
+    <!-- Scroll Down Arrow -->
     <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 cursor-pointer animate-bounce" id="scroll-down">
       <img src="/scroll-arrow.png" alt="Scroll Down" class="h-8 w-8" />
     </div>
@@ -61,17 +60,34 @@ import Layout from '../../layouts/Layout.astro';
         <div class="md:w-1/2 bg-white p-5 rounded-lg shadow-md border border-gray-200 font-['Lexend']">
           <h2 class="mb-4 text-gray-700 text-center text-2xl font-medium">Get in Touch</h2>
           
-          <form class="space-y-3">
+          <!-- Success Message -->
+          <div id="success-message" class="hidden mb-4 p-3 bg-green-100 text-green-700 rounded-md text-center">
+            Thank you for your message! We'll get back to you soon.
+          </div>
+          
+          <!-- Error Message -->
+          <div id="error-message" class="hidden mb-4 p-3 bg-red-100 text-red-700 rounded-md text-center">
+            There was an error sending your message. Please try again.
+          </div>
+          
+          <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" class="space-y-3">
+            <!-- Replace with your Access Key -->
+            <input type="hidden" name="access_key" value="12642426-9248-43c1-953a-33cb6f0318a2">
+            
+            <!-- Honeypot Spam Protection -->
+            <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+            
             <div>
               <label for="fullName" class="block text-sm text-gray-600 uppercase mb-1">FULL NAME</label>
               <input 
                 type="text" 
                 id="fullName" 
-                name="fullName" 
+                name="name" 
                 placeholder="Please enter your full name" 
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
+              <div class="text-red-500 text-xs mt-1 hidden" id="fullName-error">Please enter your full name</div>
             </div>
             
             <div>
@@ -84,6 +100,7 @@ import Layout from '../../layouts/Layout.astro';
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
+              <div class="text-red-500 text-xs mt-1 hidden" id="email-error">Please enter a valid email address</div>
             </div>
             
             <div>
@@ -105,23 +122,39 @@ import Layout from '../../layouts/Layout.astro';
                 placeholder="Please enter your query" 
                 rows="3"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
               ></textarea>
+              <div class="text-red-500 text-xs mt-1 hidden" id="message-error">Please enter your message</div>
             </div>
             
             <div class="flex justify-center pt-3">
               <button 
                 type="submit" 
+                id="submit-button"
                 class="px-6 py-2 bg-[#ffcd95] text-gray-800 rounded-md hover:bg-amber-400 transition-colors font-bold text-lg"
               >
                 Submit
+              </button>
+              
+              <!-- Loading Spinner (Hidden by Default) -->
+              <button 
+                id="loading-button" 
+                class="hidden px-6 py-2 bg-[#ffcd95] text-gray-800 rounded-md transition-colors font-bold text-lg cursor-not-allowed flex items-center justify-center"
+                disabled
+              >
+                <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Sending...
               </button>
             </div>
           </form>
         </div>
         
-        <!-- Map & Social Media Section -->
+        <!-- Team + Social Media Section -->
         <div class="md:w-1/2 flex flex-col font-['Lexend']">
-          <!-- Team image replacing map placeholder -->
+          <!-- Team image -->
           <div class="h-64 md:h-72 bg-white rounded-lg shadow-md border border-gray-200 mb-18 overflow-hidden">
             <img src="/team2025.JPG" alt="DataSoc Team 2025" class="w-full h-full object-cover" />
           </div>
@@ -177,7 +210,6 @@ import Layout from '../../layouts/Layout.astro';
       font-family: 'Lexend', sans-serif;
     }
     
-    /* Style adjustments for form inputs to match the design */
     .font-\[\'Lexend\'\] input,
     .font-\[\'Lexend\'\] textarea {
       font-size: 0.95rem;
@@ -192,7 +224,6 @@ import Layout from '../../layouts/Layout.astro';
       scroll-behavior: smooth;
     }
     
-    /* Text size adjustments to match concept */
     #welcome-section h1 {
       font-size: 2.75rem;
       line-height: 1.2;
@@ -209,32 +240,132 @@ import Layout from '../../layouts/Layout.astro';
         font-size: 3.5rem;
       }
     }
+
+    /* Form validation error styles */
+    input:invalid:focus,
+    textarea:invalid:focus {
+      border-color: rgb(239, 68, 68);
+    }
   </style>
 
-  <!-- Script for Smooth Scrolling -->
+  <!-- Script for Form Handling -->
   <script>
     // Wait for the DOM to be fully loaded
     document.addEventListener('DOMContentLoaded', function() {
-  // Get the scroll-down button
-  const scrollButton = document.getElementById('scroll-down');
-  
-  // Only add event listener if the button exists
-  if (scrollButton) {
-    scrollButton.addEventListener('click', function() {
-      // Check if element exists before scrolling
-      const contactSection = document.getElementById('contact-form-section');
-      if (contactSection) {
-        // Add an offset to the scrolling behavior
-        const yOffset = -63; // Adjust this value as needed
-        const y = contactSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        
-        window.scrollTo({
-          top: y,
-          behavior: 'smooth'
+      // Get the scroll-down button
+      const scrollButton = document.getElementById('scroll-down');
+      
+      // Only add event listener if the button exists
+      if (scrollButton) {
+        scrollButton.addEventListener('click', function() {
+          // Check if element exists before scrolling
+          const contactSection = document.getElementById('contact-form-section');
+          if (contactSection) {
+            // Add an offset to the scrolling behavior
+            const yOffset = -63; // Adjust this value as needed
+            const y = contactSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            
+            window.scrollTo({
+              top: y,
+              behavior: 'smooth'
+            });
+          }
+        });
+      }
+
+      // Get the form element
+      const contactForm = document.getElementById('contact-form');
+      const submitButton = document.getElementById('submit-button');
+      const loadingButton = document.getElementById('loading-button');
+      const successMessage = document.getElementById('success-message');
+      const errorMessage = document.getElementById('error-message');
+      
+      if (contactForm) {
+        contactForm.addEventListener('submit', async function(event) {
+          // Prevent the default form submission
+          event.preventDefault();
+          
+          // Get error message elements
+          const fullNameError = document.getElementById('fullName-error');
+          const emailError = document.getElementById('email-error');
+          const messageError = document.getElementById('message-error');
+          
+          // Reset any previous messages
+          successMessage.classList.add('hidden');
+          errorMessage.classList.add('hidden');
+          
+          // Hide all validation error messages
+          fullNameError.classList.add('hidden');
+          emailError.classList.add('hidden');
+          messageError.classList.add('hidden');
+
+          // Get form values
+          const fullNameInput = contactForm.elements.namedItem('name');
+          const emailInput = contactForm.elements.namedItem('email');
+          const messageInput = contactForm.elements.namedItem('message');
+
+          // Validate form
+          let isValid = true;
+
+          if (!fullNameInput.value.trim()) {
+            fullNameError.classList.remove('hidden');
+            isValid = false;
+          }
+
+          // Email validation regex
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailInput.value.trim() || !emailRegex.test(emailInput.value)) {
+            emailError.classList.remove('hidden');
+            isValid = false;
+          }
+
+          if (!messageInput.value.trim()) {
+            messageError.classList.remove('hidden');
+            isValid = false;
+          }
+
+          if (!isValid) {
+            return;
+          }
+
+          // Show loading state
+          submitButton.classList.add('hidden');
+          loadingButton.classList.remove('hidden');
+
+          try {
+            // Create form data object
+            const formData = new FormData(contactForm);
+            
+            // Send the form data to Web3Forms
+            const response = await fetch('https://api.web3forms.com/submit', {
+              method: 'POST',
+              body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+              // Show success message
+              successMessage.classList.remove('hidden');
+              successMessage.textContent = "Thank you for your message! We'll get back to you soon.";
+              
+              // Reset form
+              contactForm.reset();
+            } else {
+              throw new Error(data.message || 'Something went wrong!');
+            }
+          } catch (error) {
+            // Show error message
+            errorMessage.textContent = error.message || 'There was an error sending your message. Please try again.';
+            errorMessage.classList.remove('hidden');
+            console.error('Form submission error:', error);
+          } finally {
+            // Hide loading state
+            submitButton.classList.remove('hidden');
+            loadingButton.classList.add('hidden');
+          }
         });
       }
     });
-  }
-});
   </script>
 </Layout>
