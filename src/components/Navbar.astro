@@ -24,6 +24,8 @@
         </svg>
       </a>
       <div class="absolute left-0 mt-2 w-48 rounded-md bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300">
+        <!-- Hidden bridge element to prevent hover loss -->
+        <div class="absolute h-2 -top-2 left-0 right-0"></div>
         <a href="/publication" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Publication</a>
         <a href="/publication/FirstYearGuide" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">First Year Guide</a>
         <a href="/publication/CareersGuide" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Careers Guide</a>
