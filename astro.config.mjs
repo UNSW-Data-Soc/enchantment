@@ -18,7 +18,7 @@ export default defineConfig({
   }),
 
   site: 'https://unsw-data-soc.github.io',
-  base: '/enchantment',
+  base: '/',
 
   vite: {
     plugins: [tailwindcss()],
