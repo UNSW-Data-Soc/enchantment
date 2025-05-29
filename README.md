@@ -39,5 +39,5 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Contributors
 
-2025 : Alina Cui, Josh Lim, Manojvradan Balaji, Ishita Gupta, Shafquat Tabeeb, Kelly Tan, Kai Lu, Arnold Tan
+2025 : Alina Cui, Josh Lim, Aditya Muthukattu, Manojvradan Balaji, Ishita Gupta, Shafquat Tabeeb, Kelly Tan, Kai Lu, Arnold Tan
 
