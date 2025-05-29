@@ -4,7 +4,6 @@
 This project uses
 
 - [Astro.js](https://docs.astro.build/en/getting-started/)
-- 
 
 ## Setting Up
 
