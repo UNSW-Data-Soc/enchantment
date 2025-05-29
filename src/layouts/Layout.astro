@@ -7,7 +7,13 @@ import "../styles/global.css";
 
 <!doctype html>
 <html lang="en">
-  <head>...</head>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{Astro.props.title || "Default Title"}</title>
+  </head>
   <body>
     <!-- Mobile Nav -->
     <div class="lg:hidden">
