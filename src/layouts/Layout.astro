@@ -7,7 +7,13 @@ import "../styles/global.css";
 
 <!doctype html>
 <html lang="en">
-  <head>...</head>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{Astro.props.title || "UNSW DataSoc"}</title>
+  </head>
   <body>
     <!-- Mobile Nav -->
     <div class="lg:hidden">
@@ -19,8 +25,11 @@ import "../styles/global.css";
       <Navbar />
     </div>
 
-    <!-- Page content (with padding for nav height) -->
-	<div class="pt-3">
+    <!-- Spacing -->
+    <div class="h-16 lg:h-16"></div>
+
+    <!-- Page content -->
+	<div>
 		<slot />
 	</div>
 
