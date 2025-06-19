@@ -424,8 +424,8 @@ const MatplotlibQuestions = () => {
   return (
     <div className="flex">
       {/* Sidebar */}
-      <div className="w-1/4 bg-purple-100 p-5 min-h-screen">
-        <h2 className="mb-4 text-lg font-semibold">Matplotlib Practice Questions</h2>
+      <div className=" bg-purple-100 text-black font-semibold rounded-lg shadow-md px-8 py-4 mx-4 my-8 w-full max-w-xs">
+      <h2 className="mb-4 text-lg font-semibold">Matplotlib practice questions</h2>
         <ul className="mt-10 space-y-2">
           {questions.map((question) => (
             <li 
@@ -453,9 +453,6 @@ const MatplotlibQuestions = () => {
               {selectedQuestion.code}
             </pre>
             
-            <div className="border-2 border-dashed border-gray-300 p-4 rounded h-40">
-              <p className="text-gray-500">Practice writing your {selectedQuestion.title.toLowerCase()} code here</p>
-            </div>
           </div>
         )}
       </div>
