@@ -2,7 +2,7 @@
 <nav class="hidden lg:flex items-center justify-between px-6 py-4 lg:px-8 bg-[#fffb] backdrop-blur-md fixed top-0 inset-x-0 z-40" aria-label="Global">
   <!-- Logo -->
   <div class="flex lg:flex-1">
-    <a href="/" class="-m-1.5 p-1.5">
+    <a href="/" class="-m-1.5 p-1.5 hover:scale-110" >
       <span class="sr-only">DataSoc</span>
       <img class="h-8 w-auto" src="/logo.png" alt="logo">
     </a>
@@ -10,20 +10,20 @@
 
   <!-- Navigation Links -->
   <div class="lg:flex lg:gap-x-12">
-    <a href="/about" class="text-sm font-semibold text-gray-900">About</a>
-    <a href="/updates" class="text-sm font-semibold text-gray-900">Updates</a>
-    <a href="/sponsorships/sponsorship" class="text-sm font-semibold text-gray-900">Sponsorships</a>
-    <a href="/resources" class="text-sm font-semibold text-gray-900">Resources</a>
+    <a href="/about" class="text-sm font-semibold text-gray-900 transition-colors transition-transform duration-200 hover:text-purple-600 hover:scale-110">About</a>
+    <a href="/updates" class="text-sm font-semibold text-gray-900 transition-colors transition-transform duration-200 hover:text-purple-600 hover:scale-110">Updates</a>
+    <a href="/sponsorships/sponsorship" class="text-sm font-semibold text-gray-900 transition-colors transition-transform duration-200 hover:text-purple-600 hover:scale-110">Sponsorships</a>
+    <a href="/resources" class="text-sm font-semibold text-gray-900 transition-colors transition-transform duration-200 hover:text-purple-600 hover:scale-110">Resources</a>
     
     <!-- Dropdown Menu -->
     <div class="relative group">
-      <a href="/publication" class="text-sm font-semibold text-gray-900 flex items-center">
+      <a href="/publication" class="text-sm font-semibold text-gray-900 flex items-center transition-colors transition-transform duration-200 hover:text-purple-600 hover:scale-110">
         Publications
         <svg class="ml-1 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
           <path d="M5.23 7.21a.75.75 0 011.06-.02L10 10.67l3.71-3.48a.75.75 0 111.04 1.08l-4.25 4a.75.75 0 01-1.04 0l-4.25-4a.75.75 0 01-.02-1.06z"/>
         </svg>
       </a>
-      <div class="absolute left-0 mt-2 w-48 rounded-md bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300">
+      <div class="absolute left-0 mt-2 w-48 rounded-md bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200 z-50">
         <a href="/publication" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Publication</a>
         <a href="/publication/FirstYearGuide" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">First Year Guide</a>
         <a href="/publication/CareersGuide" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Careers Guide</a>
@@ -32,6 +32,6 @@
   </div>
   <!-- Right-aligned item -->
   <div class="lg:flex lg:flex-1 lg:justify-end">
-    <a href="/contact" class="text-sm font-semibold text-gray-900">Contact Us</a>
+    <a href="/contact" class="text-sm font-semibold text-gray-900 transition-colors transition-transform duration-200 hover:text-purple-600 hover:scale-110">Contact Us</a>
   </div>
 </nav>
