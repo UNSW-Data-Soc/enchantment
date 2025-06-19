@@ -8,7 +8,7 @@ import react from "@astrojs/react"
 
 // https://astro.build/config
 export default defineConfig({
-  output: "static",
+  output: "server",
 
   adapter: cloudflare({
     platformProxy: {
@@ -21,6 +21,9 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      alias: import.meta.env.PROD ? { "react-dom/server": "react-dom/server.edge" } : undefined,
+    }
   },
 
   integrations: [alpinejs(),react()],
