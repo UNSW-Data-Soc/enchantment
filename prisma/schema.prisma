@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  role      Role     @relation(fields: [roleId], references: [id])
+  roleId    String
+  contents  Content[]
+}
+
+// marketing, media and it roles
+// add permissions accordingly to roles
+
+model Role {
+  id    String   @id @default(uuid())
+  name  String   @unique
+  users User[]
+}
+
+model BrandContext {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  guidelines  String?
+  contents    Content[]
+}
+// datasoc prospectus, vision, roadmap, media objectives for the year
+
+model Content {
+  id             String          @id @default(uuid())
+  title          String
+  body           String
+  status         String
+  platform       String         // enum of insta, fb, linkedIn and ticktok
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  brandContext   BrandContext?   @relation(fields: [brandContextId], references: [id])
+  brandContextId String?
+  author         User?           @relation(fields: [authorId], references: [id])
+  authorId       String?
+  versions       ContentVersion[]
+  scheduledPost  ScheduledPost?
+}
+
+model ContentVersion {
+  id         String   @id @default(uuid())
+  content    Content  @relation(fields: [contentId], references: [id])
+  contentId  String
+  body       String
+  createdAt  DateTime @default(now())
+}
+// cteaye a new content version - old version has to automatically be stored in ContentVersion
+// after 30 days we delete permanently
+
+model ScheduledPost {
+  id         String   @id @default(uuid())
+  content    Content  @relation(fields: [contentId], references: [id])
+  contentId  String   @unique
+  scheduledAt DateTime
+  status     String
+}
+// final content version - what sunny post's
