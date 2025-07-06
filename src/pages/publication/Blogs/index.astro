@@ -1,0 +1,25 @@
+---
+import Container from '../../../components/Container.astro';
+import Header from '../../../components/Header.astro';
+import Layout from '../../../layouts/Layout.astro';
+import Blogs from '../../../pages/publication/Blogs/Blogs.tsx';
+---
+
+<Layout title="Blogs - UNSW Data Science Society">
+    <Header>
+        <h1>Blogs
+        </h1>
+        <p>
+        Welcome to DataSoc's blog collection — your go-to space for thought-provoking insights, tips, and trends in the world of data science. Whether you're curious about machine learning, ethics, visualisation, or how data science affects your everyday life, we've got something for you.
+        </p>
+
+        <p>
+        Discover student-written articles, community updates, and expert breakdowns that help you make sense of the data-driven world — all in one place.
+        </p>
+    </Header>
+
+    <Container class="space-y-6 py-6 max-w-3xl text-justify">
+        <Blogs client:only="react" />
+    </Container>
+
+</Layout>
