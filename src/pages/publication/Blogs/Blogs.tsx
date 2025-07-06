@@ -51,7 +51,7 @@ const Blogs = () => {
                     {blogLinks.map(blog => (
                         <li key={blog.key}>
                             <button
-                                className={` hover:shadow-lg hover:bg-gray-400 w-full text-left p-2 rounded ${selected === blog.key ? 'bg-gray-500 text-white' : 'bg-gray-200'}`}
+                                className={`hover:shadow-lg hover:bg-gray-400 w-full text-left p-2 rounded ${selected === blog.key ? 'bg-gray-500 text-white' : 'bg-gray-200'}`}
                                 onClick={() => setSelected(blog.key)}
                             >
                                 {blog.title}
@@ -63,7 +63,7 @@ const Blogs = () => {
             <div className="w-3/4 p-4">
                 {selectedBlog && (
                     <iframe
-                        className="w-150 h-220"
+                        className="w-full h-screen"
                         src={selectedBlog.url}
                         title={selectedBlog.title}
                     />
