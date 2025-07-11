@@ -1,0 +1,9 @@
+{
+  "too_ai": "The above caption sounds too generic and AI-written. Rewrite it to feel more natural, specific, and human — like something a student would actually post or say",
+  
+  "redundancy": "The caption repeats the same idea multiple times. Rewrite it to avoid redundancy while keeping it clear and engaging",
+
+  "too_boring": "Add more context: specify the event name, date, and location so readers know what it’s about and why they should care",
+
+  "too_casual": "Adjust the tone to be more professional and appropriate for LinkedIn. Highlight the value or career benefit of the event."
+}

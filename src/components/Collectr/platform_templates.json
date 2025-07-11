@@ -1,0 +1,9 @@
+{
+  "instagram_tiktok": "Create a short, Gen Z-style Instagram or TikTok caption for the following content idea: \"{idea}\". Use a casual tone, Gen Z slang or emojis if appropriate, and make it fun and engaging. Assume it's promoting the event \"{event_name}\" happening on {date} at {location}. Keep it under 2200 characters.",
+  
+  "linkedin": "Write a professional, insightful LinkedIn post caption based on this idea: \"{idea}\". Highlight the value or benefits of attending the event \"{event_name}\" on {date}, and use a tone appropriate for working professionals. Keep it concise but informative.",
+  
+  "facebook": "Craft a friendly and slightly nostalgic Facebook post for this idea: \"{idea}\". Use a warm tone that might resonate with an older audience. Make it welcoming and easy to read. The post is promoting the \"{event_name}\" happening on {date} at {location}.",
+  
+  "newsletter": "Generate a short newsletter blurb based on the idea: \"{idea}\". The tone should be informative and educational, aimed at readers who want to learn more or get insights. Include key event info: \"{event_name}\", happening on {date} at {location}."
+}
