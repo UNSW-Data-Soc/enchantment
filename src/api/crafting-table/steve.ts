@@ -1,70 +1,86 @@
-import { APIRoute } from "astro";
+import type { APIRoute } from "astro";
 import { sendPrompt } from "../../utils/ai_client";
 import * as fs from "fs/promises";
 import * as path from "path";
 
+const TEMPLATE_PATH = path.resolve("../../components/collectr_prompts/platform_templates.json");
 
-const TEMPERATURE_BY_PLATFORM = {
+const TEMPERATURE_BY_PLATFORM: Record<string, number> = {
   instagram_tiktok: 0.9,
   linkedin: 0.4,
   facebook: 0.6,
   newsletter: 0.5
 };
 
-function fillPrompt(template: string, idea: string, event: any): string {
+function fillTemplate(template: string, idea: string, event: Record<string, string>): string {
   return template
     .replace("{idea}", idea)
-    .replace("{event_name}", event.event_name)
-    .replace("{date}", event.date)
-    .replace("{location}", event.location);
+    .replace("{event_name}", event.event_name || "")
+    .replace("{date}", event.date || "")
+    .replace("{location}", event.location || "");
 }
 
-// POST /api/steve/captions
-// Endpoint for chat interaction - generates captions for different platforms
+type SteveRequestBody = {
+  idea: string;
+  event_name: string;
+  date?: string;
+  location?: string;
+  platforms?: string[];
+};
+
+// Platform specific caption creation
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const body = await request.json();
-    const { 
-        // idea, event_info, session_id 
-    } = body;
+    const body = (await request.json()) as SteveRequestBody;
+    const { idea, event_name, date, location, platforms = ["instagram_tiktok", "linkedin", "facebook", "newsletter"] } = body;
 
-    if (!idea || !event_info || !session_id) {
-      return new Response(JSON.stringify({ error: "Missing fields" }), { status: 400 });
+    if (!idea || !event_name) {
+      return new Response(JSON.stringify({ error: "Missing required fields: idea and event name" }), { status: 400 });
     }
 
-    const promptsPath = path.resolve("components/Collectr/prompts.json");
-    const rawTemplates = await fs.readFile(promptsPath, "utf-8");
-    const templates = JSON.parse(rawTemplates);
+    const event_info: Record<string, string> = { 
+      event_name, 
+      date: date || "", 
+      location: location || "" 
+    };
 
-    const captions: Record<string, string> = {};
+    // Read prompt templates
+    const templateRaw = await fs.readFile(TEMPLATE_PATH, "utf-8");
+    const templates = JSON.parse(templateRaw);
 
-    for (const platform of Object.keys(templates)) {
+    const results: Record<string, string> = {};
+
+    for (const platform of platforms) {
       const template = templates[platform];
-      const filled = fillPrompt(template, idea, event_info);
-      const temperature = TEMPERATURE_BY_PLATFORM[platform] || 0.7;
+      if (!template) continue;
 
-      const caption = await sendPrompt({ prompt: filled, temperature });
-      captions[platform] = caption;
+      const userPrompt = fillTemplate(template, idea, event_info);
+      const temperature = TEMPERATURE_BY_PLATFORM[platform] ?? 0.7;
+
+      const caption = await sendPrompt({
+        system: "You are an expert in writing platform-specific captions for UNSW datasoc events.",
+        user: userPrompt,
+        temperature,
+        max_tokens: 300
+      });
+
+      results[platform] = caption;
     }
 
     return new Response(JSON.stringify({
       success: true,
-      session_id,
-      captions,
-      message: "Captions generated."
+      captions: results
     }), {
       status: 200,
       headers: { "Content-Type": "application/json" }
     });
 
   } catch (err: any) {
-    console.error("Caption generation error:", err);
+    console.error("Steve caption generation failed:", err);
     return new Response(JSON.stringify({
+      success: false,
       error: "Failed to generate captions",
       details: err.message
-    }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    });
+    }), { status: 500 });
   }
 };
