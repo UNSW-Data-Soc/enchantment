@@ -1,0 +1,28 @@
+---
+import Container from '../../components/Container.astro';
+import Header from '../../components/Header.astro';
+import Layout from '../../layouts/Layout.astro';
+
+import {
+  FYG_2021_LINK,
+} from "../../utils/utils";
+---
+
+<Layout>
+    <div class="relative h-screen flex items-center justify-center">
+    <img
+        class="absolute inset-0 w-full h-full object-cover brightness-80 contrast-100 opacity-100"
+        src="/2025MerchPhotos/merch.jpg"
+        alt="Merch Photo"
+    />
+    <div class="relative">
+        <div class="mx-auto mt-6 grid max-w-lg grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+            <a
+                href={FYG_2021_LINK}
+                class="flex items-center justify-center rounded-lg bg-gray-500 px-4 py-2 text-white font-semibold shadow-md hover:bg-red-400 hover:shadow-lg transition duration-300"
+                >
+                Buy Here
+            </a>
+        </div>
+    </div>
+</Layout>
