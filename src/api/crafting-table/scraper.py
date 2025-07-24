@@ -1,6 +1,26 @@
 import requests
 from bs4 import BeautifulSoup
+from fastapi import FastAPI
 
+app = FastAPI()
+
+@app.get("/")
+def root():
+    return {"message": "Scraper is ready"}
+
+@app.get("/scrape")
+def scrape():
+    articles = (
+        fetch_techcrunch_articles() + 
+        fetch_producthunt_articles() + 
+        fetch_theverge_articles() + 
+        fetch_avclub_articles()
+    )
+    return { "articles": articles }
+
+#==================================================================================================
+# Article scraper helper
+#==================================================================================================
 # Shared user-agent for all requests
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
