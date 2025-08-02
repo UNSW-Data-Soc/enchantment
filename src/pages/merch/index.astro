@@ -1,28 +1,197 @@
 ---
-import Container from '../../components/Container.astro';
-import Header from '../../components/Header.astro';
 import Layout from '../../layouts/Layout.astro';
+import RotatingText from '../../components/RotatingText';
 
-import {
-  FYG_2021_LINK,
-} from "../../utils/utils";
+const images = [
+  '/images/DSC02792.JPG',
+  '/images/IMG_0053.png',
+  '/images/IMG_0059.png',
+  '/images/IMG_0078.png',
+  '/images/IMG_2059.png',
+  '/images/IMG_7794.png',
+  '/images/20250709_174943.jpg'
+];
 ---
 
 <Layout>
-    <div class="relative h-screen flex items-center justify-center">
-    <img
-        class="absolute inset-0 w-full h-full object-cover brightness-80 contrast-100 opacity-100"
-        src="/2025MerchPhotos/merch.jpg"
-        alt="Merch Photo"
-    />
-    <div class="relative">
-        <div class="mx-auto mt-6 grid max-w-lg grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-            <a
-                href={FYG_2021_LINK}
-                class="flex items-center justify-center rounded-lg bg-gray-500 px-4 py-2 text-white font-semibold shadow-md hover:bg-red-400 hover:shadow-lg transition duration-300"
-                >
-                Buy Here
-            </a>
+    <!-- Full Page Sliding Carousel Background -->
+    <div class="relative h-screen overflow-hidden">
+        <!-- Sliding Carousel Container -->
+        <div id="sliding-carousel" class="absolute inset-0 flex">
+            <!-- All images -->
+            {images.map((image, index) => (
+                <div class="flex-shrink-0 w-screen h-full relative">
+                    <img
+                        src={image}
+                        alt={`DataSoc Merch ${index + 1}`}
+                        class={`w-full h-full ${image.includes('20250709_174943') ? 'object-cover' : 'object-cover'}`}
+                        style={image.includes('20250709_174943') ? 'object-position: center 30%;' : ''}
+                        loading="eager"
+                    />
+                </div>
+            ))}
+            {/* Duplicate images for seamless loop */}
+            {images.map((image, index) => (
+                <div class="flex-shrink-0 w-screen h-full relative">
+                    <img
+                        src={image}
+                        alt={`DataSoc Merch ${index + 1}`}
+                        class={`w-full h-full ${image.includes('20250709_174943') ? 'object-cover' : 'object-cover'}`}
+                        style={image.includes('20250709_174943') ? 'object-position: center 30%;' : ''}
+                        loading="eager"
+                    />
+                </div>
+            ))}
+        </div>
+        
+                 <!-- Rotating Text Overlay -->
+         <div class="absolute inset-0 flex items-center justify-center z-10">
+             <div class="text-left">
+                 <!-- Single Container Box for Both Lines -->
+                 <div class="inline-flex flex-col items-start px-4 py-6 liquid-glass text-white rounded-2xl shadow-2xl fixed-size-container mb-8">
+                     <!-- First Line -->
+                     <span class="text-xl md:text-3xl font-medium mb-2 tracking-wide drop-shadow-lg">
+                         Level up your game
+                     </span>
+                     
+                     <!-- Second Line with "with our" and rotating text on same horizontal line -->
+                     <div class="flex items-center">
+                         <span class="text-xl md:text-3xl font-medium mr-4 tracking-wide drop-shadow-lg">with our</span>
+                         <div class="w-64 md:w-72">
+                             <RotatingText
+                                 client:only
+                                 texts={['cozy hoodies', 'comfy tees', 'cute stickers', 'exclusive merch.']}
+                                 mainClassName="text-xl md:text-3xl font-medium overflow-hidden tracking-wide drop-shadow-lg"
+                                 staggerFrom={"last"}
+                                 initial={{ y: "100%" }}
+                                 animate={{ y: 0 }}
+                                 exit={{ y: "-120%" }}
+                                 staggerDuration={0.025}
+                                 splitLevelClassName="overflow-hidden"
+                                 transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                                 rotationInterval={3000}
+                             />
+                         </div>
+                     </div>
+                 </div>
+                
+                <!-- Order Now Button -->
+                <div class="flex justify-center w-full">
+                    <a 
+                        href="https://docs.google.com/forms/d/e/1FAIpQLSczslxG5t62t7eRJRZinqWUcjT2Zr41e2zq3b_nJWkRvJDW7g/viewform?fbclid=IwZXh0bgNhZW0CMTEAAR62Fo2kStiwonRTAUwxul1D3gcLpAz1VqJ6fssuriB3rirMnmTd9oykaiNqzg_aem_T4PDO-EmQDKjdDScrptJjw" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        class="order-now-button"
+                    >
+                        Order Now
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </Layout>
+
+<style>
+         #sliding-carousel {
+         animation: slide 120s linear infinite;
+         width: 1400vw; /* 14 screens wide (7 original + 7 duplicate) */
+     }
+    
+    @keyframes slide {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-700vw); /* Move by 7 screens */
+        }
+    }
+    
+         .liquid-glass {
+         background: rgba(255, 255, 255, 0.1);
+         backdrop-filter: blur(20px) saturate(180%);
+         -webkit-backdrop-filter: blur(20px) saturate(180%);
+         border: 1px solid rgba(255, 255, 255, 0.2);
+         box-shadow: 
+             0 8px 32px 0 rgba(31, 38, 135, 0.37),
+             inset 0 1px 0 rgba(255, 255, 255, 0.1);
+         transition: all 0.3s ease;
+     }
+    
+                                       .order-now-button {
+           display: inline-block;
+           padding: 10px 28px;
+           background: rgba(255, 255, 255, 0.1);
+           backdrop-filter: blur(20px) saturate(180%);
+           -webkit-backdrop-filter: blur(20px) saturate(180%);
+           border: 1px solid rgba(255, 255, 255, 0.2);
+           border-radius: 16px;
+           color: white;
+           text-decoration: none;
+           font-size: 1.375rem;
+           font-weight: 600;
+           letter-spacing: 0.025em;
+           box-shadow: 
+               0 8px 32px 0 rgba(31, 38, 135, 0.37),
+               inset 0 1px 0 rgba(255, 255, 255, 0.1);
+           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+           transform: translateY(0);
+           cursor: pointer;
+           user-select: none;
+           -webkit-user-select: none;
+           -moz-user-select: none;
+           -ms-user-select: none;
+           -webkit-user-drag: none;
+           -khtml-user-drag: none;
+           -moz-user-drag: none;
+           -o-user-drag: none;
+           user-drag: none;
+           filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+       }
+    
+    .order-now-button:hover {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(25px) saturate(200%);
+        -webkit-backdrop-filter: blur(25px) saturate(200%);
+        border-color: rgba(255, 255, 255, 0.3);
+        box-shadow: 
+            0 12px 40px 0 rgba(31, 38, 135, 0.45),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+    }
+    
+    .order-now-button:active {
+        transform: translateY(0px);
+        box-shadow: 
+            0 4px 16px 0 rgba(31, 38, 135, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transition: all 0.1s ease;
+    }
+    
+
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Merch page loaded with simple carousel');
+        
+        const carousel = document.getElementById('sliding-carousel');
+        if (carousel) {
+            console.log('Carousel element found');
+            
+            // Test image loading
+            const allImages = carousel.querySelectorAll('img');
+            console.log('Found', allImages.length, 'image elements');
+            
+            allImages.forEach((img, index) => {
+                img.onload = function() {
+                    console.log(`Image ${index} loaded successfully:`, this.src);
+                };
+                img.onerror = function() {
+                    console.error(`Image ${index} failed to load:`, this.src);
+                };
+            });
+        } else {
+            console.error('Carousel element not found!');
+        }
+    });
+</script>
