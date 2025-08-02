@@ -1,0 +1,146 @@
+---
+// MerchPopup component
+---
+
+<div id="merch-popup" class="fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4" style="display: none;">
+  <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden relative">
+    <!-- Close button -->
+    <button id="close-popup" class="absolute top-4 right-4 text-black hover:text-gray-600 z-10 cursor-pointer">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+    
+    <div class="flex flex-col md:flex-row">
+      <!-- Left side - Image -->
+      <div class="md:w-1/2">
+        <img 
+          src="/images/merch_popup.jpg" 
+          alt="DataSoc Merch" 
+          class="w-full h-full object-cover"
+        />
+      </div>
+      
+      <!-- Right side - Content -->
+      <div class="md:w-1/2 bg-gray-50 p-8 flex flex-col justify-center">
+        <div class="text-center">
+          <!-- Headline -->
+          <h2 class="text-3xl font-bold mb-6 whitespace-nowrap" style="font-family: 'Lexend', sans-serif;">
+            <span class="text-black">merch has </span>
+            <span style="color: #b41c27;">arrived!</span>
+          </h2>
+          
+          <!-- Sub-text -->
+          <p class="text-gray-700 mb-10 text-lg" style="font-family: 'Lexend', sans-serif;">
+            check out our new collection of hoodies, t-shirts, and stickers
+          </p>
+          
+          <!-- Call to action button -->
+          <a 
+            href="/merch" 
+            id="lets-go-btn"
+            class="inline-block bg-black text-white font-bold py-3 px-12 rounded-lg mb-4 hover:bg-gray-800 hover:scale-105 hover:shadow-lg transition-all duration-200 w-full max-w-xs transform active:scale-95"
+            style="font-family: 'Lexend', sans-serif;"
+          >
+            let's go!
+          </a>
+          
+          <!-- Dismissal link -->
+          <button 
+            id="no-thanks" 
+            class="block mx-auto text-black underline hover:text-gray-600 transition-colors duration-200 cursor-pointer"
+            style="font-family: 'Lexend', sans-serif;"
+          >
+            no thanks
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('MerchPopup script loaded');
+    
+    const popup = document.getElementById('merch-popup');
+    const closeBtn = document.getElementById('close-popup');
+    const noThanksBtn = document.getElementById('no-thanks');
+    const letsGoBtn = document.getElementById('lets-go-btn');
+    
+    console.log('Popup element:', popup);
+    console.log('Close button:', closeBtn);
+    console.log('No thanks button:', noThanksBtn);
+    console.log('Let\'s go button:', letsGoBtn);
+    
+    // Check if elements exist
+    if (!popup || !closeBtn || !noThanksBtn) {
+      console.error('Required elements not found');
+      return;
+    }
+    
+    // Check if popup has been shown before
+    const hasSeenPopup = sessionStorage.getItem('merch-popup-shown');
+    console.log('Has seen popup before:', hasSeenPopup);
+    console.log('Current pathname:', window.location.pathname);
+    
+    // Only show popup if it hasn't been shown before and we're on the home page
+    if (!hasSeenPopup && window.location.pathname === '/') {
+      console.log('Showing popup...');
+      setTimeout(() => {
+        popup.style.display = 'flex';
+        console.log('Popup should now be visible');
+      }, 1000);
+    } else {
+      console.log('Not showing popup - conditions not met');
+    }
+    
+    // Close popup function
+    function closePopup() {
+      if (popup) {
+        popup.style.display = 'none';
+        sessionStorage.setItem('merch-popup-shown', 'true');
+        console.log('Popup closed');
+      }
+    }
+    
+    // Close button click
+    closeBtn.addEventListener('click', closePopup);
+    
+    // No thanks button click
+    noThanksBtn.addEventListener('click', closePopup);
+    
+    // Let's go button click animation
+    if (letsGoBtn) {
+      letsGoBtn.addEventListener('click', function(e) {
+        // Add click animation
+        this.style.transform = 'scale(0.95)';
+        this.style.backgroundColor = '#374151'; // Darker gray
+        
+        // Reset after animation
+        setTimeout(() => {
+          this.style.transform = '';
+          this.style.backgroundColor = '';
+        }, 150);
+      });
+    }
+    
+    // Click outside popup to close
+    popup.addEventListener('click', function(e) {
+      if (e.target === popup) {
+        closePopup();
+      }
+    });
+    
+    // Escape key to close
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && popup && popup.style.display !== 'none') {
+        closePopup();
+      }
+    });
+  });
+</script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap');
+</style> 
