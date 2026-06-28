@@ -1,0 +1,9 @@
+---
+const { text, classes, linkto } = Astro.props;
+---
+
+<li class=`/${classes}`>
+  <a href={`/${linkto}`} class="hover:underline">
+    {text}
+  </a>
+</li>
