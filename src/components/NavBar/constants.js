@@ -1,11 +1,59 @@
-export const about = "about";
-export const updates = "updates";
-export const sponsorships = "sponsorships";
-export const resources = "resources";
-export const publication = "publication";
-export const whoWeAre = "who we are";
-export const blog = "blog";
+// for laptop navbar (top of page) and mobile navbar
+export const navbar = [
+  {
+    text: "About",
+    linkto: "about",
+  },
+  {
+    text: "Who We Are",
+    linkto: "who-we-are",
+  },
+  {
+    text: "Updates",
+    linkto: "updates",
+  },
+  {
+    text: "Sponsorships",
+    linkto: "sponsorships",
+  },
+  {
+    text: "Resources",
+    linkto: "resources",
+  },
+  {
+    text: "Blog",
+    linkto: "blog",
+  },
+];
 
-export function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
+// Publications dropdown (laptop + mobile)
+export const publications = [
+  {
+    text: "Publication",
+    linkto: "/publication",
+  },
+  {
+    text: "First Year Guide",
+    linkto: "/publication/FirstYearGuide",
+  },
+  {
+    text: "Careers Guide",
+    linkto: "/publication/CareersGuide",
+  },
+  {
+    text: "Blogs",
+    linkto: "/publication/Blogs",
+  },
+];
+
+// footer only
+export const footerLinks = [
+  { text: "About", linkto: "about" },
+  { text: "Who We Are", linkto: "who-we-are" },
+  { text: "Updates", linkto: "updates" },
+  { text: "Sponsorships", linkto: "sponsorships" },
+  { text: "Resources", linkto: "resources" },
+  { text: "Blog", linkto: "blog" },
+  { text: "Publication", linkto: "publication" },
+  { text: "First Year Guide", linkto: "publication/FirstYearGuide" },
+];

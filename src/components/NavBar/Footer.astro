@@ -1,13 +1,6 @@
 ---
 import TextContainer from "./TextContainer.astro";
-import {
-  about,
-  updates,
-  sponsorships,
-  resources,
-  publication,
-  capitalize,
-} from "./NavBar/constants.js";
+import { footerLinks } from "./constants.js";
 ---
 
 <footer
@@ -53,19 +46,13 @@ import {
       <!-- Services Section -->
       <div>
         <h3 class="text-xl font-semibold mb-4 font-poppins">DataSoc:</h3>
+
         <ul>
-          <TextContainer text={capitalize(about)} linkto={about} />
-          <TextContainer text={capitalize(updates)} linkto={updates} />
-          <TextContainer
-            text={capitalize(sponsorships)}
-            linkto={sponsorships}
-          />
-          <TextContainer text={capitalize(resources)} linkto={resources} />
-          <TextContainer text={capitalize(publication)} linkto={publication} />
-          <TextContainer
-            text="First Year Guide"
-            linkto={`${publication}/FirstYearGuide`}
-          />
+          {
+            footerLinks.map(({ text, linkto }) => (
+              <TextContainer text={text} linkto={linkto} />
+            ))
+          }
         </ul>
       </div>
 

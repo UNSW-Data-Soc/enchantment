@@ -2,16 +2,7 @@
 // Feature flag: Set to true to enable merch features
 const MERCH_ENABLED = false;
 import NavbarRefs from "./NavbarRefs.astro";
-import {
-  about,
-  updates,
-  sponsorships,
-  resources,
-  publication,
-  capitalize,
-  whoWeAre,
-  blog,
-} from "./constants.js";
+import { navbar, publications } from "./constants.js";
 ---
 
 <!-- Mobile Navbar Header -->
@@ -72,61 +63,44 @@ import {
       </svg>
     </button>
   </div>
-  <nav class="space-y-4 text-gray-900 font-semibold text-lg">
-    <NavbarRefs text={capitalize(about)} linkto={about} useMobile="True" />
-    <NavbarRefs
-      text={capitalize(whoWeAre)}
-      linkto={whoWeAre.replaceAll(" ", "-")}
-      useMobile="True"
-    />
-    <NavbarRefs text={capitalize(updates)} linkto={updates} useMobile="True" />
-    <NavbarRefs
-      text={capitalize(sponsorships)}
-      linkto={sponsorships}
-      useMobile="True"
-    />
-    <NavbarRefs
-      text={capitalize(resources)}
-      linkto={resources}
-      useMobile="True"
-    />
-    <NavbarRefs text={capitalize(blog)} linkto={blog} useMobile="True" />
+  {
+    navbar.map(({ text, linkto }) => (
+      <NavbarRefs text={text} linkto={linkto} useMobile="True" />
+    ))
+  }
 
-    <div class="group">
-      <div class="flex items-center justify-between">
-        <span class="block">Publications</span>
-        <svg
-          class="ml-1 h-5 w-5 transition-transform group-hover:rotate-180"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            d="M5.23 7.21a.75.75 0 011.06-.02L10 10.67l3.71-3.48a.75.75 0 111.04 1.08l-4.25 4a.75.75 0 01-1.04 0l-4.25-4a.75.75 0 01-.02-1.06z"
-          ></path>
-        </svg>
-      </div>
-      <div class="mt-2 ml-2 space-y-2 pl-2 border-l border-gray-300">
-        <a href="/publication" class="block text-sm text-gray-700"
-          >Publication</a
-        >
-        <a
-          href="/publication/FirstYearGuide"
-          class="block text-sm text-gray-700">First Year Guide</a
-        >
-        <a href="/publication/CareersGuide" class="block text-sm text-gray-700"
-          >Careers Guide</a
-        >
-      </div>
+  <div class="group">
+    <div class="flex items-center justify-between">
+      <span class="block">Publications</span>
+      <svg
+        class="ml-1 h-5 w-5 transition-transform group-hover:rotate-180"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path
+          d="M5.23 7.21a.75.75 0 011.06-.02L10 10.67l3.71-3.48a.75.75 0 111.04 1.08l-4.25 4a.75.75 0 01-1.04 0l-4.25-4a.75.75 0 01-.02-1.06z"
+        ></path>
+      </svg>
     </div>
-    {
-      MERCH_ENABLED && (
-        <a href="/merch" class="merch-button inline-block text-center">
-          MERCH
-        </a>
-      )
-    }
-    <a href="/contact" class="block">Contact Us</a>
-  </nav>
+
+    <div class="mt-2 ml-2 space-y-2 pl-2 border-l border-gray-300">
+      {
+        publications.map(({ text, linkto }) => (
+          <a href={linkto} class="block text-sm text-gray-700">
+            {text}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+  {
+    MERCH_ENABLED && (
+      <a href="/merch" class="merch-button inline-block text-center">
+        MERCH
+      </a>
+    )
+  }
+  <a href="/contact" class="block">Contact Us</a>
 </div>
 
 <!-- Toggle Script -->

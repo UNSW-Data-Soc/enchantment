@@ -1,17 +1,8 @@
 ---
 // Feature flag: Set to true to enable merch features
 const MERCH_ENABLED = false;
-import NavbarRefs from "./NavBar/NavbarRefs.astro";
-import {
-  about,
-  updates,
-  sponsorships,
-  resources,
-  publication,
-  capitalize,
-  whoWeAre,
-  blog,
-} from "./NavBar/constants.js";
+import NavbarRefs from "./NavbarRefs.astro";
+import { navbar, publications } from "./constants.js";
 ---
 
 <!-- Desktop Navbar (hidden on mobile) -->
@@ -29,24 +20,11 @@ import {
 
   <!-- Navigation Links -->
   <div class="lg:flex lg:gap-x-12">
-    <NavbarRefs text={capitalize(about)} linkto={about} useMobile="False" />
-    <NavbarRefs
-      text={capitalize(whoWeAre)}
-      linkto={whoWeAre.replaceAll(" ", "-")}
-      useMobile="False"
-    />
-    <NavbarRefs text={capitalize(updates)} linkto={updates} useMobile="False" />
-    <NavbarRefs
-      text={capitalize(sponsorships)}
-      linkto={sponsorships}
-      useMobile="False"
-    />
-    <NavbarRefs
-      text={capitalize(resources)}
-      linkto={resources}
-      useMobile="False"
-    />
-    <NavbarRefs text={capitalize(blog)} linkto={blog} useMobile="False" />
+    {
+      navbar.map(({ text, linkto }) => (
+        <NavbarRefs text={text} linkto={linkto} useMobile="False" />
+      ))
+    }
 
     <!-- Dropdown Menu -->
     <div class="relative group">
@@ -61,29 +39,20 @@ import {
           ></path>
         </svg>
       </a>
+
       <div
         class="absolute left-0 mt-2 w-48 rounded-md bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200 z-50"
       >
-        <a
-          href="/publication"
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >Publication</a
-        >
-        <a
-          href="/publication/FirstYearGuide"
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >First Year Guide</a
-        >
-        <a
-          href="/publication/CareersGuide"
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >Careers Guide</a
-        >
-        <a
-          href="/publication/Blogs"
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >Blogs</a
-        >
+        {
+          publications.map(({ text, linkto }) => (
+            <a
+              href={linkto}
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              {text}
+            </a>
+          ))
+        }
       </div>
     </div>
   </div>
