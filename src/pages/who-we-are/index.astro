@@ -4,240 +4,90 @@ import Header from '../../components/Header.astro';
 import Layout from '../../layouts/Layout.astro';
 ---
 
-<Layout title="Who We Are - UNSW Data Science Society">
+<Layout title="Who we are - UNSW Data Science Society">
     <Header>
-        <h1>Who We Are</h1>
-        <p>Meet the people behind UNSW DataSoc.</p>
+        <h1>Who we are</h1>
+        <p>What we really do. Learn about the society that continually seeks the best for students.</p>
     </Header>
 
-    <Container class="space-y-16 py-6 max-w-6xl">
-        <!-- PRESIDENT -->
-        <section class="space-y-6 text-center">
-            <h2 class="text-2xl font-bold">President</h2>
+    <Container class="space-y-6 py-6 max-w-3xl text-justify">
+        <blockquote>
+            Uniting mathematicians, econometricians and computer scientists, UNSW DataSoc seeks to empower our members with knowledge and skills of data science, machine learning and artificial intelligence.
+        </blockquote>
 
-            <div class="flex justify-center">
-                <div class="w-[70%] sm:w-[50%] md:w-[32%] lg:w-[24%] text-center">
-                    <img
-                        src="/who-we-are/datasoc-board-photos/P1025432.JPG"
-                        alt="Qingyuan He"
-                        class="w-full h-80 object-cover rounded-lg"
-                    />
-                    <p class="mt-3 font-semibold">Qingyuan He</p>
-                    <p class="text-sm text-gray-600">President</p>
+        <section>
+            <h2>Affiliated with</h2>
+            <div class="flex w-full flex-row justify-between [&>img]:h-[100px]">
+                <img src="/who-we-are/unsw-maths.png" alt="UNSW Sydney School of Mathematics and Statistics" />
+                <img src="/who-we-are/arc.png" alt="UNSW Arc Clubs" />
+            </div>
+        </section>
+
+
+        <section class="space-y-4">
+            <h2>Our Goals</h2>
+            <div class="space-y-1">
+                <div class="flex flex-row gap-4 justify-left items-center">
+                    <img src="/who-we-are/lightbulb-idea.png" alt="" />
+                    <p>DataSoc aims to become Australia's leading student run society platform in assisting students on achieving their data science career goals.</p>
+                </div>
+                <div class="flex flex-row gap-4 justify-left items-center">
+                    <img src="/who-we-are/bulletin-board.png" alt="" />
+                    <p>We strive to create the data science related opportunities for students in their studies and careers alike. We host information sessions, networking evenings, and many more career-focused events that could help open new pathways for students.</p>
+                </div>
+                <div class="flex flex-row gap-4 justify-left items-center">
+                    <img src="/who-we-are/graphic-design.png" alt="" />
+                    <p>We aim to enrich students' lives with a sense of community and diversity among UNSW data science students. We host a list of various social activities such as BBQs, competitions, etc. that welcome everyone to attend and meet like minded people.</p>
+                </div>
+                <div class="flex flex-row gap-4 justify-left items-center">
+                    <img src="/who-we-are/zoom.png" alt="" />
+                    <p>We want to support data science students in their studies with DataSoc's help sessions, workshops and peer supporters.</p>
                 </div>
             </div>
         </section>
 
-        <!-- EXECUTIVES -->
-        <section class="space-y-6">
-            <h2 class="text-2xl font-bold text-center">Executives</h2>
+        <p>
+            With this, DataSoc aims to make your university experience even more fun and fulfilling, whilst maximizing your employment opportunity and career progression in data science.
+        </p>
 
-            <div class="flex flex-wrap justify-center gap-8">
-                <div class="w-[42%] sm:w-[38%] md:w-[28%] lg:w-[22%] text-center">
-                    <img
-                        src="/who-we-are/datasoc-board-photos/P1025394.JPG"
-                        alt="Ethan Pham"
-                        class="w-full h-80 object-cover rounded-lg"
-                    />
-                    <p class="mt-3 font-semibold">Ethan Pham</p>
-                    <p class="text-sm text-gray-600">Vice President (Activities)</p>
+        <p class="text-center font-bold text-2xl">"Opportunities don't happen. You create them."</p>
+
+        <section class="space-y-4">
+            <h2>Our Values</h2>
+            <p>Our successes to date could not have be achieved without our thriving subcommittee teams year after year. Here are our core values that persists amongst all portfolios:</p>
+            <div class="flex flex-row justify-between gap-4 items-center">
+                <img src="/who-we-are/book.png" alt="" />
+                <div>
+                    <p class="font-bold">Learn continuously and effectively</p>
+                    <p>We seek to provide innovative and meaningful experiences for students, adapting to change and committing to ongoing development. We highly encourage you to actively seek ways to improve and find new ways to solve problems.</p>
                 </div>
-
-                <div class="w-[42%] sm:w-[38%] md:w-[28%] lg:w-[22%] text-center">
-                    <img
-                        src="/who-we-are/datasoc-board-photos/P1025327.JPG"
-                        alt="Stella Lin"
-                        class="w-full h-80 object-cover rounded-lg"
-                    />
-                    <p class="mt-3 font-semibold">Stella Lin</p>
-                    <p class="text-sm text-gray-600">Vice President (Development)</p>
+            </div>
+            <div class="flex flex-row justify-between gap-4 items-center">
+                <img src="/who-we-are/coffee.png" alt="" />
+                <div>
+                    <p class="font-bold">Have a good time</p>
+                    <p>At DataSoc, it is important to us that every experience here is a constructive and positive one. After every event and every meeting, we want you all to be leaving with a smile and a new friend!</p>
                 </div>
-
-                <div class="w-[42%] sm:w-[38%] md:w-[28%] lg:w-[22%] text-center">
-                    <div class="w-full h-80 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center">
-                        <span class="text-sm text-gray-400">Photo unavailable</span>
-                    </div>
-                    <p class="mt-3 font-semibold">Naisha Kulshreshtha</p>
-                    <p class="text-sm text-gray-600">Vice President (External)</p>
+            </div>
+            <div class="flex flex-row justify-between gap-4 items-center">
+                <img src="/who-we-are/thumbs-up.png" alt="" />
+                <div>
+                    <p class="font-bold">Be the best at what you do</p>
+                    <p>What distinguishes DataSoc members from others, despite having all different areas and expertise? It's the passion that we bring to everything we do. We approach every task with confidence, seize all opportunities and never settle for "acceptable".</p>
                 </div>
-
-                <div class="w-[42%] sm:w-[38%] md:w-[28%] lg:w-[22%] text-center">
-                    <img
-                        src="/who-we-are/datasoc-board-photos/P1025414.JPG"
-                        alt="Andre Baruah"
-                        class="w-full h-80 object-cover rounded-lg"
-                    />
-                    <p class="mt-3 font-semibold">Andre Baruah</p>
-                    <p class="text-sm text-gray-600">Vice President (Operations)</p>
-                </div>
-
-                <div class="w-[42%] sm:w-[38%] md:w-[28%] lg:w-[22%] text-center">
-                    <img
-                        src="/who-we-are/datasoc-board-photos/P1025418.JPG"
-                        alt="Akhil Panwar"
-                        class="w-full h-80 object-cover rounded-lg"
-                    />
-                    <p class="mt-3 font-semibold">Akhil Panwar</p>
-                    <p class="text-sm text-gray-600">Secretary</p>
-                </div>
-
-                <div class="w-[42%] sm:w-[38%] md:w-[28%] lg:w-[22%] text-center">
-                    <div class="w-full h-80 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center">
-                        <span class="text-sm text-gray-400">Photo unavailable</span>
-                    </div>
-                    <p class="mt-3 font-semibold">Aaron Chen</p>
-                    <p class="text-sm text-gray-600">Treasurer</p>
+            </div>
+            <div class="flex flex-row justify-between gap-4 items-center">
+                <img src="/who-we-are/sunglasses.png" alt="" />
+                <div>
+                    <p class="font-bold">Take ownership and be transparent</p>
+                    <p>As the DataSoc team, we celebrate the individual work and achievement of others, but must also be accountable for the tasks to which we have committed and see through what we started.</p>
                 </div>
             </div>
         </section>
 
-        <!-- DIRECTORS -->
-<section class="space-y-6">
-    <h2 class="text-2xl font-bold text-center">Directors</h2>
-
-    <div class="flex flex-wrap justify-center gap-8">
-
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <div class="w-full h-80 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center">
-                <span class="text-gray-400 text-sm">Photo unavailable</span>
-            </div>
-            <p class="mt-3 font-semibold">Aaron Wong</p>
-            <p class="text-sm text-gray-600">Human Resources Director</p>
-        </div>
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/who-we-are/datasoc-board-photos/P1025389.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Yatha Shah</p>
-            <p class="text-sm text-gray-600">Human Resources Director</p>
-        </div>
-
-        <!-- Social -->
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/who-we-are/datasoc-board-photos/P1025438.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Linh Pham</p>
-            <p class="text-sm text-gray-600">Social Director</p>
-        </div>
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <div class="w-full h-80 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center">
-                <span class="text-gray-400 text-sm">Photo unavailable</span>
-            </div>
-            <p class="mt-3 font-semibold">Jason Nguyen</p>
-            <p class="text-sm text-gray-600">Social Director</p>
-        </div>
-
-        <!-- Education -->
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/who-we-are/datasoc-board-photos/P1025425.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Lily Tang</p>
-            <p class="text-sm text-gray-600">Education Director</p>
-        </div>
-
-        <div class="w-[42%] md<w-[28%] lg:w-[22%] text-center">
-            <img src="/who-we-are/datasoc-board-photos/P1025422.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Minjun Kim</p>
-            <p class="text-sm text-gray-600">Education Director</p>
-        </div>
-
-        <!-- Philanthropy -->
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/who-we-are/datasoc-board-photos/P1025390.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Anoushka Pandey</p>
-            <p class="text-sm text-gray-600">Philanthropy & Projects Director</p>
-        </div>
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/who-we-are/datasoc-board-photos/P1025419.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Isabella Fan</p>
-            <p class="text-sm text-gray-600">Philanthropy & Projects Director</p>
-        </div>
-
-        <!-- Careers -->
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <div class="w-full h-80 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center">
-                <span class="text-gray-400 text-sm">Photo unavailable</span>
-            </div>
-            <p class="mt-3 font-semibold">Liam Lightfoot</p>
-            <p class="text-sm text-gray-600">Careers Director</p>
-        </div>
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/who-we-are/datasoc-board-photos/P1025385.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Vidisha Trivedi</p>
-            <p class="text-sm text-gray-600">Careers Director</p>
-        </div>
-
-        <!-- Sponsorships -->
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/who-we-are/datasoc-board-photos/P1025443.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Cathy Dinh</p>
-            <p class="text-sm text-gray-600">Sponsorships Director</p>
-        </div>
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <div class="w-full h-80 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center">
-                <span class="text-gray-400 text-sm">Photo unavailable</span>
-            </div>
-            <p class="mt-3 font-semibold">Simon Shen</p>
-            <p class="text-sm text-gray-600">Sponsorships Director</p>
-        </div>
-
-        <!-- Technology -->
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/who-we-are/datasoc-board-photos/P1025399.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Kai Lu</p>
-            <p class="text-sm text-gray-600">Technology Director</p>
-        </div>
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/who-we-are/datasoc-board-photos/P1025410.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Shafquat Tabeeb</p>
-            <p class="text-sm text-gray-600">Technology Director</p>
-        </div>
-
-        <!-- Marketing -->
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/who-we-are/datasoc-board-photos/P1025404.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Jennifer Lee</p>
-            <p class="text-sm text-gray-600">Marketing Director</p>
-        </div>
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <div class="w-full h-80 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center">
-                <span class="text-gray-400 text-sm">Photo unavailable</span>
-            </div>
-            <p class="mt-3 font-semibold">Shashwat Manish</p>
-            <p class="text-sm text-gray-600">Marketing Director</p>
-        </div>
-
-        <!-- Media -->
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/who-we-are/datasoc-board-photos/P1025344.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Shreya Verma</p>
-            <p class="text-sm text-gray-600">Media Director</p>
-        </div>
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/who-we-are/datasoc-board-photos/P1025429.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Vedant Tyagi</p>
-            <p class="text-sm text-gray-600">Media Director</p>
-        </div>
-
-    </div>
-    </section>
+        <!-- <section>
+            <h2>Our History</h2>
+        </section> -->
     </Container>
+
 </Layout>
