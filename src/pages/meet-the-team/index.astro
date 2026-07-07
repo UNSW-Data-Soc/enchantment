@@ -2,6 +2,74 @@
 import Container from '../../components/Container.astro';
 import Header from '../../components/Header.astro';
 import Layout from '../../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+// Build-time optimised board photos. Source files live in src/assets so Astro
+// can resize/compress them at build (originals are 5184px-wide, multi-MB DSLR
+// JPGs); files in public/ are served untouched, which is what made this page slow.
+const photos = import.meta.glob<{ default: ImageMetadata }>(
+    '../../assets/meet-the-team/datasoc-board-photos/*.JPG',
+    { eager: true },
+);
+
+function photo(file?: string): ImageMetadata | undefined {
+    if (!file) return undefined;
+    const entry = photos[`../../assets/meet-the-team/datasoc-board-photos/${file}`];
+    if (!entry) throw new Error(`Board photo not found: ${file}`);
+    return entry.default;
+}
+
+// Cards display at ~250-300px wide; 700px keeps it retina-crisp (2x) after object-cover.
+const IMAGE_WIDTH = 700;
+
+type Member = { name: string; role: string; file?: string };
+type Section = { title: string; cardClass: string; eager?: boolean; members: Member[] };
+
+const sections: Section[] = [
+    {
+        title: 'President',
+        cardClass: 'w-[70%] sm:w-[50%] md:w-[32%] lg:w-[24%]',
+        eager: true, // above the fold — load immediately (LCP)
+        members: [{ name: 'Qingyuan He', role: 'President', file: 'P1025432.JPG' }],
+    },
+    {
+        title: 'Executives',
+        cardClass: 'w-[42%] sm:w-[38%] md:w-[28%] lg:w-[22%]',
+        members: [
+            { name: 'Ethan Pham', role: 'Vice President (Activities)', file: 'P1025394.JPG' },
+            { name: 'Stella Lin', role: 'Vice President (Development)', file: 'P1025327.JPG' },
+            { name: 'Naisha Kulshreshtha', role: 'Vice President (External)' },
+            { name: 'Andre Baruah', role: 'Vice President (Operations)', file: 'P1025414.JPG' },
+            { name: 'Akhil Panwar', role: 'Secretary', file: 'P1025418.JPG' },
+            { name: 'Aaron Chen', role: 'Treasurer' },
+        ],
+    },
+    {
+        title: 'Directors',
+        cardClass: 'w-[42%] md:w-[28%] lg:w-[22%]',
+        members: [
+            { name: 'Aaron Wong', role: 'Human Resources Director' },
+            { name: 'Yatha Shah', role: 'Human Resources Director', file: 'P1025389.JPG' },
+            { name: 'Linh Pham', role: 'Social Director', file: 'P1025438.JPG' },
+            { name: 'Jason Nguyen', role: 'Social Director' },
+            { name: 'Lily Tang', role: 'Education Director', file: 'P1025425.JPG' },
+            { name: 'Minjun Kim', role: 'Education Director', file: 'P1025422.JPG' },
+            { name: 'Anoushka Pandey', role: 'Philanthropy & Projects Director', file: 'P1025390.JPG' },
+            { name: 'Isabella Fan', role: 'Philanthropy & Projects Director', file: 'P1025419.JPG' },
+            { name: 'Liam Lightfoot', role: 'Careers Director' },
+            { name: 'Vidisha Trivedi', role: 'Careers Director', file: 'P1025385.JPG' },
+            { name: 'Cathy Dinh', role: 'Sponsorships Director', file: 'P1025443.JPG' },
+            { name: 'Simon Shen', role: 'Sponsorships Director' },
+            { name: 'Kai Lu', role: 'Technology Director', file: 'P1025399.JPG' },
+            { name: 'Shafquat Tabeeb', role: 'Technology Director', file: 'P1025410.JPG' },
+            { name: 'Jennifer Lee', role: 'Marketing Director', file: 'P1025404.JPG' },
+            { name: 'Shashwat Manish', role: 'Marketing Director' },
+            { name: 'Shreya Verma', role: 'Media Director', file: 'P1025344.JPG' },
+            { name: 'Vedant Tyagi', role: 'Media Director', file: 'P1025429.JPG' },
+        ],
+    },
+];
 ---
 
 <Layout title="Meet the team - UNSW Data Science Society">
@@ -11,233 +79,35 @@ import Layout from '../../layouts/Layout.astro';
     </Header>
 
     <Container class="space-y-16 py-6 max-w-6xl">
-        <!-- PRESIDENT -->
-        <section class="space-y-6 text-center">
-            <h2 class="text-2xl font-bold">President</h2>
+        {sections.map((section) => (
+            <section class="space-y-6">
+                <h2 class="text-2xl font-bold text-center">{section.title}</h2>
 
-            <div class="flex justify-center">
-                <div class="w-[70%] sm:w-[50%] md:w-[32%] lg:w-[24%] text-center">
-                    <img
-                        src="/meet-the-team/datasoc-board-photos/P1025432.JPG"
-                        alt="Qingyuan He"
-                        class="w-full h-80 object-cover rounded-lg"
-                    />
-                    <p class="mt-3 font-semibold">Qingyuan He</p>
-                    <p class="text-sm text-gray-600">President</p>
+                <div class="flex flex-wrap justify-center gap-8">
+                    {section.members.map((member) => {
+                        const image = photo(member.file);
+                        return (
+                            <div class:list={['text-center', section.cardClass]}>
+                                {image ? (
+                                    <Image
+                                        src={image}
+                                        alt={member.name}
+                                        width={IMAGE_WIDTH}
+                                        loading={section.eager ? 'eager' : 'lazy'}
+                                        class="w-full h-80 object-cover rounded-lg"
+                                    />
+                                ) : (
+                                    <div class="w-full h-80 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center">
+                                        <span class="text-sm text-gray-400">Photo unavailable</span>
+                                    </div>
+                                )}
+                                <p class="mt-3 font-semibold">{member.name}</p>
+                                <p class="text-sm text-gray-600">{member.role}</p>
+                            </div>
+                        );
+                    })}
                 </div>
-            </div>
-        </section>
-
-        <!-- EXECUTIVES -->
-        <section class="space-y-6">
-            <h2 class="text-2xl font-bold text-center">Executives</h2>
-
-            <div class="flex flex-wrap justify-center gap-8">
-                <div class="w-[42%] sm:w-[38%] md:w-[28%] lg:w-[22%] text-center">
-                    <img
-                        src="/meet-the-team/datasoc-board-photos/P1025394.JPG"
-                        alt="Ethan Pham"
-                        class="w-full h-80 object-cover rounded-lg"
-                    />
-                    <p class="mt-3 font-semibold">Ethan Pham</p>
-                    <p class="text-sm text-gray-600">Vice President (Activities)</p>
-                </div>
-
-                <div class="w-[42%] sm:w-[38%] md:w-[28%] lg:w-[22%] text-center">
-                    <img
-                        src="/meet-the-team/datasoc-board-photos/P1025327.JPG"
-                        alt="Stella Lin"
-                        class="w-full h-80 object-cover rounded-lg"
-                    />
-                    <p class="mt-3 font-semibold">Stella Lin</p>
-                    <p class="text-sm text-gray-600">Vice President (Development)</p>
-                </div>
-
-                <div class="w-[42%] sm:w-[38%] md:w-[28%] lg:w-[22%] text-center">
-                    <div class="w-full h-80 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center">
-                        <span class="text-sm text-gray-400">Photo unavailable</span>
-                    </div>
-                    <p class="mt-3 font-semibold">Naisha Kulshreshtha</p>
-                    <p class="text-sm text-gray-600">Vice President (External)</p>
-                </div>
-
-                <div class="w-[42%] sm:w-[38%] md:w-[28%] lg:w-[22%] text-center">
-                    <img
-                        src="/meet-the-team/datasoc-board-photos/P1025414.JPG"
-                        alt="Andre Baruah"
-                        class="w-full h-80 object-cover rounded-lg"
-                    />
-                    <p class="mt-3 font-semibold">Andre Baruah</p>
-                    <p class="text-sm text-gray-600">Vice President (Operations)</p>
-                </div>
-
-                <div class="w-[42%] sm:w-[38%] md:w-[28%] lg:w-[22%] text-center">
-                    <img
-                        src="/meet-the-team/datasoc-board-photos/P1025418.JPG"
-                        alt="Akhil Panwar"
-                        class="w-full h-80 object-cover rounded-lg"
-                    />
-                    <p class="mt-3 font-semibold">Akhil Panwar</p>
-                    <p class="text-sm text-gray-600">Secretary</p>
-                </div>
-
-                <div class="w-[42%] sm:w-[38%] md:w-[28%] lg:w-[22%] text-center">
-                    <div class="w-full h-80 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center">
-                        <span class="text-sm text-gray-400">Photo unavailable</span>
-                    </div>
-                    <p class="mt-3 font-semibold">Aaron Chen</p>
-                    <p class="text-sm text-gray-600">Treasurer</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- DIRECTORS -->
-<section class="space-y-6">
-    <h2 class="text-2xl font-bold text-center">Directors</h2>
-
-    <div class="flex flex-wrap justify-center gap-8">
-
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <div class="w-full h-80 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center">
-                <span class="text-gray-400 text-sm">Photo unavailable</span>
-            </div>
-            <p class="mt-3 font-semibold">Aaron Wong</p>
-            <p class="text-sm text-gray-600">Human Resources Director</p>
-        </div>
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/meet-the-team/datasoc-board-photos/P1025389.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Yatha Shah</p>
-            <p class="text-sm text-gray-600">Human Resources Director</p>
-        </div>
-
-        <!-- Social -->
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/meet-the-team/datasoc-board-photos/P1025438.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Linh Pham</p>
-            <p class="text-sm text-gray-600">Social Director</p>
-        </div>
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <div class="w-full h-80 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center">
-                <span class="text-gray-400 text-sm">Photo unavailable</span>
-            </div>
-            <p class="mt-3 font-semibold">Jason Nguyen</p>
-            <p class="text-sm text-gray-600">Social Director</p>
-        </div>
-
-        <!-- Education -->
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/meet-the-team/datasoc-board-photos/P1025425.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Lily Tang</p>
-            <p class="text-sm text-gray-600">Education Director</p>
-        </div>
-
-        <div class="w-[42%] md<w-[28%] lg:w-[22%] text-center">
-            <img src="/meet-the-team/datasoc-board-photos/P1025422.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Minjun Kim</p>
-            <p class="text-sm text-gray-600">Education Director</p>
-        </div>
-
-        <!-- Philanthropy -->
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/meet-the-team/datasoc-board-photos/P1025390.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Anoushka Pandey</p>
-            <p class="text-sm text-gray-600">Philanthropy & Projects Director</p>
-        </div>
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/meet-the-team/datasoc-board-photos/P1025419.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Isabella Fan</p>
-            <p class="text-sm text-gray-600">Philanthropy & Projects Director</p>
-        </div>
-
-        <!-- Careers -->
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <div class="w-full h-80 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center">
-                <span class="text-gray-400 text-sm">Photo unavailable</span>
-            </div>
-            <p class="mt-3 font-semibold">Liam Lightfoot</p>
-            <p class="text-sm text-gray-600">Careers Director</p>
-        </div>
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/meet-the-team/datasoc-board-photos/P1025385.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Vidisha Trivedi</p>
-            <p class="text-sm text-gray-600">Careers Director</p>
-        </div>
-
-        <!-- Sponsorships -->
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/meet-the-team/datasoc-board-photos/P1025443.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Cathy Dinh</p>
-            <p class="text-sm text-gray-600">Sponsorships Director</p>
-        </div>
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <div class="w-full h-80 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center">
-                <span class="text-gray-400 text-sm">Photo unavailable</span>
-            </div>
-            <p class="mt-3 font-semibold">Simon Shen</p>
-            <p class="text-sm text-gray-600">Sponsorships Director</p>
-        </div>
-
-        <!-- Technology -->
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/meet-the-team/datasoc-board-photos/P1025399.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Kai Lu</p>
-            <p class="text-sm text-gray-600">Technology Director</p>
-        </div>
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/meet-the-team/datasoc-board-photos/P1025410.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Shafquat Tabeeb</p>
-            <p class="text-sm text-gray-600">Technology Director</p>
-        </div>
-
-        <!-- Marketing -->
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/meet-the-team/datasoc-board-photos/P1025404.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Jennifer Lee</p>
-            <p class="text-sm text-gray-600">Marketing Director</p>
-        </div>
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <div class="w-full h-80 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center">
-                <span class="text-gray-400 text-sm">Photo unavailable</span>
-            </div>
-            <p class="mt-3 font-semibold">Shashwat Manish</p>
-            <p class="text-sm text-gray-600">Marketing Director</p>
-        </div>
-
-        <!-- Media -->
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/meet-the-team/datasoc-board-photos/P1025344.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Shreya Verma</p>
-            <p class="text-sm text-gray-600">Media Director</p>
-        </div>
-
-        <div class="w-[42%] md:w-[28%] lg:w-[22%] text-center">
-            <img src="/meet-the-team/datasoc-board-photos/P1025429.JPG"
-                class="w-full h-80 object-cover rounded-lg" />
-            <p class="mt-3 font-semibold">Vedant Tyagi</p>
-            <p class="text-sm text-gray-600">Media Director</p>
-        </div>
-
-    </div>
-    </section>
+            </section>
+        ))}
     </Container>
 </Layout>
