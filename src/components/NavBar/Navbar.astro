@@ -2,7 +2,7 @@
 // Feature flag: Set to true to enable merch features
 const MERCH_ENABLED = false;
 import NavbarRefs from "./NavbarRefs.astro";
-import { navbar, publications } from "./constants.js";
+import { navbar } from "./constants.js";
 ---
 
 <!-- Desktop Navbar (hidden on mobile) -->
@@ -25,37 +25,8 @@ import { navbar, publications } from "./constants.js";
         <NavbarRefs text={text} linkto={linkto} useMobile="False" />
       ))
     }
-
-    <!-- Dropdown Menu -->
-    <div class="relative group">
-      <a
-        href="/publication"
-        class="text-sm font-semibold text-gray-900 flex items-center transition-colors transition-transform duration-200 hover:text-purple-600 hover:scale-110"
-      >
-        Publications
-        <svg class="ml-1 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-          <path
-            d="M5.23 7.21a.75.75 0 011.06-.02L10 10.67l3.71-3.48a.75.75 0 111.04 1.08l-4.25 4a.75.75 0 01-1.04 0l-4.25-4a.75.75 0 01-.02-1.06z"
-          ></path>
-        </svg>
-      </a>
-
-      <div
-        class="absolute left-0 mt-2 w-48 rounded-md bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200 z-50"
-      >
-        {
-          publications.map(({ text, linkto }) => (
-            <a
-              href={linkto}
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            >
-              {text}
-            </a>
-          ))
-        }
-      </div>
-    </div>
   </div>
+
   <!-- Right-aligned items -->
   <div class="lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-x-4">
     {
@@ -68,7 +39,8 @@ import { navbar, publications } from "./constants.js";
     <a
       href="/contact"
       class="text-sm font-semibold text-gray-900 transition-colors transition-transform duration-200 hover:text-purple-600 hover:scale-110"
-      >Contact Us</a
     >
+      Contact Us
+    </a>
   </div>
 </nav>

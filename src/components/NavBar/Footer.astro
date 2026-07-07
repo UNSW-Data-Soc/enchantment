@@ -1,6 +1,6 @@
 ---
 import TextContainer from "./TextContainer.astro";
-import { footerLinks } from "./constants.js";
+import { navbar } from "./constants.js";
 ---
 
 <footer
@@ -49,7 +49,7 @@ import { footerLinks } from "./constants.js";
 
         <ul>
           {
-            footerLinks.map(({ text, linkto }) => (
+            navbar.map(({ text, linkto }) => (
               <TextContainer text={text} linkto={linkto} />
             ))
           }
