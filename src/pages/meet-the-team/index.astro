@@ -20,22 +20,33 @@ function photo(file?: string): ImageMetadata | undefined {
     return entry.default;
 }
 
-// Cards display at ~250-300px wide; 700px keeps it retina-crisp (2x) after object-cover.
-const IMAGE_WIDTH = 700;
+// Board photos render at ~150-300px on screen. Generate a small srcset and let
+// the browser pick the smallest candidate that covers the card at its current
+// viewport width (per-section `sizes` below), instead of shipping one 700px
+// image to every device. 700 is the retina (2x) ceiling for the largest card.
+const IMAGE_WIDTHS = [240, 380, 540, 700];
 
 type Member = { name: string; role: string; file?: string };
-type Section = { title: string; cardClass: string; eager?: boolean; members: Member[] };
+type Section = {
+    title: string;
+    cardClass: string;
+    sizes: string; // viewport width -> rendered card width, so the browser can pick the right srcset candidate
+    eager?: boolean;
+    members: Member[];
+};
 
 const sections: Section[] = [
     {
         title: 'President',
         cardClass: 'w-[70%] sm:w-[50%] md:w-[32%] lg:w-[24%]',
+        sizes: '(min-width: 1024px) 276px, (min-width: 768px) 32vw, (min-width: 640px) 50vw, 70vw',
         eager: true, // above the fold — load immediately (LCP)
         members: [{ name: 'Qingyuan He', role: 'President', file: 'P1025432.JPG' }],
     },
     {
         title: 'Executives',
         cardClass: 'w-[42%] sm:w-[38%] md:w-[28%] lg:w-[22%]',
+        sizes: '(min-width: 1024px) 253px, (min-width: 768px) 28vw, (min-width: 640px) 38vw, 42vw',
         members: [
             { name: 'Ethan Pham', role: 'Vice President (Activities)', file: 'P1025394.JPG' },
             { name: 'Stella Lin', role: 'Vice President (Development)', file: 'P1025327.JPG' },
@@ -48,6 +59,7 @@ const sections: Section[] = [
     {
         title: 'Directors',
         cardClass: 'w-[42%] md:w-[28%] lg:w-[22%]',
+        sizes: '(min-width: 1024px) 253px, (min-width: 768px) 28vw, 42vw',
         members: [
             { name: 'Aaron Wong', role: 'Human Resources Director' },
             { name: 'Yatha Shah', role: 'Human Resources Director', file: 'P1025389.JPG' },
@@ -92,13 +104,18 @@ const sections: Section[] = [
                                     <Image
                                         src={image}
                                         alt={member.name}
-                                        width={IMAGE_WIDTH}
+                                        widths={IMAGE_WIDTHS}
+                                        sizes={section.sizes}
                                         loading={section.eager ? 'eager' : 'lazy'}
                                         class="w-full h-80 object-cover rounded-lg"
                                     />
                                 ) : (
-                                    <div class="w-full h-80 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center">
-                                        <span class="text-sm text-gray-400">Photo unavailable</span>
+                                    <div
+                                        role="img"
+                                        aria-label={`${member.name} photo unavailable`}
+                                        class="w-full h-80 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center"
+                                    >
+                                        <span class="text-sm text-gray-400" aria-hidden="true">Photo unavailable</span>
                                     </div>
                                 )}
                                 <p class="mt-3 font-semibold">{member.name}</p>
