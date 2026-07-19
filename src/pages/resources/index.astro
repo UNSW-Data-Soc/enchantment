@@ -69,10 +69,8 @@ import Header from '../../components/Header.astro';
 </Layout>
 
 <script>
-  console.log("Resources script is running");
-
   const RESOURCES_URL =
-    "https://raw.githubusercontent.com/fishdynasty/datasoc_resources_page_git_test/main/resources.json";
+    "https://unsw-data-soc.github.io/resources/resources.json";
 
   const grid = document.getElementById("resources-grid");
   const status = document.getElementById("resources-status");
@@ -131,9 +129,9 @@ import Header from '../../components/Header.astro';
 
   async function loadResources() {
     try {
-      console.log("Fetching resources from:", RESOURCES_URL);
-
-      const response = await fetch(`${RESOURCES_URL}?t=${Date.now()}`, {cache: "no-store",});
+      const response = await fetch(`${RESOURCES_URL}?t=${Date.now()}`, {
+        cache: "no-store",
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch resources");
@@ -141,23 +139,24 @@ import Header from '../../components/Header.astro';
 
       const resources = await response.json();
 
-      console.log("Loaded resources:", resources);
-
       grid.innerHTML = "";
 
       resources.forEach((resource) => {
         grid.appendChild(createResourceCard(resource));
       });
 
-      status.textContent = "";
+      if (resources.length === 0) {
+        status.textContent = "No resources available yet.";
+      } else {
+        status.textContent = "";
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Failed to load resources:", error);
       status.textContent = "Could not load resources. Please try again later.";
     }
   }
 
   loadResources();
 
-  // Regular polling: refresh every 10 minutes while the page is open.
   setInterval(loadResources, 10 * 60 * 1000);
 </script>
