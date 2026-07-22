@@ -2,10 +2,7 @@
 import { navbar } from "./constants.js";
 ---
 
-<footer
-  slot="footer"
-  class="mt-20 bg-gray-700 text-white py-12 relative overflow-hidden"
->
+<footer slot="footer" class="mt-20 bg-gray-700 text-white py-12 relative overflow-hidden">
   <!-- Decorative elements -->
   <div class="absolute inset-0 overflow-hidden">
     <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-r from-red-300 via-yellow-300 to-blue-300 opacity-40 blur rounded-full transform translate-x-1/2 -translate-y-1/2">
@@ -28,13 +25,7 @@ import { navbar } from "./constants.js";
         <div class="text-gray-100 space-y-4 text-sm">
           <p class="text-sm">Made with love by UNSW Data Science Society</p>
           <p class="text-sm">Proudly supported by Arc UNSW</p>
-          <p class="text-sm">
-            UNSW DataSoc acknowledges the Aboriginal and Torres Strait Islander
-            peoples as the first inhabitants of this nation and the Bedegal
-            people as the Traditional Custodians of the Land where the UNSW
-            Kensington campus is situated. We pay our respects to all Elders
-            past, present, and future.
-          </p>
+          <p class="text-sm">UNSW DataSoc acknowledges the Aboriginal and Torres Strait Islander peoples as the first inhabitants of this nation and the Bedegal people as the Traditional Custodians of the Land where the UNSW Kensington campus is situated. We pay our respects to all Elders past, present, and future.</p>
         </div>
       </div>
 
@@ -46,9 +37,7 @@ import { navbar } from "./constants.js";
           {
             navbar.map(({ text, linkto }) => (
               <li>
-                <a href={`/${linkto}`} class="hover:underline text-xs">
-                  {text}
-                </a>
+                <a href={`/${linkto}`} class="hover:underline text-xs">{text}</a>
               </li>
             ))
           }
@@ -96,9 +85,7 @@ import { navbar } from "./constants.js";
     </div>
 
     <!-- Footer Bottom -->
-    <div
-      class="mt-8 text-center text-sm text-gray-100 border-t border-white/10 pt-8"
-    >
+    <div class="mt-8 text-center text-sm text-gray-100 border-t border-white/10 pt-8">
       <p>&copy; 2026 UNSW Data Science Society. All Rights Reserved.</p>
     </div>
   </div>

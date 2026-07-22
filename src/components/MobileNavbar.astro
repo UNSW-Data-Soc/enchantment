@@ -34,9 +34,7 @@ import { navbar } from "./constants.js";
   <nav class="space-y-4 text-gray-900 font-semibold text-lg">
     {
       navbar.map(({ text, linkto }) => (
-        <a href={`/${linkto}`} class="block">
-          {text}
-        </a>
+        <a href={`/${linkto}`} class="block">{text}</a>
       ))
     }
   </nav>
