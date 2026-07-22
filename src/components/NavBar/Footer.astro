@@ -1,5 +1,4 @@
 ---
-import TextContainer from "./TextContainer.astro";
 import { navbar } from "./constants.js";
 ---
 
@@ -50,7 +49,11 @@ import { navbar } from "./constants.js";
         <ul>
           {
             navbar.map(({ text, linkto }) => (
-              <TextContainer text={text} linkto={linkto} />
+              <li>
+                <a href={`/${linkto}`} class="hover:underline text-xs">
+                  {text}
+                </a>
+              </li>
             ))
           }
         </ul>

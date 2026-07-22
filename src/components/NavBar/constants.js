@@ -1,7 +1,7 @@
 // for laptop navbar (top of page) and mobile navbar
 export const navbar = [
   {
-    text: "Who We Are",
+    text: "Who we are",
     linkto: "who-we-are",
   },
   {

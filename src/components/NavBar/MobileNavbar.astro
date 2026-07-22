@@ -1,7 +1,6 @@
 ---
 // Feature flag: Set to true to enable merch features
 const MERCH_ENABLED = false;
-import NavbarRefs from "./NavbarRefs.astro";
 import { navbar } from "./constants.js";
 ---
 
@@ -63,11 +62,15 @@ import { navbar } from "./constants.js";
       </svg>
     </button>
   </div>
-  {
-    navbar.map(({ text, linkto }) => (
-      <NavbarRefs text={text} linkto={linkto} useMobile="True" />
-    ))
-  }
+  <nav class="space-y-4 text-gray-900 font-semibold text-lg">
+    {
+      navbar.map(({ text, linkto }) => (
+        <a href={`/${linkto}`} class="block">
+          {text}
+        </a>
+      ))
+    }
+  </nav>
 
   {
     MERCH_ENABLED && (
@@ -76,7 +79,9 @@ import { navbar } from "./constants.js";
       </a>
     )
   }
-  <a href="/contact" class="block">Contact Us</a>
+  <nav class="space-y-4 text-gray-900 font-semibold text-lg">
+    <a href="/contact" class="block mt-4">Contact Us</a>
+  </nav>
 </div>
 
 <!-- Toggle Script -->

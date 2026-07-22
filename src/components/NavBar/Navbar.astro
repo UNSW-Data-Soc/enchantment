@@ -1,7 +1,6 @@
 ---
 // Feature flag: Set to true to enable merch features
 const MERCH_ENABLED = false;
-import NavbarRefs from "./NavbarRefs.astro";
 import { navbar } from "./constants.js";
 ---
 
@@ -22,7 +21,12 @@ import { navbar } from "./constants.js";
   <div class="lg:flex lg:gap-x-12">
     {
       navbar.map(({ text, linkto }) => (
-        <NavbarRefs text={text} linkto={linkto} useMobile="False" />
+        <a
+          href={`/${linkto}`}
+          class="text-sm font-semibold text-gray-900 transition-colors transition-transform duration-200 hover:text-purple-600 hover:scale-110"
+        >
+          {text}
+        </a>
       ))
     }
   </div>
