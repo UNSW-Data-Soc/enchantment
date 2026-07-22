@@ -5,10 +5,7 @@ import { navbar } from "./constants.js";
 ---
 
 <!-- Desktop Navbar (hidden on mobile) -->
-<nav
-  class="hidden lg:flex items-center justify-between px-6 py-4 lg:px-8 bg-[#fffb] backdrop-blur-md fixed top-0 inset-x-0 z-40"
-  aria-label="Global"
->
+<nav class="hidden lg:flex items-center justify-between px-6 py-4 lg:px-8 bg-[#fffb] backdrop-blur-md fixed top-0 inset-x-0 z-40" aria-label="Global">
   <!-- Logo -->
   <div class="flex lg:flex-1">
     <a href="/" class="-m-1.5 p-1.5 hover:scale-110">
@@ -21,10 +18,7 @@ import { navbar } from "./constants.js";
   <div class="lg:flex lg:gap-x-12">
     {
       navbar.map(({ text, linkto }) => (
-        <a
-          href={`/${linkto}`}
-          class="text-sm font-semibold text-gray-900 transition-colors transition-transform duration-200 hover:text-purple-600 hover:scale-110"
-        >
+        <a href={`/${linkto}`} class="text-sm font-semibold text-gray-900 transition-colors transition-transform duration-200 hover:text-purple-600 hover:scale-110">
           {text}
         </a>
       ))
@@ -34,17 +28,8 @@ import { navbar } from "./constants.js";
   <!-- Right-aligned items -->
   <div class="lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-x-4">
     {
-      MERCH_ENABLED && (
-        <a href="/merch" class="merch-button">
-          MERCH
-        </a>
-      )
+      MERCH_ENABLED && (<a href="/merch" class="merch-button">MERCH</a>)
     }
-    <a
-      href="/contact"
-      class="text-sm font-semibold text-gray-900 transition-colors transition-transform duration-200 hover:text-purple-600 hover:scale-110"
-    >
-      Contact Us
-    </a>
+    <a href="/contact" class="text-sm font-semibold text-gray-900 transition-colors transition-transform duration-200 hover:text-purple-600 hover:scale-110">Contact Us</a>
   </div>
 </nav>
