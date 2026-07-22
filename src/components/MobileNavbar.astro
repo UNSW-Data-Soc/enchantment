@@ -1,6 +1,7 @@
 ---
 // Feature flag: Set to true to enable merch features
 const MERCH_ENABLED = false;
+import { navbar } from "./constants.js";
 ---
 
 <!-- Mobile Navbar Header -->
@@ -12,7 +13,7 @@ const MERCH_ENABLED = false;
   <button id="open-menu" type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
     <span class="sr-only">Open menu</span>
     <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
     </svg>
   </button>
 </header>
@@ -26,48 +27,39 @@ const MERCH_ENABLED = false;
     <button id="close-menu" type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
       <span class="sr-only">Close menu</span>
       <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
       </svg>
     </button>
   </div>
   <nav class="space-y-4 text-gray-900 font-semibold text-lg">
-    <a href="/who-we-are" class="block">Who we are</a>
-    <a href="/meet-the-team" class="block">Meet the team</a>
-    <a href="/updates" class="block">Updates</a>
-    <a href="/sponsorships" class="block">Sponsorships</a>
-    <a href="/resources" class="block">Resources</a>
-    <a href="/blog" class="block">Blog</a>
-    <div class="group">
-      <div class="flex items-center justify-between">
-        <span class="block">Publications</span>
-        <svg class="ml-1 h-5 w-5 transition-transform group-hover:rotate-180" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M5.23 7.21a.75.75 0 011.06-.02L10 10.67l3.71-3.48a.75.75 0 111.04 1.08l-4.25 4a.75.75 0 01-1.04 0l-4.25-4a.75.75 0 01-.02-1.06z"/>
-        </svg>
-      </div>
-      <div class="mt-2 ml-2 space-y-2 pl-2 border-l border-gray-300">
-        <a href="/publication" class="block text-sm text-gray-700">Publication</a>
-        <a href="/publication/FirstYearGuide" class="block text-sm text-gray-700">First Year Guide</a>
-        <a href="/publication/CareersGuide" class="block text-sm text-gray-700">Careers Guide</a>
-      </div>
-    </div>
-    {MERCH_ENABLED && <a href="/merch" class="merch-button inline-block text-center">MERCH</a>}
-    <a href="/contact" class="block">Contact Us</a>
+    {
+      navbar.map(({ text, linkto }) => (
+        <a href={`/${linkto}`} class="block">{text}</a>
+      ))
+    }
+  </nav>
+
+  {
+    MERCH_ENABLED && (<a href="/merch" class="merch-button inline-block text-center">MERCH</a>)
+  }
+  <nav class="space-y-4 text-gray-900 font-semibold text-lg">
+    <a href="/contact" class="block mt-4">Contact Us</a>
   </nav>
 </div>
 
 <!-- Toggle Script -->
 <script is:inline>
-  document.addEventListener('DOMContentLoaded', () => {
-    const openBtn = document.getElementById('open-menu');
-    const closeBtn = document.getElementById('close-menu');
-    const sidebar = document.getElementById('mobile-menu');
+  document.addEventListener("DOMContentLoaded", () => {
+    const openBtn = document.getElementById("open-menu");
+    const closeBtn = document.getElementById("close-menu");
+    const sidebar = document.getElementById("mobile-menu");
 
-    openBtn?.addEventListener('click', () => {
-      sidebar.classList.remove('translate-x-full');
+    openBtn?.addEventListener("click", () => {
+      sidebar.classList.remove("translate-x-full");
     });
 
-    closeBtn?.addEventListener('click', () => {
-      sidebar.classList.add('translate-x-full');
+    closeBtn?.addEventListener("click", () => {
+      sidebar.classList.add("translate-x-full");
     });
   });
 </script>
