@@ -3,7 +3,7 @@ layout: blog
 title: The Many Paths of Data Science
 description: A look at how a data science degree opens doors far beyond coding, such as into business strategy, healthcare, finance, and entertainment, and why that range matters more than ever in the age of AI.
 pubDate: 2026-07-13T13:54
-updatedDate: 2026-07-13T13:54
+updatedDate: 2026-07-29T18:47
 heroImage: /images/blog/pasted-image-1783863628036.png
 ---
 
