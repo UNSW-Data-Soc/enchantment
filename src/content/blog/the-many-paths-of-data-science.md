@@ -17,9 +17,9 @@ Data science is a broad field, but most graduates end up on one of a handful of 
 
 Although these roles are valuable and commonly pursued, they're not the full picture of what a data science degree can lead to.
 
-## 
+![](/images/blog/rosidi_navigating_data_science_job_titles_data_analyst_data_scientist_data_engineer_3.jpg)
 
-## Expanding Your Professional Toolkit
+Expanding Your Professional Toolkit
 
 An education in data science builds a strong set of non-technical, transferable skills such as **data interpretation**, **business thinking**, **stakeholder communication**, **critical thinking**, and **structured problem-solving** [[5](https://towardsdatascience.com/academia-to-data-science-transferable-skills-306cf052e320)]. These carry real value far beyond a technical job title and can elevate almost any field you’re passionate about. 
 
@@ -77,8 +77,10 @@ For graduates interested in the creative or growth-focused path, this sector off
 
 As AI takes on more of the technical execution in data work, the question isn't whether data science graduates are still needed: it's where their value has moved to.
 
-> “_The pattern is clear: AI increasingly occupies execution. Human value moves to framing the problem, designing the conditions under which AI should operate, reviewing outputs in context and deciding what should happen next._”
-> **– Ariki Ono, Founder & CEO, Nexgen Japan Inc** [[9](https://www.weforum.org/stories/artificial-intelligence/future-of-work-define-roles-humans-ai/.)].
+> ![](/images/blog/TwmbKIO9wl4OCzAzfzIZ2J1-JyieSMJcmXt9cuCWCfU.avif)
+
+“_The pattern is clear: AI increasingly occupies execution. Human value moves to framing the problem, designing the conditions under which AI should operate, reviewing outputs in context and deciding what should happen next._”
+**– Ariki Ono, Founder & CEO, Nexgen Japan Inc** [[9](https://www.weforum.org/stories/artificial-intelligence/future-of-work-define-roles-humans-ai/.)].
 
 This plays out across every role covered above. A supply chain analyst frames what “efficient” even means for their business before a model can optimise for it. A data architect designs the conditions a technical solution has to work within: the business goals, the constraints, and the stakeholders it needs to satisfy. A finance professional reviews what a fraud model flags and decides whether it holds up against regulation and bias. None of that disappears when AI runs the execution; if anything, it's what the execution depends on.
 
