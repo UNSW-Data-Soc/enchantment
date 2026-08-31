@@ -38,6 +38,7 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Contributors
+2026: Shafquat Tabeeb, Kai Lu, Varona Chen, Tony Wu, Avani Agarwal, Kelvin Yu, Evan Li
 
 2025 : Alina Cui, Josh Lim, Aditya Muthukattu, Manojvradan Balaji, Ishita Gupta, Shafquat Tabeeb, Kelly Tan, Kai Lu, Arnold Tan
 
