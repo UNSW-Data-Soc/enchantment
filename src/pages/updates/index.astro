@@ -15,11 +15,21 @@ interface Event {
 
 const events: { upcomingEvents: Event[]; pastEvents: Event[] } = await fetchEvents()
   .then(async response => {
+    console.log('Events response status:', response.status);
+    console.log('Events response URL:', response.url);
+
     if (!response.ok) {
       console.error('Error fetching events:', await response.text());
       return { upcomingEvents: [], pastEvents: [] };
     }
-    return response.json() as Promise<{ upcomingEvents: Event[]; pastEvents: Event[] }>;
+
+    const data = await response.json();
+    console.log('Events response data:', data);
+
+    return data as {
+      upcomingEvents: Event[];
+      pastEvents: Event[];
+    };
   })
   .catch(error => {
     console.error('Error fetching events:', error);
@@ -53,23 +63,76 @@ const events: { upcomingEvents: Event[]; pastEvents: Event[] } = await fetchEven
         )) : <p class="col-span-full text-center text-gray-500">No upcoming events.</p>}
         </div>
 
-        <h2 class="text-center text-xl font-bold text-gray-900 mb-6">Past Events</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-        {events.pastEvents?.length ? events.pastEvents.map(event => (
-            <a href={`https://www.facebook.com/events/${event.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="card block transform transition-transform duration-300 hover:scale-105">
+        <h2 class="text-center text-xl font-bold text-gray-900 mb-6">
+          Past Events
+        </h2>
 
-                <img src={event.cover?.source || '/default.jpg'} alt={event.name} class="rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105" />
+        <div
+          id="past-events-grid"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8"
+        >
+          {events.pastEvents?.length ? events.pastEvents.map((event, index) => (
+            <a
+              href={`https://www.facebook.com/events/${event.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class:list={[
+                "card block transform transition-transform duration-300 hover:scale-105",
+                index >= 12 && "hidden extra-past-event"
+              ]}
+            >
+              <img
+                src={event.cover?.source || '/logo.png'}
+                alt={event.name}
+                class="rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105"
+              />
 
-                <h3 class="text-lg font-semibold text-gray-800 mt-2">{event.name}</h3>
-                <p class="text-gray-600">{event.place?.name || 'Location not specified'}</p>
-                <p class="text-gray-500">{new Date(event.start_time).toLocaleString()}</p>
+              <h3 class="text-lg font-semibold text-gray-800 mt-2">
+                {event.name}
+              </h3>
 
+              <p class="text-gray-600">
+                {event.place?.name || 'Location not specified'}
+              </p>
+
+              <p class="text-gray-500">
+                {new Date(event.start_time).toLocaleString()}
+              </p>
             </a>
-        )) : <p class="col-span-full text-center text-gray-500">No Past events.</p>}
+          )) : (
+            <p class="col-span-full text-center text-gray-500">
+              No past events.
+            </p>
+          )}
         </div>
+
+        {events.pastEvents?.length > 12 && (
+          <div class="text-center mb-16">
+            <button
+              id="see-more-events"
+              class="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300"
+            >
+              See more
+            </button>
+          </div>
+        )}
+
+        <script>
+          const button = document.getElementById('see-more-events');
+          const extraEvents = document.querySelectorAll('.extra-past-event');
+
+          let expanded = false;
+
+          button?.addEventListener('click', () => {
+            expanded = !expanded;
+
+            extraEvents.forEach(event => {
+              event.classList.toggle('hidden', !expanded);
+            });
+
+            button.textContent = expanded ? 'See less' : 'See more';
+          });
+        </script>
     </div>
   </div>
 </Layout>
