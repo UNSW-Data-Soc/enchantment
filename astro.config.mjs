@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, fontProviders } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import cloudflare from "@astrojs/cloudflare";
 import alpinejs from "@astrojs/alpinejs";
@@ -17,6 +17,25 @@ export default defineConfig({
 
   site: 'https://unsw-data-soc.github.io',
   base: '/',
+
+  experimental: {
+    fonts: [
+      {
+        provider: fontProviders.google(),
+        name: "Inter",
+        cssVariable: "--font-inter",
+        weights: ["400", "500", "700"],
+        styles: ["normal"],
+      },
+      {
+        provider: fontProviders.google(),
+        name: "Syne",
+        cssVariable: "--font-syne",
+        weights: ["400", "700", "800"],
+        styles: ["normal"],
+      },
+    ],
+  },
 
   vite: {
     plugins: [tailwindcss()],
