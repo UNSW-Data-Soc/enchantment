@@ -5,6 +5,8 @@ This project uses
 
 - [Astro.js](https://docs.astro.build/en/getting-started/)
 
+<br>
+
 ## Setting Up
 
 Once you have cloned the repository locally, run
@@ -15,6 +17,7 @@ npm install
 
 to download all necessary packages.
 
+<br>
 
 ## Getting Started
 
@@ -28,6 +31,7 @@ All commands are run from the root of the project, from a terminal:
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
 
+<br>
 
 To run the development server:
 
@@ -37,7 +41,10 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+<br>
+
 ## Contributors
 
-2025 : Alina Cui, Josh Lim, Aditya Muthukattu, Manojvradan Balaji, Ishita Gupta, Shafquat Tabeeb, Kelly Tan, Kai Lu, Arnold Tan
-
+| Year | Contributors |
+| ---- | ------------ |
+| 2025 | Alina Cui, Josh Lim, Aditya Muthukattu, Manojvradan Balaji, Ishita Gupta, Shafquat Tabeeb, Kelly Tan, Kai Lu, Arnold Tan |
