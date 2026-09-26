@@ -184,10 +184,10 @@ const images = [
             
             allImages.forEach((img, index) => {
                 img.onload = function() {
-                    console.log(`Image ${index} loaded successfully:`, this.src);
+                    console.log(`Image ${index} loaded successfully:`, img.src);
                 };
                 img.onerror = function() {
-                    console.error(`Image ${index} failed to load:`, this.src);
+                    console.error(`Image ${index} failed to load:`, img.src);
                 };
             });
         } else {
