@@ -8,7 +8,11 @@ import type { APIRoute } from 'astro';
 // Main endpoint for chat interaction - generates 5 content ideas
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as {
+      user_input?: string;
+      user_type?: string;
+      session_id?: string;
+    };
     // Expected body: { user_input, user_type, session_id }
     // Example: { user_input: "I want to make cruise promo, trendy, viral", user_type: "media", session_id: "uuid" }
     
@@ -60,7 +64,7 @@ export const POST: APIRoute = async ({ request }) => {
     console.error('Strider idea generation failed:', error);
     return new Response(JSON.stringify({ 
       error: 'Failed to generate content ideas',
-      details: error.message 
+      details: error instanceof Error ? error.message : String(error)
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
