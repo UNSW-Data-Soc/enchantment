@@ -1,0 +1,100 @@
+---
+const { speed = 0.4, centerX, centerY, class: className = '' } = Astro.props;
+const parallaxSpeed = Number(speed);
+const hasCenter = centerX !== undefined || centerY !== undefined;
+const positionStyle = hasCenter
+	? `--parallax-center-x: ${centerX ?? '50%'}; --parallax-center-y: ${centerY ?? '50%'};`
+	: undefined;
+---
+
+<div
+	class={`parallax-container ${className}`}
+	data-parallax-speed={parallaxSpeed}
+	data-parallax-centered={hasCenter ? '' : undefined}
+	style={positionStyle}
+>
+	<slot />
+</div>
+
+<style>
+	.parallax-container {
+		will-change: transform;
+		transform: translateY(var(--parallax-offset, 0px));
+	}
+
+	.parallax-container[data-parallax-centered] {
+		position: absolute;
+		left: var(--parallax-center-x);
+		top: var(--parallax-center-y);
+		transform: translate(-50%, calc(-50% + var(--parallax-offset, 0px)));
+	}
+</style>
+
+<script>
+	type ParallaxState = {
+		container: HTMLElement;
+		scrollSource: HTMLElement | Window;
+		lastScroll: number;
+		offset: number;
+	};
+
+	const getScrollSource = (element: HTMLElement): HTMLElement | Window => {
+		let parent = element.parentElement;
+
+		while (parent) {
+			const overflowY = getComputedStyle(parent).overflowY;
+			if (/(auto|scroll|overlay)/.test(overflowY)) return parent;
+			parent = parent.parentElement;
+		}
+
+		return window;
+	};
+
+	const getScrollPosition = (source: HTMLElement | Window) =>
+		source === window ? window.scrollY : (source as HTMLElement).scrollTop;
+
+	const states = Array.from(document.querySelectorAll<HTMLElement>('[data-parallax-speed]')).map((container) => {
+		const scrollSource = getScrollSource(container);
+		const initialScroll = getScrollPosition(scrollSource);
+		return {
+			container,
+			scrollSource,
+			lastScroll: initialScroll,
+			offset: 0,
+		};
+	});
+
+	const updateParallax = (state: ParallaxState) => {
+		const speed = Number(state.container.dataset.parallaxSpeed) || 0;
+		const currentScroll = getScrollPosition(state.scrollSource);
+		const scrollDelta = currentScroll - state.lastScroll;
+		if (!scrollDelta) return;
+
+		state.offset -= scrollDelta * speed;
+
+		state.lastScroll = currentScroll;
+		state.container.style.setProperty('--parallax-offset', `${state.offset}px`);
+	};
+
+	const sources = new Map<HTMLElement | Window, ParallaxState[]>();
+	states.forEach((state) => {
+		const sourceStates = sources.get(state.scrollSource) ?? [];
+		sourceStates.push(state);
+		sources.set(state.scrollSource, sourceStates);
+	});
+
+	sources.forEach((sourceStates, source) => {
+		let frame = 0;
+		const update = () => {
+			if (frame) return;
+			frame = requestAnimationFrame(() => {
+				frame = 0;
+				sourceStates.forEach(updateParallax);
+			});
+		};
+
+		update();
+		source.addEventListener('scroll', update, { passive: true });
+		if (source === window) source.addEventListener('v2-lenis-scroll', update, { passive: true });
+	});
+</script>
