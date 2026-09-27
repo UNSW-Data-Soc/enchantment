@@ -1,0 +1,34 @@
+<footer class="v2-footer">
+	<img class="footer-art" src="/backgrounds/footer-bg.png" alt="" />
+	<img class="quicklinks-header" src="/text-headers/quicklinks-header.png" alt="Quick links" />
+</footer>
+
+<style>
+	.v2-footer {
+		position: relative;
+		width: 100%;
+		aspect-ratio: 40 / 18;
+		background-color: #fffcf3;
+		overflow: hidden;
+	}
+
+	.footer-art {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		display: block;
+		width: 100%;
+		height: auto;
+		z-index: 1;
+	}
+
+	.quicklinks-header {
+		position: absolute;
+		top: 26.5%;
+		left: 66%;
+		width: clamp(72px, 15vw, 210px);
+		height: auto;
+		transform: translateX(-50%);
+		z-index: 2;
+	}
+</style>

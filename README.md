@@ -47,4 +47,5 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 | Year | Contributors |
 | ---- | ------------ |
+| 2026 | Andre Baruah, Kai Lu, Shafquat Tabeeb, Varona Chen, Kelvin Yu, Avani Agarwal, Evan Li, Tony Wu, Russell Jiang |
 | 2025 | Alina Cui, Josh Lim, Aditya Muthukattu, Manojvradan Balaji, Ishita Gupta, Shafquat Tabeeb, Kelly Tan, Kai Lu, Arnold Tan |
