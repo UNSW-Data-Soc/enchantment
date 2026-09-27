@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig, fontProviders } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
-import cloudflare from "@astrojs/cloudflare";
 import alpinejs from "@astrojs/alpinejs";
 import react from "@astrojs/react"
 
@@ -9,33 +8,25 @@ import react from "@astrojs/react"
 export default defineConfig({
   output: "static",
 
-  adapter: cloudflare({
-    platformProxy: {
-      enabled: true,
-    },
-  }),
-
   site: 'https://unsw-data-soc.github.io',
   base: '/',
 
-  experimental: {
-    fonts: [
-      {
-        provider: fontProviders.google(),
-        name: "Inter",
-        cssVariable: "--font-inter",
-        weights: ["400", "500", "700"],
-        styles: ["normal"],
-      },
-      {
-        provider: fontProviders.google(),
-        name: "Syne",
-        cssVariable: "--font-syne",
-        weights: ["400", "700", "800"],
-        styles: ["normal"],
-      },
-    ],
-  },
+  fonts: [
+    {
+      provider: fontProviders.google(),
+      name: "Inter",
+      cssVariable: "--font-inter",
+      weights: ["400", "500", "700"],
+      styles: ["normal"],
+    },
+    {
+      provider: fontProviders.google(),
+      name: "Syne",
+      cssVariable: "--font-syne",
+      weights: ["400", "700", "800"],
+      styles: ["normal"],
+    },
+  ],
 
   vite: {
     plugins: [tailwindcss()],
