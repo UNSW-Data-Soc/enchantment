@@ -45,7 +45,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Contributors
 
-| Year | Contributors |
-| ---- | ------------ |
-| 2026 | Andre Baruah, Kai Lu, Shafquat Tabeeb, Varona Chen, Kelvin Yu, Avani Agarwal, Evan Li, Tony Wu, Russell Jiang |
-| 2025 | Alina Cui, Josh Lim, Aditya Muthukattu, Manojvradan Balaji, Ishita Gupta, Shafquat Tabeeb, Kelly Tan, Kai Lu, Arnold Tan |
+| Year | VPO | Directors | Subcommittee |
+| ---- | --- | --------- | ------------ |
+| 2026 | Andre Baruah | Kai Lu, Shafquat Tabeeb | Avani Agarwal, Evan Li, Kelvin Yu, Russell Jiang, Tony Wu, Varona Chen |
+| 2025 | Alina Cui | Ishita Gupta, Manojvradan Balaji | Aditya Muthukattu, Arnold Tan, Josh Lim, Kai Lu, Kelly Tan, Shafquat Tabeeb |
