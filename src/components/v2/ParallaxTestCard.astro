@@ -1,0 +1,41 @@
+---
+import ParallaxContainer from './ParallaxContainer.astro';
+---
+
+<ParallaxContainer centerX="50%" centerY="62%" class="parallax-test-card-wrapper">
+	<article class="parallax-test-card">
+		<span>SECOND TEST</span>
+		<h2>Independent movement</h2>
+		<p>This component uses the reusable parallax container with its own speed and position.</p>
+	</article>
+</ParallaxContainer>
+
+<style>
+	.parallax-test-card-wrapper {
+		width: min(18rem, calc(100% - 2rem));
+	}
+
+	.parallax-test-card {
+		padding: 1rem 1.25rem;
+		border: 2px solid #141414;
+		background: rgba(245, 116, 77, 0.92);
+		color: #141414;
+		box-shadow: 0.45rem 0.45rem 0 #141414;
+	}
+
+	.parallax-test-card span {
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+	}
+
+	.parallax-test-card h2 {
+		margin: 0.35rem 0;
+		font-size: 1.25rem;
+	}
+
+	.parallax-test-card p {
+		margin: 0;
+		font-size: 0.85rem;
+	}
+</style>

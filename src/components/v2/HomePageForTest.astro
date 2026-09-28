@@ -1,0 +1,50 @@
+---
+import ParallaxContainer from './ParallaxContainer.astro';
+import ParallaxTestCard from './ParallaxTestCard.astro';
+---
+
+<main class="v2-home" aria-label="Parallax playground homepage">
+	<img src="/backgrounds/homepage-bg-v2-p00.png" alt="" />
+	<ParallaxContainer speed="0.4" centerX="50%" centerY="38%" class="parallax-test-wrapper">
+		<div class="parallax-test-box">
+			<span>PARALLAX TEST</span>
+			<p>This box moves slightly faster than the background.</p>
+		</div>
+	</ParallaxContainer>
+	<ParallaxTestCard />
+</main>
+
+<style>
+	.v2-home {
+		position: relative;
+		width: 100%;
+	}
+
+	.v2-home img {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	.parallax-test-wrapper {
+		width: min(20rem, calc(100% - 2rem));
+	}
+
+	.parallax-test-box {
+		padding: 1rem 1.25rem;
+		border: 2px solid #141414;
+		background: rgba(255, 252, 243, 0.9);
+		color: #141414;
+		text-align: center;
+	}
+
+	.parallax-test-box span {
+		font-weight: 700;
+		letter-spacing: 0.1em;
+	}
+
+	.parallax-test-box p {
+		margin: 0.4rem 0 0;
+		font-size: 0.85rem;
+	}
+</style>
