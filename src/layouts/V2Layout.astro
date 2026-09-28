@@ -1,0 +1,59 @@
+---
+const { title = 'UNSW DataSoc' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="/favicon.png" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>
+
+<style>
+	:global(html),
+	:global(body) {
+		margin: 0;
+	}
+
+	:global(html.lenis),
+	:global(html.lenis body) {
+		height: auto;
+	}
+
+	:global(.lenis.lenis-smooth) {
+		scroll-behavior: auto !important;
+	}
+
+	:global(.lenis.lenis-smooth iframe) {
+		pointer-events: none;
+	}
+</style>
+
+<script>
+	import Lenis from 'lenis';
+
+	const lenis = new Lenis({
+		autoRaf: false,
+		lerp: 0.1,
+		smoothWheel: true,
+		syncTouch: false,
+	});
+
+	lenis.on('scroll', () => {
+		window.dispatchEvent(new Event('v2-lenis-scroll'));
+	});
+
+	const raf = (time: number) => {
+		lenis.raf(time);
+		requestAnimationFrame(raf);
+	};
+
+	requestAnimationFrame(raf);
+</script>
