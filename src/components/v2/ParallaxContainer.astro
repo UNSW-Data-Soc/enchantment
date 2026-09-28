@@ -1,4 +1,11 @@
 ---
+interface Props {
+	speed?: number | string;
+	centerX?: string;
+	centerY?: string;
+	class?: string;
+}
+
 const { speed = 0.4, centerX, centerY, class: className = '' } = Astro.props;
 const parallaxSpeed = Number(speed);
 const hasCenter = centerX !== undefined || centerY !== undefined;
@@ -30,7 +37,7 @@ const positionStyle = hasCenter
 	}
 </style>
 
-<script>
+<script lang="ts">
 	type ParallaxState = {
 		container: HTMLElement;
 		scrollSource: HTMLElement | Window;
@@ -94,7 +101,12 @@ const positionStyle = hasCenter
 		};
 
 		update();
+		if (source === window) {
+			window.addEventListener('scroll', update, { passive: true });
+			window.addEventListener('v2-lenis-scroll', update, { passive: true });
+			return;
+		}
+
 		source.addEventListener('scroll', update, { passive: true });
-		if (source === window) source.addEventListener('v2-lenis-scroll', update, { passive: true });
 	});
 </script>

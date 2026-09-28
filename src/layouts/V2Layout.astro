@@ -1,4 +1,8 @@
 ---
+interface Props {
+	title?: string;
+}
+
 const { title = 'UNSW DataSoc' } = Astro.props;
 ---
 
@@ -36,7 +40,7 @@ const { title = 'UNSW DataSoc' } = Astro.props;
 	}
 </style>
 
-<script>
+<script lang="ts">
 	import Lenis from 'lenis';
 
 	const lenis = new Lenis({
@@ -50,7 +54,7 @@ const { title = 'UNSW DataSoc' } = Astro.props;
 		window.dispatchEvent(new Event('v2-lenis-scroll'));
 	});
 
-	const raf = (time: number) => {
+	const raf = (time: number): void => {
 		lenis.raf(time);
 		requestAnimationFrame(raf);
 	};
