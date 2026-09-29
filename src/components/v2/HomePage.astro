@@ -1,5 +1,12 @@
+---
+import LatestEvents from './LatestEvents.astro';
+---
+
 <main class="v2-home" aria-label="Homepage">
 	<img src="/backgrounds/homepage-bg-v2-p00.png" alt="" />
+	<div class="latest-events-slot">
+		<LatestEvents />
+	</div>
 </main>
 
 <style>
@@ -12,5 +19,12 @@
 		display: block;
 		width: 100%;
 		height: auto;
+	}
+
+	.latest-events-slot {
+		position: absolute;
+		top: 31.8%;
+		left: 2.6%;
+		right: 0;
 	}
 </style>
