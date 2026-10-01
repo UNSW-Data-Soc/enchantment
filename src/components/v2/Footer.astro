@@ -1,6 +1,16 @@
+---
+import { quicklinks } from "./constants.js";
+---
+
 <footer class="v2-footer">
 	<img class="footer-art" src="/backgrounds/footer-bg.png" alt="" />
 	<img class="quicklinks-header" src="/text-headers/quicklinks-header.png" alt="Quick links" />
+
+	<div class="quick-links">
+		{quicklinks.map((item) => (
+			<a href={`/${item.linkto}`}>{item.text}</a>
+		))}
+	</div>
 </footer>
 
 <style>
@@ -30,5 +40,29 @@
 		height: auto;
 		transform: translateX(-50%);
 		z-index: 2;
+	}
+
+	@font-face {
+		font-family: "Inter";
+		src: url("/Inter-VariableFont_opsz,wght.ttf") format("truetype");
+		font-weight: 100 900;
+		font-style: normal;
+	}
+
+	.quick-links {
+		position: absolute;
+		top: 49%;
+		left: 56%;
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+		z-index: 2;
+	}
+
+	.quick-links a {
+		color: white;
+		text-decoration: underline;
+		font-family: "Inter", sans-serif;
+		font-size: 14px;
 	}
 </style>
