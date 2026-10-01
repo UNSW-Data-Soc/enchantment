@@ -1,5 +1,6 @@
 ---
 import { fetchEvents, type FacebookEvent } from '../../api/api.ts';
+import ParallaxContainer from './ParallaxContainer.astro';
 import clusterBg from '../../assets/ui/shapes/blue-red-cluster.svg?url';
 import arrowLeft from '../../assets/ui/buttons/round-arrow-grey-left.svg?url';
 import arrowRight from '../../assets/ui/buttons/round-grey-arrow-right.svg?url';
@@ -14,35 +15,42 @@ const start = events.length ? 0 : 1;
 ---
 
 <section class="latest-events" aria-labelledby="latest-events-heading">
-	<img class="bg" src={clusterBg} alt="" loading="lazy" />
+	<!-- Parallax speed drops towards the foreground. -->
+	<div class="bg">
+		<ParallaxContainer speed={0.2}><img src={clusterBg} alt="" loading="lazy" /></ParallaxContainer>
+	</div>
 	<h2 id="latest-events-heading">
-		<img src="/text-headers/latest-events.png" alt="Latest Events" />
+		<ParallaxContainer speed={0.12}><img src="/text-headers/latest-events.png" alt="Latest Events" /></ParallaxContainer>
 	</h2>
 
-	<p class="tagline">Stay up<br />to date<br />with<br />our latest<br />events<br />and<br />activities!</p>
-
-	<div class="viewport">
-		<ul class="track" style={`--i: ${start}`}>
-			{slots.map((event, i) => (
-				<li class="card" data-active={i === start ? '' : undefined}>
-					{event && (
-						<a href={`https://www.facebook.com/events/${event.id}`} target="_blank" rel="noopener noreferrer" tabindex={i === start ? undefined : -1}>
-							<img src={event.cover?.source ?? '/icons/datasoc/unsw-datasoc-logo-v2.png'} alt={event.name} loading="lazy" />
-						</a>
-					)}
-				</li>
-			))}
-		</ul>
+	<div class="tagline">
+		<ParallaxContainer speed={0.12}>Stay up<br />to date<br />with<br />our latest<br />events<br />and<br />activities!</ParallaxContainer>
 	</div>
 
-	<div class="controls">
-		<button type="button" data-dir="-1" aria-label="Previous event">
-			<img src={arrowLeft} alt="" />
-		</button>
-		<button type="button" data-dir="1" aria-label="Next event">
-			<img src={arrowRight} alt="" />
-		</button>
-	</div>
+	<ParallaxContainer speed={0.06}>
+		<div class="viewport">
+			<ul class="track" style={`--i: ${start}`}>
+				{slots.map((event, i) => (
+					<li class="card" data-active={i === start ? '' : undefined}>
+						{event && (
+							<a href={`https://www.facebook.com/events/${event.id}`} target="_blank" rel="noopener noreferrer" tabindex={i === start ? undefined : -1}>
+								<img src={event.cover?.source ?? '/icons/datasoc/unsw-datasoc-logo-v2.png'} alt={event.name} loading="lazy" />
+							</a>
+						)}
+					</li>
+				))}
+			</ul>
+		</div>
+
+		<div class="controls">
+			<button type="button" data-dir="-1" aria-label="Previous event">
+				<img src={arrowLeft} alt="" />
+			</button>
+			<button type="button" data-dir="1" aria-label="Next event">
+				<img src={arrowRight} alt="" />
+			</button>
+		</div>
+	</ParallaxContainer>
 </section>
 
 <style>
@@ -60,10 +68,14 @@ const start = events.length ? 0 : 1;
 		position: absolute;
 		top: -21.7vw;
 		left: 50%;
-		height: 71.4vw;
 		transform: translateX(-50%);
 		z-index: -1;
 		pointer-events: none;
+	}
+
+	.bg img {
+		display: block;
+		height: 71.4vw;
 	}
 
 	h2 {
@@ -79,7 +91,6 @@ const start = events.length ? 0 : 1;
 		position: absolute;
 		top: -9.1vw;
 		right: 1.35vw;
-		margin: 0;
 		font-family: var(--font-syne);
 		font-size: 1.5vw;
 		line-height: 2.93;
@@ -135,6 +146,7 @@ const start = events.length ? 0 : 1;
 
 	.controls {
 		display: flex;
+		justify-content: center;
 		margin-top: 2.4vw;
 		gap: 1.5vw;
 	}
