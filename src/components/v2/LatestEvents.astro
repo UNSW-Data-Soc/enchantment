@@ -62,8 +62,9 @@ const start = events.length ? 0 : 1;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		/* Landing V3 drew the components larger than intended; scales the whole section down evenly. */
-		zoom: 0.85;
+		/* Landing V3 drew the components larger than intended; scales the section's foreground down evenly. */
+		--scale: 0.85;
+		zoom: var(--scale);
 	}
 
 	.bg {
@@ -73,6 +74,8 @@ const start = events.length ? 0 : 1;
 		transform: translateX(-50%);
 		z-index: -1;
 		pointer-events: none;
+		/* The halftone cluster stays at its full Landing V3 size. */
+		zoom: calc(1 / var(--scale));
 	}
 
 	.bg img {
