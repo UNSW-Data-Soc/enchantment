@@ -11,7 +11,7 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "@astrojs/alpinejs": "^1.0.0",
+    "@astrojs/alpinejs": "^0.4.5",
     "@astrojs/react": "^7.0.0",
     "@react-three/fiber": "^9.3.0",
     "@tailwindcss/vite": "^4.0.8",
