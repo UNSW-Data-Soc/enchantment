@@ -1,0 +1,68 @@
+---
+import star from '../../assets/ui/shapes/one-star.svg?url';
+---
+
+<!-- One star per [data-section] on the page; the section crossing the middle of the screen is highlighted. -->
+<div class="stars-scrollbar" aria-hidden="true" style={`--star: url("${star}")`}>
+	<div class="track">
+		<div class="stars"></div>
+	</div>
+</div>
+
+<style>
+	/* Covers the homepage background's dark bar (4.13% wide, rounded end at 98% of the image) and clips the stars to it. */
+	.stars-scrollbar {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 4.13%;
+		height: 98%;
+		overflow: clip;
+		border-radius: 0 0 50% 50% / 0 0 0.72% 0.72%;
+		pointer-events: none;
+	}
+
+	/* Extends half a screen past both ends so the stars can stay at 50% until the bar's end has scrolled past them. */
+	.track {
+		position: absolute;
+		inset: -50vh 0;
+	}
+
+	.stars {
+		position: sticky;
+		top: 50vh;
+		transform: translateY(-50%);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.66vw;
+	}
+
+	/* Sizes measured from Landing V3; the offsets crop the star out of one-star.svg's padded viewBox. */
+	.stars :global(span) {
+		width: 1.1vw;
+		height: 1.1vw;
+		background: #fffcf3;
+		mask: var(--star) -0.71vw -0.516vw / 2.63vw no-repeat;
+	}
+
+	.stars :global(span[data-active]) {
+		background: #f36f12;
+	}
+</style>
+
+<script>
+	const stars = document.querySelector('.stars-scrollbar .stars')!;
+	const sections = Array.from(document.querySelectorAll('[data-section]'));
+	const marks = sections.map(() => stars.appendChild(document.createElement('span')));
+
+	// A zero-height root at the middle of the screen: whichever section crosses it is the current one.
+	const observer = new IntersectionObserver(
+		(entries) => {
+			const current = entries.find((entry) => entry.isIntersecting)?.target;
+			if (current) marks.forEach((mark, i) => mark.toggleAttribute('data-active', sections[i] === current));
+		},
+		{ rootMargin: '-50% 0px -50% 0px' },
+	);
+	sections.forEach((section) => observer.observe(section));
+</script>

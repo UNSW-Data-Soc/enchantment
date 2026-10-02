@@ -1,5 +1,15 @@
+---
+import StarsScrollbar from './StarsScrollbar.astro';
+---
+
 <main class="v2-home" aria-label="Homepage">
 	<img src="/backgrounds/homepage-bg-v2-p00.png" alt="" />
+	<!-- Section bands of the background image (Landing V3): hero, latest events, about us, latest publications. -->
+	<div data-section style="top: 0; height: 25.7%"></div>
+	<div data-section style="top: 25.7%; height: 23.9%"></div>
+	<div data-section style="top: 49.6%; height: 28.2%"></div>
+	<div data-section style="top: 77.8%; height: 22.2%"></div>
+	<StarsScrollbar />
 </main>
 
 <style>
@@ -12,5 +22,12 @@
 		display: block;
 		width: 100%;
 		height: auto;
+	}
+
+	[data-section] {
+		position: absolute;
+		left: 0;
+		right: 0;
+		pointer-events: none;
 	}
 </style>
