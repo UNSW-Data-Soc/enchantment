@@ -87,23 +87,27 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 	);
 	sections.forEach((section) => observer.observe(section));
 
-	// One colour per section, blended as the page scrolls; each is reached when its section's centre crosses the middle
-	// of the screen. Landing V3's red over the hero (where the bar is see-through), its bright orange at Latest Events,
-	// then the logo's yellow and blue, which only appear once the stars sit over the opaque dark bar.
-	// Yellow to blue goes the long way round the colour wheel (coral, pink, lavender) instead of through green, which
-	// the site doesn't use. Done in JS so it works without CSS scroll-driven animations.
-	const colours = ['#d94a65', '#ff6a00', '#f4b000', '#119bd6'];
-	const blends = ['oklch', 'oklch', 'oklch longer hue'];
+	// The active colour blends as the page scrolls, reaching each stop as that section's centre crosses the middle of
+	// the screen: Landing V3's red over the hero (where the bar is see-through), through orange to the logo's yellow at
+	// About Us, then the long way round the colour wheel (coral, pink, lavender) to the logo's blue at Latest
+	// Publications, rather than through green, which the site doesn't use. Done in JS so it works without CSS
+	// scroll-driven animations.
+	const stops: [number, string][] = [
+		[0, '#d94a65'],
+		[2, '#f4b000'],
+		[3, '#119bd6'],
+	];
+	const blends = ['oklch', 'oklch longer hue'];
 	const paint = () => {
 		const middle = innerHeight / 2;
-		const centres = sections.map((section) => {
-			const rect = section.getBoundingClientRect();
+		const centres = stops.map(([section]) => {
+			const rect = sections[section].getBoundingClientRect();
 			return rect.top + rect.height / 2;
 		});
 		const next = centres.findIndex((centre) => centre > middle);
-		const i = Math.min(Math.max((next === -1 ? centres.length : next) - 1, 0), colours.length - 2);
+		const i = Math.min(Math.max((next === -1 ? centres.length : next) - 1, 0), stops.length - 2);
 		const t = Math.min(Math.max((middle - centres[i]) / (centres[i + 1] - centres[i]), 0), 1);
-		stars.style.setProperty('--star-colour', `color-mix(in ${blends[i]}, ${colours[i]}, ${colours[i + 1]} ${t * 100}%)`);
+		stars.style.setProperty('--star-colour', `color-mix(in ${blends[i]}, ${stops[i][1]}, ${stops[i + 1][1]} ${t * 100}%)`);
 	};
 	paint();
 	addEventListener('scroll', paint, { passive: true });
