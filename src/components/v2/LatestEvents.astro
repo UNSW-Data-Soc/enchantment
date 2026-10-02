@@ -77,6 +77,8 @@ const start = events.length ? 0 : 1;
   .bg img {
     display: block;
     height: 71.4vw;
+    /* Its wrapper is shrink-to-fit, so a global img { max-width: 100% } reset (e.g. Tailwind's) would squash it. */
+    max-width: none;
   }
 
   h2 {
