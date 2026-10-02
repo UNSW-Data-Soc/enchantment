@@ -31,23 +31,42 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 	.stars {
 		position: sticky;
 		top: 50vh;
-		transform: translateY(-50%);
+		transform: translate(0.1vw, -50%);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 0.66vw;
+		gap: 0.59vw;
 	}
 
 	/* Sizes measured from Landing V3; the offsets crop the star out of one-star.svg's padded viewBox. */
 	.stars :global(span) {
-		width: 1.1vw;
-		height: 1.1vw;
+		width: 1.17vw;
+		height: 1.17vw;
 		background: #fffcf3;
-		mask: var(--star) -0.71vw -0.516vw / 2.63vw no-repeat;
+		mask: var(--star) -0.756vw -0.549vw / 2.8vw no-repeat;
 	}
 
+	/* The active star blends through the DataSoc logo's swoosh colours over the page's scroll (static red where
+	   scroll timelines are unsupported), and pops when it becomes active.
+	   Longhands on purpose: the minifier folds animation-timeline into the animation shorthand, which browsers reject. */
 	.stars :global(span[data-active]) {
-		background: #f36f12;
+		background: #df4551;
+		animation-name: star-colour, star-pop;
+		animation-duration: auto, 0.4s;
+		animation-timing-function: linear, ease-out;
+		animation-timeline: scroll(root), auto;
+	}
+
+	@keyframes star-colour {
+		0% { background: #df4551; }
+		25% { background: #e86d36; }
+		50% { background: #f4b000; }
+		75% { background: #119bd6; }
+		100% { background: #9f62a2; }
+	}
+
+	@keyframes star-pop {
+		50% { transform: scale(1.4); }
 	}
 </style>
 
