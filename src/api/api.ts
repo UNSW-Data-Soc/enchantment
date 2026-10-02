@@ -6,7 +6,7 @@ const ACCESS_TOKEN = 'EAAPDObP5bJMBSGmSCczT3wbdgYV6QADyAwN9qXaZC7kcKM9NXXGtdkXaC
 
 // manageView = {10}
 
-interface FacebookEvent {
+export interface FacebookEvent {
     id: string;
     name: string;
     cover?: { source: string };
