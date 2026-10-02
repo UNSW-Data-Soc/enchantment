@@ -89,12 +89,12 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 
 	// The active colour blends as the page scrolls, reaching each stop when that point crosses the middle of the
 	// screen. Stops are section positions (1.5 = halfway between the centres of sections 1 and 2): Landing V3's red at
-	// the hero (where the bar is see-through), through orange to the logo's yellow between Latest Events and About Us,
+	// the hero (where the bar is see-through), through orange to the logo's yellow at Latest Events,
 	// then the long way round the colour wheel (coral, pink, lavender) to the logo's blue at Latest Publications,
 	// rather than through green, which the site doesn't use. Done in JS so it works without CSS scroll-driven animations.
 	const stops: [number, string][] = [
 		[0, '#d94a65'],
-		[1.5, '#f4b000'],
+		[1, '#f4b000'],
 		[3, '#119bd6'],
 	];
 	const blends = ['oklch', 'oklch longer hue'];
