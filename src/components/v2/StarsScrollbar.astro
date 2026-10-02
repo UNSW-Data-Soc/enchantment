@@ -77,16 +77,6 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 		return mark;
 	});
 
-	// A zero-height root at the middle of the screen: whichever section crosses it is the current one.
-	const observer = new IntersectionObserver(
-		(entries) => {
-			const current = entries.find((entry) => entry.isIntersecting)?.target;
-			if (current) marks.forEach((mark, i) => mark.toggleAttribute('data-active', sections[i] === current));
-		},
-		{ rootMargin: '-50% 0px -50% 0px' },
-	);
-	sections.forEach((section) => observer.observe(section));
-
 	// The active colour blends as the page scrolls, reaching each stop when that point crosses the middle of the
 	// screen. Stops are section positions (1.5 = halfway between the centres of sections 1 and 2): Landing V3's red at
 	// the hero (where the bar is see-through), through orange to the logo's yellow at Latest Events,
@@ -100,10 +90,12 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 	const blends = ['oklch', 'oklch longer hue'];
 	const paint = () => {
 		const middle = innerHeight / 2;
-		const centres = sections.map((section) => {
-			const rect = section.getBoundingClientRect();
-			return rect.top + rect.height / 2;
-		});
+		const rects = sections.map((section) => section.getBoundingClientRect());
+		// The current section is the last one whose top has passed the middle of the screen.
+		const current = Math.max(rects.filter((rect) => rect.top <= middle).length - 1, 0);
+		marks.forEach((mark, i) => mark.toggleAttribute('data-active', i === current));
+
+		const centres = rects.map((rect) => rect.top + rect.height / 2);
 		const at = ([position]: [number, string]) => {
 			const below = Math.floor(position);
 			return centres[below] + (centres[Math.ceil(position)] - centres[below]) * (position - below);
@@ -116,4 +108,5 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 	};
 	paint();
 	addEventListener('scroll', paint, { passive: true });
+	addEventListener('resize', paint);
 </script>
