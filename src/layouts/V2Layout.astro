@@ -1,4 +1,6 @@
 ---
+import { Font } from 'astro:assets';
+
 const { title = 'UNSW DataSoc' } = Astro.props;
 ---
 
@@ -10,6 +12,7 @@ const { title = 'UNSW DataSoc' } = Astro.props;
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<Font cssVariable="--font-syne" preload />
 	</head>
 	<body>
 		<slot />
