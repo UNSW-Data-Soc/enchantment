@@ -38,14 +38,15 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 		gap: 0.59vw;
 	}
 
-	/* Driven by the page's scroll: the active colour blends through the DataSoc logo's swoosh colours in arc order, so
-	   each blend is between neighbouring arcs (static yellow where scroll timelines are unsupported). Registered so it
-	   can be animated and mixed.
+	/* Driven by the page's scroll: the active colour blends across neighbouring arcs of the DataSoc logo's swoosh, red
+	   (hero, as in Landing V3) to orange (Latest Events) to yellow, which only appears over the dark bar since it is
+	   near-invisible on the hero's light background. Static red where scroll timelines are unsupported. Registered so
+	   it can be animated and mixed.
 	   Longhands on purpose: the minifier folds animation-timeline into the animation shorthand, which browsers reject. */
 	@property --star-colour {
 		syntax: '<color>';
 		inherits: true;
-		initial-value: #f4b000;
+		initial-value: #df4551;
 	}
 
 	/* How much of the active colour (and glow) a star has; transitions so the highlight eases between stars. */
@@ -63,11 +64,9 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 	}
 
 	@keyframes star-colour {
-		0% { --star-colour: #f4b000; }
-		25% { --star-colour: #e86d36; }
-		50% { --star-colour: #df4551; }
-		75% { --star-colour: #9f62a2; }
-		100% { --star-colour: #119bd6; }
+		0% { --star-colour: #df4551; }
+		35% { --star-colour: #e86d36; }
+		100% { --star-colour: #f4b000; }
 	}
 
 	/* The glow lives on this wrapper because the star's mask would clip it. */
