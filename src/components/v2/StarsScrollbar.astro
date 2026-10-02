@@ -4,122 +4,122 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 
 <!-- One star per [data-section] on the page; the section crossing the middle of the screen is highlighted. -->
 <div class="stars-scrollbar" aria-hidden="true" style={`--star: url("${star}")`}>
-	<div class="track">
-		<div class="stars"></div>
-	</div>
+  <div class="track">
+    <div class="stars"></div>
+  </div>
 </div>
 
 <style>
-	/* Covers the homepage background's dark bar (4.13% wide, rounded end at 98% of the image) and clips the stars to it. */
-	.stars-scrollbar {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 4.13%;
-		height: 98%;
-		overflow: clip;
-		border-radius: 0 0 50% 50% / 0 0 0.72% 0.72%;
-		pointer-events: none;
-	}
+  /* Covers the homepage background's dark bar (4.13% wide, rounded end at 98% of the image) and clips the stars to it. */
+  .stars-scrollbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4.13%;
+    height: 98%;
+    overflow: clip;
+    border-radius: 0 0 50% 50% / 0 0 0.72% 0.72%;
+    pointer-events: none;
+  }
 
-	/* Extends half a screen past both ends so the stars can stay at 50% until the bar's end has scrolled past them. */
-	.track {
-		position: absolute;
-		inset: -50vh 0;
-	}
+  /* Extends half a screen past both ends so the stars can stay at 50% until the bar's end has scrolled past them. */
+  .track {
+    position: absolute;
+    inset: -50vh 0;
+  }
 
-	.stars {
-		position: sticky;
-		top: 50vh;
-		transform: translateY(-50%);
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 0.59vw;
-	}
+  .stars {
+    position: sticky;
+    top: 50vh;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.59vw;
+  }
 
-	/* How much of the active colour (and glow) a star has; transitions so the highlight eases between stars. */
-	@property --on {
-		syntax: '<percentage>';
-		inherits: true;
-		initial-value: 0%;
-	}
+  /* How much of the active colour (and glow) a star has; transitions so the highlight eases between stars. */
+  @property --on {
+    syntax: '<percentage>';
+    inherits: true;
+    initial-value: 0%;
+  }
 
-	/* The glow lives on this wrapper because the star's mask would clip it. */
-	.stars :global(span) {
-		--colour: color-mix(in oklab, var(--star-colour, #d94a65) var(--on), #fffcf3);
-		filter: drop-shadow(0 0 0.25vw color-mix(in oklab, var(--star-colour, #d94a65) var(--on), transparent));
-		transition: --on 150ms ease;
-	}
+  /* The glow lives on this wrapper because the star's mask would clip it. */
+  .stars :global(span) {
+    --colour: color-mix(in oklab, var(--star-colour, #d94a65) var(--on), #fffcf3);
+    filter: drop-shadow(0 0 0.25vw color-mix(in oklab, var(--star-colour, #d94a65) var(--on), transparent));
+    transition: --on 150ms ease;
+  }
 
-	/* Transitions use the destination state's timing: the incoming star eases in, the outgoing one leaves faster. */
-	.stars :global(span[data-active]) {
-		--on: 100%;
-		transition-duration: 250ms;
-	}
+  /* Transitions use the destination state's timing: the incoming star eases in, the outgoing one leaves faster. */
+  .stars :global(span[data-active]) {
+    --on: 100%;
+    transition-duration: 250ms;
+  }
 
-	/* Sizes measured from Landing V3; the offsets crop the star out of one-star.svg's padded viewBox. */
-	.stars :global(i) {
-		display: block;
-		width: 1.17vw;
-		height: 1.17vw;
-		background: var(--colour);
-		mask: var(--star) -0.756vw -0.549vw / 2.8vw no-repeat;
-	}
+  /* Sizes measured from Landing V3; the offsets crop the star out of one-star.svg's padded viewBox. */
+  .stars :global(i) {
+    display: block;
+    width: 1.17vw;
+    height: 1.17vw;
+    background: var(--colour);
+    mask: var(--star) -0.756vw -0.549vw / 2.8vw no-repeat;
+  }
 </style>
 
 <script>
-	const stars = document.querySelector<HTMLElement>('.stars-scrollbar .stars')!;
-	const sections = Array.from(document.querySelectorAll('[data-section]'));
-	const marks = sections.map(() => {
-		const mark = stars.appendChild(document.createElement('span'));
-		mark.append(document.createElement('i'));
-		return mark;
-	});
+  const stars = document.querySelector<HTMLElement>('.stars-scrollbar .stars')!;
+  const sections = Array.from(document.querySelectorAll('[data-section]'));
+  const marks = sections.map(() => {
+    const mark = stars.appendChild(document.createElement('span'));
+    mark.append(document.createElement('i'));
+    return mark;
+  });
 
-	// The active colour blends as the page scrolls, reaching each stop when that point crosses the middle of the
-	// screen. Stops are section positions (1.5 = halfway between the centres of sections 1 and 2): Landing V3's red at
-	// the hero (where the bar is see-through), through orange to the logo's yellow at Latest Events,
-	// then the long way round the colour wheel (coral, pink, lavender) to the logo's blue at Latest Publications,
-	// rather than through green, which the site doesn't use. Done in JS so it works without CSS scroll-driven animations.
-	const stops: [number, string][] = [
-		[0, '#d94a65'],
-		[1, '#f4b000'],
-		[3, '#119bd6'],
-	];
-	const blends = ['oklch', 'oklch longer hue'];
-	const paint = () => {
-		const middle = innerHeight / 2;
-		const rects = sections.map((section) => section.getBoundingClientRect());
-		// The current section is the last one whose top has passed the middle of the screen.
-		const current = Math.max(rects.filter((rect) => rect.top <= middle).length - 1, 0);
-		marks.forEach((mark, i) => mark.toggleAttribute('data-active', i === current));
+  // The active colour blends as the page scrolls, reaching each stop when that point crosses the middle of the
+  // screen. Stops are section positions (1.5 = halfway between the centres of sections 1 and 2): Landing V3's red at
+  // the hero (where the bar is see-through), through orange to the logo's yellow at Latest Events,
+  // then the long way round the colour wheel (coral, pink, lavender) to the logo's blue at Latest Publications,
+  // rather than through green, which the site doesn't use. Done in JS so it works without CSS scroll-driven animations.
+  const stops: [number, string][] = [
+    [0, '#d94a65'],
+    [1, '#f4b000'],
+    [3, '#119bd6'],
+  ];
+  const blends = ['oklch', 'oklch longer hue'];
+  const paint = () => {
+    const middle = innerHeight / 2;
+    const rects = sections.map((section) => section.getBoundingClientRect());
+    // The current section is the last one whose top has passed the middle of the screen.
+    const current = Math.max(rects.filter((rect) => rect.top <= middle).length - 1, 0);
+    marks.forEach((mark, i) => mark.toggleAttribute('data-active', i === current));
 
-		const centres = rects.map((rect) => rect.top + rect.height / 2);
-		const at = ([stop]: [number, string]) => {
-			// Clamped so a stop past the last section can't read a centre that doesn't exist.
-			const position = Math.min(stop, centres.length - 1);
-			const below = Math.floor(position);
-			return centres[below] + (centres[Math.ceil(position)] - centres[below]) * (position - below);
-		};
-		const points = stops.map(at);
-		const next = points.findIndex((point) => point > middle);
-		const i = Math.min(Math.max((next === -1 ? points.length : next) - 1, 0), stops.length - 2);
-		const t = Math.min(Math.max((middle - points[i]) / (points[i + 1] - points[i] || 1), 0), 1);
-		// Set on the active star only, so the others don't restyle on every scroll; the outgoing star keeps its
-		// last colour while it fades.
-		marks[current].style.setProperty('--star-colour', `color-mix(in ${blends[i]}, ${stops[i][1]}, ${stops[i + 1][1]} ${t * 100}%)`);
-	};
+    const centres = rects.map((rect) => rect.top + rect.height / 2);
+    const at = ([stop]: [number, string]) => {
+      // Clamped so a stop past the last section can't read a centre that doesn't exist.
+      const position = Math.min(stop, centres.length - 1);
+      const below = Math.floor(position);
+      return centres[below] + (centres[Math.ceil(position)] - centres[below]) * (position - below);
+    };
+    const points = stops.map(at);
+    const next = points.findIndex((point) => point > middle);
+    const i = Math.min(Math.max((next === -1 ? points.length : next) - 1, 0), stops.length - 2);
+    const t = Math.min(Math.max((middle - points[i]) / (points[i + 1] - points[i] || 1), 0), 1);
+    // Set on the active star only, so the others don't restyle on every scroll; the outgoing star keeps its
+    // last colour while it fades.
+    marks[current].style.setProperty('--star-colour', `color-mix(in ${blends[i]}, ${stops[i][1]}, ${stops[i + 1][1]} ${t * 100}%)`);
+  };
 
-	let frame = 0;
-	const schedule = () => {
-		if (frame) return;
-		frame = requestAnimationFrame(() => {
-			frame = 0;
-			paint();
-		});
-	};
-	paint();
-	addEventListener('scroll', schedule, { passive: true });
-	addEventListener('resize', schedule);
+  let frame = 0;
+  const schedule = () => {
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      paint();
+    });
+  };
+  paint();
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('resize', schedule);
 </script>
