@@ -38,17 +38,6 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 		gap: 0.59vw;
 	}
 
-	/* Driven by the page's scroll: the active colour blends across neighbouring arcs of the DataSoc logo's swoosh, red
-	   (hero, as in Landing V3) to orange (Latest Events) to yellow, which only appears over the dark bar since it is
-	   near-invisible on the hero's light background. Static red where scroll timelines are unsupported. Registered so
-	   it can be animated and mixed.
-	   Longhands on purpose: the minifier folds animation-timeline into the animation shorthand, which browsers reject. */
-	@property --star-colour {
-		syntax: '<color>';
-		inherits: true;
-		initial-value: #df4551;
-	}
-
 	/* How much of the active colour (and glow) a star has; transitions so the highlight eases between stars. */
 	@property --on {
 		syntax: '<percentage>';
@@ -56,23 +45,10 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 		initial-value: 0%;
 	}
 
-	.stars {
-		animation-name: star-colour;
-		animation-duration: auto;
-		animation-timing-function: linear;
-		animation-timeline: scroll(root);
-	}
-
-	@keyframes star-colour {
-		0% { --star-colour: #df4551; }
-		35% { --star-colour: #e86d36; }
-		100% { --star-colour: #f4b000; }
-	}
-
 	/* The glow lives on this wrapper because the star's mask would clip it. */
 	.stars :global(span) {
-		--colour: color-mix(in oklab, var(--star-colour) var(--on), #fffcf3);
-		filter: drop-shadow(0 0 0.5vw color-mix(in oklab, var(--star-colour) var(--on), transparent));
+		--colour: color-mix(in oklab, var(--star-colour, #df4551) var(--on), #fffcf3);
+		filter: drop-shadow(0 0 0.5vw color-mix(in oklab, var(--star-colour, #df4551) var(--on), transparent));
 		transition: --on 150ms ease;
 	}
 
@@ -93,7 +69,7 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 </style>
 
 <script>
-	const stars = document.querySelector('.stars-scrollbar .stars')!;
+	const stars = document.querySelector<HTMLElement>('.stars-scrollbar .stars')!;
 	const sections = Array.from(document.querySelectorAll('[data-section]'));
 	const marks = sections.map(() => {
 		const mark = stars.appendChild(document.createElement('span'));
@@ -110,4 +86,21 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 		{ rootMargin: '-50% 0px -50% 0px' },
 	);
 	sections.forEach((section) => observer.observe(section));
+
+	// The active colour blends across neighbouring arcs of the logo's swoosh as the page scrolls: red over the hero
+	// (as in Landing V3, where the bar is see-through), orange at Latest Events, and yellow only once the stars sit
+	// over the opaque dark bar, where it reads best. Done in JS so it works without CSS scroll-driven animations.
+	const stops: [number, number[]][] = [
+		[0, [0xdf, 0x45, 0x51]],
+		[0.35, [0xe8, 0x6d, 0x36]],
+		[1, [0xf4, 0xb0, 0x00]],
+	];
+	const paint = () => {
+		const progress = Math.min(1, Math.max(0, scrollY / (document.documentElement.scrollHeight - innerHeight)));
+		const [[a, from], [b, to]] = progress < stops[1][0] ? [stops[0], stops[1]] : [stops[1], stops[2]];
+		const t = (progress - a) / (b - a);
+		stars.style.setProperty('--star-colour', `rgb(${from.map((v, i) => v + (to[i] - v) * t).join(' ')})`);
+	};
+	paint();
+	addEventListener('scroll', paint, { passive: true });
 </script>
