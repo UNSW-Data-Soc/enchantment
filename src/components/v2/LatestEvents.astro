@@ -15,9 +15,9 @@ const start = events.length ? 0 : 1;
 ---
 
 <section class="latest-events" aria-labelledby="latest-events-heading">
-	<!-- Parallax speed drops towards the foreground. -->
+	<!-- Parallax speed rises towards the foreground. -->
 	<div class="bg">
-		<ParallaxContainer speed={0.2}><img src={clusterBg} alt="" loading="lazy" /></ParallaxContainer>
+		<ParallaxContainer speed={0.06}><img src={clusterBg} alt="" loading="lazy" /></ParallaxContainer>
 	</div>
 	<h2 id="latest-events-heading">
 		<ParallaxContainer speed={0.12}><img src="/text-headers/latest-events.png" alt="Latest Events" /></ParallaxContainer>
@@ -27,7 +27,7 @@ const start = events.length ? 0 : 1;
 		<ParallaxContainer speed={0.12}>Stay up<br />to date<br />with<br />our latest<br />events<br />and<br />activities!</ParallaxContainer>
 	</div>
 
-	<ParallaxContainer speed={0.06}>
+	<ParallaxContainer speed={0.2}>
 		<div class="viewport">
 			<ul class="track" style={`--i: ${start}`}>
 				{slots.map((event, i) => (
