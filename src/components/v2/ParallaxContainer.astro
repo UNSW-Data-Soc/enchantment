@@ -34,8 +34,8 @@ const positionStyle = hasCenter
 	type ParallaxState = {
 		container: HTMLElement;
 		scrollSource: HTMLElement | Window;
-		lastScroll: number;
-		offset: number;
+		// Scroll position at which the container's centre sits at the viewport centre; its offset is 0 there.
+		restScroll: number;
 	};
 
 	const getScrollSource = (element: HTMLElement): HTMLElement | Window => {
@@ -53,27 +53,30 @@ const positionStyle = hasCenter
 	const getScrollPosition = (source: HTMLElement | Window) =>
 		source === window ? window.scrollY : (source as HTMLElement).scrollTop;
 
+	const getViewportCentre = (source: HTMLElement | Window) =>
+		source === window
+			? window.innerHeight / 2
+			: (source as HTMLElement).getBoundingClientRect().top + (source as HTMLElement).clientHeight / 2;
+
+	// Anchoring to the viewport centre (not to the scroll position at page load) keeps layers lined up
+	// wherever they sit on the page, and gives the same layout after a reload mid-page.
+	const measure = (state: ParallaxState) => {
+		const rect = state.container.getBoundingClientRect();
+		const offset = parseFloat(state.container.style.getPropertyValue('--parallax-offset')) || 0;
+		state.restScroll =
+			getScrollPosition(state.scrollSource) + rect.top - offset + rect.height / 2 - getViewportCentre(state.scrollSource);
+	};
+
 	const states = Array.from(document.querySelectorAll<HTMLElement>('[data-parallax-speed]')).map((container) => {
-		const scrollSource = getScrollSource(container);
-		const initialScroll = getScrollPosition(scrollSource);
-		return {
-			container,
-			scrollSource,
-			lastScroll: initialScroll,
-			offset: 0,
-		};
+		const state = { container, scrollSource: getScrollSource(container), restScroll: 0 };
+		measure(state);
+		return state;
 	});
 
 	const updateParallax = (state: ParallaxState) => {
 		const speed = Number(state.container.dataset.parallaxSpeed) || 0;
-		const currentScroll = getScrollPosition(state.scrollSource);
-		const scrollDelta = currentScroll - state.lastScroll;
-		if (!scrollDelta) return;
-
-		state.offset -= scrollDelta * speed;
-
-		state.lastScroll = currentScroll;
-		state.container.style.setProperty('--parallax-offset', `${state.offset}px`);
+		const offset = (state.restScroll - getScrollPosition(state.scrollSource)) * speed;
+		state.container.style.setProperty('--parallax-offset', `${offset}px`);
 	};
 
 	const sources = new Map<HTMLElement | Window, ParallaxState[]>();
@@ -93,8 +96,16 @@ const positionStyle = hasCenter
 			});
 		};
 
+		const remeasure = () => {
+			sourceStates.forEach(measure);
+			update();
+		};
+
 		update();
 		source.addEventListener('scroll', update, { passive: true });
 		if (source === window) source.addEventListener('v2-lenis-scroll', update, { passive: true });
+		// Sizes change once images load and on resize (layouts here are in vw).
+		window.addEventListener('load', remeasure);
+		window.addEventListener('resize', remeasure);
 	});
 </script>
