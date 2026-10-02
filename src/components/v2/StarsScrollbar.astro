@@ -39,13 +39,13 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 	}
 
 	/* Driven by the page's scroll: the active colour blends through the DataSoc logo's swoosh colours in arc order, so
-	   each blend is between neighbouring arcs (static blue where scroll timelines are unsupported). Registered so it
+	   each blend is between neighbouring arcs (static yellow where scroll timelines are unsupported). Registered so it
 	   can be animated and mixed.
 	   Longhands on purpose: the minifier folds animation-timeline into the animation shorthand, which browsers reject. */
 	@property --star-colour {
 		syntax: '<color>';
 		inherits: true;
-		initial-value: #119bd6;
+		initial-value: #f4b000;
 	}
 
 	/* How much of the active colour (and glow) a star has; transitions so the highlight eases between stars. */
@@ -63,22 +63,24 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 	}
 
 	@keyframes star-colour {
-		0% { --star-colour: #119bd6; }
-		25% { --star-colour: #9f62a2; }
+		0% { --star-colour: #f4b000; }
+		25% { --star-colour: #e86d36; }
 		50% { --star-colour: #df4551; }
-		75% { --star-colour: #e86d36; }
-		100% { --star-colour: #f4b000; }
+		75% { --star-colour: #9f62a2; }
+		100% { --star-colour: #119bd6; }
 	}
 
 	/* The glow lives on this wrapper because the star's mask would clip it. */
 	.stars :global(span) {
 		--colour: color-mix(in oklab, var(--star-colour) var(--on), #fffcf3);
 		filter: drop-shadow(0 0 0.5vw color-mix(in oklab, var(--star-colour) var(--on), transparent));
-		transition: --on 0.4s ease-in-out;
+		transition: --on 150ms ease;
 	}
 
+	/* Transitions use the destination state's timing: the incoming star eases in, the outgoing one leaves faster. */
 	.stars :global(span[data-active]) {
 		--on: 100%;
+		transition-duration: 250ms;
 	}
 
 	/* Sizes measured from Landing V3; the offsets crop the star out of one-star.svg's padded viewBox. */
