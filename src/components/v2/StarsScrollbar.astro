@@ -38,42 +38,66 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 		gap: 0.59vw;
 	}
 
-	/* Sizes measured from Landing V3; the offsets crop the star out of one-star.svg's padded viewBox. */
-	.stars :global(span) {
-		width: 1.17vw;
-		height: 1.17vw;
-		background: #fffcf3;
-		mask: var(--star) -0.756vw -0.549vw / 2.8vw no-repeat;
+	/* Driven by the page's scroll: the active colour blends through the DataSoc logo's swoosh colours (static red where
+	   scroll timelines are unsupported). Registered so it can be animated and mixed.
+	   Longhands on purpose: the minifier folds animation-timeline into the animation shorthand, which browsers reject. */
+	@property --star-colour {
+		syntax: '<color>';
+		inherits: true;
+		initial-value: #df4551;
 	}
 
-	/* The active star blends through the DataSoc logo's swoosh colours over the page's scroll (static red where
-	   scroll timelines are unsupported), and pops when it becomes active.
-	   Longhands on purpose: the minifier folds animation-timeline into the animation shorthand, which browsers reject. */
-	.stars :global(span[data-active]) {
-		background: #df4551;
-		animation-name: star-colour, star-pop;
-		animation-duration: auto, 0.4s;
-		animation-timing-function: linear, ease-out;
-		animation-timeline: scroll(root), auto;
+	/* How much of the active colour (and glow) a star has; transitions so the highlight eases between stars. */
+	@property --on {
+		syntax: '<percentage>';
+		inherits: true;
+		initial-value: 0%;
+	}
+
+	.stars {
+		animation-name: star-colour;
+		animation-duration: auto;
+		animation-timing-function: linear;
+		animation-timeline: scroll(root);
 	}
 
 	@keyframes star-colour {
-		0% { background: #df4551; }
-		25% { background: #e86d36; }
-		50% { background: #f4b000; }
-		75% { background: #119bd6; }
-		100% { background: #9f62a2; }
+		0% { --star-colour: #df4551; }
+		25% { --star-colour: #e86d36; }
+		50% { --star-colour: #f4b000; }
+		75% { --star-colour: #119bd6; }
+		100% { --star-colour: #9f62a2; }
 	}
 
-	@keyframes star-pop {
-		50% { transform: scale(1.4); }
+	/* The glow lives on this wrapper because the star's mask would clip it. */
+	.stars :global(span) {
+		--colour: color-mix(in oklab, var(--star-colour) var(--on), #fffcf3);
+		filter: drop-shadow(0 0 0.5vw color-mix(in oklab, var(--star-colour) var(--on), transparent));
+		transition: --on 0.6s ease-in-out;
+	}
+
+	.stars :global(span[data-active]) {
+		--on: 100%;
+	}
+
+	/* Sizes measured from Landing V3; the offsets crop the star out of one-star.svg's padded viewBox. */
+	.stars :global(i) {
+		display: block;
+		width: 1.17vw;
+		height: 1.17vw;
+		background: var(--colour);
+		mask: var(--star) -0.756vw -0.549vw / 2.8vw no-repeat;
 	}
 </style>
 
 <script>
 	const stars = document.querySelector('.stars-scrollbar .stars')!;
 	const sections = Array.from(document.querySelectorAll('[data-section]'));
-	const marks = sections.map(() => stars.appendChild(document.createElement('span')));
+	const marks = sections.map(() => {
+		const mark = stars.appendChild(document.createElement('span'));
+		mark.append(document.createElement('i'));
+		return mark;
+	});
 
 	// A zero-height root at the middle of the screen: whichever section crosses it is the current one.
 	const observer = new IntersectionObserver(
