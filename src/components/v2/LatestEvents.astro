@@ -56,7 +56,6 @@ const start = events.length ? 0 : 1;
 <style>
 	/* Sizes are vw so the section scales with the full-width homepage background; values measured from Landing V3. */
 	.latest-events {
-		--card-w: 20.5vw;
 		position: relative;
 		isolation: isolate;
 		display: flex;
@@ -104,7 +103,7 @@ const start = events.length ? 0 : 1;
 
 	/* Shows exactly the centre card and its two neighbours; clips sideways only so the scaled-up centre card isn't cropped. */
 	.viewport {
-		width: calc(3 * var(--card-w));
+		width: 61.5vw; /* three 20.5vw cards */
 		overflow-x: clip;
 	}
 
@@ -113,12 +112,13 @@ const start = events.length ? 0 : 1;
 		margin: 0;
 		padding: 0;
 		list-style: none;
-		transform: translateX(calc((1 - var(--i)) * var(--card-w)));
+		/* Percentages, not vw: zoom scales the cards' layout but not a vw length inside transform, so vw slides drift. */
+		transform: translateX(calc((1 - var(--i)) * 100% / 3));
 		transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
 	.card {
-		flex: 0 0 var(--card-w);
+		flex: 0 0 calc(100% / 3);
 		aspect-ratio: 16 / 10;
 		border-radius: 4px;
 		overflow: hidden;
