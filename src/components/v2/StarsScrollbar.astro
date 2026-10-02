@@ -87,19 +87,27 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 	);
 	sections.forEach((section) => observer.observe(section));
 
-	// The active colour blends as the page scrolls: Landing V3's red over the hero (where the bar is see-through),
-	// its bright orange at Latest Events, then the logo's yellow, which only appears once the stars sit over the
-	// opaque dark bar, where it reads best. Done in JS so it works without CSS scroll-driven animations.
-	const stops: [number, number[]][] = [
-		[0, [0xd9, 0x4a, 0x65]],
-		[0.35, [0xff, 0x6a, 0x00]],
-		[1, [0xf4, 0xb0, 0x00]],
+	// One colour per section, blended as the page scrolls; each is reached when its section's centre crosses the middle
+	// of the screen. Landing V3's red over the hero (where the bar is see-through), its bright orange at Latest Events,
+	// then the logo's yellow and purple, which only appear once the stars sit over the opaque dark bar.
+	// Done in JS so it works without CSS scroll-driven animations.
+	const colours = [
+		[0xd9, 0x4a, 0x65],
+		[0xff, 0x6a, 0x00],
+		[0xf4, 0xb0, 0x00],
+		[0x9f, 0x62, 0xa2],
 	];
 	const paint = () => {
-		const progress = Math.min(1, Math.max(0, scrollY / (document.documentElement.scrollHeight - innerHeight)));
-		const [[a, from], [b, to]] = progress < stops[1][0] ? [stops[0], stops[1]] : [stops[1], stops[2]];
-		const t = (progress - a) / (b - a);
-		stars.style.setProperty('--star-colour', `rgb(${from.map((v, i) => v + (to[i] - v) * t).join(' ')})`);
+		const middle = innerHeight / 2;
+		const centres = sections.map((section) => {
+			const rect = section.getBoundingClientRect();
+			return rect.top + rect.height / 2;
+		});
+		const next = centres.findIndex((centre) => centre > middle);
+		const i = Math.min(Math.max((next === -1 ? centres.length : next) - 1, 0), colours.length - 2);
+		const t = Math.min(Math.max((middle - centres[i]) / (centres[i + 1] - centres[i]), 0), 1);
+		const [from, to] = [colours[i], colours[i + 1]];
+		stars.style.setProperty('--star-colour', `rgb(${from.map((v, k) => v + (to[k] - v) * t).join(' ')})`);
 	};
 	paint();
 	addEventListener('scroll', paint, { passive: true });
