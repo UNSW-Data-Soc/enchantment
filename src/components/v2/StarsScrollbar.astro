@@ -96,17 +96,30 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 		marks.forEach((mark, i) => mark.toggleAttribute('data-active', i === current));
 
 		const centres = rects.map((rect) => rect.top + rect.height / 2);
-		const at = ([position]: [number, string]) => {
+		const at = ([stop]: [number, string]) => {
+			// Clamped so a stop past the last section can't read a centre that doesn't exist.
+			const position = Math.min(stop, centres.length - 1);
 			const below = Math.floor(position);
 			return centres[below] + (centres[Math.ceil(position)] - centres[below]) * (position - below);
 		};
 		const points = stops.map(at);
 		const next = points.findIndex((point) => point > middle);
 		const i = Math.min(Math.max((next === -1 ? points.length : next) - 1, 0), stops.length - 2);
-		const t = Math.min(Math.max((middle - points[i]) / (points[i + 1] - points[i]), 0), 1);
-		stars.style.setProperty('--star-colour', `color-mix(in ${blends[i]}, ${stops[i][1]}, ${stops[i + 1][1]} ${t * 100}%)`);
+		const t = Math.min(Math.max((middle - points[i]) / (points[i + 1] - points[i] || 1), 0), 1);
+		// Set on the active star only, so the others don't restyle on every scroll; the outgoing star keeps its
+		// last colour while it fades.
+		marks[current].style.setProperty('--star-colour', `color-mix(in ${blends[i]}, ${stops[i][1]}, ${stops[i + 1][1]} ${t * 100}%)`);
+	};
+
+	let frame = 0;
+	const schedule = () => {
+		if (frame) return;
+		frame = requestAnimationFrame(() => {
+			frame = 0;
+			paint();
+		});
 	};
 	paint();
-	addEventListener('scroll', paint, { passive: true });
-	addEventListener('resize', paint);
+	addEventListener('scroll', schedule, { passive: true });
+	addEventListener('resize', schedule);
 </script>
