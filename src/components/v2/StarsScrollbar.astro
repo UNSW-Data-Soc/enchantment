@@ -89,14 +89,11 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 
 	// One colour per section, blended as the page scrolls; each is reached when its section's centre crosses the middle
 	// of the screen. Landing V3's red over the hero (where the bar is see-through), its bright orange at Latest Events,
-	// then the logo's yellow and purple, which only appear once the stars sit over the opaque dark bar.
-	// Done in JS so it works without CSS scroll-driven animations.
-	const colours = [
-		[0xd9, 0x4a, 0x65],
-		[0xff, 0x6a, 0x00],
-		[0xf4, 0xb0, 0x00],
-		[0x9f, 0x62, 0xa2],
-	];
+	// then the logo's yellow and blue, which only appear once the stars sit over the opaque dark bar.
+	// Yellow to blue goes the long way round the colour wheel (coral, pink, lavender) instead of through green, which
+	// the site doesn't use. Done in JS so it works without CSS scroll-driven animations.
+	const colours = ['#d94a65', '#ff6a00', '#f4b000', '#119bd6'];
+	const blends = ['oklch', 'oklch', 'oklch longer hue'];
 	const paint = () => {
 		const middle = innerHeight / 2;
 		const centres = sections.map((section) => {
@@ -106,8 +103,7 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 		const next = centres.findIndex((centre) => centre > middle);
 		const i = Math.min(Math.max((next === -1 ? centres.length : next) - 1, 0), colours.length - 2);
 		const t = Math.min(Math.max((middle - centres[i]) / (centres[i + 1] - centres[i]), 0), 1);
-		const [from, to] = [colours[i], colours[i + 1]];
-		stars.style.setProperty('--star-colour', `rgb(${from.map((v, k) => v + (to[k] - v) * t).join(' ')})`);
+		stars.style.setProperty('--star-colour', `color-mix(in ${blends[i]}, ${colours[i]}, ${colours[i + 1]} ${t * 100}%)`);
 	};
 	paint();
 	addEventListener('scroll', paint, { passive: true });
