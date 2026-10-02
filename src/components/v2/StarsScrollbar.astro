@@ -47,8 +47,8 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 
 	/* The glow lives on this wrapper because the star's mask would clip it. */
 	.stars :global(span) {
-		--colour: color-mix(in oklab, var(--star-colour, #df4551) var(--on), #fffcf3);
-		filter: drop-shadow(0 0 0.5vw color-mix(in oklab, var(--star-colour, #df4551) var(--on), transparent));
+		--colour: color-mix(in oklab, var(--star-colour, #d94a65) var(--on), #fffcf3);
+		filter: drop-shadow(0 0 0.25vw color-mix(in oklab, var(--star-colour, #d94a65) var(--on), transparent));
 		transition: --on 150ms ease;
 	}
 
@@ -87,12 +87,12 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 	);
 	sections.forEach((section) => observer.observe(section));
 
-	// The active colour blends across neighbouring arcs of the logo's swoosh as the page scrolls: red over the hero
-	// (as in Landing V3, where the bar is see-through), orange at Latest Events, and yellow only once the stars sit
-	// over the opaque dark bar, where it reads best. Done in JS so it works without CSS scroll-driven animations.
+	// The active colour blends as the page scrolls: Landing V3's red over the hero (where the bar is see-through),
+	// its bright orange at Latest Events, then the logo's yellow, which only appears once the stars sit over the
+	// opaque dark bar, where it reads best. Done in JS so it works without CSS scroll-driven animations.
 	const stops: [number, number[]][] = [
-		[0, [0xdf, 0x45, 0x51]],
-		[0.35, [0xe8, 0x6d, 0x36]],
+		[0, [0xd9, 0x4a, 0x65]],
+		[0.35, [0xff, 0x6a, 0x00]],
 		[1, [0xf4, 0xb0, 0x00]],
 	];
 	const paint = () => {
