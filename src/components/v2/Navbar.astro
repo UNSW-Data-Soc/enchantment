@@ -68,6 +68,19 @@ const isCurrent = (href: string) =>
 <style>
   .v2-navbar {
     font-family: var(--font-syne), sans-serif;
+    transition: transform 300ms ease, opacity 300ms ease;
+  }
+
+  .v2-navbar[data-hidden='true'] {
+    transform: translateY(calc(-100% - 2rem));
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .v2-navbar {
+      transition: none;
+    }
   }
 
   .contact-link {
@@ -109,6 +122,50 @@ const isCurrent = (href: string) =>
   const toggle = menu?.querySelector('summary');
 
   if (header && menu && toggle) {
+    // Use the actual scroll position so wheel, touch, keyboard and Lenis agree.
+    const scrollPosition = () => Math.max(0, Math.min(
+      window.scrollY,
+      document.documentElement.scrollHeight - window.innerHeight,
+    ));
+    let previousY = scrollPosition();
+    let travel = 0;
+    let frame = 0;
+
+    const reveal = () => {
+      header.dataset.hidden = 'false';
+      travel = 0;
+    };
+
+    const updateScroll = () => {
+      frame = 0;
+      const y = scrollPosition();
+      const delta = y - previousY;
+      previousY = y;
+
+      // Keep navigation usable at the top, while open, and during keyboard use.
+      if (y <= header.offsetHeight || menu.open || header.querySelector(':focus-visible')) {
+        reveal();
+        return;
+      }
+      if (!delta) return;
+
+      // Ignore tiny movements without losing slow, continuous scrolling.
+      travel = Math.sign(delta) === Math.sign(travel) ? travel + delta : delta;
+      if (Math.abs(travel) >= 8) {
+        header.dataset.hidden = String(travel > 0);
+        travel = 0;
+      }
+    };
+
+    const scheduleScroll = () => {
+      if (!frame) frame = requestAnimationFrame(updateScroll);
+    };
+
+    window.addEventListener('scroll', scheduleScroll, { passive: true });
+    window.addEventListener('v2-lenis-scroll', scheduleScroll);
+    header.addEventListener('focusin', reveal);
+    menu.addEventListener('toggle', () => { if (menu.open) reveal(); });
+
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && menu.open) {
         menu.open = false;
