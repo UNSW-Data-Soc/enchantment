@@ -16,7 +16,11 @@ const { title = 'UNSW DataSoc' } = Astro.props;
     <title>{title}</title>
     <Font cssVariable="--font-syne" preload />
   </head>
-  <body class:list={[{ 'pt-16 lg:pt-14': Astro.url.pathname.replace(/\/$/, '') !== '/v2' }]}>
+  <body
+    class:list={[
+      { 'pt-16 lg:pt-14': Astro.url.pathname.replace(/\/$/, '') !== '/v2' },
+    ]}
+  >
     <Navbar />
     <slot />
   </body>

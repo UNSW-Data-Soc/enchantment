@@ -6,9 +6,11 @@ import logo from '../../../public/favicon.png';
 const MERCH_ENABLED = false;
 
 // Prefer the V2 routes as their page stubs land; keep every link working meanwhile.
-const pages = import.meta.glob('/src/pages/v2/**/index.astro');
+const pages = Object.keys(import.meta.glob('/src/pages/v2/**/index.astro'));
 const pageLink = (page: string, fallback: string) =>
-  `/src/pages/v2/${page}/index.astro` in pages ? `/v2/${page}/` : fallback;
+  pages.includes(`/src/pages/v2/${page}/index.astro`)
+    ? `/v2/${page}/`
+    : fallback;
 
 const links = [
   { text: 'Who We Are', href: pageLink('who-we-are', '/who-we-are/') },
@@ -16,9 +18,14 @@ const links = [
   { text: 'Events', href: pageLink('events', '/updates/') },
   { text: 'Sponsorships', href: pageLink('sponsorships', '/sponsorships/') },
   { text: 'Publications', href: pageLink('publications', '/publication/') },
-  ...(MERCH_ENABLED ? [{ text: 'Merch', href: pageLink('merch', '/merch/') }] : []),
+  ...(MERCH_ENABLED
+    ? [{ text: 'Merch', href: pageLink('merch', '/merch/') }]
+    : []),
 ];
-const contact = { text: 'Contact Us', href: pageLink('contact-us', '/contact/') };
+const contact = {
+  text: 'Contact Us',
+  href: pageLink('contact-us', '/contact/'),
+};
 const currentPage = Astro.url.pathname.replace(/\/$/, '');
 const isCurrent = (href: string) =>
   currentPage === href.replace(/\/$/, '') || currentPage.startsWith(href);
@@ -29,36 +36,65 @@ const isCurrent = (href: string) =>
     aria-label="Main navigation"
     class="grid h-16 grid-cols-[1fr_auto] items-center px-4 lg:h-14 lg:grid-cols-[minmax(4rem,1fr)_auto_minmax(8rem,1fr)] lg:px-6"
   >
-    <a href="/v2/" aria-label="UNSW DataSoc homepage" class="home-link flex size-11 items-center justify-center justify-self-start">
+    <a
+      href="/v2/"
+      aria-label="UNSW DataSoc homepage"
+      class="home-link flex size-11 items-center justify-center justify-self-start"
+    >
       <Image src={logo} alt="" width={32} height={32} />
     </a>
 
     <ul class="hidden h-full items-stretch lg:flex">
       {links.map(({ text, href }) => (
         <li class="flex">
-          <a class="nav-ribbon flex items-center px-4 text-xs font-bold xl:px-5" href={href} aria-current={isCurrent(href) ? 'page' : undefined}>
+          <a
+            class="nav-ribbon flex items-center px-4 text-xs font-bold xl:px-5"
+            href={href}
+            aria-current={isCurrent(href) ? 'page' : undefined}
+          >
             <span>{text}</span>
           </a>
         </li>
       ))}
     </ul>
 
-    <a class="nav-ribbon contact-link hidden h-full items-center justify-self-end px-4 text-xs font-bold lg:flex" href={contact.href} aria-current={isCurrent(contact.href) ? 'page' : undefined}>
+    <a
+      class="nav-ribbon contact-link hidden h-full items-center justify-self-end px-4 text-xs font-bold lg:flex"
+      href={contact.href}
+      aria-current={isCurrent(contact.href) ? 'page' : undefined}
+    >
       <span>{contact.text}</span>
     </a>
 
     <details class="mobile-menu lg:hidden">
       <summary class="nav-ribbon flex min-h-11 cursor-pointer list-none items-center gap-3 px-3 text-sm font-bold">
         <span>Menu</span>
-        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <svg
+          class="size-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          aria-hidden="true"
+        >
           <path class="menu-icon" d="M4 6h16M4 12h16M4 18h16" />
           <path class="close-icon" d="m6 6 12 12M6 18 18 6" />
         </svg>
       </summary>
-      <ul class="mobile-links absolute inset-x-0 top-full overflow-y-auto bg-[#fffcf3] p-4 shadow-lg" data-lenis-prevent>
+      <ul
+        class="mobile-links absolute inset-x-0 top-full overflow-y-auto bg-[#fffcf3] p-4 shadow-lg"
+        data-lenis-prevent
+      >
         {[...links, contact].map(({ text, href }) => (
           <li>
-            <a class:list={['nav-ribbon flex min-h-12 items-center px-4 text-sm font-bold', { 'contact-link': href === contact.href }]} href={href} aria-current={isCurrent(href) ? 'page' : undefined}>
+            <a
+              class:list={[
+                'nav-ribbon flex min-h-12 items-center px-4 text-sm font-bold',
+                { 'contact-link': href === contact.href },
+              ]}
+              href={href}
+              aria-current={isCurrent(href) ? 'page' : undefined}
+            >
               <span>{text}</span>
             </a>
           </li>
@@ -71,7 +107,9 @@ const isCurrent = (href: string) =>
 <style>
   .v2-navbar {
     font-family: var(--font-syne), sans-serif;
-    transition: transform 300ms ease, opacity 300ms ease;
+    transition:
+      transform 300ms ease,
+      opacity 300ms ease;
   }
 
   .v2-navbar[data-hidden='true'] {
@@ -168,10 +206,14 @@ const isCurrent = (href: string) =>
 
   if (header && menu && toggle) {
     // Use the actual scroll position so wheel, touch, keyboard and Lenis agree.
-    const scrollPosition = () => Math.max(0, Math.min(
-      window.scrollY,
-      document.documentElement.scrollHeight - window.innerHeight,
-    ));
+    const scrollPosition = () =>
+      Math.max(
+        0,
+        Math.min(
+          window.scrollY,
+          document.documentElement.scrollHeight - window.innerHeight,
+        ),
+      );
     let previousY = scrollPosition();
     let travel = 0;
     let frame = 0;
@@ -188,7 +230,11 @@ const isCurrent = (href: string) =>
       previousY = y;
 
       // Keep navigation usable at the top, while open, and during keyboard use.
-      if (y <= header.offsetHeight || menu.open || header.querySelector(':focus-visible')) {
+      if (
+        y <= header.offsetHeight ||
+        menu.open ||
+        header.querySelector(':focus-visible')
+      ) {
         reveal();
         return;
       }
@@ -209,7 +255,17 @@ const isCurrent = (href: string) =>
     window.addEventListener('scroll', scheduleScroll, { passive: true });
     window.addEventListener('v2-lenis-scroll', scheduleScroll);
     header.addEventListener('focusin', reveal);
-    menu.addEventListener('toggle', () => { if (menu.open) reveal(); });
+    header.addEventListener('focusout', (event) => {
+      if (
+        event.relatedTarget instanceof Node &&
+        !header.contains(event.relatedTarget)
+      ) {
+        menu.open = false;
+      }
+    });
+    menu.addEventListener('toggle', () => {
+      if (menu.open) reveal();
+    });
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && menu.open) {
@@ -218,14 +274,16 @@ const isCurrent = (href: string) =>
       }
     });
 
-    document.addEventListener('pointerdown', (event) => {
+    document.addEventListener('click', (event) => {
       if (event.target instanceof Node && !header.contains(event.target)) {
         menu.open = false;
       }
     });
 
     menu.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', () => { menu.open = false; });
+      link.addEventListener('click', () => {
+        menu.open = false;
+      });
     });
 
     window.matchMedia('(min-width: 64rem)').addEventListener('change', () => {
