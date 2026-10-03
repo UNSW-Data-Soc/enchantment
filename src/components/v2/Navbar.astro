@@ -1,0 +1,133 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../../../public/favicon.png';
+
+// Prefer the V2 routes as their page stubs land; keep every link working meanwhile.
+const pages = import.meta.glob('/src/pages/v2/**/index.astro');
+const pageLink = (page: string, fallback: string) =>
+  `/src/pages/v2/${page}/index.astro` in pages ? `/v2/${page}/` : fallback;
+
+const links = [
+  { text: 'Who We Are', href: pageLink('who-we-are', '/who-we-are/') },
+  { text: 'Meet the Team', href: pageLink('meet-the-team', '/meet-the-team/') },
+  { text: 'Events', href: pageLink('events', '/updates/') },
+  { text: 'Sponsorships', href: pageLink('sponsorships', '/sponsorships/') },
+  { text: 'Publications', href: pageLink('publications', '/publication/') },
+  { text: 'Merch', href: pageLink('merch', '/merch/') },
+];
+const contact = { text: 'Contact Us', href: pageLink('contact-us', '/contact/') };
+const currentPage = Astro.url.pathname.replace(/\/$/, '');
+const isCurrent = (href: string) =>
+  currentPage === href.replace(/\/$/, '') || currentPage.startsWith(href);
+---
+
+<header class="v2-navbar fixed inset-x-0 top-0 z-50 bg-[#fffcf3] text-[#484b70] shadow-[0_16px_32px_0_#00000026]">
+  <nav
+    aria-label="Main navigation"
+    class="grid h-16 grid-cols-[1fr_auto] items-center px-4 lg:h-14 lg:grid-cols-[minmax(4rem,1fr)_auto_minmax(8rem,1fr)] lg:px-6"
+  >
+    <a href="/v2/" aria-label="UNSW DataSoc homepage" class="home-link flex size-11 items-center justify-center justify-self-start">
+      <Image src={logo} alt="" width={32} height={32} />
+    </a>
+
+    <ul class="hidden h-full items-stretch lg:flex">
+      {links.map(({ text, href }) => (
+        <li class="flex">
+          <a class="nav-ribbon flex items-center px-4 text-xs font-bold xl:px-5" href={href} aria-current={isCurrent(href) ? 'page' : undefined}>
+            <span>{text}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <a class="nav-ribbon contact-link hidden h-full items-center justify-self-end px-4 text-xs font-bold lg:flex" href={contact.href} aria-current={isCurrent(contact.href) ? 'page' : undefined}>
+      <span>{contact.text}</span>
+    </a>
+
+    <details class="mobile-menu lg:hidden">
+      <summary class="nav-ribbon flex min-h-11 cursor-pointer list-none items-center gap-3 px-3 text-sm font-bold">
+        <span>Menu</span>
+        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path class="menu-icon" d="M4 6h16M4 12h16M4 18h16" />
+          <path class="close-icon" d="m6 6 12 12M6 18 18 6" />
+        </svg>
+      </summary>
+      <ul class="mobile-links absolute inset-x-0 top-full overflow-y-auto bg-[#fffcf3] p-4 shadow-lg" data-lenis-prevent>
+        {[...links, contact].map(({ text, href }) => (
+          <li>
+            <a class:list={['nav-ribbon flex min-h-12 items-center px-4 text-sm font-bold', { 'contact-link': href === contact.href }]} href={href} aria-current={isCurrent(href) ? 'page' : undefined}>
+              <span>{text}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </details>
+  </nav>
+</header>
+
+<style>
+  .v2-navbar {
+    font-family: var(--font-syne), sans-serif;
+  }
+
+  .contact-link {
+    color: #137aa8;
+  }
+
+  .nav-ribbon[aria-current='page'] {
+    background: linear-gradient(100deg, #ee8796, #ffe3a6);
+  }
+
+  .nav-ribbon:focus-visible,
+  .home-link:focus-visible {
+    outline: 2px solid #484b70;
+    outline-offset: -4px;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-links {
+    max-height: calc(100dvh - 4rem);
+    overscroll-behavior: contain;
+  }
+
+  .close-icon,
+  .mobile-menu[open] .menu-icon {
+    display: none;
+  }
+
+  .mobile-menu[open] .close-icon {
+    display: initial;
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('.v2-navbar');
+  const menu = header?.querySelector<HTMLDetailsElement>('.mobile-menu');
+  const toggle = menu?.querySelector('summary');
+
+  if (header && menu && toggle) {
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && menu.open) {
+        menu.open = false;
+        toggle.focus();
+      }
+    });
+
+    document.addEventListener('pointerdown', (event) => {
+      if (event.target instanceof Node && !header.contains(event.target)) {
+        menu.open = false;
+      }
+    });
+
+    menu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => { menu.open = false; });
+    });
+
+    window.matchMedia('(min-width: 64rem)').addEventListener('change', () => {
+      menu.open = false;
+    });
+  }
+</script>
