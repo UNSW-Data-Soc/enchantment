@@ -2,6 +2,9 @@
 import { Image } from 'astro:assets';
 import logo from '../../../public/favicon.png';
 
+// Set to true when merch is available; controls both desktop and mobile links.
+const MERCH_ENABLED = false;
+
 // Prefer the V2 routes as their page stubs land; keep every link working meanwhile.
 const pages = import.meta.glob('/src/pages/v2/**/index.astro');
 const pageLink = (page: string, fallback: string) =>
@@ -13,7 +16,7 @@ const links = [
   { text: 'Events', href: pageLink('events', '/updates/') },
   { text: 'Sponsorships', href: pageLink('sponsorships', '/sponsorships/') },
   { text: 'Publications', href: pageLink('publications', '/publication/') },
-  { text: 'Merch', href: pageLink('merch', '/merch/') },
+  ...(MERCH_ENABLED ? [{ text: 'Merch', href: pageLink('merch', '/merch/') }] : []),
 ];
 const contact = { text: 'Contact Us', href: pageLink('contact-us', '/contact/') };
 const currentPage = Astro.url.pathname.replace(/\/$/, '');
