@@ -80,21 +80,55 @@ const isCurrent = (href: string) =>
     pointer-events: none;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .v2-navbar {
-      transition: none;
-    }
-  }
-
   .contact-link {
     color: #137aa8;
+  }
+
+  .nav-ribbon {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    transition: color 250ms ease;
+  }
+
+  /* A colour sweep across each ribbon, inspired by WSU's Apply Now button. */
+  .nav-ribbon::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: #484b70;
+    transform: translateX(101%);
+    transition: transform 250ms ease;
+  }
+
+  .nav-ribbon:focus-visible {
+    color: #fffcf3;
+  }
+
+  .nav-ribbon:focus-visible::before {
+    transform: translateX(0);
+  }
+
+  @media (hover: hover) {
+    .nav-ribbon:hover {
+      color: #fffcf3;
+    }
+
+    .nav-ribbon:hover::before {
+      transform: translateX(0);
+    }
   }
 
   .nav-ribbon[aria-current='page'] {
     background: linear-gradient(100deg, #ee8796, #ffe3a6);
   }
 
-  .nav-ribbon:focus-visible,
+  .nav-ribbon:focus-visible {
+    outline: 2px solid #fffcf3;
+    outline-offset: -4px;
+  }
+
   .home-link:focus-visible {
     outline: 2px solid #484b70;
     outline-offset: -4px;
@@ -116,6 +150,14 @@ const isCurrent = (href: string) =>
 
   .mobile-menu[open] .close-icon {
     display: initial;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .v2-navbar,
+    .nav-ribbon,
+    .nav-ribbon::before {
+      transition: none;
+    }
   }
 </style>
 
