@@ -42,7 +42,7 @@ const isCurrent = (href: string) =>
       aria-label="UNSW DataSoc homepage"
       class="home-link flex size-11 items-center justify-center justify-self-start"
     >
-      <Image src={logo} alt="" width={32} height={32} />
+      <Image class="nav-logo" src={logo} alt="" width={32} height={32} />
     </a>
 
     <ul class="hidden h-full items-stretch lg:flex">
@@ -131,6 +131,14 @@ const isCurrent = (href: string) =>
     color: #137aa8;
   }
 
+  .nav-logo {
+    transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .home-link:focus-visible .nav-logo {
+    transform: scale(1.12) rotate(-8deg);
+  }
+
   .nav-link-group {
     isolation: isolate;
   }
@@ -208,6 +216,10 @@ const isCurrent = (href: string) =>
   }
 
   @media (hover: hover) {
+    .home-link:hover .nav-logo {
+      transform: scale(1.12) rotate(-8deg);
+    }
+
     .menu-ribbon:hover {
       color: #fffcf3;
     }
@@ -272,6 +284,7 @@ const isCurrent = (href: string) =>
     .nav-link-group[data-highlight-ready]::before,
     .menu-ribbon,
     .menu-ribbon::before,
+    .nav-logo,
     .menu-line {
       transition: none;
     }
