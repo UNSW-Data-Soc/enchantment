@@ -1,34 +1,273 @@
+---
+// src/components/v2/Footer.astro
+const currentYear = new Date().getFullYear();
+
+const quickLinks = [
+  { name: 'Who We Are', href: '/about' },
+  { name: 'Meet the Team', href: '/team' },
+  { name: 'Events', href: '/events' },
+  { name: 'Sponsorships', href: '/sponsorships' },
+  { name: 'Publications', href: '/publications' },
+  { name: 'Contact Us', href: '/contact' },
+];
+
+const socials = [
+  { name: 'Discord', href: 'https://discord.gg/datasoc' },
+  { name: 'LinkedIn', href: 'https://www.linkedin.com/company/unsw-datasoc' },
+  { name: 'Instagram', href: 'https://www.instagram.com/unswdatasoc/' },
+  { name: 'Facebook', href: 'https://www.facebook.com/unswdatasoc' },
+  { name: 'GitHub', href: 'https://github.com/UNSW-Data-Soc' },
+  { name: 'TikTok', href: 'https://www.tiktok.com/@unswdatasoc' },
+];
+---
+
 <footer class="v2-footer">
-	<img class="footer-art" src="/backgrounds/footer-bg.png" alt="" />
-	<img class="quicklinks-header" src="/text-headers/quicklinks-header.png" alt="Quick links" />
+  <!-- Full-width artboard background -->
+  <img class="footer-art" src="/backgrounds/footer-bg.png" alt="" />
+
+  <!-- Curved quicklinks header positioned precisely over the arc -->
+  <img class="quicklinks-header" src="/text-headers/quicklinks-header.png" alt="Quick links" />
+
+  <!-- Quick links list (middle panel) -->
+  <nav class="quicklinks-list" aria-label="Quick links">
+    {quickLinks.map((l) => (
+      <a href={l.href}>{l.name}</a>
+    ))}
+  </nav>
+
+  <!-- Task 1: "Get in Touch" Box Content (Far Right Panel) -->
+  <section class="get-in-touch" aria-labelledby="get-in-touch-title">
+    <h3 id="get-in-touch-title" class="git-title">Get in Touch</h3>
+
+    <div class="social-grid">
+      {socials.map((s) => (
+        <a href={s.href} target="_blank" rel="noopener noreferrer" class="social-circle" aria-label={s.name}>
+          <span class="sr-only">{s.name}</span>
+        </a>
+      ))}
+    </div>
+
+    <!-- Email link with cream envelope and dark outline -->
+    <a href="mailto:hello@unswdata.com" class="email-link">
+      <svg class="mail-icon" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="0.75" y="0.75" width="22.5" height="14.5" rx="1.5" fill="#fcfbf4" stroke="#1d1e2c" stroke-width="1.5" />
+        <path d="M1 1.5L12 9.5L23 1.5" stroke="#1d1e2c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M1 14.5L8.5 7.5" stroke="#1d1e2c" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M23 14.5L15.5 7.5" stroke="#1d1e2c" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+      <span>hello@unswdata.com</span>
+    </a>
+  </section>
+
+  <!-- Task 2: Left Side Footer Content -->
+  <section class="footer-info">
+    <p class="highlight-line">Made with love by <strong>UNSW Data Science Society</strong></p>
+    <p class="support-line">Proudly supported by <strong>Arc UNSW</strong></p>
+
+    <p class="acknowledgement">
+      UNSW DataSoc acknowledges the Aboriginal and Torres Strait Islander peoples as the first inhabitants of this nation and the Bedegal people as the Traditional Custodians of the Land where the UNSW Kensington campus is situated. We pay our respects to all Elders past, present, and future.
+    </p>
+  </section>
+
+  <!-- Copyright Notice (Bottom Left) -->
+  <div class="copyright-bar">
+    <p>&copy; {currentYear} UNSW Data Science Society. All Rights Reserved.</p>
+  </div>
 </footer>
 
 <style>
-	.v2-footer {
-		position: relative;
-		width: 100%;
-		aspect-ratio: 40 / 18;
-		background-color: #fffcf3;
-		overflow: hidden;
-	}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-	.footer-art {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		display: block;
-		width: 100%;
-		height: auto;
-		z-index: 1;
-	}
+  .v2-footer {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #fffcf3;
+    overflow: hidden;
+    color: #ffffff;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    box-sizing: border-box;
+    line-height: 1.2;
+  }
 
-	.quicklinks-header {
-		position: absolute;
-		top: 26.5%;
-		left: 66%;
-		width: clamp(72px, 15vw, 210px);
-		height: auto;
-		transform: translateX(-50%);
-		z-index: 2;
-	}
+  .footer-art {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+    z-index: 1;
+  }
+
+  /* Refined alignment for DataSoc Quicklinks arc.
+     Width is a % of the footer so it scales with the background art. */
+  .quicklinks-header {
+    position: absolute;
+    top: 21.4%;
+    left: 64%;
+    width: 11.5%;
+    height: auto;
+    transform: translate(-50%, -50%) rotate(-17deg);
+    transform-origin: center;
+    z-index: 2;
+    pointer-events: none;
+    /* outline: 1px solid red; */ /* uncomment to debug positioning */
+  }
+
+  /* Quick links list in the middle panel */
+  .quicklinks-list {
+    position: absolute;
+    top: 18%;
+    left: 51%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.6rem, 1.6vw, 1.8rem);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  }
+
+  .quicklinks-list a {
+    color: #ffffff;
+    font-size: clamp(0.65rem, 1.05vw, 1.15rem);
+    line-height: 1.2;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .quicklinks-list a:hover {
+    opacity: 0.8;
+  }
+
+  /* -------------------------------
+     TASK 1: GET IN TOUCH BOX (FAR RIGHT PANEL)
+  -------------------------------- */
+  .get-in-touch {
+    position: absolute;
+    top: 14%;
+    right: 4.8%;
+    width: clamp(140px, 14vw, 220px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+  }
+
+  .git-title {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    font-size: clamp(1rem, 1.8vw, 2rem);
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 clamp(0.5rem, 1vw, 1.3rem) 0;
+    letter-spacing: -0.02em;
+    text-align: center;
+  }
+
+  .social-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.35rem, 0.7vw, 0.95rem);
+    margin-bottom: clamp(0.6rem, 1.1vw, 1.4rem);
+  }
+
+  .social-circle {
+    width: clamp(1.8rem, 3.2vw, 3.8rem);
+    height: clamp(1.8rem, 3.2vw, 3.8rem);
+    aspect-ratio: 1 / 1;
+    background-color: #fcfbf4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+  }
+
+  .social-circle:hover {
+    transform: scale(1.08);
+  }
+
+  .email-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #ffffff;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    font-size: clamp(10px, 0.9vw, 14px);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+
+  .email-link:hover {
+    text-decoration: underline;
+  }
+
+  .mail-icon {
+    width: clamp(14px, 1.2vw, 20px);
+    height: clamp(10px, 0.9vw, 14px);
+    flex-shrink: 0;
+  }
+
+  /* -------------------------------
+     TASK 2: LEFT FOOTER & COPYRIGHT
+  -------------------------------- */
+  .footer-info {
+    position: absolute;
+    top: 36%;
+    left: 20%;
+    width: clamp(220px, 24vw, 460px);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.35rem, 0.75vw, 0.95rem);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  }
+
+  .highlight-line,
+  .support-line {
+    font-size: clamp(0.65rem, 1.05vw, 1.15rem);
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.35;
+  }
+
+  .highlight-line strong,
+  .support-line strong {
+    font-weight: 700;
+  }
+
+  .acknowledgement {
+    font-size: clamp(0.5rem, 0.75vw, 0.85rem);
+    line-height: 1.45;
+    color: #d1d5db;
+    margin-top: 0.3rem;
+    opacity: 0.9;
+  }
+
+  .copyright-bar {
+    position: absolute;
+    bottom: 5.5%;
+    left: 8%;
+    z-index: 2;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  }
+
+  .copyright-bar p {
+    font-size: clamp(0.55rem, 0.75vw, 0.85rem);
+    color: #d1d5db;
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
 </style>
