@@ -49,7 +49,7 @@ const isCurrent = (href: string) =>
       {links.map(({ text, href }) => (
         <li class="flex">
           <a
-            class="nav-link flex items-center whitespace-nowrap px-6 text-xs font-bold xl:px-8"
+            class="nav-link flex w-[var(--nav-link-width)] items-center justify-center whitespace-nowrap px-3 text-xs font-bold"
             href={href}
             aria-current={isCurrent(href) ? 'page' : undefined}
           >
@@ -60,7 +60,7 @@ const isCurrent = (href: string) =>
     </ul>
 
     <a
-      class="nav-link contact-link hidden h-full items-center justify-self-end whitespace-nowrap px-4 text-xs font-bold lg:flex"
+      class="nav-link contact-link hidden h-full w-[var(--nav-link-width)] items-center justify-center justify-self-end whitespace-nowrap px-3 text-xs font-bold lg:flex"
       href={contact.href}
       aria-current={isCurrent(contact.href) ? 'page' : undefined}
     >
@@ -108,6 +108,7 @@ const isCurrent = (href: string) =>
 
 <style>
   .v2-navbar {
+    --nav-link-width: clamp(8rem, 11.5vw, 10rem);
     --navbar-background: linear-gradient(90deg, #f3e9e6, #fefbf0);
     --link-gradient: linear-gradient(90deg, #ee8796, #ffe3a6);
     background: var(--navbar-background);
