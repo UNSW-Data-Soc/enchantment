@@ -1,30 +1,45 @@
 ---
 import LatestEvents from './LatestEvents.astro';
+import StarsScrollbar from './StarsScrollbar.astro';
 ---
 
 <main class="v2-home" aria-label="Homepage">
-	<img src="/backgrounds/homepage-bg-v2-p00.png" alt="" />
-	<div class="latest-events-slot">
-		<LatestEvents />
-	</div>
+  <img src="/backgrounds/homepage-bg-v2-p00.png" alt="" width="1708" height="4989" fetchpriority="high" />
+  <div class="latest-events-slot">
+    <LatestEvents />
+  </div>
+  <!-- Section bands of the background image (Landing V3): hero, latest events, about us, latest publications. -->
+  <div class="section-band" data-section style="top: 0; height: 25.7%"></div>
+  <div class="section-band" data-section style="top: 25.7%; height: 23.9%"></div>
+  <div class="section-band" data-section style="top: 49.6%; height: 28.2%"></div>
+  <div class="section-band" data-section style="top: 77.8%; height: 22.2%"></div>
+  <StarsScrollbar />
 </main>
 
 <style>
-	.v2-home {
-		position: relative;
-		width: 100%;
-	}
+  .v2-home {
+    position: relative;
+    width: 100%;
+  }
 
-	.v2-home img {
-		display: block;
-		width: 100%;
-		height: auto;
-	}
+  .v2-home img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
 
-	.latest-events-slot {
-		position: absolute;
-		top: 31.8%;
-		left: 2.6%;
-		right: 0;
-	}
+  .latest-events-slot {
+    position: absolute;
+    top: 31.8%;
+    left: 2.6%;
+    right: 0;
+  }
+
+  /* Styled by class: a bare [data-section] rule would be global and pull any real section using the hook out of flow. */
+  .section-band {
+    position: absolute;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+  }
 </style>
