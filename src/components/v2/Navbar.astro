@@ -34,7 +34,8 @@ const isCurrent = (href: string) =>
 <header class="v2-navbar fixed inset-x-0 top-0 z-50 text-[#484b70] shadow-[0_16px_32px_0_#00000026]">
   <nav
     aria-label="Main navigation"
-    class="grid h-16 grid-cols-[1fr_auto] items-center px-4 lg:h-14 lg:grid-cols-[minmax(4rem,1fr)_auto_minmax(8rem,1fr)] lg:px-6"
+    class="nav-link-group relative grid h-16 grid-cols-[1fr_auto] items-center px-4 lg:h-14 lg:grid-cols-[minmax(4rem,1fr)_auto_minmax(8rem,1fr)] lg:px-6"
+    data-nav-links
   >
     <a
       href="/v2/"
@@ -48,7 +49,7 @@ const isCurrent = (href: string) =>
       {links.map(({ text, href }) => (
         <li class="flex">
           <a
-            class="nav-ribbon flex items-center px-6 text-xs font-bold xl:px-8"
+            class="nav-link flex items-center whitespace-nowrap px-6 text-xs font-bold xl:px-8"
             href={href}
             aria-current={isCurrent(href) ? 'page' : undefined}
           >
@@ -59,7 +60,7 @@ const isCurrent = (href: string) =>
     </ul>
 
     <a
-      class="nav-ribbon contact-link hidden h-full items-center justify-self-end px-4 text-xs font-bold lg:flex"
+      class="nav-link contact-link hidden h-full items-center justify-self-end whitespace-nowrap px-4 text-xs font-bold lg:flex"
       href={contact.href}
       aria-current={isCurrent(contact.href) ? 'page' : undefined}
     >
@@ -67,7 +68,7 @@ const isCurrent = (href: string) =>
     </a>
 
     <details class="mobile-menu lg:hidden">
-      <summary class="nav-ribbon flex min-h-11 cursor-pointer list-none items-center gap-3 px-3 text-sm font-bold">
+      <summary class="menu-ribbon flex min-h-11 cursor-pointer list-none items-center gap-3 px-3 text-sm font-bold">
         <span>Menu</span>
         <svg
           class="size-5"
@@ -82,14 +83,15 @@ const isCurrent = (href: string) =>
         </svg>
       </summary>
       <ul
-        class="mobile-links absolute inset-x-0 top-full overflow-y-auto p-4 shadow-lg"
+        class="nav-link-group mobile-links absolute inset-x-0 top-full overflow-y-auto p-4 shadow-lg"
+        data-nav-links
         data-lenis-prevent
       >
         {[...links, contact].map(({ text, href }) => (
           <li>
             <a
               class:list={[
-                'nav-ribbon flex min-h-12 items-center px-4 text-sm font-bold',
+                'nav-link flex min-h-12 items-center px-4 text-sm font-bold',
                 { 'contact-link': href === contact.href },
               ]}
               href={href}
@@ -107,6 +109,7 @@ const isCurrent = (href: string) =>
 <style>
   .v2-navbar {
     --navbar-background: linear-gradient(90deg, #f3e9e6, #fefbf0);
+    --link-gradient: linear-gradient(90deg, #ee8796, #ffe3a6);
     background: var(--navbar-background);
     font-family: var(--font-syne), sans-serif;
     transition:
@@ -124,15 +127,65 @@ const isCurrent = (href: string) =>
     color: #137aa8;
   }
 
-  .nav-ribbon {
+  .nav-link-group {
+    isolation: isolate;
+  }
+
+  /* One gradient window follows the links, horizontally on desktop and vertically on mobile. */
+  .nav-link-group::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: var(--highlight-width, 0px);
+    height: var(--highlight-height, 0px);
+    transform: translate(var(--highlight-x, 0px), var(--highlight-y, 0px));
+    background: var(--link-gradient);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .nav-link-group[data-highlight-ready]::before {
+    transition:
+      transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+      width 450ms cubic-bezier(0.22, 1, 0.36, 1),
+      height 450ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 250ms ease;
+  }
+
+  .nav-link-group[data-highlight-visible='true']::before {
+    opacity: 1;
+  }
+
+  .nav-link {
+    transition: color 350ms ease-in-out;
+  }
+
+  .nav-link:is(:hover, :focus-visible, [aria-current='page']) {
+    color: #484b70;
+  }
+
+  /* Keep the same highlight available before JavaScript loads or when it is disabled. */
+  nav:not([data-highlight-ready])
+    > ul
+    .nav-link:is(:hover, :focus-visible, [aria-current='page']),
+  nav:not([data-highlight-ready])
+    > .nav-link:is(:hover, :focus-visible, [aria-current='page']),
+  .mobile-links:not([data-highlight-ready])
+    .nav-link:is(:hover, :focus-visible, [aria-current='page']) {
+    background: var(--link-gradient);
+  }
+
+  .menu-ribbon {
     position: relative;
     isolation: isolate;
     overflow: hidden;
     transition: color 350ms ease-in-out;
   }
 
-  /* A colour sweep across each ribbon, inspired by WSU's Apply Now button. */
-  .nav-ribbon::before {
+  /* The navy ribbon is reserved for the mobile Menu control. */
+  .menu-ribbon::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -142,34 +195,31 @@ const isCurrent = (href: string) =>
     transition: transform 350ms ease-in-out;
   }
 
-  .nav-ribbon:focus-visible {
+  .menu-ribbon:focus-visible {
     color: #fffcf3;
   }
 
-  .nav-ribbon:focus-visible::before {
+  .menu-ribbon:focus-visible::before {
     transform: translateX(0);
   }
 
   @media (hover: hover) {
-    .nav-ribbon:hover {
+    .menu-ribbon:hover {
       color: #fffcf3;
     }
 
-    .nav-ribbon:hover::before {
+    .menu-ribbon:hover::before {
       transform: translateX(0);
     }
   }
 
-  .nav-ribbon[aria-current='page'] {
-    background: linear-gradient(100deg, #ee8796, #ffe3a6);
-  }
-
-  .nav-ribbon:focus-visible {
+  .menu-ribbon:focus-visible {
     outline: 2px solid #fffcf3;
     outline-offset: -4px;
   }
 
-  .home-link:focus-visible {
+  .home-link:focus-visible,
+  .nav-link:focus-visible {
     outline: 2px solid #484b70;
     outline-offset: -4px;
   }
@@ -195,8 +245,10 @@ const isCurrent = (href: string) =>
 
   @media (prefers-reduced-motion: reduce) {
     .v2-navbar,
-    .nav-ribbon,
-    .nav-ribbon::before {
+    .nav-link,
+    .nav-link-group[data-highlight-ready]::before,
+    .menu-ribbon,
+    .menu-ribbon::before {
       transition: none;
     }
   }
@@ -208,6 +260,81 @@ const isCurrent = (href: string) =>
   const toggle = menu?.querySelector('summary');
 
   if (header && menu && toggle) {
+    header
+      .querySelectorAll<HTMLElement>('[data-nav-links]')
+      .forEach((group) => {
+        const links = Array.from(
+          group.querySelectorAll<HTMLAnchorElement>('.nav-link'),
+        ).filter((link) => link.closest('[data-nav-links]') === group);
+        const current = links.find(
+          (link) => link.getAttribute('aria-current') === 'page',
+        );
+        let hovered: HTMLAnchorElement | undefined;
+
+        const updateHighlight = () => {
+          const focused = links.find((link) => link.matches(':focus-visible'));
+          const target = hovered ?? focused ?? current;
+          const position = target ?? links[0];
+          if (!position || !position.getClientRects().length) {
+            group.removeAttribute('data-highlight-ready');
+            group.dataset.highlightVisible = 'false';
+            hovered = undefined;
+            return;
+          }
+          if (!target && group.hasAttribute('data-highlight-ready')) {
+            group.dataset.highlightVisible = 'false';
+            return;
+          }
+
+          const bounds = group.getBoundingClientRect();
+          const linkBounds = position.getBoundingClientRect();
+          group.style.setProperty(
+            '--highlight-x',
+            `${linkBounds.left - bounds.left + group.scrollLeft}px`,
+          );
+          group.style.setProperty(
+            '--highlight-y',
+            `${linkBounds.top - bounds.top + group.scrollTop}px`,
+          );
+          group.style.setProperty('--highlight-width', `${linkBounds.width}px`);
+          group.style.setProperty(
+            '--highlight-height',
+            `${linkBounds.height}px`,
+          );
+          group.dataset.highlightVisible = String(Boolean(target));
+          requestAnimationFrame(() => {
+            group.dataset.highlightReady = 'true';
+          });
+        };
+
+        links.forEach((link) => {
+          link.addEventListener('pointerenter', (event) => {
+            if (event.pointerType === 'touch') return;
+            hovered = link;
+            updateHighlight();
+          });
+          link.addEventListener('pointerleave', () => {
+            hovered = undefined;
+            updateHighlight();
+          });
+        });
+        group.addEventListener('focusin', () => {
+          hovered = undefined;
+          updateHighlight();
+        });
+        group.addEventListener('focusout', () => {
+          requestAnimationFrame(updateHighlight);
+        });
+        menu.addEventListener('toggle', updateHighlight);
+        window.addEventListener('resize', () => {
+          hovered = undefined;
+          group.removeAttribute('data-highlight-ready');
+          updateHighlight();
+        });
+        document.fonts.ready.then(updateHighlight);
+        updateHighlight();
+      });
+
     // Use the actual scroll position so wheel, touch, keyboard and Lenis agree.
     const scrollPosition = () =>
       Math.max(
