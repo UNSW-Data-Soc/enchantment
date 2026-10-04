@@ -31,7 +31,7 @@ const isCurrent = (href: string) =>
   currentPage === href.replace(/\/$/, '') || currentPage.startsWith(href);
 ---
 
-<header class="v2-navbar fixed inset-x-0 top-0 z-50 bg-[#fffcf3] text-[#484b70] shadow-[0_16px_32px_0_#00000026]">
+<header class="v2-navbar fixed inset-x-0 top-0 z-50 text-[#484b70] shadow-[0_16px_32px_0_#00000026]">
   <nav
     aria-label="Main navigation"
     class="grid h-16 grid-cols-[1fr_auto] items-center px-4 lg:h-14 lg:grid-cols-[minmax(4rem,1fr)_auto_minmax(8rem,1fr)] lg:px-6"
@@ -48,7 +48,7 @@ const isCurrent = (href: string) =>
       {links.map(({ text, href }) => (
         <li class="flex">
           <a
-            class="nav-ribbon flex items-center px-4 text-xs font-bold xl:px-5"
+            class="nav-ribbon flex items-center px-6 text-xs font-bold xl:px-8"
             href={href}
             aria-current={isCurrent(href) ? 'page' : undefined}
           >
@@ -82,7 +82,7 @@ const isCurrent = (href: string) =>
         </svg>
       </summary>
       <ul
-        class="mobile-links absolute inset-x-0 top-full overflow-y-auto bg-[#fffcf3] p-4 shadow-lg"
+        class="mobile-links absolute inset-x-0 top-full overflow-y-auto p-4 shadow-lg"
         data-lenis-prevent
       >
         {[...links, contact].map(({ text, href }) => (
@@ -106,6 +106,8 @@ const isCurrent = (href: string) =>
 
 <style>
   .v2-navbar {
+    --navbar-background: linear-gradient(90deg, #f3e9e6, #fefbf0);
+    background: var(--navbar-background);
     font-family: var(--font-syne), sans-serif;
     transition:
       transform 300ms ease,
@@ -177,6 +179,7 @@ const isCurrent = (href: string) =>
   }
 
   .mobile-links {
+    background: var(--navbar-background);
     max-height: calc(100dvh - 4rem);
     overscroll-behavior: contain;
   }
