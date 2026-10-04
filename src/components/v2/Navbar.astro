@@ -78,30 +78,33 @@ const isCurrent = (href: string) =>
           stroke-width="1.5"
           aria-hidden="true"
         >
-          <path class="menu-icon" d="M4 6h16M4 12h16M4 18h16" />
-          <path class="close-icon" d="m6 6 12 12M6 18 18 6" />
+          <path class="menu-line menu-line-top" d="M4 12h16" />
+          <path class="menu-line menu-line-middle" d="M4 12h16" />
+          <path class="menu-line menu-line-bottom" d="M4 12h16" />
         </svg>
       </summary>
-      <ul
-        class="nav-link-group mobile-links absolute inset-x-0 top-full overflow-y-auto p-4 shadow-lg"
-        data-nav-links
-        data-lenis-prevent
-      >
-        {[...links, contact].map(({ text, href }) => (
-          <li>
-            <a
-              class:list={[
-                'nav-link flex min-h-12 items-center px-4 text-sm font-bold',
-                { 'contact-link': href === contact.href },
-              ]}
-              href={href}
-              aria-current={isCurrent(href) ? 'page' : undefined}
-            >
-              <span>{text}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
+      <div class="mobile-panel absolute inset-x-0 top-full overflow-hidden shadow-lg">
+        <ul
+          class="nav-link-group mobile-links relative overflow-y-auto p-4"
+          data-nav-links
+          data-lenis-prevent
+        >
+          {[...links, contact].map(({ text, href }) => (
+            <li>
+              <a
+                class:list={[
+                  'nav-link flex min-h-12 items-center px-4 text-sm font-bold',
+                  { 'contact-link': href === contact.href },
+                ]}
+                href={href}
+                aria-current={isCurrent(href) ? 'page' : undefined}
+              >
+                <span>{text}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </details>
   </nav>
 </header>
@@ -235,13 +238,32 @@ const isCurrent = (href: string) =>
     overscroll-behavior: contain;
   }
 
-  .close-icon,
-  .mobile-menu[open] .menu-icon {
-    display: none;
+  .menu-line {
+    transform-origin: 12px 12px;
+    transition:
+      transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 200ms ease;
   }
 
-  .mobile-menu[open] .close-icon {
-    display: initial;
+  .menu-line-top {
+    transform: translateY(-6px);
+  }
+
+  .menu-line-bottom {
+    transform: translateY(6px);
+  }
+
+  .mobile-menu[open]:not([data-expanded='false']) .menu-line-top {
+    transform: rotate(45deg);
+  }
+
+  .mobile-menu[open]:not([data-expanded='false']) .menu-line-middle {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+
+  .mobile-menu[open]:not([data-expanded='false']) .menu-line-bottom {
+    transform: rotate(-45deg);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -249,7 +271,8 @@ const isCurrent = (href: string) =>
     .nav-link,
     .nav-link-group[data-highlight-ready]::before,
     .menu-ribbon,
-    .menu-ribbon::before {
+    .menu-ribbon::before,
+    .menu-line {
       transition: none;
     }
   }
@@ -259,8 +282,65 @@ const isCurrent = (href: string) =>
   const header = document.querySelector<HTMLElement>('.v2-navbar');
   const menu = header?.querySelector<HTMLDetailsElement>('.mobile-menu');
   const toggle = menu?.querySelector('summary');
+  const panel = menu?.querySelector<HTMLElement>('.mobile-panel');
 
-  if (header && menu && toggle) {
+  if (header && menu && toggle && panel) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let menuAnimation: Animation | undefined;
+    menu.dataset.expanded = String(menu.open);
+    toggle.setAttribute('aria-expanded', String(menu.open));
+    panel.inert = !menu.open;
+
+    const setMenuOpen = (open: boolean, animate = true) => {
+      if (menu.dataset.expanded === String(open) && animate) return;
+
+      // Start from the visible height so quick repeated clicks reverse smoothly.
+      const height = menu.open ? panel.getBoundingClientRect().height : 0;
+      const opacity = menu.open ? getComputedStyle(panel).opacity : '0';
+      menuAnimation?.cancel();
+      menuAnimation = undefined;
+      menu.dataset.expanded = String(open);
+      toggle.setAttribute('aria-expanded', String(open));
+      panel.inert = !open;
+
+      if (!animate || reducedMotion.matches) {
+        menu.open = open;
+        return;
+      }
+
+      // Keep native details open during the closing animation, but prevent focus
+      // from entering its links. Without JavaScript it remains a normal details menu.
+      menu.open = true;
+      const animation = panel.animate(
+        [
+          { height: `${height}px`, opacity },
+          {
+            height: `${open ? panel.scrollHeight : 0}px`,
+            opacity: open ? 1 : 0,
+          },
+        ],
+        { duration: 400, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+      );
+      menuAnimation = animation;
+      animation.onfinish = () => {
+        if (menuAnimation !== animation) return;
+        menuAnimation = undefined;
+        menu.open = open;
+      };
+    };
+
+    toggle.addEventListener('click', (event) => {
+      event.preventDefault();
+      setMenuOpen(menu.dataset.expanded !== 'true');
+    });
+
+    // Finish any in-flight animation when the viewport or motion preference changes.
+    window.addEventListener('resize', () => {
+      setMenuOpen(menu.dataset.expanded === 'true', false);
+    });
+    reducedMotion.addEventListener('change', () => {
+      setMenuOpen(menu.dataset.expanded === 'true', false);
+    });
     header
       .querySelectorAll<HTMLElement>('[data-nav-links]')
       .forEach((group) => {
@@ -391,7 +471,7 @@ const isCurrent = (href: string) =>
         event.relatedTarget instanceof Node &&
         !header.contains(event.relatedTarget)
       ) {
-        menu.open = false;
+        setMenuOpen(false);
       }
     });
     menu.addEventListener('toggle', () => {
@@ -400,25 +480,25 @@ const isCurrent = (href: string) =>
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && menu.open) {
-        menu.open = false;
+        setMenuOpen(false);
         toggle.focus();
       }
     });
 
     document.addEventListener('click', (event) => {
       if (event.target instanceof Node && !header.contains(event.target)) {
-        menu.open = false;
+        setMenuOpen(false);
       }
     });
 
     menu.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => {
-        menu.open = false;
+        setMenuOpen(false);
       });
     });
 
     window.matchMedia('(min-width: 64rem)').addEventListener('change', () => {
-      menu.open = false;
+      setMenuOpen(false, false);
     });
   }
 </script>
