@@ -126,7 +126,7 @@ const isCurrent = (href: string) =>
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    transition: color 250ms ease;
+    transition: color 350ms ease-in-out;
   }
 
   /* A colour sweep across each ribbon, inspired by WSU's Apply Now button. */
@@ -137,7 +137,7 @@ const isCurrent = (href: string) =>
     z-index: -1;
     background: #484b70;
     transform: translateX(101%);
-    transition: transform 250ms ease;
+    transition: transform 350ms ease-in-out;
   }
 
   .nav-ribbon:focus-visible {
