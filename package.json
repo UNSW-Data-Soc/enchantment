@@ -34,9 +34,5 @@
   },
   "devDependencies": {
     "wrangler": "^4.141.0"
-  },
-  "optionalDependencies": {
-    "@esbuild/linux-x64": "^0.28.2",
-    "esbuild": "^0.28.2"
   }
 }
