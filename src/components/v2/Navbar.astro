@@ -34,7 +34,7 @@ const isCurrent = (href: string) =>
 <header class="v2-navbar fixed inset-x-0 top-0 z-50 text-[#484b70] shadow-[0_16px_32px_0_#00000026]">
   <nav
     aria-label="Main navigation"
-    class="nav-link-group relative grid h-16 grid-cols-[1fr_auto] items-center px-4 lg:h-14 lg:grid-cols-[minmax(4rem,1fr)_auto_minmax(8rem,1fr)] lg:px-6"
+    class="nav-link-group relative grid h-18 grid-cols-[1fr_auto] items-center px-4 lg:grid-cols-[minmax(4rem,1fr)_auto_minmax(8rem,1fr)] lg:px-6"
     data-nav-links
   >
     <a
@@ -42,14 +42,14 @@ const isCurrent = (href: string) =>
       aria-label="UNSW DataSoc homepage"
       class="home-link flex size-11 items-center justify-center justify-self-start"
     >
-      <Image class="nav-logo" src={logo} alt="" width={32} height={32} />
+      <Image class="nav-logo" src={logo} alt="" width={36} height={36} />
     </a>
 
     <ul class="hidden h-full items-stretch lg:flex">
       {links.map(({ text, href }) => (
         <li class="flex">
           <a
-            class="nav-link flex w-[var(--nav-link-width)] items-center justify-center whitespace-nowrap px-3 text-xs font-bold"
+            class="nav-link flex w-[var(--nav-link-width)] items-center justify-center whitespace-nowrap px-3 text-sm font-bold"
             href={href}
             aria-current={isCurrent(href) ? 'page' : undefined}
           >
@@ -60,7 +60,7 @@ const isCurrent = (href: string) =>
     </ul>
 
     <a
-      class="nav-link contact-link hidden h-full w-[var(--nav-link-width)] items-center justify-center justify-self-end whitespace-nowrap px-3 text-xs font-bold lg:flex"
+      class="nav-link contact-link hidden h-full w-[var(--nav-link-width)] items-center justify-center justify-self-end whitespace-nowrap px-3 text-sm font-bold lg:flex"
       href={contact.href}
       aria-current={isCurrent(contact.href) ? 'page' : undefined}
     >
@@ -68,7 +68,7 @@ const isCurrent = (href: string) =>
     </a>
 
     <details class="mobile-menu lg:hidden">
-      <summary class="menu-ribbon flex min-h-11 cursor-pointer list-none items-center gap-3 px-3 text-sm font-bold">
+      <summary class="menu-ribbon flex min-h-11 cursor-pointer list-none items-center gap-3 px-3 text-base font-bold">
         <span>Menu</span>
         <svg
           class="size-5"
@@ -93,7 +93,7 @@ const isCurrent = (href: string) =>
             <li>
               <a
                 class:list={[
-                  'nav-link flex min-h-12 items-center px-4 text-sm font-bold',
+                  'nav-link flex min-h-12 items-center px-4 text-base font-bold',
                   { 'contact-link': href === contact.href },
                 ]}
                 href={href}
@@ -246,7 +246,7 @@ const isCurrent = (href: string) =>
 
   .mobile-links {
     background: var(--navbar-background);
-    max-height: calc(100dvh - 4rem);
+    max-height: calc(100dvh - 4.5rem);
     overscroll-behavior: contain;
   }
 
