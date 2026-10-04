@@ -1,9 +1,27 @@
+---
+import { quicklinks } from "./constants.js";
+import Parallax from "./ParallaxContainer.astro";
+---
+
 <footer class="v2-footer">
 	<img class="footer-art" src="/backgrounds/footer-bg.png" alt="" />
 	<img class="quicklinks-header" src="/text-headers/quicklinks-header.png" alt="Quick links" />
+
+	<div class="quick-links">
+		{quicklinks.map((item) => (
+			<a href={`/${item.linkto}`}>{item.text}</a>
+		))}
+	</div>
+
+	<Parallax>
+		<div class="scroll-btn" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+			<img src="/scroll-to-top-arrow.png" alt="Scroll to top" />
+		</div>
+	</Parallax>
 </footer>
 
 <style>
+	@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 	.v2-footer {
 		position: relative;
 		width: 100%;
@@ -30,5 +48,48 @@
 		height: auto;
 		transform: translateX(-50%);
 		z-index: 2;
+	}
+
+	.quick-links {
+		position: absolute;
+		top: 49%;
+		left: 56%;
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+		z-index: 2;
+	}
+
+	.quick-links a {
+		color: white;
+		text-decoration: underline;
+		font-family: "Inter", sans-serif;
+		font-size: 14px;
+	}
+
+	.scroll-btn {
+		width: 80px;
+		height: 80px;
+		position: relative;
+		background-color: rgb(212, 119, 119);
+		border-radius: 12px;
+		left: 90%;
+		top: 30px;
+		cursor: pointer;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		box-shadow: 10px 10px 20px 5px rgba(0, 0, 0, 0.3);
+		transition: transform 0.2s ease;
+	}
+
+	.scroll-btn img {
+		width: 50px;
+		height: 50px;
+		filter: brightness(0) invert(1);
+	}
+
+	.scroll-btn:hover {
+		transform: translateY(-5px);
 	}
 </style>
