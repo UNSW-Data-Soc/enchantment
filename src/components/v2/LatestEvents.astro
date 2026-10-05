@@ -1,0 +1,216 @@
+---
+import { fetchEvents, type FacebookEvent } from '../../api/api.ts';
+import ParallaxContainer from './ParallaxContainer.astro';
+import clusterBg from '../../assets/ui/shapes/blue-red-cluster.svg?url';
+import arrowLeft from '../../assets/ui/buttons/round-arrow-grey-left.svg?url';
+import arrowRight from '../../assets/ui/buttons/round-grey-arrow-right.svg?url';
+
+// fetchEvents never throws; failures come back as { error } JSON.
+const { pastEvents = [] }: { pastEvents?: FacebookEvent[] } = await (await fetchEvents()).json();
+
+const events = pastEvents.toSorted((a, b) => Date.parse(b.start_time) - Date.parse(a.start_time)).slice(0, 7);
+// Empty slots keep the layout intact when the Facebook fetch returns nothing (e.g. expired token).
+const slots: (FacebookEvent | null)[] = events.length ? events : [null, null, null];
+const start = events.length ? 0 : 1;
+---
+
+<section class="latest-events" aria-labelledby="latest-events-heading">
+  <!-- Parallax speed rises towards the foreground. -->
+  <div class="bg">
+    <ParallaxContainer speed={0.06}><img src={clusterBg} alt="" loading="lazy" /></ParallaxContainer>
+  </div>
+  <h2 id="latest-events-heading">
+    <ParallaxContainer speed={0.12}><img src="/text-headers/latest-events.png" alt="Latest Events" /></ParallaxContainer>
+  </h2>
+
+  <div class="tagline">
+    <ParallaxContainer speed={0.12}>Stay up<br />to date<br />with<br />our latest<br />events<br />and<br />activities!</ParallaxContainer>
+  </div>
+
+  <ParallaxContainer speed={0.2}>
+    <div class="viewport">
+      <ul class="track" style={`--i: ${start}`}>
+        {slots.map((event, i) => (
+          <li class="card" data-active={i === start ? '' : undefined}>
+            {event && (
+              <a href={`https://www.facebook.com/events/${event.id}`} target="_blank" rel="noopener noreferrer" tabindex={i === start ? undefined : -1}>
+                <img src={event.cover?.source ?? '/icons/datasoc/unsw-datasoc-logo-v2.png'} alt={event.name} loading="lazy" />
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="controls">
+      <button type="button" data-dir="-1" aria-label="Previous event">
+        <img src={arrowLeft} alt="" />
+      </button>
+      <button type="button" data-dir="1" aria-label="Next event">
+        <img src={arrowRight} alt="" />
+      </button>
+    </div>
+  </ParallaxContainer>
+</section>
+
+<style>
+  /* Sizes are vw so the section scales with the full-width homepage background; values measured from Landing V3. */
+  .latest-events {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Landing V3 drew the components larger than intended; scales the whole section down evenly. */
+    zoom: 0.85;
+  }
+
+  .bg {
+    position: absolute;
+    top: -21.7vw;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .bg img {
+    display: block;
+    height: 71.4vw;
+    /* Its wrapper is shrink-to-fit, so a global img { max-width: 100% } reset (e.g. Tailwind's) would squash it. */
+    max-width: none;
+  }
+
+  h2 {
+    margin: 0;
+  }
+
+  h2 img {
+    display: block;
+    width: 34.9vw;
+  }
+
+  .tagline {
+    position: absolute;
+    top: -9.1vw;
+    right: 1.35vw;
+    font-family: var(--font-syne);
+    font-size: 1.5vw;
+    line-height: 2.93;
+    letter-spacing: 0.41em;
+    text-align: right;
+    /* Landing V3 uses #1995cb (3.3:1 on the cream bg); darkened to pass WCAG AA. */
+    color: #137aa8;
+  }
+
+  /* Shows exactly the centre card and its two neighbours; clips sideways only so the scaled-up centre card isn't cropped. */
+  .viewport {
+    width: 61.5vw; /* three 20.5vw cards */
+    overflow-x: clip;
+  }
+
+  .track {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    /* Percentages, not vw: zoom scales the cards' layout but not a vw length inside transform, so vw slides drift. */
+    transform: translateX(calc((1 - var(--i)) * 100% / 3));
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .card {
+    flex: 0 0 calc(100% / 3);
+    aspect-ratio: 16 / 10;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #c3ffff;
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.12);
+    transform: scale(0.74);
+    cursor: pointer;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .card[data-active] {
+    transform: scale(1.08);
+  }
+
+  .card[data-active]:hover {
+    transform: scale(1.13);
+    transition-duration: 0.3s;
+  }
+
+  .card a,
+  .card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.4vw;
+    gap: 1.5vw;
+  }
+
+  .controls button {
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+
+  .controls button:hover {
+    transform: scale(1.1);
+  }
+
+  .controls button:active {
+    transform: scale(0.92);
+    transition-duration: 0.1s;
+  }
+
+  .controls img {
+    display: block;
+    width: 4vw;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .track,
+    .card {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const section = document.querySelector('.latest-events')!;
+  const track = section.querySelector<HTMLElement>('.track')!;
+  const cards = Array.from(track.children);
+  let index = Number(track.style.getPropertyValue('--i'));
+
+  const goTo = (next: number) => {
+    // Wraps by sliding back across the track; clone the cards for a seamless infinite loop if that feels jarring.
+    index = (next + cards.length) % cards.length;
+    track.style.setProperty('--i', String(index));
+    cards.forEach((card, i) => {
+      card.toggleAttribute('data-active', i === index);
+      card.querySelector('a')?.setAttribute('tabindex', i === index ? '0' : '-1');
+    });
+  };
+
+  section.querySelectorAll<HTMLButtonElement>('button[data-dir]').forEach((button) => {
+    button.addEventListener('click', () => goTo(index + Number(button.dataset.dir)));
+  });
+
+  // A side card brings itself to the centre instead of following its link.
+  cards.forEach((card, i) => {
+    card.addEventListener('click', (event) => {
+      if (i === index) return;
+      event.preventDefault();
+      goTo(i);
+    });
+  });
+</script>
