@@ -34,15 +34,15 @@ const isCurrent = (href: string) =>
 <header class="v2-navbar fixed inset-x-0 top-0 z-50 text-[#484b70] shadow-[0_16px_32px_0_#00000026]">
   <nav
     aria-label="Main navigation"
-    class="nav-link-group relative grid h-18 grid-cols-[1fr_auto] items-center px-4 lg:grid-cols-[minmax(4rem,1fr)_auto_minmax(8rem,1fr)] lg:px-6"
+    class="nav-link-group relative grid h-16 grid-cols-[1fr_auto] items-center px-3 lg:grid-cols-[minmax(4rem,1fr)_auto_minmax(8rem,1fr)]"
     data-nav-links
   >
     <a
       href="/v2/"
       aria-label="UNSW DataSoc homepage"
-      class="home-link flex size-11 items-center justify-center justify-self-start"
+      class="home-link flex size-10 items-center justify-center justify-self-start"
     >
-      <Image class="nav-logo" src={logo} alt="" width={36} height={36} />
+      <Image class="nav-logo" src={logo} alt="" width={40} height={40} />
     </a>
 
     <ul class="hidden h-full items-stretch lg:flex">
@@ -60,7 +60,7 @@ const isCurrent = (href: string) =>
     </ul>
 
     <a
-      class="nav-link contact-link hidden h-full w-[var(--nav-link-width)] items-center justify-center justify-self-end whitespace-nowrap px-3 text-sm font-bold lg:flex"
+      class="nav-link contact-link hidden h-10 w-[var(--nav-link-width)] items-center justify-center justify-self-end whitespace-nowrap px-3 text-sm font-bold lg:flex"
       href={contact.href}
       aria-current={isCurrent(contact.href) ? 'page' : undefined}
     >
@@ -174,6 +174,15 @@ const isCurrent = (href: string) =>
     transition: color 350ms ease-in-out;
   }
 
+  .nav-link > span {
+    display: inline-block;
+    transition: transform 250ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .nav-link:focus-visible > span {
+    transform: scale(1.05);
+  }
+
   .nav-link:is(:hover, :focus-visible, [aria-current='page']) {
     color: #484b70;
   }
@@ -216,6 +225,10 @@ const isCurrent = (href: string) =>
   }
 
   @media (hover: hover) {
+    .nav-link:hover > span {
+      transform: scale(1.05);
+    }
+
     .home-link:hover .nav-logo {
       transform: scale(1.12) rotate(-8deg);
     }
@@ -246,7 +259,7 @@ const isCurrent = (href: string) =>
 
   .mobile-links {
     background: var(--navbar-background);
-    max-height: calc(100dvh - 4.5rem);
+    max-height: calc(100dvh - 4rem);
     overscroll-behavior: contain;
   }
 
@@ -281,6 +294,7 @@ const isCurrent = (href: string) =>
   @media (prefers-reduced-motion: reduce) {
     .v2-navbar,
     .nav-link,
+    .nav-link > span,
     .nav-link-group[data-highlight-ready]::before,
     .menu-ribbon,
     .menu-ribbon::before,

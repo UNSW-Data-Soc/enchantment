@@ -17,7 +17,7 @@ const { title = 'UNSW DataSoc' } = Astro.props;
     <Font cssVariable="--font-syne" preload />
   </head>
   <body
-    class:list={[{ 'pt-18': Astro.url.pathname.replace(/\/$/, '') !== '/v2' }]}
+    class:list={[{ 'pt-16': Astro.url.pathname.replace(/\/$/, '') !== '/v2' }]}
   >
     <Navbar />
     <slot />
