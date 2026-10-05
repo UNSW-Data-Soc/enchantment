@@ -1,6 +1,6 @@
 <footer class="v2-footer">
-	<img class="footer-art" src="/backgrounds/footer-bg.png" alt="" />
-	<img class="quicklinks-header" src="/text-headers/quicklinks-header.png" alt="Quick links" />
+	<div class="footer-art" aria-hidden="true"></div>
+	<img class="quicklinks-header" src="/text-headers/quicklinks-header.png" alt="Quick links" draggable="false" />
 </footer>
 
 <style>
@@ -18,7 +18,11 @@
 		left: 0;
 		display: block;
 		width: 100%;
-		height: auto;
+		aspect-ratio: 1708 / 581;
+		background-image: url('/backgrounds/footer-bg.png');
+		background-size: 100% auto;
+		background-repeat: no-repeat;
+		pointer-events: none;
 		z-index: 1;
 	}
 
