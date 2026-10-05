@@ -34,13 +34,13 @@ const isCurrent = (href: string) =>
 <header class="v2-navbar fixed inset-x-0 top-0 z-50 text-[#484b70] shadow-[0_16px_32px_0_#00000026]">
   <nav
     aria-label="Main navigation"
-    class="nav-link-group relative grid h-16 grid-cols-[1fr_auto] items-center px-3 lg:grid-cols-[minmax(4rem,1fr)_auto_minmax(8rem,1fr)]"
+    class="nav-link-group relative grid h-16 grid-cols-[1fr_auto] items-center px-3 lg:grid-cols-[minmax(4rem,1fr)_auto_minmax(8rem,1fr)] lg:px-0"
     data-nav-links
   >
     <a
       href="/v2/"
       aria-label="UNSW DataSoc homepage"
-      class="home-link flex size-10 items-center justify-center justify-self-start"
+      class="home-link flex size-10 items-center justify-center justify-self-start lg:size-16"
     >
       <Image class="nav-logo" src={logo} alt="" width={40} height={40} />
     </a>
@@ -60,7 +60,7 @@ const isCurrent = (href: string) =>
     </ul>
 
     <a
-      class="nav-link contact-link hidden h-10 w-[var(--nav-link-width)] items-center justify-center justify-self-end whitespace-nowrap px-3 text-sm font-bold lg:flex"
+      class="nav-link contact-link hidden h-full w-[var(--nav-link-width)] items-center justify-center justify-self-end whitespace-nowrap px-3 text-sm font-bold lg:flex"
       href={contact.href}
       aria-current={isCurrent(contact.href) ? 'page' : undefined}
     >
