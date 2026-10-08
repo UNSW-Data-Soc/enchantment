@@ -1,10 +1,14 @@
 ---
+import Hero from './Hero.astro';
 import LatestEvents from './LatestEvents.astro';
 import StarsScrollbar from './StarsScrollbar.astro';
 ---
 
 <main class="v2-home" aria-label="Homepage">
   <img src="/backgrounds/homepage-bg-v2-p00.png" alt="" width="1708" height="4989" fetchpriority="high" />
+    <div class="hero-slot">
+    <Hero />
+  </div>
   <div class="latest-events-slot">
     <LatestEvents />
   </div>
@@ -28,6 +32,14 @@ import StarsScrollbar from './StarsScrollbar.astro';
     height: auto;
   }
 
+  .hero-slot {
+    position: absolute;
+    top: 0;
+    left: 4.2%;
+    right: 0;
+    height: 25.7%;
+  }
+  
   .latest-events-slot {
     position: absolute;
     top: 31.8%;
