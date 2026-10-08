@@ -15,13 +15,18 @@ const start = events.length ? 0 : 1;
 ---
 
 <section class="latest-events" aria-labelledby="latest-events-heading">
-  <!-- Parallax speed rises towards the foreground. -->
-  <div class="bg">
-    <ParallaxContainer speed={0.06}><img src={clusterBg} alt="" loading="lazy" /></ParallaxContainer>
-  </div>
-  <h2 id="latest-events-heading">
-    <ParallaxContainer speed={0.12}><img src="/text-headers/latest-events.png" alt="Latest Events" /></ParallaxContainer>
-  </h2>
+	<!-- Parallax speed rises towards the foreground. -->
+	<div class="bg">
+		<ParallaxContainer speed={0.06}><img src={clusterBg} alt="" loading="lazy" /></ParallaxContainer>
+	</div>
+	<h2 id="latest-events-heading">
+		<ParallaxContainer speed={0.12}>
+			<!-- Update href to /v2/updates or /v2/latest-events once file created -->
+			<a href="/updates" class="group inline-block">
+				<img src="/text-headers/latest-events.png" alt="Latest Events" class="transition duration-300 ease-out group-hover:scale-103 group-hover:brightness-125 group-focus-visible:scale-103 group-focus-visible:brightness-125" />
+	    	</a>
+		</ParallaxContainer>
+	</h2>
 
   <div class="tagline">
     <ParallaxContainer speed={0.12}>Stay up<br />to date<br />with<br />our latest<br />events<br />and<br />activities!</ParallaxContainer>
