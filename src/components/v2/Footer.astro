@@ -1,11 +1,23 @@
 ---
+import Parallax from "./ParallaxContainer.astro";
 import { quicklinks } from "./constants.js";
+import buttonImage from "../../assets/ui/buttons/rouge-up-arrow-button.svg"
 ---
 
 <footer class="v2-footer">
 	<img class="footer-art" src="/backgrounds/footer-bg.png" alt="" />
 	<img class="quicklinks-header" src="/text-headers/quicklinks-header.png" alt="Quick links" />
 
+	<Parallax>
+	<div class="scroll-btn-wrapper">
+		<div
+			class="scroll-btn"
+			onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+		>
+			<img src={buttonImage.src} alt="Scroll to top" />
+		</div>
+	</div>
+</Parallax>
 	<div class="quick-links">
 		{quicklinks.map((item) => (
 			<a href={`/${item.linkto}`}>{item.text}</a>
@@ -43,6 +55,28 @@ import { quicklinks } from "./constants.js";
 		z-index: 2;
 	}
 
+	.scroll-btn-wrapper {
+	position: relative;
+	height: 200px;
+}
+
+.scroll-btn {
+	width: 80px;
+	height: 80px;
+	position: sticky;
+	top: 80px;
+	margin-left: 90%;
+	border-radius: 12px;
+	cursor: pointer;
+	box-shadow: 10px 10px 20px 5px rgba(0, 0, 0, 0.3);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.scroll-btn:hover {
+	transform: translateY(-5px);
+}
 	.quick-links {
 		position: absolute;
 		top: 45%;
