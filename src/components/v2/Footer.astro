@@ -1,5 +1,7 @@
 ---
 import Parallax from "./ParallaxContainer.astro";
+import { quicklinks } from "./constants.js";
+import buttonImage from "../../assets/ui/buttons/rouge-up-arrow-button.svg"
 ---
 
 <footer class="v2-footer">
@@ -12,13 +14,19 @@ import Parallax from "./ParallaxContainer.astro";
 			class="scroll-btn"
 			onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
 		>
-			<img src="/scroll-to-top-arrow.png" alt="Scroll to top" />
+			<img src={buttonImage.src} alt="Scroll to top" />
 		</div>
 	</div>
 </Parallax>
+	<div class="quick-links">
+		{quicklinks.map((item) => (
+			<a href={`/${item.linkto}`}>{item.text}</a>
+		))}
+	</div>
 </footer>
 
 <style>
+	@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 	.v2-footer {
 		position: relative;
 		width: 100%;
@@ -58,25 +66,32 @@ import Parallax from "./ParallaxContainer.astro";
 	position: sticky;
 	top: 80px;
 	margin-left: 90%;
-	background-color: rgb(212, 119, 119);
 	border-radius: 12px;
 	cursor: pointer;
-	display: flex;
-	justify-content: center;
-	align-items: center;
 	box-shadow: 10px 10px 20px 5px rgba(0, 0, 0, 0.3);
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
-.scroll-btn img {
-	width: 50px;
-	height: 50px;
-	filter: brightness(0) invert(1);
-}
-
 .scroll-btn:hover {
 	transform: translateY(-5px);
 }
+	.quick-links {
+		position: absolute;
+		top: 45%;
+		left: 53.5%;
+		display: flex;
+		flex-direction: column;
+		gap: 23px;
+		z-index: 2;
+	}
+
+	.quick-links a {
+		color: white;
+		text-decoration: underline;
+		font-family: "Inter", sans-serif;
+		font-size: 15px;
+		cursor: pointer;
+	}
 </style>
