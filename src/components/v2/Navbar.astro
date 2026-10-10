@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import logo from '../../../public/favicon.png';
+import { navbar } from './constants.js';
 
 // Set to true when merch is available; controls both desktop and mobile links.
 const MERCH_ENABLED = false;
@@ -12,20 +13,18 @@ const pageLink = (page: string, fallback: string) =>
     ? `/v2/${page}/`
     : fallback;
 
+const navigation = navbar.map(({ text, linkto, fallback }) => ({
+  text,
+  page: linkto.replace(/^v2\//, ''),
+  href: pageLink(linkto.replace(/^v2\//, ''), fallback),
+}));
+const contact = navigation.find(({ page }) => page === 'contact-us')!;
 const links = [
-  { text: 'Who We Are', href: pageLink('who-we-are', '/who-we-are/') },
-  { text: 'Meet the Team', href: pageLink('meet-the-team', '/meet-the-team/') },
-  { text: 'Events', href: pageLink('events', '/updates/') },
-  { text: 'Sponsorships', href: pageLink('sponsorships', '/sponsorships/') },
-  { text: 'Publications', href: pageLink('publications', '/publication/') },
+  ...navigation.filter((item) => item !== contact),
   ...(MERCH_ENABLED
     ? [{ text: 'Merch', href: pageLink('merch', '/merch/') }]
     : []),
 ];
-const contact = {
-  text: 'Contact Us',
-  href: pageLink('contact-us', '/contact/'),
-};
 const currentPage = Astro.url.pathname.replace(/\/$/, '');
 const isCurrent = (href: string) =>
   currentPage === href.replace(/\/$/, '') || currentPage.startsWith(href);
@@ -42,7 +41,7 @@ const isCurrent = (href: string) =>
       aria-label="UNSW DataSoc homepage"
       class="home-link flex size-10 items-center justify-center justify-self-start"
     >
-      <Image class="nav-logo" src={logo} alt="" width={40} height={40} />
+      <Image class="nav-logo" src={logo} alt="" width={32} height={32} />
     </a>
 
     <ul class="hidden h-full items-stretch lg:flex">
@@ -60,7 +59,7 @@ const isCurrent = (href: string) =>
     </ul>
 
     <a
-      class="nav-link contact-link hidden h-full w-30 items-center justify-center justify-self-end whitespace-nowrap px-3 text-sm leading-5 font-bold lg:flex"
+      class="nav-link contact-link hidden h-full w-[var(--nav-link-width)] items-center justify-center justify-self-end whitespace-nowrap px-3 text-sm leading-5 font-bold lg:flex"
       href={contact.href}
       aria-current={isCurrent(contact.href) ? 'page' : undefined}
     >
