@@ -53,8 +53,10 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
     background: none;
     cursor: pointer;
     pointer-events: auto;
-    --colour: color-mix(in oklab, var(--star-colour, #d94a65) var(--on), #fffcf3);
-    filter: drop-shadow(0 0 0.25vw color-mix(in oklab, var(--star-colour, #d94a65) var(--on), transparent));
+    /* The live scroll colour while active (kept while fading out), otherwise the star's own section colour. */
+    --tint: var(--star-colour, var(--own-colour));
+    --colour: color-mix(in oklab, var(--tint) var(--on), #fffcf3);
+    filter: drop-shadow(0 0 0.25vw color-mix(in oklab, var(--tint) var(--on), transparent));
     transition: --on 150ms ease;
   }
 
@@ -86,16 +88,6 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 <script>
   const stars = document.querySelector<HTMLElement>('.stars-scrollbar .stars')!;
   const sections = Array.from(document.querySelectorAll('[data-section]'));
-  const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth';
-  const marks = sections.map((section, i) => {
-    const mark = stars.appendChild(document.createElement('button'));
-    mark.type = 'button';
-    mark.ariaLabel = `Go to ${(section as HTMLElement).dataset.section || `section ${i + 1}`}`;
-    mark.append(document.createElement('i'));
-    mark.addEventListener('click', () => scrollTo({ top: section.getBoundingClientRect().top + scrollY, behavior }));
-    return mark;
-  });
-
   // The active colour blends as the page scrolls, reaching each stop when that point crosses the middle of the
   // screen. Stops are section positions (1.5 = halfway between the centres of sections 1 and 2): Landing V3's red at
   // the hero (where the bar is see-through), through orange to the logo's yellow at Latest Events,
@@ -107,14 +99,9 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
     [3, '#119bd6'],
   ];
   const blends = ['oklch', 'oklch longer hue'];
-  const paint = () => {
-    const middle = innerHeight / 2;
-    const rects = sections.map((section) => section.getBoundingClientRect());
-    // The current section is the last one whose top has passed the middle of the screen.
-    const current = Math.max(rects.filter((rect) => rect.top <= middle).length - 1, 0);
-    marks.forEach((mark, i) => (mark.ariaCurrent = i === current ? 'location' : null));
-
-    const centres = rects.map((rect) => rect.top + rect.height / 2);
+  const centresOf = (rects: DOMRect[]) => rects.map((rect) => rect.top + rect.height / 2);
+  // The colour at height y on the screen, given where the section centres are.
+  const colourAt = (y: number, centres: number[]) => {
     const at = ([stop]: [number, string]) => {
       // Clamped so a stop past the last section can't read a centre that doesn't exist.
       const position = Math.min(stop, centres.length - 1);
@@ -122,12 +109,50 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
       return centres[below] + (centres[Math.ceil(position)] - centres[below]) * (position - below);
     };
     const points = stops.map(at);
-    const next = points.findIndex((point) => point > middle);
+    const next = points.findIndex((point) => point > y);
     const i = Math.min(Math.max((next === -1 ? points.length : next) - 1, 0), stops.length - 2);
-    const t = Math.min(Math.max((middle - points[i]) / (points[i + 1] - points[i] || 1), 0), 1);
-    // Set on the active star only, so the others don't restyle on every scroll; the outgoing star keeps its
-    // last colour while it fades.
-    marks[current].style.setProperty('--star-colour', `color-mix(in ${blends[i]}, ${stops[i][1]}, ${stops[i + 1][1]} ${t * 100}%)`);
+    const t = Math.min(Math.max((y - points[i]) / (points[i + 1] - points[i] || 1), 0), 1);
+    return `color-mix(in ${blends[i]}, ${stops[i][1]}, ${stops[i + 1][1]} ${t * 100}%)`;
+  };
+
+  // A clicked star stays highlighted until the scroll reaches its section, so a long jump crossfades straight to it
+  // instead of flashing every star in between.
+  let target = -1;
+  const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth';
+  const marks = sections.map((section, i) => {
+    const mark = stars.appendChild(document.createElement('button'));
+    mark.type = 'button';
+    mark.ariaLabel = `Go to ${(section as HTMLElement).dataset.section || `section ${i + 1}`}`;
+    mark.append(document.createElement('i'));
+    mark.addEventListener('click', () => {
+      target = i;
+      scrollTo({ top: section.getBoundingClientRect().top + scrollY, behavior });
+      schedule();
+    });
+    // Once faded out, a star drops its live colour so hovering it previews its own.
+    mark.addEventListener('transitionend', () => {
+      if (!mark.ariaCurrent) mark.style.removeProperty('--star-colour');
+    });
+    return mark;
+  });
+
+  const paint = () => {
+    const middle = innerHeight / 2;
+    const rects = sections.map((section) => section.getBoundingClientRect());
+    // The scrolled-to section is the last one whose top has passed the middle of the screen.
+    const reached = Math.max(rects.filter((rect) => rect.top <= middle).length - 1, 0);
+    if (reached === target) target = -1;
+    const current = target === -1 ? reached : target;
+    marks.forEach((mark, i) => (mark.ariaCurrent = i === current ? 'location' : null));
+    // Set on the active star only, so the others don't restyle on every scroll.
+    marks[current].style.setProperty('--star-colour', colourAt(middle, centresOf(rects)));
+  };
+
+  // Each star's own colour is the one at its section's centre. Sections are fixed fractions of the page, so this only
+  // needs redoing if the page had no size when first measured.
+  const tint = () => {
+    const centres = centresOf(sections.map((section) => section.getBoundingClientRect()));
+    marks.forEach((mark, i) => mark.style.setProperty('--own-colour', colourAt(centres[i], centres)));
   };
 
   let frame = 0;
@@ -138,7 +163,18 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
       paint();
     });
   };
+  tint();
   paint();
   addEventListener('scroll', schedule, { passive: true });
-  addEventListener('resize', schedule);
+  addEventListener('resize', () => {
+    tint();
+    schedule();
+  });
+  // Scrolling by hand, or the scroll ending short of the clicked section, hands the highlight back to the scroll.
+  for (const type of ['wheel', 'touchstart', 'scrollend']) {
+    addEventListener(type, () => {
+      target = -1;
+      schedule();
+    }, { passive: true });
+  }
 </script>
