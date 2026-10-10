@@ -1,0 +1,530 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../../../public/favicon.png';
+import { navbar } from './constants.js';
+
+// Set to true when merch is available; controls both desktop and mobile links.
+const MERCH_ENABLED = false;
+
+// Prefer the V2 routes as their page stubs land; keep every link working meanwhile.
+const pages = Object.keys(import.meta.glob('/src/pages/v2/**/index.astro'));
+const pageLink = (page: string, fallback: string) =>
+  pages.includes(`/src/pages/v2/${page}/index.astro`)
+    ? `/v2/${page}/`
+    : fallback;
+
+const navigation = navbar.map(({ text, linkto, fallback }) => ({
+  text,
+  page: linkto.replace(/^v2\//, ''),
+  href: pageLink(linkto.replace(/^v2\//, ''), fallback),
+}));
+const contact = navigation.find(({ page }) => page === 'contact-us')!;
+const links = [
+  ...navigation.filter((item) => item !== contact),
+  ...(MERCH_ENABLED
+    ? [{ text: 'Merch', href: pageLink('merch', '/merch/') }]
+    : []),
+];
+const currentPage = Astro.url.pathname.replace(/\/$/, '');
+const isCurrent = (href: string) =>
+  currentPage === href.replace(/\/$/, '') || currentPage.startsWith(href);
+---
+
+<header class="v2-navbar fixed inset-x-0 top-0 z-50 text-[#484b70] shadow-[0_16px_32px_0_#00000026]">
+  <nav
+    aria-label="Main navigation"
+    class="nav-link-group relative grid h-16 grid-cols-[1fr_auto] items-center px-3 lg:grid-cols-[minmax(4rem,1fr)_auto_minmax(8rem,1fr)] lg:pr-0"
+    data-nav-links
+  >
+    <a
+      href="/v2/"
+      aria-label="UNSW DataSoc homepage"
+      class="home-link flex size-10 items-center justify-center justify-self-start"
+    >
+      <Image class="nav-logo" src={logo} alt="" width={32} height={32} />
+    </a>
+
+    <ul class="hidden h-full items-stretch lg:flex">
+      {links.map(({ text, href }) => (
+        <li class="flex">
+          <a
+            class="nav-link flex w-[var(--nav-link-width)] items-center justify-center whitespace-nowrap px-3 text-sm font-bold"
+            href={href}
+            aria-current={isCurrent(href) ? 'page' : undefined}
+          >
+            <span>{text}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <a
+      class="nav-link contact-link hidden h-full w-[var(--nav-link-width)] items-center justify-center justify-self-end whitespace-nowrap px-3 text-sm leading-5 font-bold lg:flex"
+      href={contact.href}
+      aria-current={isCurrent(contact.href) ? 'page' : undefined}
+    >
+      <span>{contact.text}</span>
+    </a>
+
+    <details class="mobile-menu lg:hidden">
+      <summary class="menu-ribbon flex min-h-11 cursor-pointer list-none items-center gap-3 px-3 text-base font-bold">
+        <span>Menu</span>
+        <svg
+          class="size-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          aria-hidden="true"
+        >
+          <path class="menu-line menu-line-top" d="M4 12h16" />
+          <path class="menu-line menu-line-middle" d="M4 12h16" />
+          <path class="menu-line menu-line-bottom" d="M4 12h16" />
+        </svg>
+      </summary>
+      <div class="mobile-panel absolute inset-x-0 top-full overflow-hidden shadow-lg">
+        <ul
+          class="nav-link-group mobile-links relative overflow-y-auto p-4"
+          data-nav-links
+          data-lenis-prevent
+        >
+          {[...links, contact].map(({ text, href }) => (
+            <li>
+              <a
+                class:list={[
+                  'nav-link flex min-h-12 items-center px-4 text-base font-bold',
+                  { 'contact-link': href === contact.href },
+                ]}
+                href={href}
+                aria-current={isCurrent(href) ? 'page' : undefined}
+              >
+                <span>{text}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </details>
+  </nav>
+</header>
+
+<style>
+  .v2-navbar {
+    --nav-link-width: clamp(8rem, 11.5vw, 10rem);
+    --navbar-background: linear-gradient(90deg, #f3e9e6, #fefbf0);
+    --link-gradient: linear-gradient(90deg, #ee8796, #ffe3a6);
+    background: var(--navbar-background);
+    font-family: var(--font-syne), sans-serif;
+    transition:
+      transform 300ms ease,
+      opacity 300ms ease;
+  }
+
+  .v2-navbar[data-hidden='true'] {
+    transform: translateY(calc(-100% - 2rem));
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .contact-link {
+    color: #137aa8;
+  }
+
+  .nav-logo {
+    transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .home-link:focus-visible .nav-logo {
+    transform: scale(1.12) rotate(-8deg);
+  }
+
+  .nav-link-group {
+    isolation: isolate;
+  }
+
+  /* One gradient window follows the links, horizontally on desktop and vertically on mobile. */
+  .nav-link-group::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: var(--highlight-width, 0px);
+    height: var(--highlight-height, 0px);
+    transform: translate(var(--highlight-x, 0px), var(--highlight-y, 0px));
+    background: var(--link-gradient);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .nav-link-group[data-highlight-ready]::before {
+    transition:
+      transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+      width 450ms cubic-bezier(0.22, 1, 0.36, 1),
+      height 450ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 250ms ease;
+  }
+
+  .nav-link-group[data-highlight-visible='true']::before {
+    opacity: 1;
+  }
+
+  .nav-link {
+    transition: color 350ms ease-in-out;
+  }
+
+  .nav-link > span {
+    display: inline-block;
+    transition: transform 250ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .nav-link:focus-visible > span {
+    transform: scale(1.05);
+  }
+
+  .nav-link:is(:hover, :focus-visible, [aria-current='page']) {
+    color: #484b70;
+  }
+
+  /* Keep the same highlight available before JavaScript loads or when it is disabled. */
+  nav:not([data-highlight-ready])
+    > ul
+    .nav-link:is(:hover, :focus-visible, [aria-current='page']),
+  nav:not([data-highlight-ready])
+    > .nav-link:is(:hover, :focus-visible, [aria-current='page']),
+  .mobile-links:not([data-highlight-ready])
+    .nav-link:is(:hover, :focus-visible, [aria-current='page']) {
+    background: var(--link-gradient);
+  }
+
+  .menu-ribbon {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    transition: color 350ms ease-in-out;
+  }
+
+  /* The navy ribbon is reserved for the mobile Menu control. */
+  .menu-ribbon::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: #484b70;
+    transform: translateX(101%);
+    transition: transform 350ms ease-in-out;
+  }
+
+  .menu-ribbon:focus-visible {
+    color: #fffcf3;
+  }
+
+  .menu-ribbon:focus-visible::before {
+    transform: translateX(0);
+  }
+
+  @media (hover: hover) {
+    .nav-link:hover > span {
+      transform: scale(1.05);
+    }
+
+    .home-link:hover .nav-logo {
+      transform: scale(1.12) rotate(-8deg);
+    }
+
+    .menu-ribbon:hover {
+      color: #fffcf3;
+    }
+
+    .menu-ribbon:hover::before {
+      transform: translateX(0);
+    }
+  }
+
+  .menu-ribbon:focus-visible {
+    outline: 2px solid #fffcf3;
+    outline-offset: -4px;
+  }
+
+  .home-link:focus-visible,
+  .nav-link:focus-visible {
+    outline: 2px solid #484b70;
+    outline-offset: -4px;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-links {
+    background: var(--navbar-background);
+    max-height: calc(100dvh - 4rem);
+    overscroll-behavior: contain;
+  }
+
+  .menu-line {
+    transform-origin: 12px 12px;
+    transition:
+      transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 200ms ease;
+  }
+
+  .menu-line-top {
+    transform: translateY(-6px);
+  }
+
+  .menu-line-bottom {
+    transform: translateY(6px);
+  }
+
+  .mobile-menu[open]:not([data-expanded='false']) .menu-line-top {
+    transform: rotate(45deg);
+  }
+
+  .mobile-menu[open]:not([data-expanded='false']) .menu-line-middle {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+
+  .mobile-menu[open]:not([data-expanded='false']) .menu-line-bottom {
+    transform: rotate(-45deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .v2-navbar,
+    .nav-link,
+    .nav-link > span,
+    .nav-link-group[data-highlight-ready]::before,
+    .menu-ribbon,
+    .menu-ribbon::before,
+    .nav-logo,
+    .menu-line {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('.v2-navbar');
+  const menu = header?.querySelector<HTMLDetailsElement>('.mobile-menu');
+  const toggle = menu?.querySelector('summary');
+  const panel = menu?.querySelector<HTMLElement>('.mobile-panel');
+
+  if (header && menu && toggle && panel) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let menuAnimation: Animation | undefined;
+    menu.dataset.expanded = String(menu.open);
+    toggle.setAttribute('aria-expanded', String(menu.open));
+    panel.inert = !menu.open;
+
+    const setMenuOpen = (open: boolean, animate = true) => {
+      if (menu.dataset.expanded === String(open) && animate) return;
+
+      // Start from the visible height so quick repeated clicks reverse smoothly.
+      const height = menu.open ? panel.getBoundingClientRect().height : 0;
+      const opacity = menu.open ? getComputedStyle(panel).opacity : '0';
+      menuAnimation?.cancel();
+      menuAnimation = undefined;
+      menu.dataset.expanded = String(open);
+      toggle.setAttribute('aria-expanded', String(open));
+      panel.inert = !open;
+
+      if (!animate || reducedMotion.matches) {
+        menu.open = open;
+        return;
+      }
+
+      // Keep native details open during the closing animation, but prevent focus
+      // from entering its links. Without JavaScript it remains a normal details menu.
+      menu.open = true;
+      const animation = panel.animate(
+        [
+          { height: `${height}px`, opacity },
+          {
+            height: `${open ? panel.scrollHeight : 0}px`,
+            opacity: open ? 1 : 0,
+          },
+        ],
+        { duration: 400, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+      );
+      menuAnimation = animation;
+      animation.onfinish = () => {
+        if (menuAnimation !== animation) return;
+        menuAnimation = undefined;
+        menu.open = open;
+      };
+    };
+
+    toggle.addEventListener('click', (event) => {
+      event.preventDefault();
+      setMenuOpen(menu.dataset.expanded !== 'true');
+    });
+
+    // Finish any in-flight animation when the viewport or motion preference changes.
+    window.addEventListener('resize', () => {
+      setMenuOpen(menu.dataset.expanded === 'true', false);
+    });
+    reducedMotion.addEventListener('change', () => {
+      setMenuOpen(menu.dataset.expanded === 'true', false);
+    });
+    header
+      .querySelectorAll<HTMLElement>('[data-nav-links]')
+      .forEach((group) => {
+        const links = Array.from(
+          group.querySelectorAll<HTMLAnchorElement>('.nav-link'),
+        ).filter((link) => link.closest('[data-nav-links]') === group);
+        const current = links.find(
+          (link) => link.getAttribute('aria-current') === 'page',
+        );
+        let hovered: HTMLAnchorElement | undefined;
+
+        const updateHighlight = () => {
+          const focused = links.find((link) => link.matches(':focus-visible'));
+          const target = hovered ?? focused ?? current;
+          const position = target ?? links[0];
+          if (!position || !position.getClientRects().length) {
+            group.removeAttribute('data-highlight-ready');
+            group.dataset.highlightVisible = 'false';
+            hovered = undefined;
+            return;
+          }
+          if (!target && group.hasAttribute('data-highlight-ready')) {
+            group.dataset.highlightVisible = 'false';
+            return;
+          }
+
+          const bounds = group.getBoundingClientRect();
+          const linkBounds = position.getBoundingClientRect();
+          group.style.setProperty(
+            '--highlight-x',
+            `${linkBounds.left - bounds.left + group.scrollLeft}px`,
+          );
+          group.style.setProperty(
+            '--highlight-y',
+            `${linkBounds.top - bounds.top + group.scrollTop}px`,
+          );
+          group.style.setProperty('--highlight-width', `${linkBounds.width}px`);
+          group.style.setProperty(
+            '--highlight-height',
+            `${linkBounds.height}px`,
+          );
+          group.dataset.highlightVisible = String(Boolean(target));
+          requestAnimationFrame(() => {
+            group.dataset.highlightReady = 'true';
+          });
+        };
+
+        links.forEach((link) => {
+          link.addEventListener('pointerenter', (event) => {
+            if (event.pointerType === 'touch') return;
+            hovered = link;
+            updateHighlight();
+          });
+          link.addEventListener('pointerleave', () => {
+            hovered = undefined;
+            updateHighlight();
+          });
+        });
+        group.addEventListener('focusin', () => {
+          hovered = undefined;
+          updateHighlight();
+        });
+        group.addEventListener('focusout', () => {
+          requestAnimationFrame(updateHighlight);
+        });
+        menu.addEventListener('toggle', updateHighlight);
+        window.addEventListener('resize', () => {
+          hovered = undefined;
+          group.removeAttribute('data-highlight-ready');
+          updateHighlight();
+        });
+        document.fonts.ready.then(updateHighlight);
+        updateHighlight();
+      });
+
+    // Use the actual scroll position so wheel, touch, keyboard and Lenis agree.
+    const scrollPosition = () =>
+      Math.max(
+        0,
+        Math.min(
+          window.scrollY,
+          document.documentElement.scrollHeight - window.innerHeight,
+        ),
+      );
+    let previousY = scrollPosition();
+    let travel = 0;
+    let frame = 0;
+
+    const reveal = () => {
+      header.dataset.hidden = 'false';
+      travel = 0;
+    };
+
+    const updateScroll = () => {
+      frame = 0;
+      const y = scrollPosition();
+      const delta = y - previousY;
+      previousY = y;
+
+      // Keep navigation usable at the top, while open, and during keyboard use.
+      if (
+        y <= header.offsetHeight ||
+        menu.open ||
+        header.querySelector(':focus-visible')
+      ) {
+        reveal();
+        return;
+      }
+      if (!delta) return;
+
+      // Ignore tiny movements without losing slow, continuous scrolling.
+      travel = Math.sign(delta) === Math.sign(travel) ? travel + delta : delta;
+      if (Math.abs(travel) >= 8) {
+        header.dataset.hidden = String(travel > 0);
+        travel = 0;
+      }
+    };
+
+    const scheduleScroll = () => {
+      if (!frame) frame = requestAnimationFrame(updateScroll);
+    };
+
+    window.addEventListener('scroll', scheduleScroll, { passive: true });
+    window.addEventListener('v2-lenis-scroll', scheduleScroll);
+    header.addEventListener('focusin', reveal);
+    header.addEventListener('focusout', (event) => {
+      if (
+        event.relatedTarget instanceof Node &&
+        !header.contains(event.relatedTarget)
+      ) {
+        setMenuOpen(false);
+      }
+    });
+    menu.addEventListener('toggle', () => {
+      if (menu.open) reveal();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && menu.open) {
+        setMenuOpen(false);
+        toggle.focus();
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (event.target instanceof Node && !header.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    });
+
+    menu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        setMenuOpen(false);
+      });
+    });
+
+    window.matchMedia('(min-width: 64rem)').addEventListener('change', () => {
+      setMenuOpen(false, false);
+    });
+  }
+</script>
