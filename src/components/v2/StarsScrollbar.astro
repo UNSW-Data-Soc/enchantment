@@ -44,11 +44,16 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
     initial-value: 0%;
   }
 
-  /* The glow lives on this button because the star's mask would clip it. Padding instead of a gap between stars
-     enlarges the click target. */
+  /* The glow lives on this button because the star's mask would clip it. Each button spans the bar's width, and
+     padding instead of a gap between stars enlarges the click target. min-height keeps targets 24px apart on narrow
+     screens without changing the star's size; the bar is narrower than 24px there, which WCAG's spacing exception
+     allows. */
   .stars :global(button) {
-    display: block;
-    padding: 0.295vw 1vw;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    min-height: 24px;
+    padding: 0.295vw 0;
     border: 0;
     background: none;
     cursor: pointer;
