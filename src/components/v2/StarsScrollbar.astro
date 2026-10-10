@@ -2,8 +2,8 @@
 import star from '../../assets/ui/shapes/one-star.svg?url';
 ---
 
-<!-- One star per [data-section] on the page; the section crossing the middle of the screen is highlighted. -->
-<div class="stars-scrollbar" aria-hidden="true" style={`--star: url("${star}")`}>
+<!-- One star per [data-section] on the page; the section crossing the middle of the screen is highlighted, and clicking a star scrolls to its section. -->
+<div class="stars-scrollbar" style={`--star: url("${star}")`}>
   <div class="track">
     <div class="stars"></div>
   </div>
@@ -35,7 +35,6 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.59vw;
   }
 
   /* How much of the active colour (and glow) a star has; transitions so the highlight eases between stars. */
@@ -45,17 +44,33 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
     initial-value: 0%;
   }
 
-  /* The glow lives on this wrapper because the star's mask would clip it. */
-  .stars :global(span) {
+  /* The glow lives on this button because the star's mask would clip it. Padding instead of a gap between stars
+     enlarges the click target. */
+  .stars :global(button) {
+    display: block;
+    padding: 0.295vw 1vw;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    pointer-events: auto;
     --colour: color-mix(in oklab, var(--star-colour, #d94a65) var(--on), #fffcf3);
     filter: drop-shadow(0 0 0.25vw color-mix(in oklab, var(--star-colour, #d94a65) var(--on), transparent));
     transition: --on 150ms ease;
   }
 
   /* Transitions use the destination state's timing: the incoming star eases in, the outgoing one leaves faster. */
-  .stars :global(span[data-active]) {
+  .stars :global(button[aria-current]) {
     --on: 100%;
     transition-duration: 250ms;
+  }
+
+  .stars :global(button:not([aria-current]):hover) {
+    --on: 50%;
+  }
+
+  .stars :global(button:focus-visible) {
+    outline: 2px solid #fffcf3;
+    outline-offset: -2px;
   }
 
   /* Sizes measured from Landing V3; the offsets crop the star out of one-star.svg's padded viewBox. */
@@ -71,9 +86,13 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 <script>
   const stars = document.querySelector<HTMLElement>('.stars-scrollbar .stars')!;
   const sections = Array.from(document.querySelectorAll('[data-section]'));
-  const marks = sections.map(() => {
-    const mark = stars.appendChild(document.createElement('span'));
+  const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth';
+  const marks = sections.map((section, i) => {
+    const mark = stars.appendChild(document.createElement('button'));
+    mark.type = 'button';
+    mark.ariaLabel = `Go to ${(section as HTMLElement).dataset.section || `section ${i + 1}`}`;
     mark.append(document.createElement('i'));
+    mark.addEventListener('click', () => scrollTo({ top: section.getBoundingClientRect().top + scrollY, behavior }));
     return mark;
   });
 
@@ -93,7 +112,7 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
     const rects = sections.map((section) => section.getBoundingClientRect());
     // The current section is the last one whose top has passed the middle of the screen.
     const current = Math.max(rects.filter((rect) => rect.top <= middle).length - 1, 0);
-    marks.forEach((mark, i) => mark.toggleAttribute('data-active', i === current));
+    marks.forEach((mark, i) => (mark.ariaCurrent = i === current ? 'location' : null));
 
     const centres = rects.map((rect) => rect.top + rect.height / 2);
     const at = ([stop]: [number, string]) => {
