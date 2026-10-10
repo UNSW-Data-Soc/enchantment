@@ -68,10 +68,9 @@ const cards = ['#3a4150', '#3a4150', '#cc735e', '#ffea7d'];
     filter: drop-shadow(0.1vw 0.2vw 0.3vw rgb(0 0 0 / 0.15));
   }
 
-  /* Cards scroll continuously across the band, from the page's right edge to the dark bar's edge (4.13vw, before the
-     zoom); hovering pauses the strip and lifts the card. */
+  /* Cards scroll continuously across the band and pass behind the dark bar (StarsScrollbar repaints it on top);
+     hovering pauses the strip and lifts the card. */
   .ticker {
-    margin-left: 4.86vw;
     overflow-x: clip;
   }
 
