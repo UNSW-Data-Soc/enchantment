@@ -1,0 +1,105 @@
+---
+import ParallaxContainer from './ParallaxContainer.astro';
+import outboundArrow from '../../assets/ui/buttons/white-outbound-arrow.svg?url';
+
+// Placeholder cards in Landing V3's colours until there's publications data to show.
+const cards = ['#3a4150', '#3a4150', '#cc735e', '#ffea7d'];
+---
+
+<section class="latest-publications" aria-labelledby="latest-publications-heading">
+  <!-- Parallax speed rises towards the foreground, as in Latest Events. -->
+  <ParallaxContainer speed={0.12}>
+    <div class="title">
+      <h2 id="latest-publications-heading">
+        <img src="/text-headers/latest-publications.png" alt="Latest Publications" />
+      </h2>
+      <a class="more" href="/v2/publications" aria-label="All publications">
+        <img src={outboundArrow} alt="" />
+      </a>
+    </div>
+  </ParallaxContainer>
+
+  <ParallaxContainer speed={0.2}>
+    <ul class="cards" aria-hidden="true">
+      {cards.map((colour, i) => <li style={`--i: ${i}; background: ${colour}`} />)}
+    </ul>
+  </ParallaxContainer>
+</section>
+
+<style>
+  /* Sizes are vw so the section scales with the full-width homepage background; values measured from Landing V3.
+     The section starts at the heading image's top, 13.1vw above the gradient band. */
+  .latest-publications {
+    margin-top: -13.1vw;
+  }
+
+  .title {
+    position: relative;
+  }
+
+  h2 {
+    margin: 0 0 0 5.5vw;
+  }
+
+  h2 img {
+    display: block;
+    width: 35.3vw;
+  }
+
+  .more {
+    position: absolute;
+    top: 7.89vw;
+    left: 39.35vw;
+    transition: transform 0.3s;
+  }
+
+  .more:hover {
+    transform: scale(1.1);
+  }
+
+  /* The button's cream square matches the page, so the shadow from Landing V3 is what shows its edge. */
+  .more img {
+    display: block;
+    width: 2.6vw;
+    filter: drop-shadow(0.1vw 0.2vw 0.3vw rgb(0 0 0 / 0.15));
+  }
+
+  .cards {
+    display: flex;
+    gap: 3.35vw;
+    margin: 1.4vw 0 0;
+    padding: 0 0 0 25vw;
+    list-style: none;
+  }
+
+  /* Idle cards drift side to side out of step with each other; hovering one lifts it. translate and transform are
+     separate properties, so the hover lift doesn't interrupt the drift. */
+  .cards li {
+    width: 14.84vw;
+    aspect-ratio: 304 / 400;
+    border-radius: 0.6vw;
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.12);
+    animation: drift 4s ease-in-out calc(var(--i) * -1.3s) infinite alternate;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .cards li:hover {
+    transform: translateY(-1vw) scale(1.05);
+  }
+
+  @keyframes drift {
+    from {
+      translate: -0.5vw 0;
+    }
+
+    to {
+      translate: 0.5vw 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cards li {
+      animation: none;
+    }
+  }
+</style>
