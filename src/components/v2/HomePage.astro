@@ -3,8 +3,9 @@ import LatestEvents from './LatestEvents.astro';
 import StarsScrollbar from './StarsScrollbar.astro';
 ---
 
+<link rel="preload" as="image" href="/backgrounds/homepage-bg-v2-p00.png" fetchpriority="high" />
+
 <main class="v2-home" aria-label="Homepage">
-  <img src="/backgrounds/homepage-bg-v2-p00.png" alt="" width="1708" height="4989" fetchpriority="high" />
   <div class="latest-events-slot">
     <LatestEvents />
   </div>
@@ -20,12 +21,10 @@ import StarsScrollbar from './StarsScrollbar.astro';
   .v2-home {
     position: relative;
     width: 100%;
-  }
-
-  .v2-home img {
-    display: block;
-    width: 100%;
-    height: auto;
+    aspect-ratio: 1708 / 4989;
+    background-image: url('/backgrounds/homepage-bg-v2-p00.png');
+    background-size: 100% auto;
+    background-repeat: no-repeat;
   }
 
   .latest-events-slot {
