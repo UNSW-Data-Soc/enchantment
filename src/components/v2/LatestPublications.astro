@@ -20,17 +20,21 @@ const cards = ['#3a4150', '#3a4150', '#cc735e', '#ffea7d'];
   </ParallaxContainer>
 
   <ParallaxContainer speed={0.2}>
-    <ul class="cards" aria-hidden="true">
-      {cards.map((colour, i) => <li style={`--i: ${i}; background: ${colour}`} />)}
-    </ul>
+    <div class="ticker">
+      <!-- Three copies so the loop never shows a gap: one copy is narrower than the ticker. -->
+      <ul class="cards" aria-hidden="true">
+        {[...cards, ...cards, ...cards].map((colour) => <li style={`background: ${colour}`} />)}
+      </ul>
+    </div>
   </ParallaxContainer>
 </section>
 
 <style>
-  /* Sizes are vw so the section scales with the full-width homepage background; values measured from Landing V3.
-     The section starts at the heading image's top, 13.1vw above the gradient band. */
+  /* Sizes are vw so the section scales with the full-width homepage background; values measured from Landing V3. */
   .latest-publications {
-    margin-top: -13.1vw;
+    /* Scaled down like Latest Events; the margin keeps the scaled cards centred in the background's gradient band. */
+    zoom: 0.85;
+    margin-top: -11vw;
   }
 
   .title {
@@ -64,22 +68,39 @@ const cards = ['#3a4150', '#3a4150', '#cc735e', '#ffea7d'];
     filter: drop-shadow(0.1vw 0.2vw 0.3vw rgb(0 0 0 / 0.15));
   }
 
+  /* Cards scroll continuously across the band, from the page's right edge to the dark bar's edge (4.13vw, before the
+     zoom); hovering pauses the strip and lifts the card. */
+  .ticker {
+    margin-left: 4.86vw;
+    overflow-x: clip;
+  }
+
   .cards {
     display: flex;
     gap: 3.35vw;
+    width: max-content;
     margin: 1.4vw 0 0;
-    padding: 0 0 0 25vw;
+    /* Trailing space equal to the gap, so a third of the strip is exactly one copy of the cards. */
+    padding: 0 3.35vw 0 0;
     list-style: none;
+    animation: scroll 40s linear infinite;
   }
 
-  /* Idle cards drift side to side out of step with each other; hovering one lifts it. translate and transform are
-     separate properties, so the hover lift doesn't interrupt the drift. */
+  .cards:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes scroll {
+    to {
+      transform: translateX(calc(-100% / 3));
+    }
+  }
+
   .cards li {
     width: 14.84vw;
     aspect-ratio: 304 / 400;
     border-radius: 0.6vw;
     box-shadow: 0 4px 16px rgb(0 0 0 / 0.12);
-    animation: drift 4s ease-in-out calc(var(--i) * -1.3s) infinite alternate;
     transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
@@ -87,18 +108,8 @@ const cards = ['#3a4150', '#3a4150', '#cc735e', '#ffea7d'];
     transform: translateY(-1vw) scale(1.05);
   }
 
-  @keyframes drift {
-    from {
-      translate: -0.5vw 0;
-    }
-
-    to {
-      translate: 0.5vw 0;
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .cards li {
+    .cards {
       animation: none;
     }
   }
