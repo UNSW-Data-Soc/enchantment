@@ -1,5 +1,6 @@
 ---
 import LatestEvents from './LatestEvents.astro';
+import LatestPublications from './LatestPublications.astro';
 import StarsScrollbar from './StarsScrollbar.astro';
 ---
 
@@ -8,6 +9,9 @@ import StarsScrollbar from './StarsScrollbar.astro';
 <main class="v2-home" aria-label="Homepage">
   <div class="latest-events-slot">
     <LatestEvents />
+  </div>
+  <div class="latest-publications-slot">
+    <LatestPublications />
   </div>
   <!-- Section bands of the background image (Landing V3): hero, latest events, about us, latest publications. -->
   <div class="section-band" data-section style="top: 0; height: 25.7%"></div>
@@ -31,6 +35,14 @@ import StarsScrollbar from './StarsScrollbar.astro';
     position: absolute;
     top: 31.8%;
     left: 2.6%;
+    right: 0;
+  }
+
+  /* The top of the background's gradient band. */
+  .latest-publications-slot {
+    position: absolute;
+    top: 83%;
+    left: 0;
     right: 0;
   }
 
