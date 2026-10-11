@@ -28,7 +28,7 @@ const publications = [...posts, ...guides];
 
 // A halftone fade for the strip's left edge: one strip of dots growing from nothing until they overlap, in offset rows,
 // tiled down the strip as a mask.
-const columns = 36;
+const columns = 40;
 const dots = Array.from({ length: columns }, (_, i) => {
   const r = (0.75 * ((i + 0.5) / columns) ** 1.5).toFixed(3);
   return `<circle cx='${i + 0.5}' cy='0.5' r='${r}'/><circle cx='${i + 1}' cy='1.5' r='${r}'/>`;
@@ -127,15 +127,15 @@ const halftone = `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http
     scrollbar-width: none;
     /* Clears the dark bar (4.13vw before the zoom) plus one gap when focus scrolls a card into view. */
     scroll-padding-left: 8.21vw;
-    /* Cards dissolve into shrinking dots towards the dark bar, echoing the background's halftone on the left: solid from
-       29.4vw, the halftone strip between the bar's edge (4.86vw) and there. */
-    mask-image: linear-gradient(to right, transparent 29.4vw, #000 29.4vw), var(--halftone);
+    /* Cards dissolve into shrinking dots just before they pass behind the dark bar, echoing the background's halftone:
+       solid from 16vw, the halftone strip between the bar's edge (4.86vw) and there. */
+    mask-image: linear-gradient(to right, transparent 16vw, #000 16vw), var(--halftone);
     mask-position:
       0 0,
       4.86vw 0;
     mask-size:
       100% 100%,
-      24.54vw auto;
+      11.14vw auto;
     mask-repeat: no-repeat, repeat-y;
   }
 
