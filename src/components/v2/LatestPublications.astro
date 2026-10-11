@@ -166,10 +166,10 @@ const publications = [...posts, ...guides];
     color: #d6dbe6;
   }
 
+  /* Margins, not padding: the clamp only hides overflow past the content box, so bottom padding would show a 4th line. */
   .caption {
     display: -webkit-box;
-    margin-top: auto;
-    padding: 0 0.98vw 0.98vw;
+    margin: auto 0.98vw 0.98vw;
     overflow: hidden;
     font-size: 0.98vw;
     line-height: 1.2;
