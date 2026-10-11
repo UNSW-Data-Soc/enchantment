@@ -46,7 +46,7 @@ const publications = [...posts, ...guides];
       <ul class="cards" style={`--count: ${publications.length}`}>
         {[0, 1, 2].map((copy) =>
           publications.map(({ date, title, href, caption, image }) => (
-            <li aria-hidden={copy ? 'true' : undefined} inert={copy > 0}>
+            <li inert={copy > 0}>
               <a href={href} {...(href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
                 <span class="date">{date}</span>
                 {image && <img src={image} alt="" loading="lazy" />}
@@ -104,6 +104,8 @@ const publications = [...posts, ...guides];
      it on top); hovering or focusing a card pauses the strip, and hovering lifts the card. */
   .ticker {
     overflow-x: clip;
+    /* Clears the dark bar (4.13vw before the zoom) plus one gap when focus scrolls a card into view. */
+    scroll-padding-left: 8.21vw;
   }
 
   .cards {
@@ -117,9 +119,20 @@ const publications = [...posts, ...guides];
     animation: scroll calc(var(--count) * 10s) linear infinite;
   }
 
-  .cards:hover,
-  .cards:focus-within {
+  .cards:hover {
     animation-play-state: paused;
+  }
+
+  /* Keyboard focus stops the strip at its start and makes it scrollable, so the browser can bring the focused card
+     into view; otherwise most of the focusable cards could be scrolled off-screen. */
+  .ticker:has(:focus-visible) {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .cards:has(:focus-visible) {
+    padding-left: 8.21vw;
+    animation: none;
   }
 
   @keyframes scroll {
@@ -142,6 +155,7 @@ const publications = [...posts, ...guides];
     display: flex;
     flex-direction: column;
     height: 100%;
+    border-radius: inherit;
     color: #fff;
     font-family: var(--font-syne);
     text-decoration: none;
@@ -178,13 +192,29 @@ const publications = [...posts, ...guides];
     -webkit-line-clamp: 3;
   }
 
+  /* Inset, because the card's overflow: hidden would clip an outline drawn outside it. */
+  .cards a:focus-visible {
+    outline: 2px solid #fffcf3;
+    outline-offset: -4px;
+  }
+
   .cards li:hover {
     transform: translateY(-1vw) scale(1.05);
   }
 
+  /* Without the animation the strip scrolls by hand, so cards past the edge stay reachable. */
   @media (prefers-reduced-motion: reduce) {
+    .ticker {
+      overflow-x: auto;
+    }
+
     .cards {
+      padding-left: 8.21vw;
       animation: none;
+    }
+
+    .cards li:hover {
+      transform: none;
     }
   }
 </style>
