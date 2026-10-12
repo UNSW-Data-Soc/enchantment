@@ -28,10 +28,15 @@ const publications = [...posts, ...guides];
 
 // A halftone mask for the strip (in vw before the zoom): solid right of the left edge of the background's purple dot
 // wave, then dots shrinking to nothing over 40 columns towards the dark bar. Each row of dots is shifted to follow the
-// edge, traced from Landing V3 as [down, across] points from the strip's top. The mask reaches `reach` beyond the strip
-// both ways, since it shifts against the strip's parallax to stay lined up with the background.
+// edge: [down, across] points from the strip's top, measured from the background image as where the wave's violet dots
+// run out. The mask reaches `reach` beyond the strip both ways, since it shifts against the strip's parallax to stay
+// lined up with the background.
 const reach = 12;
-const edge = [[-reach, 27.4], [0, 22.1], [3.4, 20.6], [9.6, 17.5], [15.8, 14.4], [22, 12.8], [22.53 + reach, 9.5]];
+const edge = [
+  [-reach, 9], [-4.3, 9], [-2.7, 9.9], [-1, 12.1], [0.6, 14.3], [2.3, 16.5], [4, 18.7], [5.6, 19.6], [7.3, 16.7],
+  [8.9, 14.4], [10.6, 12.7], [12.2, 11.4], [13.9, 10.7], [15.5, 10.5], [17.2, 10.5], [18.8, 10.6], [20.5, 11],
+  [22.1, 11.5], [23.8, 12.1], [25.4, 12.4], [27.1, 12.7], [22.53 + reach, 13.6],
+];
 const edgeAt = (down: number) => {
   // Past the last point, the last segment carries on.
   const i = edge.findIndex(([y]) => y > down) + 1 || edge.length;
