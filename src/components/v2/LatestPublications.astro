@@ -156,8 +156,9 @@ const halftone = `url("data:image/svg+xml,${svg.replace(/[<>#]/g, encodeURICompo
     /* Clears the dark bar (4.13vw before the zoom) plus one gap when focus scrolls a card into view. */
     scroll-padding-left: 8.21vw;
     /* Cards dissolve into shrinking dots once they pass the left edge of the background's dot wave. The mask moves
-       against the parallax offset (inherited from ParallaxContainer) so the edge stays on the wave. */
-    mask: var(--halftone) 0 calc(-12vw - var(--parallax-offset, 0px)) / 120vw 46.53vw no-repeat;
+       against the parallax offset (inherited from ParallaxContainer) so the edge stays on the wave, and sits 1.5vw right of
+       the measured edge so the fade starts a little inside the wave. */
+    mask: var(--halftone) 1.5vw calc(-12vw - var(--parallax-offset, 0px)) / 120vw 46.53vw no-repeat;
     user-select: none;
   }
 
