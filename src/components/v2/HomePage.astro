@@ -10,9 +10,10 @@ import StarsScrollbar from './StarsScrollbar.astro';
     <LatestEvents />
   </div>
   <!-- Section bands of the background image (Landing V3); data-section names each star's button. A star scrolls its band's
-       top to the top of the screen, so Latest Events starts 27.25% down to centre the whole component on a 16:9 screen. -->
-  <div class="section-band" data-section="Top" style="top: 0; height: 27.25%"></div>
-  <div class="section-band" data-section="Latest Events" style="top: 27.25%; height: 22.35%"></div>
+       top to the top of the screen, so Latest Events starts 28% down: a little past centring the whole component, so its
+       arrows stay on screen on shorter windows too. -->
+  <div class="section-band" data-section="Top" style="top: 0; height: 28%"></div>
+  <div class="section-band" data-section="Latest Events" style="top: 28%; height: 21.6%"></div>
   <div class="section-band" data-section="About Us" style="top: 49.6%; height: 28.2%"></div>
   <div class="section-band" data-section="Latest Publications" style="top: 77.8%; height: 22.2%"></div>
   <StarsScrollbar />
