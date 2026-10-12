@@ -260,10 +260,14 @@ const halftone = `url("data:image/svg+xml,${svg.replace(/[<>#]/g, encodeURICompo
 
   ticker.addEventListener('pointerenter', (event) => (hovered = event.pointerType === 'mouse'));
   ticker.addEventListener('pointerleave', () => (hovered = false));
-  // Chrome's own focus scrolling misjudges what's visible inside the zoomed section and can leave a card half off-screen.
+  // Keyboard focus only: clicking a card focuses it too, which would otherwise keep the strip stopped until the next
+  // click. The explicit scroll is because Chrome's own focus scrolling misjudges what's visible inside the zoomed
+  // section and can leave a card half off-screen.
   ticker.addEventListener('focusin', (event) => {
+    const card = event.target as HTMLElement;
+    if (!card.matches(':focus-visible')) return;
     focused = true;
-    (event.target as HTMLElement).scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    card.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   });
   ticker.addEventListener('focusout', () => (focused = false));
   ticker.addEventListener('touchstart', () => (resumeAt = Infinity), { passive: true });
