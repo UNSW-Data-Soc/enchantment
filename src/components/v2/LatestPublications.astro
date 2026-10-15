@@ -284,8 +284,12 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
   };
   requestAnimationFrame(tick);
 
+  // The card a drag ends on doesn't count as hovered, so the strip carries on until the mouse reaches another card.
+  let releasedOn: Element | null = null;
   ticker.addEventListener('pointerover', (event) => {
-    hovered = event.pointerType === 'mouse' && event.target instanceof Element && !!event.target.closest('.cards li');
+    const card = event.target instanceof Element ? event.target.closest('.cards li') : null;
+    if (card !== releasedOn) releasedOn = null;
+    hovered = event.pointerType === 'mouse' && !!card && !releasedOn;
   });
   ticker.addEventListener('pointerout', () => (hovered = false));
   // Keyboard focus only: clicking a card focuses it too, which would otherwise keep the strip stopped until the next
@@ -322,8 +326,12 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
     target = drag.scroll - moved;
     ticker.scrollLeft = target;
   });
-  addEventListener('pointerup', () => {
-    if (drag && dragged) resumeAt = performance.now() + 1000;
+  addEventListener('pointerup', (event) => {
+    if (drag && dragged) {
+      resumeAt = performance.now() + 300;
+      releasedOn = event.target instanceof Element ? event.target.closest('.cards li') : null;
+      hovered = false;
+    }
     drag = null;
   });
   ticker.addEventListener('click', (event) => dragged && event.preventDefault(), true);
