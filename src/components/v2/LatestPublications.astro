@@ -26,9 +26,9 @@ const guides: Publication[] = [
 ];
 const publications = [...posts, ...guides];
 
-// A halftone mask for the strip (in vw before the zoom): solid right of the left edge of the background's purple dot
-// wave, then dots shrinking to nothing over 40 columns towards the dark bar. Each row of dots is shifted to follow the
-// edge: [down, across] points from the strip's top, measured from the background image as where the wave's violet dots
+// A halftone mask for the strip (in vw before the zoom): solid cards right of the left edge of the background's purple
+// dot wave, then a band of dots on a fixed staggered grid, shrinking to nothing towards the dark bar. The edge is
+// [down, across] points from the strip's top, measured from the background image as where the wave's violet dots
 // run out. The mask reaches `reach` beyond the strip both ways, since it shifts against the strip's parallax to stay
 // lined up with the background.
 const reach = 12;
@@ -43,27 +43,31 @@ const edgeAt = (down: number) => {
   const [[y0, x0], [y1, x1]] = [edge[i - 2], edge[i - 1]];
   return x0 + ((x1 - x0) * (down - y0)) / (y1 - y0);
 };
-const step = 0.2785;
-const columns = 40;
+const step = 0.6;
+const columns = 8;
 // A card's height plus the strip's vertical padding.
 const height = 22.53;
-const row = (offset: number) =>
-  Array.from({ length: columns }, (_, i) => {
-    const r = step * 0.75 * ((i + 0.5) / columns) ** 1.5;
-    return `<circle cx='${((i + offset) * step).toFixed(3)}' cy='${step / 2}' r='${r.toFixed(3)}'/>`;
-  }).join('');
 const rows = Array.from({ length: Math.ceil((height + 2 * reach) / step) }, (_, k) => {
-  const y = k * step - reach;
-  const x = edgeAt(y + step / 2) - columns * step;
-  return `<use href='#${k % 2 ? 'b' : 'a'}' x='${x.toFixed(2)}' y='${y.toFixed(3)}'/>`;
+  const y = k * step - reach + step / 2;
+  const boundary = edgeAt(y);
+  const firstColumn = Math.floor(boundary / step) - columns;
+  return Array.from({ length: columns + 1 }, (_, column) => {
+    const x = (firstColumn + column + (k % 2 ? 1 : 0.5)) * step;
+    const progress = Math.min(1, (x - boundary + columns * step) / (columns * step));
+    if (progress <= 0) return '';
+    const r = step * 0.75 * progress * progress * (3 - 2 * progress);
+    if (r < step * 0.18) return '';
+    return `<circle cx='${x.toFixed(3)}' cy='${y.toFixed(3)}' r='${r.toFixed(3)}'/>`;
+  }).join('');
 }).join('');
 // One shape for the solid part, so rows don't leave seams across the cards.
 const solid = `<path d='M${edge.map(([y, x]) => `${x} ${y}`).join('L')}L120 ${height + reach}L120 ${-reach}Z'/>`;
-const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 ${-reach} 120 ${height + 2 * reach}'><defs><g id='a'>${row(0.5)}</g><g id='b'>${row(1)}</g></defs>${rows}${solid}</svg>`;
-const halftone = `url("data:image/svg+xml,${svg.replace(/[<>#]/g, encodeURIComponent)}")`;
+const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 ${-reach} 120 ${height + 2 * reach}'>${rows}${solid}</svg>`;
+const halftone = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fade-offset)) calc(${y}vw - var(--parallax-offset, 0px))`).join(', ')}, 0 100%)`;
 ---
 
-<section class="latest-publications" aria-labelledby="latest-publications-heading">
+<section class="latest-publications" aria-labelledby="latest-publications-heading" style="--fade-offset: 5vw">
   <!-- Parallax speed rises towards the foreground, as in Latest Events. -->
   <ParallaxContainer speed={0.12}>
     <div class="title">
@@ -76,7 +80,7 @@ const halftone = `url("data:image/svg+xml,${svg.replace(/[<>#]/g, encodeURICompo
     </div>
   </ParallaxContainer>
 
-  <ParallaxContainer speed={0.2}>
+  <ParallaxContainer speed={0.2} class="publication-strip">
     <div class="ticker" style={`--halftone: ${halftone}`}>
       <!-- Three copies so the strip can loop in both directions; the middle one is read out and reached by Tab, the others
            are still clickable. -->
@@ -100,6 +104,7 @@ const halftone = `url("data:image/svg+xml,${svg.replace(/[<>#]/g, encodeURICompo
         )}
       </ul>
     </div>
+    <div class="fade-barrier" style={`clip-path: ${fadeBarrier}`} aria-hidden="true"></div>
   </ParallaxContainer>
 </section>
 
@@ -156,10 +161,20 @@ const halftone = `url("data:image/svg+xml,${svg.replace(/[<>#]/g, encodeURICompo
     /* Clears the dark bar (4.13vw before the zoom) plus one gap when focus scrolls a card into view. */
     scroll-padding-left: 8.21vw;
     /* Cards dissolve into shrinking dots once they pass the left edge of the background's dot wave. The mask moves
-       against the parallax offset (inherited from ParallaxContainer) so the edge stays on the wave, and sits 1.5vw right of
-       the measured edge so the fade starts a little inside the wave. */
-    mask: var(--halftone) 1.5vw calc(-12vw - var(--parallax-offset, 0px)) / 120vw 46.53vw no-repeat;
+       against the parallax offset (inherited from ParallaxContainer) so the edge stays on the wave, and sits
+       --fade-offset right of the measured edge so the fade starts a little inside the wave. */
+    mask: var(--halftone) var(--fade-offset) calc(-12vw - var(--parallax-offset, 0px)) / 120vw 46.53vw no-repeat;
     user-select: none;
+  }
+
+  .latest-publications :global(.publication-strip) {
+    position: relative;
+  }
+
+  /* Covers the faded part of the strip, so cards there can't be hovered or clicked. */
+  .fade-barrier {
+    position: absolute;
+    inset: 0;
   }
 
   .cards {
@@ -269,14 +284,16 @@ const halftone = `url("data:image/svg+xml,${svg.replace(/[<>#]/g, encodeURICompo
   };
   requestAnimationFrame(tick);
 
-  ticker.addEventListener('pointerenter', (event) => (hovered = event.pointerType === 'mouse'));
-  ticker.addEventListener('pointerleave', () => (hovered = false));
+  ticker.addEventListener('pointerover', (event) => {
+    hovered = event.pointerType === 'mouse' && event.target instanceof Element && !!event.target.closest('.cards li');
+  });
+  ticker.addEventListener('pointerout', () => (hovered = false));
   // Keyboard focus only: clicking a card focuses it too, which would otherwise keep the strip stopped until the next
   // click. The explicit scroll is because Chrome's own focus scrolling misjudges what's visible inside the zoomed
   // section and can leave a card half off-screen.
   ticker.addEventListener('focusin', (event) => {
     const card = event.target as HTMLElement;
-    if (!card.matches(':focus-visible')) return;
+    if (!card.matches('.cards a:focus-visible')) return;
     focused = true;
     card.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   });
@@ -306,7 +323,7 @@ const halftone = `url("data:image/svg+xml,${svg.replace(/[<>#]/g, encodeURICompo
     ticker.scrollLeft = target;
   });
   addEventListener('pointerup', () => {
-    if (drag) resumeAt = performance.now() + 1000;
+    if (drag && dragged) resumeAt = performance.now() + 1000;
     drag = null;
   });
   ticker.addEventListener('click', (event) => dragged && event.preventDefault(), true);
