@@ -131,7 +131,7 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
 
   .more {
     position: absolute;
-    top: 7.89vw;
+    top: 7.59vw;
     left: 39.35vw;
     transition: transform 0.3s;
   }
@@ -140,11 +140,12 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
     transform: scale(1.1);
   }
 
-  /* The button's cream square matches the page, so the shadow from Landing V3 is what shows its edge. */
+  /* The button's cream square matches the page, so the shadow is what shows its edge; a little larger and darker than
+     Landing V3 so it stands out. */
   .more img {
     display: block;
-    width: 2.6vw;
-    filter: drop-shadow(0.1vw 0.2vw 0.3vw rgb(0 0 0 / 0.15));
+    width: 3.2vw;
+    filter: drop-shadow(0.15vw 0.3vw 0.5vw rgb(0 0 0 / 0.3));
   }
 
   /* Cards scroll continuously across the band at a steady speed and pass behind the dark bar (StarsScrollbar repaints
