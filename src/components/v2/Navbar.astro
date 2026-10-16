@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import logo from '../../../public/favicon.png';
-import { navbar } from './constants.js';
+import { subpages } from './constants.js';
 
 // Set to true when merch is available; controls both desktop and mobile links.
 const MERCH_ENABLED = false;
@@ -13,7 +13,7 @@ const pageLink = (page: string, fallback: string) =>
     ? `/v2/${page}/`
     : fallback;
 
-const navigation = navbar.map(({ text, linkto, fallback }) => ({
+const navigation = subpages.map(({ text, linkto, fallback }) => ({
   text,
   page: linkto.replace(/^v2\//, ''),
   href: pageLink(linkto.replace(/^v2\//, ''), fallback),

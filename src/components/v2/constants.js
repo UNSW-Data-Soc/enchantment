@@ -1,4 +1,4 @@
-export const navbar = [
+export const subpages = [
   {
     text: "Who We Are",
     linkto: "v2/who-we-are",
@@ -31,4 +31,4 @@ export const navbar = [
   },
 ];
 
-export const quicklinks = navbar.filter(({ linkto }) => linkto !== "v2/who-we-are");
+export const quicklinks = subpages.filter(({ linkto }) => linkto !== "v2/who-we-are");
