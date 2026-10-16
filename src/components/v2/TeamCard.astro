@@ -1,0 +1,91 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import type { Member } from '../../data/team';
+
+interface Props {
+    member: Member;
+    featured?: boolean;
+}
+
+const { member, featured = false } = Astro.props;
+const photos = import.meta.glob<{ default: ImageMetadata }>(
+    '../../assets/meet-the-team/datasoc-board-photos/*.jpg',
+    { eager: true },
+);
+const image = member.file
+    ? photos[`../../assets/meet-the-team/datasoc-board-photos/${member.file}`]?.default
+    : undefined;
+if (member.file && !image) throw new Error(`Board photo not found: ${member.file}`);
+---
+
+<article class:list={['team-card', { featured }]}>
+    <div class="photo">
+        {image ? (
+            <Image
+                src={image}
+                alt={`Portrait of ${member.name}`}
+                widths={[240, 380, 540, 700]}
+                sizes={featured
+                    ? '(min-width: 800px) 360px, (min-width: 540px) 340px, 80vw'
+                    : '(min-width: 1100px) 260px, (min-width: 800px) 27vw, 40vw'}
+                loading="lazy"
+            />
+        ) : (
+            <div class="photo-placeholder" role="img" aria-label={`${member.name}: photo coming soon`}>
+                <span class="placeholder-star" aria-hidden="true">✳</span>
+                <span>Photo coming soon</span>
+            </div>
+        )}
+    </div>
+    <div class="caption">
+        <h3>{member.name}</h3>
+        <p>{member.role}</p>
+    </div>
+</article>
+
+<style>
+    .team-card {
+        min-width: 0;
+        padding: 10px 10px 0;
+        border: 1px solid #663b3730;
+        border-radius: 3px;
+        background: #fffdf6;
+        box-shadow: 5px 6px 0 #663b3710;
+        transform: rotate(-2deg);
+        transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .team-card:nth-child(even) { transform: rotate(2deg); }
+    .team-card:hover { transform: rotate(0); box-shadow: 7px 9px 0 #663b3720; }
+    .photo { aspect-ratio: 4 / 5; overflow: hidden; background: #e8dfd2; }
+    .photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .photo-placeholder {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        color: #633c38;
+        text-align: center;
+        font-size: 0.8rem;
+        background: repeating-linear-gradient(0deg, transparent 0 23px, #663b370d 23px 24px), #f1e6d3;
+    }
+    .placeholder-star { color: #a64050; font-size: 5rem; line-height: 1; }
+    .caption { padding: 18px 5px 22px; text-align: center; }
+    h3 { margin: 0; font-size: clamp(0.95rem, 1.6vw, 1.2rem); line-height: 1.25; }
+    p { margin: 8px 0 0; font-size: 0.78rem; line-height: 1.5; }
+
+    @media (max-width: 539px) {
+        .team-card { padding: 6px 6px 0; }
+        .caption { padding: 12px 2px 16px; }
+        p { font-size: 0.7rem; }
+        .placeholder-star { font-size: 3.5rem; }
+        .photo-placeholder { font-size: 0.7rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .team-card { transition: none; }
+    }
+</style>

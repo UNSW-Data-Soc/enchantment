@@ -1,11 +1,287 @@
 ---
 import V2Layout from "../../../layouts/V2Layout.astro";
 import Footer from "../../../components/v2/Footer.astro";
+import TeamCard from "../../../components/v2/TeamCard.astro";
+import { sections } from "../../../data/team";
+
+const [president, executives, directors] = sections;
+const portfolios = [...new Set(directors.members.map((member) => member.role.replace(/ Director$/, '')))]
+	.map((name) => ({
+		name,
+		members: directors.members.filter((member) => member.role === `${name} Director`),
+	}));
 ---
 
-<V2Layout>
-	<h1>Meet the Team</h1>
-	<p>This page is coming soon.</p>
+<V2Layout title="Meet the team — UNSW DataSoc">
+	<main class="team-page" id="top">
+		<header class="page-nav">
+			<a class="wordmark" href="/v2" aria-label="DataSoc home">DataSoc<span aria-hidden="true">✳</span></a>
+			<a href="/v2">Back to home <span aria-hidden="true">↗</span></a>
+		</header>
+
+		<div class="team-journey">
+			<svg class="journey-line" viewBox="0 0 1000 7000" preserveAspectRatio="none" aria-hidden="true">
+				<path class="line-track" d="M 700 300 C 950 500 950 850 750 1100 S 50 1700 160 2200 S 950 2800 840 3300 S 50 3900 160 4400 S 950 5000 840 5500 S 50 6200 500 6900" />
+				<path class="line-progress" d="M 700 300 C 950 500 950 850 750 1100 S 50 1700 160 2200 S 950 2800 840 3300 S 50 3900 160 4400 S 950 5000 840 5500 S 50 6200 500 6900" />
+				<circle class="line-tip" r="9" cx="500" cy="6900" />
+			</svg>
+
+			<section class="hero" aria-labelledby="team-heading" data-line-section>
+				<div class="hero-copy">
+					<p class="eyebrow">UNSW Data Science Society / Our people</p>
+					<h1 id="team-heading">Who we are.<br /><span>Meet the team.</span></h1>
+					<p class="intro">Different people. Shared curiosity. Meet the team making data, friendships and big ideas come together.</p>
+					<nav class="section-links" aria-label="Explore the team">
+						<a href="#president">President <span aria-hidden="true">↘</span></a>
+						<a href="#executives">Executives <span aria-hidden="true">↘</span></a>
+						<a href="#directors">Directors <span aria-hidden="true">↘</span></a>
+					</nav>
+				</div>
+				<div class="hero-art" aria-hidden="true">
+					<div class="orbit"></div>
+					<span class="big-star">✳</span>
+					<span class="little-star">✦</span>
+					<span class="art-label">a little data,<br />a lot of heart.</span>
+				</div>
+				<p class="scroll-note">Follow the thread. Find your people. <span aria-hidden="true">↓</span></p>
+			</section>
+
+			<section class="president content-section" id="president" aria-labelledby="president-heading" data-line-section>
+				<div class="president-copy">
+					<p class="eyebrow">01 / Leading the way</p>
+					<h2 id="president-heading">Our<br /><em>President.</em></h2>
+					<p>Bringing the people, portfolios and possibilities together.</p>
+					<span class="hand-drawn-arrow" aria-hidden="true">↝</span>
+				</div>
+				<div class="president-card">
+					<span class="card-sticker" aria-hidden="true">the big picture ↙</span>
+					<TeamCard member={president.members[0]} featured />
+				</div>
+			</section>
+
+			<section class="executives content-section" id="executives" aria-labelledby="executives-heading" data-line-section>
+				<div class="section-heading">
+					<p class="eyebrow">02 / Making it happen</p>
+					<h2 id="executives-heading">The <em>Executives.</em></h2>
+					<p>The crew connecting all the moving parts of DataSoc.</p>
+				</div>
+				<div class="executive-grid">
+					{executives.members.map((member) => <TeamCard member={member} />)}
+				</div>
+			</section>
+
+			<section class="directors content-section" id="directors" aria-labelledby="directors-heading">
+				<div class="section-heading" data-line-section>
+					<p class="eyebrow">03 / Ideas into action</p>
+					<h2 id="directors-heading">Meet our <em>Directors.</em></h2>
+					<p>Many portfolios. One team. Find the people behind each part of the society.</p>
+				</div>
+				<div class="portfolio-grid">
+					{portfolios.map((portfolio, index) => (
+						<section class="portfolio" aria-labelledby={`portfolio-${index}`} data-line-section>
+							<div class="portfolio-heading">
+								<span class="portfolio-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+								<h3 id={`portfolio-${index}`}>{portfolio.name}</h3>
+							</div>
+							<div class="director-grid">
+								{portfolio.members.map((member) => <TeamCard member={member} />)}
+							</div>
+						</section>
+					))}
+				</div>
+			</section>
+
+			<div class="journey-end" data-line-section>
+				<span aria-hidden="true">✳</span>
+				<p>Different threads.<br /><strong>One DataSoc.</strong></p>
+				<a href="#top">Back to the top ↑</a>
+			</div>
+		</div>
+	</main>
 
 	<Footer />
 </V2Layout>
+
+<style>
+	:global(body) { background: #fffcf3; }
+	.team-page {
+		color: #633c38;
+		font-family: var(--font-syne), sans-serif;
+		overflow: clip;
+		background: #fffcf3;
+	}
+	.team-page * { box-sizing: border-box; }
+	a { color: inherit; text-underline-offset: 5px; }
+	a:focus-visible { outline: 3px solid #137aa8; outline-offset: 7px; }
+	.page-nav {
+		position: relative;
+		z-index: 2;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		max-width: 1320px;
+		margin: auto;
+		padding: 30px 6%;
+		font-size: 0.85rem;
+	}
+	.wordmark { font-size: 1.7rem; font-weight: 800; text-decoration: none; }
+	.wordmark span { display: inline-block; margin-left: 7px; color: #d94a65; }
+	.team-journey { position: relative; isolation: isolate; }
+	.journey-line { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+	.journey-line path { fill: none; stroke-width: 3; vector-effect: non-scaling-stroke; }
+	.line-track { stroke: #d5b266; opacity: 0.3; }
+	.line-progress { stroke: #137aa8; }
+	.line-tip { fill: #d94a65; stroke: #fffcf3; stroke-width: 3; }
+	.hero {
+		position: relative;
+		max-width: 1320px;
+		margin: auto;
+		padding: 95px 6% 110px;
+		min-height: 650px;
+	}
+	.hero-copy { position: relative; z-index: 1; max-width: 790px; }
+	.eyebrow { margin: 0 0 24px; text-transform: uppercase; letter-spacing: 0.16em; font-size: 0.72rem; font-weight: 700; line-height: 1.8; }
+	h1 { margin: 0; font-size: clamp(3.1rem, 6.6vw, 6.2rem); line-height: 1.05; letter-spacing: -0.065em; font-weight: 800; }
+	h1 span { color: #b13e55; }
+	.intro { max-width: 440px; margin: 28px 0; font-size: 1rem; line-height: 1.8; }
+	.section-links { display: flex; flex-wrap: wrap; gap: 12px; }
+	.section-links a { padding: 10px 16px; border: 1px solid #633c3870; border-radius: 30px; text-decoration: none; font-size: 0.8rem; background: #fffcf3; }
+	.section-links a:hover { background: #f6dfa6; }
+	.section-links span { margin-left: 12px; }
+	.hero-art { position: absolute; right: 3%; top: 90px; width: 280px; height: 330px; }
+	.orbit { position: absolute; width: 245px; height: 245px; border: 2px solid #137aa8; border-radius: 50%; top: 50px; right: -70px; }
+	.big-star { position: absolute; color: #e2ad32; font-size: 270px; line-height: 1; transform: rotate(12deg); }
+	.little-star { position: absolute; top: 0; right: 5px; color: #d94a65; font-size: 75px; }
+	.art-label { position: absolute; bottom: 0; left: 15px; color: #137aa8; transform: rotate(-9deg); font-size: 1.15rem; line-height: 1.4; }
+	.scroll-note { margin: 65px 0 0; font-size: 0.72rem; letter-spacing: 0.08em; }
+	.scroll-note span { margin-left: 20px; font-size: 1.3rem; }
+	.content-section { position: relative; padding: 100px max(7%, calc((100% - 1100px) / 2)); scroll-margin-top: 35px; }
+	h2 { margin: 0; font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1; letter-spacing: -0.05em; }
+	h2 em { color: #b13e55; font-style: normal; }
+	.section-heading { position: relative; z-index: 1; margin-bottom: 60px; text-align: center; }
+	.section-heading > p:last-child { max-width: 480px; margin: 20px auto 0; font-size: 0.95rem; line-height: 1.8; }
+	.president { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 80px; border-top: 1px solid #633c3825; }
+	.president-copy { position: relative; z-index: 1; max-width: 390px; }
+	.president-copy > p:not(.eyebrow) { max-width: 290px; line-height: 1.8; }
+	.hand-drawn-arrow { display: block; color: #137aa8; font-size: 6rem; line-height: 1; transform: rotate(15deg); }
+	.president-card { position: relative; width: min(100%, 360px); justify-self: center; }
+	.card-sticker { position: absolute; z-index: 2; right: -20px; top: -25px; padding: 10px 18px; background: #f6dfa6; font-size: 0.8rem; transform: rotate(9deg); }
+	.executives { border-top: 1px solid #633c3825; }
+	.executive-grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 42px; max-width: 880px; margin: auto; }
+	.directors { border-top: 1px solid #633c3825; }
+	.directors h2 em { color: #137aa8; }
+	.portfolio-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 80px 60px; }
+	.portfolio { min-width: 0; padding-top: 25px; border-top: 1px solid #633c3840; }
+	.portfolio-heading { position: relative; z-index: 1; display: flex; gap: 14px; align-items: baseline; margin-bottom: 28px; }
+	.portfolio-heading h3 { margin: 0; font-size: 1.15rem; }
+	.portfolio-number { font-size: 0.75rem; color: #137aa8; }
+	.director-grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+	.journey-end { padding: 70px 20px 100px; text-align: center; }
+	.journey-end > span { color: #d94a65; font-size: 5rem; }
+	.journey-end p { font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.25; letter-spacing: -0.04em; }
+	.journey-end a { font-size: 0.8rem; }
+
+	@media (max-width: 1099px) {
+		.hero-art { right: -80px; top: 180px; opacity: 0.65; }
+		.portfolio-grid { gap: 60px 35px; }
+		.executive-grid { gap: 30px; }
+	}
+	@media (max-width: 799px) {
+		.hero { padding-top: 65px; padding-bottom: 70px; min-height: auto; }
+		.hero-copy { max-width: 560px; }
+		.hero-art { top: 240px; right: -120px; transform: scale(0.65); transform-origin: right top; opacity: 0.35; }
+		.intro { max-width: 85%; }
+		.content-section { padding: 70px 7%; }
+		.president { gap: 40px; }
+		.president-copy { max-width: 100%; }
+		.president { grid-template-columns: 1fr; }
+		.president-card { width: min(80vw, 340px); }
+		.hand-drawn-arrow { display: none; }
+		.executive-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 22px; }
+		.portfolio-grid { grid-template-columns: 1fr; gap: 60px; }
+		.director-grid { gap: 25px; }
+		.section-heading { margin-bottom: 42px; }
+		.section-heading > p:last-child { font-size: 0.9rem; }
+		.journey-line path { stroke-width: 2; }
+	}
+	@media (max-width: 399px) {
+		h1 { font-size: 2.7rem; }
+		.section-links { gap: 8px; }
+		.section-links a { padding: 9px 11px; font-size: 0.72rem; }
+		.section-links span { margin-left: 5px; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.line-tip { display: none; }
+	}
+</style>
+
+<script>
+	const journey = document.querySelector<HTMLElement>('.team-journey');
+	const svg = journey?.querySelector<SVGSVGElement>('.journey-line');
+	const track = svg?.querySelector<SVGPathElement>('.line-track');
+	const progress = svg?.querySelector<SVGPathElement>('.line-progress');
+	const tip = svg?.querySelector<SVGCircleElement>('.line-tip');
+
+	if (journey && svg && track && progress && tip) {
+		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+		let length = 0;
+		let frame = 0;
+
+		const draw = () => {
+			frame = 0;
+			if (reducedMotion.matches) {
+				progress.style.strokeDashoffset = '0';
+				return;
+			}
+			// Match the line's tip to the reading position, rather than assuming equal
+			// distances along a curve correspond to equal distances down the page.
+			const y = window.innerHeight * 0.7 - journey.getBoundingClientRect().top;
+			let low = 0;
+			let high = length;
+			for (let i = 0; i < 14; i++) {
+				const midpoint = (low + high) / 2;
+				if (progress.getPointAtLength(midpoint).y < y) low = midpoint;
+				else high = midpoint;
+			}
+			const distance = (low + high) / 2;
+			const point = progress.getPointAtLength(distance);
+			progress.style.strokeDashoffset = `${length - distance}`;
+			tip.setAttribute('cx', `${point.x}`);
+			tip.setAttribute('cy', `${point.y}`);
+		};
+
+		const scheduleDraw = () => {
+			if (!frame) frame = requestAnimationFrame(draw);
+		};
+
+		const resize = () => {
+			const bounds = journey.getBoundingClientRect();
+			const anchors = Array.from(journey.querySelectorAll<HTMLElement>('[data-line-section]'))
+				.map((section) => section.getBoundingClientRect().top - bounds.top + 65)
+				.sort((a, b) => a - b);
+			const points = anchors.map((y, i) => ({
+				x: bounds.width * (i % 2 === 0 ? 0.9 : 0.1),
+				y,
+			}));
+			let d = `M ${points[0].x} ${points[0].y}`;
+			for (let i = 1; i < points.length; i++) {
+				const previous = points[i - 1];
+				const current = points[i];
+				const middle = (previous.y + current.y) / 2;
+				d += ` C ${previous.x} ${middle}, ${current.x} ${middle}, ${current.x} ${current.y}`;
+			}
+			svg.setAttribute('viewBox', `0 0 ${bounds.width} ${bounds.height}`);
+			track.setAttribute('d', d);
+			progress.setAttribute('d', d);
+			length = progress.getTotalLength();
+			progress.style.strokeDasharray = `${length}`;
+			scheduleDraw();
+		};
+
+		window.addEventListener('scroll', scheduleDraw, { passive: true });
+		window.addEventListener('v2-lenis-scroll', scheduleDraw);
+		reducedMotion.addEventListener('change', scheduleDraw);
+		new ResizeObserver(resize).observe(journey);
+		resize();
+	}
+</script>
