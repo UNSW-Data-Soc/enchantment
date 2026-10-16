@@ -1,10 +1,5 @@
 export const subpages = [
   {
-    text: "Who We Are",
-    linkto: "v2/who-we-are",
-    fallback: "/who-we-are/",
-  },
-  {
     text: "Meet the Team",
     linkto: "v2/meet-the-team",
     fallback: "/meet-the-team/",
@@ -31,4 +26,4 @@ export const subpages = [
   },
 ];
 
-export const quicklinks = subpages.filter(({ linkto }) => linkto !== "v2/who-we-are");
+export const quicklinks = subpages;
