@@ -32,9 +32,9 @@ if (member.file && !image) throw new Error(`Board photo not found: ${member.file
                 loading="lazy"
             />
         ) : (
-            <div class="photo-placeholder" role="img" aria-label={`${member.name}: photo coming soon`}>
+            <div class="photo-placeholder" role="img" aria-label={`${member.name}: photo unavailable`}>
                 <span class="placeholder-star" aria-hidden="true">✳</span>
-                <span>Photo coming soon</span>
+                <span>Photo unavailable</span>
             </div>
         )}
     </div>
@@ -46,16 +46,32 @@ if (member.file && !image) throw new Error(`Board photo not found: ${member.file
 
 <style>
     .team-card {
+        position: relative;
         min-width: 0;
         padding: 10px 10px 0;
         border: 1px solid #663b3730;
         border-radius: 3px;
         background: #fffdf6;
-        box-shadow: 5px 6px 0 #663b3710;
+        box-shadow: 6px 8px 0 #d78b5460;
         transform: rotate(-2deg);
         transition: transform 180ms ease, box-shadow 180ms ease;
     }
 
+    .team-card::before {
+        content: '';
+        position: absolute;
+        z-index: 1;
+        width: 34%;
+        height: 25px;
+        left: 33%;
+        top: -12px;
+        background: #efbc5abf;
+        transform: rotate(-7deg);
+        clip-path: polygon(3% 0, 97% 0, 100% 20%, 97% 40%, 100% 70%, 97% 100%, 0 100%, 3% 70%, 0 40%);
+    }
+    .team-card:nth-child(3n + 2) { background: #ffe3cc; }
+    .team-card:nth-child(3n) { background: #f7dfdf; }
+    .team-card:nth-child(even)::before { background: #ce8c9cbf; transform: rotate(8deg); }
     .team-card:nth-child(even) { transform: rotate(2deg); }
     .team-card:hover { transform: rotate(0); box-shadow: 7px 9px 0 #663b3720; }
     .photo { aspect-ratio: 4 / 5; overflow: hidden; background: #e8dfd2; }

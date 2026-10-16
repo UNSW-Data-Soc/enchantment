@@ -2,6 +2,7 @@
 import V2Layout from "../../../layouts/V2Layout.astro";
 import Footer from "../../../components/v2/Footer.astro";
 import TeamCard from "../../../components/v2/TeamCard.astro";
+import StarsScrollbar from "../../../components/v2/StarsScrollbar.astro";
 import { sections } from "../../../data/team";
 
 const [president, executives, directors] = sections;
@@ -14,10 +15,7 @@ const portfolios = [...new Set(directors.members.map((member) => member.role.rep
 
 <V2Layout title="Meet the team — UNSW DataSoc">
 	<main class="team-page" id="top">
-		<header class="page-nav">
-			<a class="wordmark" href="/v2" aria-label="DataSoc home">DataSoc<span aria-hidden="true">✳</span></a>
-			<a href="/v2">Back to home <span aria-hidden="true">↗</span></a>
-		</header>
+		<StarsScrollbar variant="team" />
 
 		<div class="team-journey">
 			<svg class="journey-line" viewBox="0 0 1000 7000" preserveAspectRatio="none" aria-hidden="true">
@@ -26,10 +24,10 @@ const portfolios = [...new Set(directors.members.map((member) => member.role.rep
 				<circle class="line-tip" r="9" cx="500" cy="6900" />
 			</svg>
 
-			<section class="hero" aria-labelledby="team-heading" data-line-section>
+			<section class="hero" aria-labelledby="team-heading" data-line-section data-section="Meet the Team">
 				<div class="hero-copy">
-					<p class="eyebrow">UNSW Data Science Society / Our people</p>
-					<h1 id="team-heading">Who we are.<br /><span>Meet the team.</span></h1>
+					<p class="eyebrow">Our people / The team behind it all</p>
+					<h1 id="team-heading">Meet<br /><span>the team.</span></h1>
 					<p class="intro">Different people. Shared curiosity. Meet the team making data, friendships and big ideas come together.</p>
 					<nav class="section-links" aria-label="Explore the team">
 						<a href="#president">President <span aria-hidden="true">↘</span></a>
@@ -38,15 +36,20 @@ const portfolios = [...new Set(directors.members.map((member) => member.role.rep
 					</nav>
 				</div>
 				<div class="hero-art" aria-hidden="true">
+					<div class="paper-sheet paper-back"></div>
+					<div class="paper-sheet paper-front"><span>good people.<br />great ideas.</span><span class="paper-flower">✿</span></div>
 					<div class="orbit"></div>
 					<span class="big-star">✳</span>
 					<span class="little-star">✦</span>
 					<span class="art-label">a little data,<br />a lot of heart.</span>
+					<span class="round-sticker">made of<br /><strong>curiosity</strong></span>
 				</div>
+				<div class="hero-ribbon" aria-hidden="true"><span>People first ✳ Ideas always ✳ Better together ✳ People first ✳ Ideas always ✳ Better together ✳</span></div>
 				<p class="scroll-note">Follow the thread. Find your people. <span aria-hidden="true">↓</span></p>
 			</section>
 
-			<section class="president content-section" id="president" aria-labelledby="president-heading" data-line-section>
+			<section class="president content-section" id="president" aria-labelledby="president-heading" data-line-section data-section="President">
+				<span class="section-doodle president-doodle" aria-hidden="true">✺</span>
 				<div class="president-copy">
 					<p class="eyebrow">01 / Leading the way</p>
 					<h2 id="president-heading">Our<br /><em>President.</em></h2>
@@ -59,7 +62,8 @@ const portfolios = [...new Set(directors.members.map((member) => member.role.rep
 				</div>
 			</section>
 
-			<section class="executives content-section" id="executives" aria-labelledby="executives-heading" data-line-section>
+			<section class="executives content-section" id="executives" aria-labelledby="executives-heading" data-line-section data-section="Executives">
+				<span class="section-doodle executive-doodle" aria-hidden="true">✿</span>
 				<div class="section-heading">
 					<p class="eyebrow">02 / Making it happen</p>
 					<h2 id="executives-heading">The <em>Executives.</em></h2>
@@ -70,7 +74,8 @@ const portfolios = [...new Set(directors.members.map((member) => member.role.rep
 				</div>
 			</section>
 
-			<section class="directors content-section" id="directors" aria-labelledby="directors-heading">
+			<section class="directors content-section" id="directors" aria-labelledby="directors-heading" data-section="Directors">
+				<span class="section-doodle director-doodle" aria-hidden="true">✷</span>
 				<div class="section-heading" data-line-section>
 					<p class="eyebrow">03 / Ideas into action</p>
 					<h2 id="directors-heading">Meet our <em>Directors.</em></h2>
@@ -103,94 +108,99 @@ const portfolios = [...new Set(directors.members.map((member) => member.role.rep
 </V2Layout>
 
 <style>
-	:global(body) { background: #fffcf3; }
+	:global(body) { background: #fff1d9; }
 	.team-page {
+		position: relative;
 		color: #633c38;
 		font-family: var(--font-syne), sans-serif;
 		overflow: clip;
-		background: #fffcf3;
+		background: #fff1d9;
+		padding-left: 48px;
 	}
 	.team-page * { box-sizing: border-box; }
 	a { color: inherit; text-underline-offset: 5px; }
 	a:focus-visible { outline: 3px solid #137aa8; outline-offset: 7px; }
-	.page-nav {
-		position: relative;
-		z-index: 2;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		max-width: 1320px;
-		margin: auto;
-		padding: 30px 6%;
-		font-size: 0.85rem;
-	}
-	.wordmark { font-size: 1.7rem; font-weight: 800; text-decoration: none; }
-	.wordmark span { display: inline-block; margin-left: 7px; color: #d94a65; }
 	.team-journey { position: relative; isolation: isolate; }
-	.journey-line { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
-	.journey-line path { fill: none; stroke-width: 3; vector-effect: non-scaling-stroke; }
-	.line-track { stroke: #d5b266; opacity: 0.3; }
-	.line-progress { stroke: #137aa8; }
-	.line-tip { fill: #d94a65; stroke: #fffcf3; stroke-width: 3; }
+	.journey-line { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+	.journey-line path { fill: none; stroke-width: 4; vector-effect: non-scaling-stroke; }
+	.line-track { stroke: #a85736; opacity: 0.22; }
+	.line-progress { stroke: #ba4b35; }
+	.line-tip { fill: #b43e58; stroke: #fff1d9; stroke-width: 3; }
 	.hero {
 		position: relative;
-		max-width: 1320px;
-		margin: auto;
-		padding: 95px 6% 110px;
-		min-height: 650px;
+		padding: 110px max(6%, calc((100% - 1160px) / 2)) 150px;
+		min-height: 760px;
+		background: radial-gradient(ellipse at 90% 15%, #f2ba7980, transparent 55%), #fff1d9;
 	}
-	.hero-copy { position: relative; z-index: 1; max-width: 790px; }
+	.hero-copy { position: relative; z-index: 2; max-width: 680px; }
 	.eyebrow { margin: 0 0 24px; text-transform: uppercase; letter-spacing: 0.16em; font-size: 0.72rem; font-weight: 700; line-height: 1.8; }
-	h1 { margin: 0; font-size: clamp(3.1rem, 6.6vw, 6.2rem); line-height: 1.05; letter-spacing: -0.065em; font-weight: 800; }
-	h1 span { color: #b13e55; }
+	h1 { margin: 0; font-size: clamp(4rem, 8.5vw, 8rem); line-height: 0.98; letter-spacing: -0.065em; font-weight: 800; transform: rotate(-3deg); }
+	h1 span { display: inline-block; color: #ae3e39; background: #f4c562; box-shadow: 9px 9px 0 #df896a; padding: 0 16px 12px; margin: 12px 0 10px; }
 	.intro { max-width: 440px; margin: 28px 0; font-size: 1rem; line-height: 1.8; }
 	.section-links { display: flex; flex-wrap: wrap; gap: 12px; }
 	.section-links a { padding: 10px 16px; border: 1px solid #633c3870; border-radius: 30px; text-decoration: none; font-size: 0.8rem; background: #fffcf3; }
 	.section-links a:hover { background: #f6dfa6; }
 	.section-links span { margin-left: 12px; }
-	.hero-art { position: absolute; right: 3%; top: 90px; width: 280px; height: 330px; }
-	.orbit { position: absolute; width: 245px; height: 245px; border: 2px solid #137aa8; border-radius: 50%; top: 50px; right: -70px; }
-	.big-star { position: absolute; color: #e2ad32; font-size: 270px; line-height: 1; transform: rotate(12deg); }
-	.little-star { position: absolute; top: 0; right: 5px; color: #d94a65; font-size: 75px; }
-	.art-label { position: absolute; bottom: 0; left: 15px; color: #137aa8; transform: rotate(-9deg); font-size: 1.15rem; line-height: 1.4; }
-	.scroll-note { margin: 65px 0 0; font-size: 0.72rem; letter-spacing: 0.08em; }
+	.hero-art { position: absolute; z-index: 1; right: 4%; top: 90px; width: 340px; height: 440px; }
+	.paper-sheet { position: absolute; width: 250px; height: 310px; box-shadow: 8px 10px 0 #633c3825; }
+	.paper-back { top: 15px; right: 0; transform: rotate(14deg); background: repeating-linear-gradient(90deg, #d8826990 0 2px, transparent 2px 24px), repeating-linear-gradient(0deg, #d8826990 0 2px, #f7d2ac 2px 24px); }
+	.paper-front { top: 65px; left: 0; padding: 25px; transform: rotate(-10deg); background: #eda5ad; border: 10px solid #fff7e6; }
+	.paper-front > span:first-child { font-size: 1.6rem; font-weight: 800; }
+	.paper-flower { display: block; font-size: 140px; line-height: 1; text-align: center; color: #ad4038; }
+	.orbit { position: absolute; width: 285px; height: 285px; border: 3px solid #a84d35; border-radius: 50%; top: 105px; right: -50px; transform: rotate(-20deg) scaleY(0.65); }
+	.big-star { position: absolute; top: -45px; left: -40px; color: #dc8837; font-size: 165px; line-height: 1; transform: rotate(12deg); text-shadow: 3px 3px #fff1d9; }
+	.little-star { position: absolute; bottom: 55px; right: -10px; color: #ae3e39; font-size: 90px; }
+	.art-label { position: absolute; bottom: 0; left: 15px; background: #ffdf85; padding: 12px 18px; color: #633c38; transform: rotate(-9deg); font-size: 1.15rem; line-height: 1.4; }
+	.round-sticker { position: absolute; top: 20px; right: -15px; width: 115px; height: 115px; display: grid; align-content: center; text-align: center; border-radius: 50%; background: #8ca9a2; color: #342c28; transform: rotate(15deg); border: 3px double #342c28; font-size: 0.85rem; }
+	.hero-ribbon { position: absolute; bottom: 25px; left: -3%; width: 106%; padding: 16px 0; background: #b3473b; color: #fff1d9; transform: rotate(-3deg); border-block: 2px dashed #f1b577; overflow: hidden; }
+	.hero-ribbon span { display: block; white-space: nowrap; word-spacing: 16px; font-weight: 700; font-size: clamp(0.9rem, 1.8vw, 1.4rem); }
+	.scroll-note { position: relative; z-index: 2; margin: 45px 0 0; font-size: 0.72rem; letter-spacing: 0.08em; }
 	.scroll-note span { margin-left: 20px; font-size: 1.3rem; }
-	.content-section { position: relative; padding: 100px max(7%, calc((100% - 1100px) / 2)); scroll-margin-top: 35px; }
+	.content-section { position: relative; padding: 110px max(7%, calc((100% - 1100px) / 2)); scroll-margin-top: 35px; }
+	.section-doodle { position: absolute; pointer-events: none; line-height: 1; }
+	.president-doodle { left: -45px; bottom: 10px; font-size: 300px; color: #d7744e; transform: rotate(15deg); }
+	.executive-doodle { right: -60px; top: 15px; font-size: 280px; color: #dfa1a3; transform: rotate(-20deg); }
+	.director-doodle { left: -40px; top: 10px; font-size: 270px; color: #d89545; }
 	h2 { margin: 0; font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1; letter-spacing: -0.05em; }
 	h2 em { color: #b13e55; font-style: normal; }
-	.section-heading { position: relative; z-index: 1; margin-bottom: 60px; text-align: center; }
+	.section-heading { position: relative; z-index: 2; margin-bottom: 70px; text-align: center; }
+	.section-heading h2 { display: inline-block; padding: 10px 20px; background: #fff1d9; box-shadow: 7px 8px 0 #b76b5270; transform: rotate(-2deg); }
 	.section-heading > p:last-child { max-width: 480px; margin: 20px auto 0; font-size: 0.95rem; line-height: 1.8; }
-	.president { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 80px; border-top: 1px solid #633c3825; }
-	.president-copy { position: relative; z-index: 1; max-width: 390px; }
+	.president { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 80px; background: #f3cd91; }
+	.president-copy { position: relative; z-index: 2; max-width: 390px; padding: 30px; background: #fff2da; box-shadow: -12px 12px #d99370; transform: rotate(-3deg); }
 	.president-copy > p:not(.eyebrow) { max-width: 290px; line-height: 1.8; }
 	.hand-drawn-arrow { display: block; color: #137aa8; font-size: 6rem; line-height: 1; transform: rotate(15deg); }
-	.president-card { position: relative; width: min(100%, 360px); justify-self: center; }
+	.president-card { position: relative; z-index: 2; width: min(100%, 360px); justify-self: center; }
 	.card-sticker { position: absolute; z-index: 2; right: -20px; top: -25px; padding: 10px 18px; background: #f6dfa6; font-size: 0.8rem; transform: rotate(9deg); }
-	.executives { border-top: 1px solid #633c3825; }
-	.executive-grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 42px; max-width: 880px; margin: auto; }
-	.directors { border-top: 1px solid #633c3825; }
-	.directors h2 em { color: #137aa8; }
+	.executives { background: repeating-linear-gradient(0deg, #aa5c4a12 0 1px, transparent 1px 32px), repeating-linear-gradient(90deg, #aa5c4a12 0 1px, #f6dfc4 1px 32px); }
+	.executive-grid { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px; max-width: 880px; margin: auto; }
+	.directors { background: #efc1b1; }
+	.directors h2 em { color: #a64231; }
 	.portfolio-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 80px 60px; }
-	.portfolio { min-width: 0; padding-top: 25px; border-top: 1px solid #633c3840; }
-	.portfolio-heading { position: relative; z-index: 1; display: flex; gap: 14px; align-items: baseline; margin-bottom: 28px; }
+	.portfolio { position: relative; min-width: 0; padding: 25px 18px 30px; background: #ffe7c3; box-shadow: 7px 9px 0 #a85d4430; border: 1px solid #633c3830; }
+	.portfolio:nth-child(3n + 2) { background: #f1d398; }
+	.portfolio:nth-child(3n) { background: #ead4c9; }
+	.portfolio::before { content: ''; position: absolute; top: -12px; right: 18px; width: 65px; height: 25px; background: #acb6a9b3; transform: rotate(12deg); }
+	.portfolio-heading { position: relative; z-index: 2; display: flex; gap: 14px; align-items: baseline; margin-bottom: 35px; }
 	.portfolio-heading h3 { margin: 0; font-size: 1.15rem; }
-	.portfolio-number { font-size: 0.75rem; color: #137aa8; }
-	.director-grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-	.journey-end { padding: 70px 20px 100px; text-align: center; }
+	.portfolio-number { font-size: 0.75rem; color: #953d30; border: 1px solid; border-radius: 50%; padding: 6px; }
+	.director-grid { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+	.journey-end { position: relative; z-index: 2; padding: 70px 20px 100px; text-align: center; background: radial-gradient(circle at 15% 80%, #dfa1a3 0 13%, transparent 13.2%), radial-gradient(circle at 95% 15%, #e7a855 0 18%, transparent 18.2%), #fff1d9; }
 	.journey-end > span { color: #d94a65; font-size: 5rem; }
 	.journey-end p { font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.25; letter-spacing: -0.04em; }
 	.journey-end a { font-size: 0.8rem; }
 
 	@media (max-width: 1099px) {
-		.hero-art { right: -80px; top: 180px; opacity: 0.65; }
+		.hero-art { right: 1%; top: 120px; transform: scale(0.8); transform-origin: right top; }
+		.hero-copy { max-width: 65%; }
 		.portfolio-grid { gap: 60px 35px; }
 		.executive-grid { gap: 30px; }
 	}
 	@media (max-width: 799px) {
-		.hero { padding-top: 65px; padding-bottom: 70px; min-height: auto; }
-		.hero-copy { max-width: 560px; }
-		.hero-art { top: 240px; right: -120px; transform: scale(0.65); transform-origin: right top; opacity: 0.35; }
-		.intro { max-width: 85%; }
+		.hero { padding-top: 65px; padding-bottom: 120px; min-height: auto; }
+		.hero-copy { max-width: 100%; }
+		.hero-art { position: relative; top: auto; right: auto; margin: 40px auto -80px; transform: scale(0.7); transform-origin: center top; width: min(100%, 340px); }
+		.intro { max-width: 100%; }
 		.content-section { padding: 70px 7%; }
 		.president { gap: 40px; }
 		.president-copy { max-width: 100%; }
@@ -199,13 +209,22 @@ const portfolios = [...new Set(directors.members.map((member) => member.role.rep
 		.hand-drawn-arrow { display: none; }
 		.executive-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 22px; }
 		.portfolio-grid { grid-template-columns: 1fr; gap: 60px; }
-		.director-grid { gap: 25px; }
+		.director-grid { gap: 18px; }
 		.section-heading { margin-bottom: 42px; }
 		.section-heading > p:last-child { font-size: 0.9rem; }
 		.journey-line path { stroke-width: 2; }
 	}
+	@media (max-width: 599px) {
+		.team-page { padding-left: 32px; }
+		.content-section { padding-inline: 6%; }
+		.portfolio { padding-inline: 12px; }
+		.president-copy { padding: 22px; }
+		.president-card { width: min(100%, 340px); }
+		h1 { font-size: clamp(3rem, 12vw, 5rem); }
+		.section-heading h2 { padding-inline: 10px; }
+	}
 	@media (max-width: 399px) {
-		h1 { font-size: 2.7rem; }
+		h1 { font-size: 3rem; }
 		.section-links { gap: 8px; }
 		.section-links a { padding: 9px 11px; font-size: 0.72rem; }
 		.section-links span { margin-left: 5px; }

@@ -1,13 +1,15 @@
 ---
 import star from '../../assets/ui/shapes/one-star.svg?url';
+
+const { variant = 'home' } = Astro.props;
 ---
 
 <!-- One star per [data-section] on the page; the section crossing the middle of the screen is highlighted, and clicking a star scrolls to its section. -->
-<div class="stars-scrollbar" style={`--star: url("${star}")`}>
+<nav class:list={['stars-scrollbar', { 'team-rail': variant === 'team' }]} aria-label="Page sections" style={`--star: url("${star}")`}>
   <div class="track">
     <div class="stars"></div>
   </div>
-</div>
+</nav>
 
 <style>
   /* Covers the homepage background's dark bar (4.13% wide, rounded end at 98% of the image) and clips the stars to it. */
@@ -87,6 +89,39 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
     height: 1.17vw;
     background: var(--colour);
     mask: var(--star) -0.756vw -0.549vw / 2.8vw no-repeat;
+  }
+
+  .team-rail {
+    width: 48px;
+    height: 100%;
+    border-radius: 0 0 24px 0;
+    background: #633c38;
+    z-index: 5;
+  }
+
+  .team-rail .stars :global(button) {
+    min-height: 44px;
+    padding: 10px 0;
+  }
+
+  .team-rail .stars :global(i) {
+    width: 20px;
+    height: 20px;
+    mask: var(--star) -12.92px -9.38px / 47.86px no-repeat;
+  }
+
+  @media (max-width: 599px) {
+    .team-rail { width: 32px; }
+    .team-rail .stars :global(i) {
+      width: 16px;
+      height: 16px;
+      mask-size: 38.29px;
+      mask-position: -10.34px -7.51px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stars :global(button) { transition: none; }
   }
 </style>
 
