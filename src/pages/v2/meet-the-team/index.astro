@@ -258,7 +258,8 @@ const portfolios = [...new Set(directors.members.map((member) => member.role.rep
 			const bounds = journey.getBoundingClientRect();
 			const anchors = Array.from(journey.querySelectorAll<HTMLElement>('[data-line-section]'))
 				.map((section) => section.getBoundingClientRect().top - bounds.top + 65)
-				.sort((a, b) => a - b);
+				.sort((a, b) => a - b)
+				.filter((y, i, positions) => i === 0 || y - positions[i - 1] > 1);
 			const points = anchors.map((y, i) => ({
 				x: bounds.width * (i % 2 === 0 ? 0.9 : 0.1),
 				y,
