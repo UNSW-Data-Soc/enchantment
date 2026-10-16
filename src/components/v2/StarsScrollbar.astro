@@ -92,32 +92,8 @@ const { variant = 'home' } = Astro.props;
   }
 
   .team-rail {
-    width: 48px;
-    height: 100%;
-    border-radius: 0 0 24px 0;
-    background: #633c38;
+    background: linear-gradient(#c4cbcf, #8a78bf 20%, #636478 40%, #636478 60%, #384151 80%);
     z-index: 5;
-  }
-
-  .team-rail .stars :global(button) {
-    min-height: 44px;
-    padding: 10px 0;
-  }
-
-  .team-rail .stars :global(i) {
-    width: 20px;
-    height: 20px;
-    mask: var(--star) -12.92px -9.38px / 47.86px no-repeat;
-  }
-
-  @media (max-width: 599px) {
-    .team-rail { width: 32px; }
-    .team-rail .stars :global(i) {
-      width: 16px;
-      height: 16px;
-      mask-size: 38.29px;
-      mask-position: -10.34px -7.51px;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
