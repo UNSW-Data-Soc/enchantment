@@ -7,6 +7,7 @@ import star from '../../../assets/ui/shapes/one-star.svg?url';
 import type { ImageMetadata } from 'astro';
 
 const LEADERSHIP_SIZES = '(min-width: 1440px) 250px, (min-width: 768px) 22vw, (min-width: 640px) 150px, 42vw';
+const PORTFOLIO_VARIANTS = 4;
 const photos = import.meta.glob<{ default: ImageMetadata }>(
     '../../../assets/meet-the-team/datasoc-board-photos/*.jpg',
     { eager: true },
@@ -115,7 +116,7 @@ const portfolios = Array.from(
                 </nav>
 
                 <main class="team-content">
-                    <header class="team-hero" data-trail-section data-team-stop="Meet the team & President">
+                    <header class="team-hero" data-trail-section data-team-stop="Meet the team & President" tabindex="-1">
                         <span class="hero-cloud cloud-left" data-depth="0.12" aria-hidden="true"></span>
                         <span class="hero-cloud cloud-right" data-depth="0.08" aria-hidden="true"></span>
                         <span class="hero-orbit orbit-one" aria-hidden="true"></span>
@@ -134,6 +135,7 @@ const portfolios = Array.from(
                                 class:list={['team-section space-y-6', `leadership-section leadership-${index}`]}
                                 data-trail-section
                                 data-team-stop={index === 1 ? 'Executives' : undefined}
+                                tabindex={index === 1 ? -1 : undefined}
                             >
                                 <h2>{section.title}</h2>
                                 <div class="leadership-members">
@@ -149,11 +151,11 @@ const portfolios = Array.from(
                             </section>
                         ))}
 
-                        <section class="team-section directors-section space-y-6" data-trail-section data-team-stop="Directors">
+                        <section class="team-section directors-section space-y-6" data-trail-section data-team-stop="Directors" tabindex="-1">
                             <h2>Directors</h2>
                             <div class="portfolio-grid">
                                 {portfolios.map((section, index) => (
-                                    <section class:list={['portfolio-section', `portfolio-${index % 4}`]}>
+                                    <section class:list={['portfolio-section', `portfolio-${index % PORTFOLIO_VARIANTS}`]}>
                                         <h3>{section.title}</h3>
                                         <div class="portfolio-members">
                                             {section.members.map((member) => {
@@ -216,6 +218,7 @@ const portfolios = Array.from(
             button.addEventListener('click', () => {
                 const scrollMargin = parseFloat(getComputedStyle(element).scrollMarginTop) || 0;
                 const top = element.getBoundingClientRect().top + scrollY - scrollMargin;
+                element.focus({ preventScroll: true });
                 scrollTo({ top, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
             });
             return { element, button };
@@ -223,10 +226,10 @@ const portfolios = Array.from(
 
         const updateStops = () => {
             const readingLine = innerHeight * TRAIL_READING_LINE;
-            const current = Math.max(
-                stops.findLastIndex(({ element }) => element.getBoundingClientRect().top <= readingLine),
-                0,
-            );
+            const atPageBottom = scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
+            const current = atPageBottom
+                ? stops.length - 1
+                : Math.max(stops.findLastIndex(({ element }) => element.getBoundingClientRect().top <= readingLine), 0);
             stops.forEach(({ button }, index) => {
                 if (index === current) button.setAttribute('aria-current', 'location');
                 else button.removeAttribute('aria-current');
