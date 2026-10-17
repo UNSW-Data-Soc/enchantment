@@ -120,7 +120,7 @@ const portfolios = Array.from(
                 </aside>
 
                 <div class="team-content">
-                    <header class="team-hero" data-team-stop="Meet the team & President">
+                    <header class="team-hero" data-trail-section data-team-stop="Meet the team & President">
                         <span class="hero-cloud cloud-left" data-depth="0.12" aria-hidden="true"></span>
                         <span class="hero-cloud cloud-right" data-depth="0.08" aria-hidden="true"></span>
                         <span class="hero-orbit orbit-one" aria-hidden="true"></span>
@@ -226,8 +226,10 @@ const portfolios = Array.from(
             button.setAttribute('aria-label', `Go to ${names[index]}`);
             button.style.setProperty('--own-colour', colours[index % colours.length]);
             button.addEventListener('click', () => {
-                const top = element.getBoundingClientRect().top + scrollY - 88;
-                scrollTo({ top, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+                element.scrollIntoView({
+                    behavior: reducedMotion.matches ? 'instant' : 'smooth',
+                    block: 'start',
+                });
             });
             return { element, button };
         });
@@ -541,12 +543,24 @@ const portfolios = Array.from(
         pointer-events: auto;
         --star-tint: var(--star-colour, var(--own-colour, #fffcf3));
         filter: drop-shadow(0 0 0.3rem color-mix(in oklab, var(--star-tint) 65%, transparent));
-        transition: filter 180ms ease;
+        transition:
+            filter 180ms ease,
+            transform 180ms ease;
     }
 
     .rail-stars :global(button[aria-current]) {
         --star-colour: var(--own-colour);
         transform: scale(1.14);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .rail-stars :global(button) {
+            transition: none;
+        }
+
+        .rail-stars :global(button[aria-current]) {
+            transform: none;
+        }
     }
 
     .rail-stars :global(button:focus-visible) {
