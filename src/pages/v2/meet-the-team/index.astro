@@ -134,7 +134,7 @@ const portfolios = Array.from(
                         {leadership.map((section, index) => (
                             <section
                                 class:list={['team-section space-y-6', `leadership-section leadership-${index}`]}
-                                data-trail-section
+                                data-trail-section={index === 1 ? '' : undefined}
                                 data-team-stop={index === 1 ? 'Executives' : undefined}
                                 tabindex={index === 1 ? -1 : undefined}
                             >
@@ -211,6 +211,12 @@ const portfolios = Array.from(
             scrollUpdates.forEach((update) => update());
         });
     };
+    const refreshAndUpdateStops = () => {
+        refreshStopOffsets();
+        scheduleScrollUpdates();
+    };
+    addEventListener('load', refreshAndUpdateStops);
+    document.fonts.ready.then(refreshAndUpdateStops);
 
     if (page && railStars && stopElements.length) {
         const names = stopElements.map((element) => element.dataset.teamStop ?? 'Section');
@@ -233,7 +239,7 @@ const portfolios = Array.from(
                     detail: { top, immediate: reducedMotion.matches },
                 });
                 if (dispatchEvent(lenisScroll)) {
-                    scrollTo({ top, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+                    scrollTo({ top, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
                 }
             });
             return { element, button };
