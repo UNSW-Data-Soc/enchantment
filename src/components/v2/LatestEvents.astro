@@ -5,17 +5,14 @@ import clusterBg from '../../assets/ui/shapes/blue-red-cluster.svg?url';
 import arrowLeft from '../../assets/ui/buttons/round-arrow-grey-left.svg?url';
 import arrowRight from '../../assets/ui/buttons/round-grey-arrow-right.svg?url';
 
-// fetchEvents never throws; failures come back as { error } JSON.
 const { pastEvents = [] }: { pastEvents?: FacebookEvent[] } = await (await fetchEvents()).json();
 
 const events = pastEvents.toSorted((a, b) => Date.parse(b.start_time) - Date.parse(a.start_time)).slice(0, 7);
-// Empty slots keep the layout intact when the Facebook fetch returns nothing (e.g. expired token).
 const slots: (FacebookEvent | null)[] = events.length ? events : [null, null, null];
 const start = events.length ? 0 : 1;
 ---
 
 <section class="latest-events" aria-labelledby="latest-events-heading">
-  <!-- Parallax speed rises towards the foreground. -->
   <div class="bg">
     <ParallaxContainer speed={0.06}><img src={clusterBg} alt="" loading="lazy" draggable="false" /></ParallaxContainer>
   </div>
@@ -24,10 +21,10 @@ const start = events.length ? 0 : 1;
   </h2>
 
   <div class="tagline">
-    <ParallaxContainer speed={0.12}>Stay up<br />to date<br />with<br />our latest<br />events<br />and<br />activities!</ParallaxContainer>
+    <ParallaxContainer speed={0.12}>Stay up<br /> to date<br /> with<br /> our latest<br /> events<br /> and<br /> activities!</ParallaxContainer>
   </div>
 
-  <ParallaxContainer speed={0.2}>
+  <div class="carousel-container">
     <div class="viewport">
       <ul class="track" style={`--i: ${start}`}>
         {slots.map((event, i) => (
@@ -50,18 +47,17 @@ const start = events.length ? 0 : 1;
         <img src={arrowRight} alt="" draggable="false" />
       </button>
     </div>
-  </ParallaxContainer>
+  </div>
 </section>
 
 <style>
-  /* Sizes are vw so the section scales with the full-width homepage background; values measured from Landing V3. */
+  /* Desktop Styles */
   .latest-events {
     position: relative;
     isolation: isolate;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Landing V3 drew the components larger than intended; scales the whole section down evenly. */
     zoom: 0.85;
   }
 
@@ -77,7 +73,6 @@ const start = events.length ? 0 : 1;
   .bg img {
     display: block;
     height: 71.4vw;
-    /* Its wrapper is shrink-to-fit, so a global img { max-width: 100% } reset (e.g. Tailwind's) would squash it. */
     max-width: none;
   }
 
@@ -99,13 +94,18 @@ const start = events.length ? 0 : 1;
     line-height: 2.93;
     letter-spacing: 0.41em;
     text-align: right;
-    /* Landing V3 uses #1995cb (3.3:1 on the cream bg); darkened to pass WCAG AA. */
     color: #137aa8;
   }
 
-  /* Shows exactly the centre card and its two neighbours; clips sideways only so the scaled-up centre card isn't cropped. */
+  .carousel-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   .viewport {
-    width: 61.5vw; /* three 20.5vw cards */
+    width: 61.5vw;
     overflow-x: clip;
   }
 
@@ -114,7 +114,6 @@ const start = events.length ? 0 : 1;
     margin: 0;
     padding: 0;
     list-style: none;
-    /* Percentages, not vw: zoom scales the cards' layout but not a vw length inside transform, so vw slides drift. */
     transform: translateX(calc((1 - var(--i)) * 100% / 3));
     transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   }
@@ -183,34 +182,107 @@ const start = events.length ? 0 : 1;
       transition: none;
     }
   }
+
+  /* Mobile: same three-slot track as desktop, but the side cards are invisible.
+     Each slot is 55vw wide, so the viewport is 55vw x 3 = 165vw
+     (it overflows the screen, but only the centre slot is ever visible).
+     The centre card is 55vw wide. Change BOTH numbers together to resize it:
+     e.g. 50vw card = 150vw viewport, 60vw card = 180vw viewport. */
+  @media (max-width: 768px) {
+    .latest-events {
+      zoom: 1;
+      width: 100%;
+      padding-bottom: 2rem;
+    }
+
+    .bg {
+      display: none;
+    }
+
+    h2 img {
+      width: 70vw;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .tagline {
+      position: static;
+      font-size: 1rem;
+      line-height: 1.4;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      text-align: center;
+      margin: 0.75rem auto 1.25rem;
+      width: 80%;
+    }
+
+    .tagline br {
+      display: none;
+    }
+
+    .viewport {
+      width: 165vw;
+      flex-shrink: 0;
+    }
+
+    .card {
+      transform: scale(0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.5s ease;
+    }
+
+    .card[data-active],
+    .card[data-active]:hover {
+      transform: scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .controls {
+      margin-top: 1rem;
+      gap: 2rem;
+    }
+
+    .controls img {
+      width: 2.5rem;
+    }
+  }
 </style>
 
 <script>
-  const section = document.querySelector('.latest-events')!;
-  const track = section.querySelector<HTMLElement>('.track')!;
-  const cards = Array.from(track.children);
-  let index = Number(track.style.getPropertyValue('--i'));
+  const section = document.querySelector('.latest-events');
+  if (section) {
+    const track = section.querySelector('.track');
+    if (track) {
+      const cards = Array.from(track.children);
+      let index = Number((track as HTMLElement).style.getPropertyValue('--i')) || 0;
 
-  const goTo = (next: number) => {
-    // Wraps by sliding back across the track; clone the cards for a seamless infinite loop if that feels jarring.
-    index = (next + cards.length) % cards.length;
-    track.style.setProperty('--i', String(index));
-    cards.forEach((card, i) => {
-      card.toggleAttribute('data-active', i === index);
-      card.querySelector('a')?.setAttribute('tabindex', i === index ? '0' : '-1');
-    });
-  };
+      const goTo = (next: number) => {
+        index = (next + cards.length) % cards.length;
+        (track as HTMLElement).style.setProperty('--i', String(index));
+        cards.forEach((card, i) => {
+          card.toggleAttribute('data-active', i === index);
+          card.querySelector('a')?.setAttribute('tabindex', i === index ? '0' : '-1');
+        });
+      };
 
-  section.querySelectorAll<HTMLButtonElement>('button[data-dir]').forEach((button) => {
-    button.addEventListener('click', () => goTo(index + Number(button.dataset.dir)));
-  });
+      section.querySelectorAll('button[data-dir]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const dir = Number((button as HTMLElement).dataset.dir) || 0;
+          goTo(index + dir);
+        });
+      });
 
-  // A side card brings itself to the centre instead of following its link.
-  cards.forEach((card, i) => {
-    card.addEventListener('click', (event) => {
-      if (i === index) return;
-      event.preventDefault();
-      goTo(i);
-    });
-  });
+      cards.forEach((card, i) => {
+        card.addEventListener('click', (event) => {
+          if (i === index) return;
+          event.preventDefault();
+          goTo(i);
+        });
+      });
+    }
+  }
 </script>
