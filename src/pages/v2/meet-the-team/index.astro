@@ -76,8 +76,8 @@ const sections: Section[] = [
     },
 ];
 
-const leadership = sections.slice(0, 2);
-const directorSection = sections[2];
+const directorSection = sections.find(({ title }) => title === 'Directors')!;
+const leadership = sections.filter(({ title }) => title !== 'Directors');
 const portfolios = Array.from(
     directorSection.members.reduce((groups, member) => {
         const title = member.role.replace(/ Director$/, '');
@@ -187,6 +187,7 @@ const portfolios = Array.from(
     if (page && panel && trail && trailBase && trailProgress && trailDot) {
         let pathLength = 0;
         let frame = 0;
+        let drawFrame = 0;
 
         const drawTrail = () => {
             const bounds = panel.getBoundingClientRect();
@@ -250,11 +251,24 @@ const portfolios = Array.from(
             if (!frame) frame = requestAnimationFrame(update);
         };
 
+        const scheduleDraw = () => {
+            if (drawFrame) return;
+            drawFrame = requestAnimationFrame(() => {
+                drawFrame = 0;
+                drawTrail();
+            });
+        };
+
         drawTrail();
         addEventListener('scroll', schedule, { passive: true });
         addEventListener('v2-lenis-scroll', schedule);
-        addEventListener('resize', drawTrail);
-        addEventListener('load', drawTrail);
+        addEventListener('resize', scheduleDraw);
+        addEventListener('load', scheduleDraw);
+        document.fonts.ready.then(scheduleDraw);
+        const resizeObserver = new ResizeObserver(scheduleDraw);
+        panel.querySelectorAll<HTMLElement>('[data-trail-section]').forEach((section) => {
+            resizeObserver.observe(section);
+        });
         reducedMotion.addEventListener('change', schedule);
     }
 </script>
@@ -549,6 +563,10 @@ const portfolios = Array.from(
         .ambient-sun,
         .hero-cloud {
             transition: none;
+        }
+
+        .member-card:hover {
+            transform: none;
         }
     }
 
