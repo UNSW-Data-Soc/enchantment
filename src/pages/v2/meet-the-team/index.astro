@@ -87,7 +87,7 @@ const portfolios = Array.from(
 ---
 
 <V2Layout title="Meet the team - UNSW Data Science Society">
-    <main class="team-page">
+    <div class="team-page">
         <div class="ambient-background" aria-hidden="true">
             <span class="ambient-cloud cloud-one" data-depth="0.06"></span>
             <span class="ambient-cloud cloud-two" data-depth="0.1"></span>
@@ -115,7 +115,7 @@ const portfolios = Array.from(
                     </div>
                 </nav>
 
-                <div class="team-content">
+                <main class="team-content">
                     <header class="team-hero" data-trail-section data-team-stop="Meet the team & President">
                         <span class="hero-cloud cloud-left" data-depth="0.12" aria-hidden="true"></span>
                         <span class="hero-cloud cloud-right" data-depth="0.08" aria-hidden="true"></span>
@@ -187,11 +187,11 @@ const portfolios = Array.from(
                             </div>
                         </section>
                     </Container>
-                </div>
+                </main>
             </div>
             <Footer />
         </div>
-    </main>
+    </div>
 </V2Layout>
 
 <script>
@@ -211,6 +211,15 @@ const portfolios = Array.from(
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const stopElements = Array.from(page?.querySelectorAll<HTMLElement>('[data-team-stop]') ?? []);
     const railStars = page?.querySelector<HTMLElement>('.rail-stars');
+    const scrollUpdates = new Set<() => void>();
+    let scrollFrame = 0;
+    const scheduleScrollUpdates = () => {
+        if (scrollFrame) return;
+        scrollFrame = requestAnimationFrame(() => {
+            scrollFrame = 0;
+            scrollUpdates.forEach((update) => update());
+        });
+    };
 
     if (railStars && stopElements.length) {
         const names = stopElements.map((element) => element.dataset.teamStop ?? 'Section');
@@ -241,25 +250,15 @@ const portfolios = Array.from(
             });
         };
 
-        let stopFrame = 0;
-        const scheduleStops = () => {
-            if (stopFrame) return;
-            stopFrame = requestAnimationFrame(() => {
-                stopFrame = 0;
-                updateStops();
-            });
-        };
+        scrollUpdates.add(updateStops);
         updateStops();
-        addEventListener('scroll', scheduleStops, { passive: true });
-        addEventListener('v2-lenis-scroll', scheduleStops);
-        addEventListener('resize', scheduleStops);
+        addEventListener('resize', scheduleScrollUpdates);
     }
 
     if (page && panel && trail && trailBase && trailProgress && trailDot) {
         let pathLength = 0;
         let firstY = 0;
         let lastY = 0;
-        let frame = 0;
         let drawFrame = 0;
         const layerDocumentCentres = new Map<HTMLElement, number>();
 
@@ -304,7 +303,6 @@ const portfolios = Array.from(
         };
 
         const update = () => {
-            frame = 0;
             const bounds = panel.getBoundingClientRect();
             if (reducedMotion.matches) {
                 trailProgress.style.strokeDashoffset = '0';
@@ -336,10 +334,6 @@ const portfolios = Array.from(
             layers.forEach((layer, index) => layer.style.setProperty('--parallax-y', `${layerOffsets[index]}px`));
         };
 
-        const schedule = () => {
-            if (!frame) frame = requestAnimationFrame(update);
-        };
-
         const scheduleDraw = () => {
             if (drawFrame) return;
             drawFrame = requestAnimationFrame(() => {
@@ -348,17 +342,19 @@ const portfolios = Array.from(
             });
         };
 
+        scrollUpdates.add(update);
         drawTrail();
-        addEventListener('scroll', schedule, { passive: true });
-        addEventListener('v2-lenis-scroll', schedule);
         addEventListener('resize', scheduleDraw);
         addEventListener('load', scheduleDraw);
         document.fonts.ready.then(scheduleDraw);
         const resizeObserver = new ResizeObserver(scheduleDraw);
         const content = panel.querySelector<HTMLElement>('.team-content');
         if (content) resizeObserver.observe(content);
-        reducedMotion.addEventListener('change', schedule);
+        reducedMotion.addEventListener('change', scheduleDraw);
     }
+
+    addEventListener('scroll', scheduleScrollUpdates, { passive: true });
+    addEventListener('v2-lenis-scroll', scheduleScrollUpdates);
 </script>
 
 <style>
@@ -772,6 +768,10 @@ const portfolios = Array.from(
 
     .portfolio-2 {
         background: rgb(217 239 249 / 0.76);
+    }
+
+    .portfolio-3 {
+        background: rgb(251 225 224 / 0.78);
     }
 
     .portfolio-section h3 {
