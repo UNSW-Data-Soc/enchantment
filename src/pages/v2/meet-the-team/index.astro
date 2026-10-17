@@ -138,6 +138,7 @@ const portfolios = Array.from(
                             <section
                                 class:list={['team-section space-y-6', `leadership-section leadership-${index}`]}
                                 data-trail-section
+                                data-team-stop={index === 1 ? 'Executives' : undefined}
                             >
                                 <h2>{section.title}</h2>
                                 <div class="leadership-members">
@@ -228,7 +229,7 @@ const portfolios = Array.from(
                 const top = element.getBoundingClientRect().top + scrollY - 88;
                 scrollTo({ top, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
             });
-            return { element, button, icon };
+            return { element, button };
         });
 
         const updateStops = () => {
