@@ -1,40 +1,25 @@
 ---
-import { Font } from 'astro:assets';
+import V2Layout from '../../layouts/V2Layout.astro';
 import LatestEvents from '../../components/v2/LatestEvents.astro';
 import StarsScrollbar from '../../components/v2/StarsScrollbar.astro';
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>UNSW DataSoc</title>
-    <Font cssVariable="--font-syne" preload />
-  </head>
-  <body>
-    <main class="v2-home" aria-label="Homepage">
-      <img src="/backgrounds/homepage-bg-v2-p00.png" alt="" width="1708" height="4989" fetchpriority="high" />
-      <div class="latest-events-slot">
-        <LatestEvents />
-      </div>
-      <!-- Section bands of the background image (Landing V3): hero, latest events, about us, latest publications. -->
-      <div class="section-band" data-section style="top: 0; height: 25.7%"></div>
-      <div class="section-band" data-section style="top: 25.7%; height: 23.9%"></div>
-      <div class="section-band" data-section style="top: 49.6%; height: 28.2%"></div>
-      <div class="section-band" data-section style="top: 77.8%; height: 22.2%"></div>
-      <StarsScrollbar />
-    </main>
-  </body>
-</html>
+<V2Layout title="UNSW DataSoc">
+  <main class="v2-home" aria-label="Homepage">
+    <img src="/backgrounds/homepage-bg-v2-p00.png" alt="" width="1708" height="4989" fetchpriority="high" />
+    <div class="latest-events-slot">
+      <LatestEvents />
+    </div>
+    <!-- Section bands of the background image (Landing V3): hero, latest events, about us, latest publications. -->
+    <div class="section-band" data-section style="top: 0; height: 25.7%"></div>
+    <div class="section-band" data-section style="top: 25.7%; height: 23.9%"></div>
+    <div class="section-band" data-section style="top: 49.6%; height: 28.2%"></div>
+    <div class="section-band" data-section style="top: 77.8%; height: 22.2%"></div>
+    <StarsScrollbar />
+  </main>
+</V2Layout>
 
 <style>
-  :global(html),
-  :global(body) {
-    margin: 0;
-  }
-
   .v2-home {
     position: relative;
     width: 100%;
