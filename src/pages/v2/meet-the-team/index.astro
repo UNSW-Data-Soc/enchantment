@@ -233,11 +233,15 @@ const portfolios = Array.from(
             trailDot.setAttribute('cx', String(point.x));
             trailDot.setAttribute('cy', String(point.y));
 
-            if (reducedMotion.matches) return;
+            if (reducedMotion.matches) {
+                layers.forEach((layer) => layer.style.removeProperty('--parallax-y'));
+                return;
+            }
             layers.forEach((layer) => {
                 const rect = layer.getBoundingClientRect();
                 const speed = Number(layer.dataset.depth) || 0;
-                const offset = (innerHeight / 2 - rect.top - rect.height / 2) * speed;
+                const currentOffset = parseFloat(layer.style.getPropertyValue('--parallax-y')) || 0;
+                const offset = (innerHeight / 2 - rect.top + currentOffset - rect.height / 2) * speed;
                 layer.style.setProperty('--parallax-y', `${offset}px`);
             });
         };
