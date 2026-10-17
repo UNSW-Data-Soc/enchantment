@@ -16,7 +16,7 @@ const widths = [240, 380, 540, 700];
 {image ? (
     <Image
         src={image}
-        alt={member.name}
+        alt={`Portrait of ${member.name}`}
         widths={widths}
         sizes={sizes}
         loading={eager ? 'eager' : 'lazy'}

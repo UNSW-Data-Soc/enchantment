@@ -197,6 +197,11 @@ const portfolios = Array.from(
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const stopElements = Array.from(page?.querySelectorAll<HTMLElement>('[data-team-stop]') ?? []);
     const railStars = page?.querySelector<HTMLElement>('.rail-stars');
+    const stopOffsets = new Map<HTMLElement, number>();
+    const refreshStopOffsets = () => {
+        stopElements.forEach((element) => stopOffsets.set(element, element.getBoundingClientRect().top + scrollY));
+    };
+    refreshStopOffsets();
     const scrollUpdates = new Set<() => void>();
     let scrollFrame = 0;
     const scheduleScrollUpdates = () => {
@@ -207,9 +212,9 @@ const portfolios = Array.from(
         });
     };
 
-    if (railStars && stopElements.length) {
+    if (page && railStars && stopElements.length) {
         const names = stopElements.map((element) => element.dataset.teamStop ?? 'Section');
-        const styles = getComputedStyle(page ?? railStars);
+        const styles = getComputedStyle(page);
         const colours = ['--team-accent-pink', '--team-accent-purple', '--team-accent-blue'].map((name) =>
             styles.getPropertyValue(name).trim(),
         );
@@ -223,7 +228,13 @@ const portfolios = Array.from(
                 const scrollMargin = parseFloat(getComputedStyle(element).scrollMarginTop) || 0;
                 const top = element.getBoundingClientRect().top + scrollY - scrollMargin;
                 element.focus({ preventScroll: true });
-                scrollTo({ top, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+                const lenisScroll = new CustomEvent('v2-lenis-scroll-to', {
+                    cancelable: true,
+                    detail: { top, immediate: reducedMotion.matches },
+                });
+                if (dispatchEvent(lenisScroll)) {
+                    scrollTo({ top, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+                }
             });
             return { element, button };
         });
@@ -233,7 +244,10 @@ const portfolios = Array.from(
             const atPageBottom = scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
             const current = atPageBottom
                 ? stops.length - 1
-                : Math.max(stops.findLastIndex(({ element }) => element.getBoundingClientRect().top <= readingLine), 0);
+                : Math.max(
+                      stops.findLastIndex(({ element }) => (stopOffsets.get(element) ?? 0) <= scrollY + readingLine),
+                      0,
+                  );
             stops.forEach(({ button }, index) => {
                 if (index === current) button.setAttribute('aria-current', 'location');
                 else button.removeAttribute('aria-current');
@@ -255,6 +269,7 @@ const portfolios = Array.from(
             const bounds = panel.getBoundingClientRect();
             const width = panel.clientWidth;
             const height = panel.scrollHeight;
+            refreshStopOffsets();
             trail.setAttribute('viewBox', `0 0 ${width} ${height}`);
             trail.setAttribute('width', String(width));
             trail.setAttribute('height', String(height));
@@ -342,7 +357,10 @@ const portfolios = Array.from(
         reducedMotion.addEventListener('change', scheduleDraw);
     }
 
-    addEventListener('resize', scheduleScrollUpdates);
+    addEventListener('resize', () => {
+        refreshStopOffsets();
+        scheduleScrollUpdates();
+    });
     addEventListener('scroll', scheduleScrollUpdates, { passive: true });
     addEventListener('v2-lenis-scroll', scheduleScrollUpdates);
 </script>
