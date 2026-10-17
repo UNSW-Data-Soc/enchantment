@@ -116,8 +116,13 @@ const portfolios = Array.from(
                     </div>
                 </nav>
 
-                <main class="team-content">
-                    <header class="team-hero" data-trail-section data-team-stop="Meet the team & President" tabindex="-1">
+                <main
+                    class="team-content"
+                    data-trail-section
+                    data-team-stop="Meet the team & President"
+                    tabindex="-1"
+                >
+                    <header class="team-hero">
                         <span class="hero-cloud cloud-left" data-depth="0.12" aria-hidden="true"></span>
                         <span class="hero-cloud cloud-right" data-depth="0.08" aria-hidden="true"></span>
                         <span class="hero-orbit orbit-one" aria-hidden="true"></span>
@@ -193,7 +198,7 @@ const portfolios = Array.from(
     const trailBase = trail?.querySelector<SVGPathElement>('.trail-base');
     const trailProgress = trail?.querySelector<SVGPathElement>('.trail-progress');
     const trailDot = trail?.querySelector<SVGCircleElement>('.trail-dot');
-    const layers = Array.from(document.querySelectorAll<HTMLElement>('[data-depth]'));
+    const layers = Array.from(page?.querySelectorAll<HTMLElement>('[data-depth]') ?? []);
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const stopElements = Array.from(page?.querySelectorAll<HTMLElement>('[data-team-stop]') ?? []);
     const railStars = page?.querySelector<HTMLElement>('.rail-stars');
@@ -201,7 +206,14 @@ const portfolios = Array.from(
     const refreshStopOffsets = () => {
         stopElements.forEach((element) => stopOffsets.set(element, element.getBoundingClientRect().top + scrollY));
     };
-    refreshStopOffsets();
+    const layerDocumentCentres = new Map<HTMLElement, number>();
+    const refreshLayerCentres = () => {
+        layers.forEach((layer) => {
+            const rect = layer.getBoundingClientRect();
+            const currentOffset = parseFloat(layer.style.getPropertyValue('--parallax-y')) || 0;
+            layerDocumentCentres.set(layer, rect.top + scrollY - currentOffset + rect.height / 2);
+        });
+    };
     const scrollUpdates = new Set<() => void>();
     let scrollFrame = 0;
     const scheduleScrollUpdates = () => {
@@ -211,12 +223,29 @@ const portfolios = Array.from(
             scrollUpdates.forEach((update) => update());
         });
     };
-    const refreshAndUpdateStops = () => {
+    const updateParallax = () => {
+        if (reducedMotion.matches) {
+            layers.forEach((layer) => layer.style.removeProperty('--parallax-y'));
+            return;
+        }
+        layers.forEach((layer) => {
+            const speed = Number(layer.dataset.depth) || 0;
+            const centre = layerDocumentCentres.get(layer) ?? scrollY;
+            const offset = (innerHeight / 2 - centre + scrollY) * speed;
+            layer.style.setProperty('--parallax-y', `${offset}px`);
+        });
+    };
+    scrollUpdates.add(updateParallax);
+    reducedMotion.addEventListener('change', updateParallax);
+    const refreshAndUpdatePositions = () => {
         refreshStopOffsets();
+        refreshLayerCentres();
         scheduleScrollUpdates();
     };
-    addEventListener('load', refreshAndUpdateStops);
-    document.fonts.ready.then(refreshAndUpdateStops);
+    refreshAndUpdatePositions();
+    updateParallax();
+    addEventListener('load', refreshAndUpdatePositions);
+    document.fonts.ready.then(refreshAndUpdatePositions);
 
     if (page && railStars && stopElements.length) {
         const names = stopElements.map((element) => element.dataset.teamStop ?? 'Section');
@@ -248,12 +277,17 @@ const portfolios = Array.from(
         const updateStops = () => {
             const readingLine = innerHeight * TRAIL_READING_LINE;
             const atPageBottom = scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
-            const current = atPageBottom
-                ? stops.length - 1
-                : Math.max(
-                      stops.findLastIndex(({ element }) => (stopOffsets.get(element) ?? 0) <= scrollY + readingLine),
-                      0,
-                  );
+            let current = stops.length - 1;
+            if (!atPageBottom) {
+                const readingPosition = scrollY + readingLine;
+                current = 0;
+                for (let index = stops.length - 1; index > 0; index -= 1) {
+                    if ((stopOffsets.get(stops[index].element) ?? 0) <= readingPosition) {
+                        current = index;
+                        break;
+                    }
+                }
+            }
             stops.forEach(({ button }, index) => {
                 if (index === current) button.setAttribute('aria-current', 'location');
                 else button.removeAttribute('aria-current');
@@ -269,22 +303,14 @@ const portfolios = Array.from(
         let firstY = 0;
         let lastY = 0;
         let drawFrame = 0;
-        const layerDocumentCentres = new Map<HTMLElement, number>();
 
         const drawTrail = () => {
             const bounds = panel.getBoundingClientRect();
             const width = panel.clientWidth;
             const height = panel.scrollHeight;
-            refreshStopOffsets();
             trail.setAttribute('viewBox', `0 0 ${width} ${height}`);
             trail.setAttribute('width', String(width));
             trail.setAttribute('height', String(height));
-
-            layers.forEach((layer) => {
-                const rect = layer.getBoundingClientRect();
-                const currentOffset = parseFloat(layer.style.getPropertyValue('--parallax-y')) || 0;
-                layerDocumentCentres.set(layer, rect.top + scrollY - currentOffset + rect.height / 2);
-            });
 
             const anchors = Array.from(panel.querySelectorAll<HTMLElement>('[data-trail-section]'));
             const points = anchors.map((anchor, index) => {
@@ -317,7 +343,6 @@ const portfolios = Array.from(
             if (reducedMotion.matches) {
                 trailProgress.style.strokeDashoffset = '0';
                 trailDot.setAttribute('visibility', 'hidden');
-                layers.forEach((layer) => layer.style.removeProperty('--parallax-y'));
                 return;
             }
 
@@ -335,13 +360,6 @@ const portfolios = Array.from(
             const point = trailProgress.getPointAtLength(length);
             trailDot.setAttribute('cx', String(point.x));
             trailDot.setAttribute('cy', String(point.y));
-
-            const layerOffsets = layers.map((layer) => {
-                const speed = Number(layer.dataset.depth) || 0;
-                const centre = layerDocumentCentres.get(layer) ?? scrollY;
-                return (innerHeight / 2 - centre + scrollY) * speed;
-            });
-            layers.forEach((layer, index) => layer.style.setProperty('--parallax-y', `${layerOffsets[index]}px`));
         };
 
         const scheduleDraw = () => {
@@ -363,10 +381,7 @@ const portfolios = Array.from(
         reducedMotion.addEventListener('change', scheduleDraw);
     }
 
-    addEventListener('resize', () => {
-        refreshStopOffsets();
-        scheduleScrollUpdates();
-    });
+    addEventListener('resize', refreshAndUpdatePositions);
     addEventListener('scroll', scheduleScrollUpdates, { passive: true });
     addEventListener('v2-lenis-scroll', scheduleScrollUpdates);
 </script>
