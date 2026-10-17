@@ -7,6 +7,7 @@ import star from '../../../assets/ui/shapes/one-star.svg?url';
 import type { ImageMetadata } from 'astro';
 
 const LEADERSHIP_SIZES = '(min-width: 1440px) 250px, (min-width: 768px) 22vw, (min-width: 640px) 150px, 42vw';
+const PORTFOLIO_SIZES = '(min-width: 1440px) 265px, (min-width: 768px) 18vw, (min-width: 640px) 20vw, 42vw';
 const PORTFOLIO_VARIANTS = 4;
 const photos = import.meta.glob<{ default: ImageMetadata }>(
     '../../../assets/meet-the-team/datasoc-board-photos/*.jpg',
@@ -80,7 +81,7 @@ const portfolios = Array.from(
     }, new Map<string, Member[]>()),
     ([title, members]) => ({
         title,
-        sizes: '(min-width: 1440px) 265px, (min-width: 768px) 18vw, (min-width: 640px) 20vw, 42vw',
+        sizes: PORTFOLIO_SIZES,
         members,
     }),
 );
@@ -99,9 +100,9 @@ const portfolios = Array.from(
                 <svg class="scroll-trail" aria-hidden="true" preserveAspectRatio="none">
                     <defs>
                         <linearGradient id="trail-gradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#ee547d" />
-                            <stop offset="48%" stop-color="#8558d8" />
-                            <stop offset="100%" stop-color="#119bd6" />
+                            <stop offset="0%" stop-color="var(--team-accent-pink)" />
+                            <stop offset="48%" stop-color="var(--team-accent-purple)" />
+                            <stop offset="100%" stop-color="var(--team-accent-blue)" />
                         </linearGradient>
                     </defs>
                     <path class="trail-base" />
@@ -208,7 +209,10 @@ const portfolios = Array.from(
 
     if (railStars && stopElements.length) {
         const names = stopElements.map((element) => element.dataset.teamStop ?? 'Section');
-        const colours = ['#ee547d', '#8558d8', '#119bd6'];
+        const styles = getComputedStyle(page ?? railStars);
+        const colours = ['--team-accent-pink', '--team-accent-purple', '--team-accent-blue'].map((name) =>
+            styles.getPropertyValue(name).trim(),
+        );
         const stops = stopElements.map((element, index) => {
             const button = railStars.appendChild(document.createElement('button'));
             button.appendChild(document.createElement('i'));
@@ -238,7 +242,6 @@ const portfolios = Array.from(
 
         scrollUpdates.add(updateStops);
         updateStops();
-        addEventListener('resize', scheduleScrollUpdates);
     }
 
     if (page && panel && trail && trailBase && trailProgress && trailDot) {
@@ -339,6 +342,7 @@ const portfolios = Array.from(
         reducedMotion.addEventListener('change', scheduleDraw);
     }
 
+    addEventListener('resize', scheduleScrollUpdates);
     addEventListener('scroll', scheduleScrollUpdates, { passive: true });
     addEventListener('v2-lenis-scroll', scheduleScrollUpdates);
 </script>
@@ -349,6 +353,10 @@ const portfolios = Array.from(
         --team-cream: #fffcf3;
         --team-blue: #087fae;
         --team-purple: #7450cb;
+        --team-accent-pink: #ee547d;
+        --team-accent-purple: #8558d8;
+        --team-accent-blue: #119bd6;
+        --team-accent-gold: #f4b000;
         position: relative;
         isolation: isolate;
         overflow: clip;
@@ -382,8 +390,8 @@ const portfolios = Array.from(
         background:
             radial-gradient(circle at center, transparent 42%, rgb(116 80 203 / 0.36) 43% 45%, transparent 46%) 1vw 13rem / 5rem 5rem no-repeat,
             radial-gradient(circle at center, transparent 38%, rgb(17 155 214 / 0.42) 39% 42%, transparent 43%) calc(100% - 1vw) 44rem / 6rem 6rem no-repeat,
-            conic-gradient(from 45deg, #ee547d 0 25%, #8558d8 0 50%, #119bd6 0 75%, #f4b000 0) 0 0 / 1.1rem 1.1rem no-repeat,
-            conic-gradient(from 45deg, #ee547d 0 25%, #8558d8 0 50%, #119bd6 0 75%, #f4b000 0) calc(100% - 1vw) 82rem / 0.8rem 0.8rem no-repeat;
+            conic-gradient(from 45deg, var(--team-accent-pink) 0 25%, var(--team-accent-purple) 0 50%, var(--team-accent-blue) 0 75%, var(--team-accent-gold) 0) 0 0 / 1.1rem 1.1rem no-repeat,
+            conic-gradient(from 45deg, var(--team-accent-pink) 0 25%, var(--team-accent-purple) 0 50%, var(--team-accent-blue) 0 75%, var(--team-accent-gold) 0) calc(100% - 1vw) 82rem / 0.8rem 0.8rem no-repeat;
         mask-image: linear-gradient(90deg, #000 0, transparent 10%, transparent 90%, #000 100%);
         opacity: 0.7;
     }
@@ -477,7 +485,7 @@ const portfolios = Array.from(
 
     .trail-dot {
         fill: #fffcf3;
-        stroke: #8558d8;
+        stroke: var(--team-accent-purple);
         stroke-width: 4;
         filter: drop-shadow(0 0 7px rgb(133 88 216 / 0.65));
     }
@@ -580,7 +588,7 @@ const portfolios = Array.from(
         inset: auto 0 0;
         z-index: -1;
         height: 0.35rem;
-        background: linear-gradient(90deg, #ee547d, #8558d8, #119bd6, #f4b000);
+        background: linear-gradient(90deg, var(--team-accent-pink), var(--team-accent-purple), var(--team-accent-blue), var(--team-accent-gold));
         content: '';
     }
 
@@ -691,7 +699,7 @@ const portfolios = Array.from(
         margin: 0 auto;
         padding-bottom: 0.55rem;
         border-bottom: 3px solid transparent;
-        border-image: linear-gradient(90deg, #ee547d, #8558d8, #119bd6) 1;
+        border-image: linear-gradient(90deg, var(--team-accent-pink), var(--team-accent-purple), var(--team-accent-blue)) 1;
         color: var(--team-ink);
         font-size: clamp(1.5rem, 3vw, 2rem);
         font-weight: 700;
@@ -763,7 +771,7 @@ const portfolios = Array.from(
         width: fit-content;
         margin: 0 auto 0.9rem;
         padding: 0 0.25rem 0.35rem;
-        border-bottom: 2px solid #8558d8;
+        border-bottom: 2px solid var(--team-accent-purple);
         color: var(--team-ink);
         font-size: clamp(0.95rem, 1.5vw, 1.2rem);
         font-weight: 700;
