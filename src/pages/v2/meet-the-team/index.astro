@@ -23,7 +23,6 @@ const IMAGE_WIDTHS = [240, 380, 540, 700];
 type Member = { name: string; role: string; file?: string };
 type Section = {
     title: string;
-    cardClass: string;
     sizes: string;
     eager?: boolean;
     members: Member[];
@@ -32,14 +31,12 @@ type Section = {
 const leadership: Section[] = [
     {
         title: 'President',
-        cardClass: 'w-[70%] sm:w-[50%] md:w-[32%] lg:w-[24%]',
         sizes: '(min-width: 1024px) 276px, (min-width: 768px) 32vw, (min-width: 640px) 50vw, 70vw',
         eager: true,
         members: [{ name: 'Qingyuan He', role: 'President', file: 'qingyuan_h.jpg' }],
     },
     {
         title: 'Executives',
-        cardClass: 'w-[42%] sm:w-[38%] md:w-[28%] lg:w-[22%]',
         sizes: '(min-width: 1024px) 253px, (min-width: 768px) 28vw, (min-width: 640px) 38vw, 42vw',
         members: [
             { name: 'Ethan Pham', role: 'Vice President (Activities)', file: 'ethan_p.jpg' },
@@ -83,8 +80,7 @@ const portfolios = Array.from(
     }, new Map<string, Member[]>()),
     ([title, members]) => ({
         title,
-        cardClass: 'w-[42%] md:w-[28%] lg:w-[22%]',
-        sizes: '(min-width: 1024px) 253px, (min-width: 768px) 28vw, 42vw',
+        sizes: '(min-width: 1440px) 265px, (min-width: 768px) 18vw, 42vw',
         members,
     }),
 );
@@ -113,11 +109,11 @@ const portfolios = Array.from(
                     <circle class="trail-dot" r="8" />
                 </svg>
 
-                <aside class="team-progress-rail" aria-label="Page sections" style={`--star: url("${star}")`}>
+                <nav class="team-progress-rail" aria-label="Page sections" style={`--star: url("${star}")`}>
                     <div class="rail-track">
                         <div class="rail-stars"></div>
                     </div>
-                </aside>
+                </nav>
 
                 <div class="team-content">
                     <header class="team-hero" data-trail-section data-team-stop="Meet the team & President">
@@ -145,7 +141,7 @@ const portfolios = Array.from(
                                     {section.members.map((member) => {
                                         const image = photo(member.file);
                                         return (
-                                            <div class:list={['member-card text-center', section.cardClass]}>
+                                            <div class="member-card text-center">
                                                 {image ? (
                                                     <Image src={image} alt={member.name} widths={IMAGE_WIDTHS} sizes={section.sizes} loading={section.eager ? 'eager' : 'lazy'} class="member-photo w-full object-cover" />
                                                 ) : (
@@ -172,7 +168,7 @@ const portfolios = Array.from(
                                             {section.members.map((member) => {
                                                 const image = photo(member.file);
                                                 return (
-                                                    <div class:list={['member-card text-center', section.cardClass]}>
+                                                    <div class="member-card text-center">
                                                         {image ? (
                                                             <Image src={image} alt={member.name} widths={IMAGE_WIDTHS} sizes={section.sizes} loading="lazy" class="member-photo w-full object-cover" />
                                                         ) : (
@@ -226,16 +222,15 @@ const portfolios = Array.from(
             button.setAttribute('aria-label', `Go to ${names[index]}`);
             button.style.setProperty('--own-colour', colours[index % colours.length]);
             button.addEventListener('click', () => {
-                element.scrollIntoView({
-                    behavior: reducedMotion.matches ? 'instant' : 'smooth',
-                    block: 'start',
-                });
+                const scrollMargin = parseFloat(getComputedStyle(element).scrollMarginTop) || 0;
+                const top = element.getBoundingClientRect().top + scrollY - scrollMargin;
+                scrollTo({ top, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
             });
             return { element, button };
         });
 
         const updateStops = () => {
-            const readingLine = innerHeight * 0.42;
+            const readingLine = innerHeight * TRAIL_READING_LINE;
             const current = Math.max(
                 stops.findLastIndex(({ element }) => element.getBoundingClientRect().top <= readingLine),
                 0,
@@ -746,6 +741,10 @@ const portfolios = Array.from(
         gap: clamp(0.75rem, 2vw, 1.5rem);
     }
 
+    .leadership-members .member-card {
+        flex-basis: clamp(150px, 22%, 250px);
+    }
+
     .directors-section {
         background:
             radial-gradient(circle, rgb(116 80 203 / 0.11) 1px, transparent 1.7px) 0 0 / 17px 17px,
@@ -791,6 +790,10 @@ const portfolios = Array.from(
         flex-wrap: wrap;
         justify-content: center;
         gap: clamp(0.5rem, 1vw, 0.9rem);
+    }
+
+    .portfolio-members .member-card {
+        flex-basis: calc(50% - 0.5rem);
     }
 
     .member-card {
