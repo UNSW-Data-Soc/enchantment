@@ -188,7 +188,7 @@ const portfolios = Array.from(
                     </Container>
                 </main>
             </div>
-            <div class="team-footer" data-trail-section>
+            <div class="team-footer" data-trail-section data-trail-end>
                 <Footer />
             </div>
         </div>
@@ -247,6 +247,7 @@ const portfolios = Array.from(
     scrollUpdates.add(updateParallax);
     reducedMotion.addEventListener('change', updateParallax);
     const refreshAndUpdatePositions = () => {
+        if (page && railStars) railStars.closest<HTMLElement>('.team-progress-rail')!.style.height = `${page.scrollHeight * 0.98}px`;
         refreshStopOffsets();
         refreshLayerCentres();
         scheduleScrollUpdates();
@@ -327,7 +328,7 @@ const portfolios = Array.from(
                 const rect = heading.getBoundingClientRect();
                 return {
                     x: width * (index === 0 ? TRAIL_CENTER_X : index % 2 ? TRAIL_RIGHT_X : TRAIL_LEFT_X),
-                    y: rect.top - bounds.top + rect.height / 2,
+                    y: anchor.hasAttribute('data-trail-end') ? height - 8 : rect.top - bounds.top + rect.height / 2,
                 };
             });
             firstY = points[0]?.y ?? 0;
@@ -967,11 +968,71 @@ const portfolios = Array.from(
     @media (max-width: 640px) {
         .team-page {
             padding: 0;
-            background-size: 17px 17px, auto, auto;
+            background-size: 17px 17px, 11px 11px, auto, auto;
         }
 
         .team-panel {
+            margin: 0 0 0 calc(4.13vw + 8px);
             border: 0;
+        }
+
+        .team-hero {
+            display: block;
+            min-height: 21rem;
+            padding: 1.5rem 1.25rem;
+        }
+
+        .hero-copy {
+            left: 1.25rem;
+            width: 68%;
+        }
+
+        .team-eyebrow {
+            gap: 0.35rem;
+            font-size: 0.62rem;
+            letter-spacing: 0.08em;
+        }
+
+        .team-hero h1 {
+            font-size: clamp(2.15rem, 8vw, 3.5rem);
+        }
+
+        .team-intro {
+            font-size: 0.9rem;
+        }
+
+        .hero-disc {
+            left: 40%;
+            width: clamp(8rem, 38vw, 12rem);
+        }
+
+        .hero-orbit {
+            left: 40%;
+            width: clamp(10rem, 46vw, 15rem);
+        }
+
+        .orbit-two {
+            width: clamp(8.5rem, 41vw, 13rem);
+        }
+
+        .hero-art-label {
+            right: 5%;
+            bottom: 8%;
+            padding: 0.45rem 0.55rem;
+            font-size: 0.65rem;
+        }
+
+        .hero-pixels {
+            right: 3%;
+            bottom: 35%;
+            width: 1.5rem;
+            height: 1.5rem;
+            background-size: 6px 6px;
+        }
+
+        .hero-cross {
+            right: 9%;
+            top: 18%;
         }
 
         .portfolio-grid {
@@ -985,14 +1046,6 @@ const portfolios = Array.from(
         .leadership-members .member-card,
         .portfolio-members .member-card {
             flex-basis: 44%;
-        }
-
-        .orbit-one {
-            left: 5%;
-        }
-
-        .orbit-two {
-            right: 4%;
         }
 
     }
