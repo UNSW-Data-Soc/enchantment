@@ -28,7 +28,7 @@ type Section = {
     members: Member[];
 };
 
-const sections: Section[] = [
+const leadership: Section[] = [
     {
         title: 'President',
         cardClass: 'w-[70%] sm:w-[50%] md:w-[32%] lg:w-[24%]',
@@ -49,37 +49,31 @@ const sections: Section[] = [
             { name: 'Aaron Chen', role: 'Treasurer' },
         ],
     },
-    {
-        title: 'Directors',
-        cardClass: 'w-[42%] md:w-[28%] lg:w-[22%]',
-        sizes: '(min-width: 1024px) 253px, (min-width: 768px) 28vw, 42vw',
-        members: [
-            { name: 'Aaron Wong', role: 'Human Resources Director' },
-            { name: 'Yatha Shah', role: 'Human Resources Director', file: 'yatha_s.jpg' },
-            { name: 'Linh Pham', role: 'Social Director', file: 'linh_p.jpg' },
-            { name: 'Jason Nguyen', role: 'Social Director' },
-            { name: 'Lily Tang', role: 'Education Director', file: 'lily_t.jpg' },
-            { name: 'Minjun Kim', role: 'Education Director', file: 'minjun_k.jpg' },
-            { name: 'Anoushka Pandey', role: 'Philanthropy & Projects Director', file: 'anoushka_p.jpg' },
-            { name: 'Isabella Fan', role: 'Philanthropy & Projects Director', file: 'isabella_f.jpg' },
-            { name: 'Liam Lightfoot', role: 'Careers Director' },
-            { name: 'Vidisha Trivedi', role: 'Careers Director', file: 'vidisha_t.jpg' },
-            { name: 'Cathy Dinh', role: 'Sponsorships Director', file: 'cathy_d.jpg' },
-            { name: 'Simon Shen', role: 'Sponsorships Director' },
-            { name: 'Kai Lu', role: 'Technology Director', file: 'kai_l.jpg' },
-            { name: 'Shafquat Tabeeb', role: 'Technology Director', file: 'shafquat_t.jpg' },
-            { name: 'Jennifer Lee', role: 'Marketing Director', file: 'jennifer_l.jpg' },
-            { name: 'Shashwat Manish', role: 'Marketing Director' },
-            { name: 'Shreya Verma', role: 'Media Director', file: 'shreya_v.jpg' },
-            { name: 'Vedant Tyagi', role: 'Media Director', file: 'vedant_t.jpg' },
-        ],
-    },
 ];
 
-const directorSection = sections.find(({ title }) => title === 'Directors')!;
-const leadership = sections.filter(({ title }) => title !== 'Directors');
+const directors: Member[] = [
+    { name: 'Aaron Wong', role: 'Human Resources Director' },
+    { name: 'Yatha Shah', role: 'Human Resources Director', file: 'yatha_s.jpg' },
+    { name: 'Linh Pham', role: 'Social Director', file: 'linh_p.jpg' },
+    { name: 'Jason Nguyen', role: 'Social Director' },
+    { name: 'Lily Tang', role: 'Education Director', file: 'lily_t.jpg' },
+    { name: 'Minjun Kim', role: 'Education Director', file: 'minjun_k.jpg' },
+    { name: 'Anoushka Pandey', role: 'Philanthropy & Projects Director', file: 'anoushka_p.jpg' },
+    { name: 'Isabella Fan', role: 'Philanthropy & Projects Director', file: 'isabella_f.jpg' },
+    { name: 'Liam Lightfoot', role: 'Careers Director' },
+    { name: 'Vidisha Trivedi', role: 'Careers Director', file: 'vidisha_t.jpg' },
+    { name: 'Cathy Dinh', role: 'Sponsorships Director', file: 'cathy_d.jpg' },
+    { name: 'Simon Shen', role: 'Sponsorships Director' },
+    { name: 'Kai Lu', role: 'Technology Director', file: 'kai_l.jpg' },
+    { name: 'Shafquat Tabeeb', role: 'Technology Director', file: 'shafquat_t.jpg' },
+    { name: 'Jennifer Lee', role: 'Marketing Director', file: 'jennifer_l.jpg' },
+    { name: 'Shashwat Manish', role: 'Marketing Director' },
+    { name: 'Shreya Verma', role: 'Media Director', file: 'shreya_v.jpg' },
+    { name: 'Vedant Tyagi', role: 'Media Director', file: 'vedant_t.jpg' },
+];
+
 const portfolios = Array.from(
-    directorSection.members.reduce((groups, member) => {
+    directors.reduce((groups, member) => {
         const title = member.role.replace(/ Director$/, '');
         const members = groups.get(title) ?? [];
         members.push(member);
@@ -88,8 +82,8 @@ const portfolios = Array.from(
     }, new Map<string, Member[]>()),
     ([title, members]) => ({
         title,
-        cardClass: directorSection.cardClass,
-        sizes: directorSection.sizes,
+        cardClass: 'w-[42%] md:w-[28%] lg:w-[22%]',
+        sizes: '(min-width: 1024px) 253px, (min-width: 768px) 28vw, 42vw',
         members,
     }),
 );
@@ -186,6 +180,8 @@ const portfolios = Array.from(
 
     if (page && panel && trail && trailBase && trailProgress && trailDot) {
         let pathLength = 0;
+        let firstY = 0;
+        let lastY = 0;
         let frame = 0;
         let drawFrame = 0;
 
@@ -206,6 +202,8 @@ const portfolios = Array.from(
                     y: rect.top - bounds.top + panel.scrollTop + rect.height / 2,
                 };
             });
+            firstY = points[0]?.y ?? 0;
+            lastY = points.at(-1)?.y ?? firstY;
 
             const path = points.reduce((data, point, index) => {
                 if (index === 0) return `M ${point.x} ${point.y}`;
@@ -224,20 +222,28 @@ const portfolios = Array.from(
         const update = () => {
             frame = 0;
             const bounds = panel.getBoundingClientRect();
-            const position = Math.min(
-                Math.max((innerHeight * 0.45 - bounds.top) / Math.max(panel.scrollHeight, 1), 0),
-                1,
-            );
-            const length = pathLength * position;
+            if (reducedMotion.matches) {
+                trailProgress.style.strokeDashoffset = '0';
+                trailDot.setAttribute('visibility', 'hidden');
+                layers.forEach((layer) => layer.style.removeProperty('--parallax-y'));
+                return;
+            }
+
+            trailDot.removeAttribute('visibility');
+            const targetY = Math.min(Math.max(innerHeight * 0.45 - bounds.top, firstY), lastY);
+            let low = 0;
+            let high = pathLength;
+            for (let i = 0; i < 18; i += 1) {
+                const middle = (low + high) / 2;
+                if (trailProgress.getPointAtLength(middle).y < targetY) low = middle;
+                else high = middle;
+            }
+            const length = (low + high) / 2;
             trailProgress.style.strokeDashoffset = String(pathLength - length);
             const point = trailProgress.getPointAtLength(length);
             trailDot.setAttribute('cx', String(point.x));
             trailDot.setAttribute('cy', String(point.y));
 
-            if (reducedMotion.matches) {
-                layers.forEach((layer) => layer.style.removeProperty('--parallax-y'));
-                return;
-            }
             layers.forEach((layer) => {
                 const rect = layer.getBoundingClientRect();
                 const speed = Number(layer.dataset.depth) || 0;
@@ -558,10 +564,7 @@ const portfolios = Array.from(
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .member-card,
-        .ambient-cloud,
-        .ambient-sun,
-        .hero-cloud {
+        .member-card {
             transition: none;
         }
 
