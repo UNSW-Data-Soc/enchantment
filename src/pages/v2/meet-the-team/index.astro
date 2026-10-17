@@ -75,87 +75,384 @@ const sections: Section[] = [
         ],
     },
 ];
+
+const leadership = sections.slice(0, 2);
+const directorSection = sections[2];
+const portfolios = Array.from(
+    directorSection.members.reduce((groups, member) => {
+        const title = member.role.replace(/ Director$/, '');
+        const members = groups.get(title) ?? [];
+        members.push(member);
+        groups.set(title, members);
+        return groups;
+    }, new Map<string, Member[]>()),
+    ([title, members]) => ({
+        title,
+        cardClass: directorSection.cardClass,
+        sizes: directorSection.sizes,
+        members,
+    }),
+);
 ---
 
 <V2Layout title="Meet the team - UNSW Data Science Society">
     <main class="team-page">
-        <header class="team-hero">
-            <p class="team-eyebrow">UNSW Data Science Society</p>
-            <h1>Meet the team</h1>
-            <p class="team-intro">Meet the people behind UNSW DataSoc.</p>
-        </header>
+        <div class="ambient-background" aria-hidden="true">
+            <span class="ambient-cloud cloud-one" data-depth="0.06"></span>
+            <span class="ambient-cloud cloud-two" data-depth="0.1"></span>
+            <span class="ambient-sun" data-depth="0.035"></span>
+        </div>
 
-        <Container class="team-roster space-y-16 py-12 max-w-6xl">
-            {sections.map((section) => (
-                <section class="team-section space-y-6">
-                    <h2>{section.title}</h2>
+        <div class="team-panel">
+            <svg class="scroll-trail" aria-hidden="true" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="trail-gradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#ee8796" />
+                        <stop offset="48%" stop-color="#f4b000" />
+                        <stop offset="100%" stop-color="#119bd6" />
+                    </linearGradient>
+                </defs>
+                <path class="trail-base" />
+                <path class="trail-progress" />
+                <circle class="trail-dot" r="8" />
+            </svg>
 
-                    <div class="flex flex-wrap justify-center gap-8">
-                        {section.members.map((member) => {
-                            const image = photo(member.file);
-                            return (
-                                <div class:list={['member-card text-center', section.cardClass]}>
-                                    {image ? (
-                                        <Image
-                                            src={image}
-                                            alt={member.name}
-                                            widths={IMAGE_WIDTHS}
-                                            sizes={section.sizes}
-                                            loading={section.eager ? 'eager' : 'lazy'}
-                                            class="member-photo w-full h-80 object-cover"
-                                        />
-                                    ) : (
-                                        <div
-                                            class="member-photo photo-placeholder w-full h-80 flex items-center justify-center"
-                                            role="img"
-                                            aria-label={`${member.name} photo unavailable`}
-                                        >
-                                            <span aria-hidden="true">Photo unavailable</span>
+            <div class="team-content">
+                <header class="team-hero" data-trail-section>
+                    <span class="hero-cloud cloud-left" data-depth="0.12" aria-hidden="true"></span>
+                    <span class="hero-cloud cloud-right" data-depth="0.08" aria-hidden="true"></span>
+                    <span class="hero-orbit orbit-one" aria-hidden="true"></span>
+                    <span class="hero-orbit orbit-two" aria-hidden="true"></span>
+                    <span class="hero-pixel pixel-one" aria-hidden="true"></span>
+                    <span class="hero-pixel pixel-two" aria-hidden="true"></span>
+                    <p class="team-eyebrow">UNSW Data Science Society</p>
+                    <h1>Meet the team</h1>
+                    <p class="team-intro">Meet the people behind UNSW DataSoc.</p>
+                </header>
+
+                <Container class="team-roster space-y-16 py-12 max-w-6xl">
+                    {[...leadership, ...portfolios].map((section) => (
+                        <section class="team-section space-y-6" data-trail-section>
+                            <h2>{section.title}</h2>
+
+                            <div class="flex flex-wrap justify-center gap-8">
+                                {section.members.map((member) => {
+                                    const image = photo(member.file);
+                                    return (
+                                        <div class:list={['member-card text-center', section.cardClass]}>
+                                            {image ? (
+                                                <Image
+                                                    src={image}
+                                                    alt={member.name}
+                                                    widths={IMAGE_WIDTHS}
+                                                    sizes={section.sizes}
+                                                    loading={section.eager ? 'eager' : 'lazy'}
+                                                    class="member-photo w-full h-80 object-cover"
+                                                />
+                                            ) : (
+                                                <div
+                                                    class="member-photo photo-placeholder w-full h-80 flex items-center justify-center"
+                                                    role="img"
+                                                    aria-label={`${member.name} photo unavailable`}
+                                                >
+                                                    <span aria-hidden="true">Photo unavailable</span>
+                                                </div>
+                                            )}
+                                            <p class="member-name">{member.name}</p>
+                                            <p class="member-role">{member.role}</p>
                                         </div>
-                                    )}
-                                    <p class="member-name">{member.name}</p>
-                                    <p class="member-role">{member.role}</p>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </section>
-            ))}
-        </Container>
+                                    );
+                                })}
+                            </div>
+                        </section>
+                    ))}
+                </Container>
+            </div>
+        </div>
     </main>
 
     <Footer />
 </V2Layout>
+
+<script>
+    const page = document.querySelector<HTMLElement>('.team-page');
+    const panel = page?.querySelector<HTMLElement>('.team-panel');
+    const trail = panel?.querySelector<SVGSVGElement>('.scroll-trail');
+    const trailBase = trail?.querySelector<SVGPathElement>('.trail-base');
+    const trailProgress = trail?.querySelector<SVGPathElement>('.trail-progress');
+    const trailDot = trail?.querySelector<SVGCircleElement>('.trail-dot');
+    const layers = Array.from(document.querySelectorAll<HTMLElement>('[data-depth]'));
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+    if (page && panel && trail && trailBase && trailProgress && trailDot) {
+        let pathLength = 0;
+        let frame = 0;
+
+        const drawTrail = () => {
+            const bounds = panel.getBoundingClientRect();
+            const width = panel.clientWidth;
+            const height = panel.scrollHeight;
+            trail.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            trail.setAttribute('width', String(width));
+            trail.setAttribute('height', String(height));
+
+            const anchors = Array.from(panel.querySelectorAll<HTMLElement>('[data-trail-section]'));
+            const points = anchors.map((anchor, index) => {
+                const heading = anchor.querySelector<HTMLElement>('h1, h2') ?? anchor;
+                const rect = heading.getBoundingClientRect();
+                return {
+                    x: width * (index === 0 ? 0.5 : index % 2 ? 0.86 : 0.14),
+                    y: rect.top - bounds.top + panel.scrollTop + rect.height / 2,
+                };
+            });
+
+            const path = points.reduce((data, point, index) => {
+                if (index === 0) return `M ${point.x} ${point.y}`;
+                const previous = points[index - 1];
+                const middleY = (previous.y + point.y) / 2;
+                return `${data} C ${previous.x} ${middleY}, ${point.x} ${middleY}, ${point.x} ${point.y}`;
+            }, '');
+
+            trailBase.setAttribute('d', path);
+            trailProgress.setAttribute('d', path);
+            pathLength = trailProgress.getTotalLength();
+            trailProgress.style.strokeDasharray = `${pathLength} ${pathLength}`;
+            update();
+        };
+
+        const update = () => {
+            frame = 0;
+            const bounds = panel.getBoundingClientRect();
+            const position = Math.min(
+                Math.max((innerHeight * 0.45 - bounds.top) / Math.max(panel.scrollHeight, 1), 0),
+                1,
+            );
+            const length = pathLength * position;
+            trailProgress.style.strokeDashoffset = String(pathLength - length);
+            const point = trailProgress.getPointAtLength(length);
+            trailDot.setAttribute('cx', String(point.x));
+            trailDot.setAttribute('cy', String(point.y));
+
+            if (reducedMotion.matches) return;
+            layers.forEach((layer) => {
+                const rect = layer.getBoundingClientRect();
+                const speed = Number(layer.dataset.depth) || 0;
+                const offset = (innerHeight / 2 - rect.top - rect.height / 2) * speed;
+                layer.style.setProperty('--parallax-y', `${offset}px`);
+            });
+        };
+
+        const schedule = () => {
+            if (!frame) frame = requestAnimationFrame(update);
+        };
+
+        drawTrail();
+        addEventListener('scroll', schedule, { passive: true });
+        addEventListener('v2-lenis-scroll', schedule);
+        addEventListener('resize', drawTrail);
+        addEventListener('load', drawTrail);
+        reducedMotion.addEventListener('change', schedule);
+    }
+</script>
 
 <style>
     .team-page {
         --team-ink: #484b70;
         --team-cream: #fffcf3;
         --team-blue: #137aa8;
-        background: var(--team-cream);
+        position: relative;
+        isolation: isolate;
+        overflow: clip;
+        min-height: 100vh;
+        padding: 1.5rem clamp(0px, 5vw, 5rem);
+        background:
+            radial-gradient(circle, rgb(72 75 112 / 0.22) 1.2px, transparent 1.8px) 0 0 / 19px 19px,
+            linear-gradient(135deg, #f4b9a8 0%, #f8d9bd 38%, #eab4b5 72%, #f6d89f 100%);
         color: var(--team-ink);
         font-family: var(--font-syne), sans-serif;
+    }
+
+    .ambient-background {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .ambient-cloud {
+        position: absolute;
+        width: clamp(12rem, 29vw, 30rem);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        filter: blur(3px);
+        transform: translate3d(0, var(--parallax-y, 0), 0);
+    }
+
+    .cloud-one {
+        top: 8%;
+        left: -12%;
+        background: radial-gradient(circle, rgb(255 228 173 / 0.9), rgb(245 138 151 / 0.36) 52%, transparent 72%);
+    }
+
+    .cloud-two {
+        top: 45%;
+        right: -12%;
+        background: radial-gradient(circle, rgb(255 226 169 / 0.86), rgb(232 139 157 / 0.38) 52%, transparent 72%);
+    }
+
+    .ambient-sun {
+        position: absolute;
+        top: 75%;
+        left: 0;
+        width: 22rem;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgb(255 224 158 / 0.84), transparent 70%);
+        transform: translate3d(0, var(--parallax-y, 0), 0);
+    }
+
+    .team-panel {
+        position: relative;
+        width: min(100%, 1160px);
+        margin: 0 auto;
+        overflow: hidden;
+        border: 1px solid rgb(72 75 112 / 0.12);
+        border-radius: clamp(0px, 1.5vw, 1.5rem);
+        background: var(--team-cream);
+        box-shadow: 0 1rem 4rem rgb(72 47 65 / 0.2);
+    }
+
+    .team-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .scroll-trail {
+        position: absolute;
+        inset: 0 auto auto 0;
+        z-index: 2;
+        overflow: visible;
+        pointer-events: none;
+    }
+
+    .trail-base,
+    .trail-progress {
+        fill: none;
+        stroke: url(#trail-gradient);
+        stroke-linecap: round;
+    }
+
+    .trail-base {
+        stroke-width: 3;
+        stroke-dasharray: 2 13;
+        opacity: 0.28;
+    }
+
+    .trail-progress {
+        stroke-width: 4;
+        filter: drop-shadow(0 0 5px rgb(238 135 150 / 0.45));
+    }
+
+    .trail-dot {
+        fill: #fffcf3;
+        stroke: #ee8796;
+        stroke-width: 4;
+        filter: drop-shadow(0 0 7px rgb(238 135 150 / 0.65));
     }
 
     .team-hero {
         position: relative;
         isolation: isolate;
         overflow: hidden;
-        padding: clamp(4rem, 9vw, 8rem) 1.5rem;
+        padding: clamp(2rem, 4vw, 3.25rem) 1.5rem;
         text-align: center;
         background:
-            radial-gradient(ellipse at 16% 15%, rgb(238 135 150 / 0.2), transparent 38%),
-            radial-gradient(ellipse at 85% 90%, rgb(255 227 166 / 0.48), transparent 42%),
+            radial-gradient(ellipse at 20% 0%, rgb(238 135 150 / 0.18), transparent 42%),
+            radial-gradient(ellipse at 90% 100%, rgb(255 227 166 / 0.48), transparent 44%),
             linear-gradient(110deg, #f3e9e6, #fefbf0);
+    }
+
+    .team-hero::before {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: radial-gradient(circle, rgb(72 75 112 / 0.2) 1px, transparent 1.6px) 50% 50% / 15px 15px;
+        mask-image: linear-gradient(90deg, #000, transparent 28%, transparent 72%, #000);
+        content: '';
     }
 
     .team-hero::after {
         position: absolute;
         inset: auto 0 0;
         z-index: -1;
-        height: 0.45rem;
+        height: 0.35rem;
         background: linear-gradient(90deg, #ee8796, #ffe3a6, #c3ffff);
         content: '';
+    }
+
+    .hero-cloud {
+        position: absolute;
+        z-index: -1;
+        width: clamp(8rem, 19vw, 15rem);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        filter: blur(2px);
+        transform: translate3d(0, var(--parallax-y, 0), 0);
+    }
+
+    .cloud-left {
+        top: -60%;
+        left: 7%;
+        background: radial-gradient(circle, rgb(238 135 150 / 0.3), transparent 70%);
+    }
+
+    .cloud-right {
+        right: 6%;
+        bottom: -75%;
+        background: radial-gradient(circle, rgb(255 227 166 / 0.6), transparent 70%);
+    }
+
+    .hero-orbit {
+        position: absolute;
+        z-index: -1;
+        width: clamp(3rem, 8vw, 6.5rem);
+        aspect-ratio: 1;
+        border: 1px solid rgb(72 75 112 / 0.25);
+        border-radius: 50%;
+    }
+
+    .orbit-one {
+        top: 15%;
+        left: 21%;
+    }
+
+    .orbit-two {
+        right: 20%;
+        bottom: 12%;
+        width: clamp(2rem, 5vw, 4rem);
+        border-style: dashed;
+    }
+
+    .hero-pixel {
+        position: absolute;
+        z-index: -1;
+        width: 0.65rem;
+        aspect-ratio: 1;
+        background: #ee8796;
+        box-shadow: 0.9rem 0.7rem 0 #ffe3a6, 1.8rem -0.2rem 0 #c3ffff;
+        transform: rotate(15deg);
+    }
+
+    .pixel-one {
+        top: 24%;
+        right: 31%;
+    }
+
+    .pixel-two {
+        bottom: 26%;
+        left: 30%;
+        transform: rotate(-15deg) scale(0.7);
     }
 
     .team-eyebrow {
@@ -169,7 +466,7 @@ const sections: Section[] = [
 
     .team-hero h1 {
         margin: 0;
-        font-size: clamp(2.5rem, 7vw, 5.5rem);
+        font-size: clamp(2rem, 4.2vw, 3.65rem);
         font-weight: 800;
         letter-spacing: -0.055em;
     }
@@ -181,8 +478,8 @@ const sections: Section[] = [
     }
 
     .team-roster {
-        padding-top: clamp(3rem, 7vw, 5rem);
-        padding-bottom: clamp(4rem, 8vw, 6rem);
+        padding-top: clamp(2.5rem, 5vw, 4rem);
+        padding-bottom: clamp(3rem, 6vw, 5rem);
     }
 
     .team-section h2 {
@@ -195,6 +492,10 @@ const sections: Section[] = [
         font-size: clamp(1.5rem, 3vw, 2rem);
         font-weight: 700;
         text-align: center;
+    }
+
+    .team-section {
+        scroll-margin-top: 5rem;
     }
 
     .member-card {
@@ -239,8 +540,39 @@ const sections: Section[] = [
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .member-card {
+        .member-card,
+        .ambient-cloud,
+        .ambient-sun,
+        .hero-cloud {
             transition: none;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .team-page {
+            padding: 0;
+            background-size: 17px 17px, auto;
+        }
+
+        .team-panel {
+            border: 0;
+            border-radius: 0;
+        }
+
+        .orbit-one {
+            left: 5%;
+        }
+
+        .orbit-two {
+            right: 4%;
+        }
+
+        .pixel-one {
+            right: 16%;
+        }
+
+        .pixel-two {
+            left: 15%;
         }
     }
 </style>
