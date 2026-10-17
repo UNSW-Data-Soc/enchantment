@@ -1,11 +1,12 @@
 ---
 import Container from '../../../components/Container.astro';
 import Footer from '../../../components/v2/Footer.astro';
+import TeamMemberDetails from '../../../components/v2/TeamMemberDetails.astro';
 import V2Layout from '../../../layouts/V2Layout.astro';
 import star from '../../../assets/ui/shapes/one-star.svg?url';
-import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 
+const LEADERSHIP_SIZES = '(min-width: 1440px) 250px, (min-width: 768px) 22vw, (min-width: 640px) 150px, 42vw';
 const photos = import.meta.glob<{ default: ImageMetadata }>(
     '../../../assets/meet-the-team/datasoc-board-photos/*.jpg',
     { eager: true },
@@ -18,8 +19,6 @@ function photo(file?: string): ImageMetadata | undefined {
     return entry.default;
 }
 
-const IMAGE_WIDTHS = [240, 380, 540, 700];
-
 type Member = { name: string; role: string; file?: string };
 type Section = {
     title: string;
@@ -31,13 +30,13 @@ type Section = {
 const leadership: Section[] = [
     {
         title: 'President',
-        sizes: '(min-width: 1440px) 250px, (min-width: 768px) 22vw, (min-width: 640px) 150px, 42vw',
+        sizes: LEADERSHIP_SIZES,
         eager: true,
         members: [{ name: 'Qingyuan He', role: 'President', file: 'qingyuan_h.jpg' }],
     },
     {
         title: 'Executives',
-        sizes: '(min-width: 1440px) 250px, (min-width: 768px) 22vw, (min-width: 640px) 150px, 42vw',
+        sizes: LEADERSHIP_SIZES,
         members: [
             { name: 'Ethan Pham', role: 'Vice President (Activities)', file: 'ethan_p.jpg' },
             { name: 'Stella Lin', role: 'Vice President (Development)', file: 'stella_l.jpg' },
@@ -142,15 +141,7 @@ const portfolios = Array.from(
                                         const image = photo(member.file);
                                         return (
                                             <div class="member-card text-center">
-                                                {image ? (
-                                                    <Image src={image} alt={member.name} widths={IMAGE_WIDTHS} sizes={section.sizes} loading={section.eager ? 'eager' : 'lazy'} class="member-photo w-full object-cover" />
-                                                ) : (
-                                                    <div class="member-photo photo-placeholder w-full flex items-center justify-center" role="img" aria-label={`${member.name} photo unavailable`}>
-                                                        <span aria-hidden="true">Photo unavailable</span>
-                                                    </div>
-                                                )}
-                                                <p class="member-name">{member.name}</p>
-                                                <p class="member-role">{member.role}</p>
+                                                <TeamMemberDetails member={member} image={image} sizes={section.sizes} eager={section.eager} />
                                             </div>
                                         );
                                     })}
@@ -169,15 +160,7 @@ const portfolios = Array.from(
                                                 const image = photo(member.file);
                                                 return (
                                                     <div class="member-card text-center">
-                                                        {image ? (
-                                                            <Image src={image} alt={member.name} widths={IMAGE_WIDTHS} sizes={section.sizes} loading="lazy" class="member-photo w-full object-cover" />
-                                                        ) : (
-                                                            <div class="member-photo photo-placeholder w-full flex items-center justify-center" role="img" aria-label={`${member.name} photo unavailable`}>
-                                                                <span aria-hidden="true">Photo unavailable</span>
-                                                            </div>
-                                                        )}
-                                                        <p class="member-name">{member.name}</p>
-                                                        <p class="member-role">{member.role}</p>
+                                                        <TeamMemberDetails member={member} image={image} sizes={section.sizes} />
                                                     </div>
                                                 );
                                             })}
@@ -446,7 +429,7 @@ const portfolios = Array.from(
         position: relative;
         width: 100%;
         margin: 0 auto;
-        overflow: hidden;
+        overflow: clip;
         border-right: 1px solid rgb(72 75 112 / 0.12);
         border-left: 1px solid rgb(72 75 112 / 0.12);
         background: var(--team-cream);
@@ -814,31 +797,6 @@ const portfolios = Array.from(
         box-shadow: 0 0.85rem 2rem rgb(72 75 112 / 0.14);
     }
 
-    .member-photo {
-        height: clamp(9rem, 16vw, 15rem);
-        border-radius: 0.65rem;
-    }
-
-    .photo-placeholder {
-        border: 1px solid rgb(19 122 168 / 0.12);
-        background: linear-gradient(135deg, #e3f4fb, #eee5fb, #fff0eb);
-        color: var(--team-blue);
-        font-size: 0.875rem;
-    }
-
-    .member-name {
-        margin: 0.9rem 0 0;
-        color: var(--team-ink);
-        font-size: 1rem;
-        font-weight: 700;
-    }
-
-    .member-role {
-        margin: 0.2rem 0 0;
-        color: var(--team-blue);
-        font-size: 0.875rem;
-    }
-
     @media (prefers-reduced-motion: reduce) {
         .member-card {
             transition: none;
@@ -878,10 +836,6 @@ const portfolios = Array.from(
         .leadership-members .member-card,
         .portfolio-members .member-card {
             flex-basis: 44%;
-        }
-
-        .member-photo {
-            height: clamp(8.5rem, 34vw, 12rem);
         }
 
         .orbit-one {

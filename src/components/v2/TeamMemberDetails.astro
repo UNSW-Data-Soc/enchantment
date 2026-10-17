@@ -1,0 +1,68 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+type Props = {
+    member: { name: string; role: string };
+    image?: ImageMetadata;
+    sizes: string;
+    eager?: boolean;
+};
+
+const { member, image, sizes, eager = false } = Astro.props;
+const widths = [240, 380, 540, 700];
+---
+
+{image ? (
+    <Image
+        src={image}
+        alt={member.name}
+        widths={widths}
+        sizes={sizes}
+        loading={eager ? 'eager' : 'lazy'}
+        class="member-photo w-full object-cover"
+    />
+) : (
+    <div
+        class="member-photo photo-placeholder w-full flex items-center justify-center"
+        role="img"
+        aria-label={`${member.name} photo unavailable`}
+    >
+        <span aria-hidden="true">Photo unavailable</span>
+    </div>
+)}
+<p class="member-name">{member.name}</p>
+<p class="member-role">{member.role}</p>
+
+<style>
+    .member-photo {
+        height: clamp(9rem, 16vw, 15rem);
+        border-radius: 0.65rem;
+    }
+
+    .photo-placeholder {
+        border: 1px solid rgb(19 122 168 / 0.12);
+        background: linear-gradient(135deg, #e3f4fb, #eee5fb, #fff0eb);
+        color: #087fae;
+        font-size: 0.875rem;
+    }
+
+    .member-name {
+        margin: 0.9rem 0 0;
+        color: #484b70;
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+    .member-role {
+        margin: 0.2rem 0 0;
+        color: #087fae;
+        font-size: 0.875rem;
+    }
+
+    @media (max-width: 640px) {
+        .member-photo {
+            height: clamp(8.5rem, 34vw, 12rem);
+        }
+    }
+</style>
