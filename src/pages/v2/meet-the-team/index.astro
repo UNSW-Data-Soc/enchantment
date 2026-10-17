@@ -93,29 +93,33 @@ const portfolios = Array.from(
             <span class="ambient-cloud cloud-one" data-depth="0.06"></span>
             <span class="ambient-cloud cloud-two" data-depth="0.1"></span>
             <span class="ambient-sun" data-depth="0.035"></span>
+            <span class="side-geometry geometry-left-one" data-depth="0.025"></span>
+            <span class="side-geometry geometry-right-one" data-depth="0.04"></span>
+            <span class="side-geometry geometry-left-two" data-depth="0.035"></span>
+            <span class="side-geometry geometry-right-two" data-depth="0.025"></span>
         </div>
+
+        <svg class="scroll-trail" aria-hidden="true" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="trail-gradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="var(--team-accent-pink)" />
+                    <stop offset="48%" stop-color="var(--team-accent-purple)" />
+                    <stop offset="100%" stop-color="var(--team-accent-blue)" />
+                </linearGradient>
+            </defs>
+            <path class="trail-base" />
+            <path class="trail-progress" />
+            <circle class="trail-dot" r="8" />
+        </svg>
+
+        <nav class="team-progress-rail" aria-label="Page sections" style={`--star: url("${star}")`}>
+            <div class="rail-track">
+                <div class="rail-stars"></div>
+            </div>
+        </nav>
 
         <div class="team-panel">
             <div class="team-body">
-                <svg class="scroll-trail" aria-hidden="true" preserveAspectRatio="none">
-                    <defs>
-                        <linearGradient id="trail-gradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="var(--team-accent-pink)" />
-                            <stop offset="48%" stop-color="var(--team-accent-purple)" />
-                            <stop offset="100%" stop-color="var(--team-accent-blue)" />
-                        </linearGradient>
-                    </defs>
-                    <path class="trail-base" />
-                    <path class="trail-progress" />
-                    <circle class="trail-dot" r="8" />
-                </svg>
-
-                <nav class="team-progress-rail" aria-label="Page sections" style={`--star: url("${star}")`}>
-                    <div class="rail-track">
-                        <div class="rail-stars"></div>
-                    </div>
-                </nav>
-
                 <main
                     class="team-content"
                     data-trail-section
@@ -123,13 +127,20 @@ const portfolios = Array.from(
                     tabindex="-1"
                 >
                     <header class="team-hero">
-                        <span class="hero-cloud cloud-left" data-depth="0.12" aria-hidden="true"></span>
-                        <span class="hero-cloud cloud-right" data-depth="0.08" aria-hidden="true"></span>
-                        <span class="hero-orbit orbit-one" aria-hidden="true"></span>
-                        <span class="hero-orbit orbit-two" aria-hidden="true"></span>
-                        <p class="team-eyebrow">UNSW Data Science Society</p>
-                        <h1>Meet the team</h1>
-                        <p class="team-intro">Meet the people behind UNSW DataSoc.</p>
+                        <div class="hero-copy">
+                            <p class="team-eyebrow"><span>UNSW DataSoc</span><span>—</span><span>People &amp; portfolios</span></p>
+                            <h1>Meet the <em>team</em></h1>
+                            <p class="team-intro">The people shaping our year, our community, and what comes next.</p>
+                            <p class="hero-index">BOARD 2026 <span>✳</span> UNSW</p>
+                        </div>
+                        <div class="hero-art" aria-hidden="true">
+                            <span class="hero-disc" data-depth="0.08"></span>
+                            <span class="hero-orbit orbit-one" data-depth="0.04"></span>
+                            <span class="hero-orbit orbit-two" data-depth="0.06"></span>
+                            <span class="hero-cross"></span>
+                            <span class="hero-pixels"></span>
+                            <span class="hero-art-label">A collective<br />of curious minds</span>
+                        </div>
                     </header>
 
                     <Container class="team-roster max-w-[1440px]">
@@ -177,7 +188,9 @@ const portfolios = Array.from(
                     </Container>
                 </main>
             </div>
-            <Footer />
+            <div class="team-footer" data-trail-section>
+                <Footer />
+            </div>
         </div>
     </div>
 </V2Layout>
@@ -190,8 +203,7 @@ const portfolios = Array.from(
     // Eighteen bisection steps locate the trail position to well under a pixel.
     const TRAIL_SEARCH_ITERATIONS = 18;
     const page = document.querySelector<HTMLElement>('.team-page');
-    const panel = page?.querySelector<HTMLElement>('.team-body');
-    const trail = panel?.querySelector<SVGSVGElement>('.scroll-trail');
+    const trail = page?.querySelector<SVGSVGElement>('.scroll-trail');
     const trailBase = trail?.querySelector<SVGPathElement>('.trail-base');
     const trailProgress = trail?.querySelector<SVGPathElement>('.trail-progress');
     const trailDot = trail?.querySelector<SVGCircleElement>('.trail-dot');
@@ -295,21 +307,21 @@ const portfolios = Array.from(
         updateStops();
     }
 
-    if (page && panel && trail && trailBase && trailProgress && trailDot) {
+    if (page && trail && trailBase && trailProgress && trailDot) {
         let pathLength = 0;
         let firstY = 0;
         let lastY = 0;
         let drawFrame = 0;
 
         const drawTrail = () => {
-            const bounds = panel.getBoundingClientRect();
-            const width = panel.clientWidth;
-            const height = panel.scrollHeight;
+            const bounds = page.getBoundingClientRect();
+            const width = page.clientWidth;
+            const height = page.scrollHeight;
             trail.setAttribute('viewBox', `0 0 ${width} ${height}`);
             trail.setAttribute('width', String(width));
             trail.setAttribute('height', String(height));
 
-            const anchors = Array.from(panel.querySelectorAll<HTMLElement>('[data-trail-section]'));
+            const anchors = Array.from(page.querySelectorAll<HTMLElement>('[data-trail-section]'));
             const points = anchors.map((anchor, index) => {
                 const heading = anchor.querySelector<HTMLElement>('h1, h2') ?? anchor;
                 const rect = heading.getBoundingClientRect();
@@ -373,8 +385,7 @@ const portfolios = Array.from(
         addEventListener('load', scheduleDraw);
         document.fonts.ready.then(scheduleDraw);
         const resizeObserver = new ResizeObserver(scheduleDraw);
-        const content = panel.querySelector<HTMLElement>('.team-content');
-        if (content) resizeObserver.observe(content);
+        resizeObserver.observe(page);
         reducedMotion.addEventListener('change', scheduleDraw);
     }
 
@@ -397,10 +408,11 @@ const portfolios = Array.from(
         isolation: isolate;
         overflow: clip;
         min-height: 100vh;
-        padding: 0 clamp(10px, 2.4vw, 38px);
+        padding: 0;
         background:
             radial-gradient(circle, rgb(52 57 75 / 0.18) 1px, transparent 1.5px) 0 0 / 18px 18px,
-            linear-gradient(90deg, rgb(217 74 101 / 0.14), transparent 21%, transparent 79%, rgb(58 113 139 / 0.18)),
+            radial-gradient(circle, rgb(255 252 243 / 0.48) 1px, transparent 1.7px) 88% 12rem / 11px 11px,
+            linear-gradient(90deg, rgb(217 74 101 / 0.18), transparent 18%, transparent 78%, rgb(58 113 139 / 0.22)),
             linear-gradient(135deg, #e7c5c1 0%, #e0d5e7 33%, #c8dce3 62%, #e9d3bd 100%);
         color: var(--team-ink);
         font-family: var(--font-syne), sans-serif;
@@ -410,29 +422,33 @@ const portfolios = Array.from(
     .team-page::after {
         position: absolute;
         inset: 0;
-        z-index: -1;
+        z-index: 0;
         pointer-events: none;
         content: '';
     }
 
     .team-page::before {
         background:
-            radial-gradient(circle, rgb(52 57 75 / 0.16) 1px, transparent 1.5px) left top / 8vw 18px,
-            radial-gradient(circle, rgb(52 57 75 / 0.16) 1px, transparent 1.5px) right top / 8vw 18px;
+            repeating-linear-gradient(135deg, transparent 0 18px, rgb(52 57 75 / 0.12) 19px 20px, transparent 21px 38px) left top / 7vw 100%,
+            repeating-linear-gradient(45deg, transparent 0 18px, rgb(52 57 75 / 0.12) 19px 20px, transparent 21px 38px) right top / 7vw 100%,
+            radial-gradient(circle, rgb(52 57 75 / 0.2) 1px, transparent 1.5px) left top / 7vw 14px,
+            radial-gradient(circle, rgb(52 57 75 / 0.2) 1px, transparent 1.5px) right top / 7vw 14px;
         background-repeat: repeat-y;
     }
 
     .team-page::after {
         background:
-            radial-gradient(circle at center, transparent 43%, rgb(119 107 135 / 0.34) 44% 45%, transparent 46%) 1vw 12rem / 5rem 5rem no-repeat,
-            radial-gradient(circle at center, transparent 43%, rgb(58 113 139 / 0.36) 44% 45%, transparent 46%) calc(100% - 1vw) 42rem / 6rem 6rem no-repeat;
-        opacity: 0.6;
+            radial-gradient(circle at center, transparent 42%, rgb(119 107 135 / 0.3) 43% 44%, transparent 45%) 1vw 12rem / 5rem 5rem no-repeat,
+            radial-gradient(circle at center, transparent 42%, rgb(58 113 139 / 0.34) 43% 44%, transparent 45%) calc(100% - 1vw) 42rem / 6rem 6rem no-repeat,
+            conic-gradient(from 45deg, var(--team-accent-pink) 0 25%, var(--team-accent-purple) 0 50%, var(--team-accent-blue) 0 75%, var(--team-accent-gold) 0) 1.8vw 33rem / 0.7rem 0.7rem no-repeat,
+            conic-gradient(from 45deg, var(--team-accent-pink) 0 25%, var(--team-accent-purple) 0 50%, var(--team-accent-blue) 0 75%, var(--team-accent-gold) 0) calc(100% - 2vw) 67rem / 0.9rem 0.9rem no-repeat;
+        opacity: 0.65;
     }
 
     .ambient-background {
         position: absolute;
         inset: 0;
-        z-index: -1;
+        z-index: 0;
         overflow: hidden;
         pointer-events: none;
     }
@@ -469,10 +485,48 @@ const portfolios = Array.from(
         transform: translate3d(0, var(--parallax-y, 0), 0);
     }
 
+    .side-geometry {
+        position: absolute;
+        width: clamp(3rem, 6vw, 6rem);
+        aspect-ratio: 1;
+        border: 1px solid rgb(52 57 75 / 0.28);
+        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(45deg);
+    }
+
+    .geometry-left-one {
+        top: 19%;
+        left: 1.5%;
+        border-radius: 50%;
+        box-shadow: inset 0 0 0 0.5rem rgb(255 252 243 / 0.12), 0 0 0 0.5rem rgb(217 74 101 / 0.12);
+    }
+
+    .geometry-right-one {
+        top: 35%;
+        right: 1.2%;
+        width: clamp(2rem, 4vw, 4rem);
+        background: repeating-linear-gradient(0deg, transparent 0 5px, rgb(52 57 75 / 0.2) 6px 7px);
+    }
+
+    .geometry-left-two {
+        top: 64%;
+        left: 2%;
+        width: clamp(2rem, 3.8vw, 4rem);
+        border-color: rgb(58 113 139 / 0.5);
+        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(45deg) scale(0.82);
+    }
+
+    .geometry-right-two {
+        top: 82%;
+        right: 1.6%;
+        border-radius: 50%;
+        border-style: dashed;
+        box-shadow: inset 0 0 0 0.6rem rgb(140 120 152 / 0.12);
+    }
+
     .team-panel {
         position: relative;
-        width: 100%;
-        margin: 0 auto;
+        width: auto;
+        margin: 0 clamp(10px, 2.4vw, 38px) 0 calc(4.13vw + clamp(10px, 1.4vw, 22px));
         overflow: clip;
         border-right: 1px solid rgb(72 75 112 / 0.12);
         border-left: 1px solid rgb(72 75 112 / 0.12);
@@ -482,18 +536,22 @@ const portfolios = Array.from(
 
     .team-body {
         position: relative;
-        padding-left: 4.13%;
     }
 
     .team-content {
         position: relative;
-        z-index: 1;
+        z-index: 2;
+    }
+
+    .team-footer {
+        position: relative;
+        z-index: 2;
     }
 
     .scroll-trail {
         position: absolute;
         inset: 0 auto auto 0;
-        z-index: 0;
+        z-index: 1;
         overflow: visible;
         pointer-events: none;
     }
@@ -525,13 +583,15 @@ const portfolios = Array.from(
 
     .team-progress-rail {
         position: absolute;
-        inset: 0 auto 0 0;
-        z-index: 3;
-        width: 4.13%;
+        top: 0;
+        bottom: auto;
+        left: 0;
+        z-index: 4;
+        width: 4.13vw;
+        height: 98%;
         overflow: clip;
-        background:
-            radial-gradient(circle, rgb(255 252 243 / 0.2) 1px, transparent 1.5px) center / 12px 12px,
-            #484b70;
+        border-radius: 0 0 50% 50% / 0 0 0.72% 0.72%;
+        background: url('/backgrounds/homepage-bg-v2-p00.png') 0 0 / calc(100% / 0.0413) auto no-repeat;
         pointer-events: none;
     }
 
@@ -603,21 +663,26 @@ const portfolios = Array.from(
         position: relative;
         isolation: isolate;
         overflow: hidden;
-        padding: clamp(2rem, 3.5vw, 3rem) 1.5rem;
-        text-align: center;
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(14rem, 0.8fr);
+        align-items: center;
+        min-height: clamp(16rem, 25vw, 23rem);
+        padding: clamp(1.5rem, 3.3vw, 3rem) clamp(1.5rem, 4vw, 4.5rem);
         background:
-            radial-gradient(ellipse at 18% 0%, rgb(217 74 101 / 0.1), transparent 42%),
-            radial-gradient(ellipse at 92% 100%, rgb(119 107 135 / 0.12), transparent 44%),
-            radial-gradient(ellipse at 70% 30%, rgb(58 113 139 / 0.1), transparent 36%),
-            linear-gradient(110deg, #f2e9e3, #fffcf3);
+            radial-gradient(ellipse at 8% 6%, rgb(217 74 101 / 0.14), transparent 39%),
+            radial-gradient(ellipse at 86% 92%, rgb(119 107 135 / 0.18), transparent 42%),
+            radial-gradient(ellipse at 65% 12%, rgb(58 113 139 / 0.16), transparent 35%),
+            linear-gradient(110deg, #f2e9e3, #fffcf3 54%, #e9edf0);
     }
 
     .team-hero::before {
         position: absolute;
         inset: 0;
         z-index: -1;
-        background: radial-gradient(circle, rgb(52 57 75 / 0.11) 1px, transparent 1.6px) 50% 50% / 19px 19px;
-        mask-image: linear-gradient(90deg, #000, transparent 20%, transparent 80%, #000);
+        background:
+            radial-gradient(circle, rgb(52 57 75 / 0.13) 1px, transparent 1.6px) 50% 50% / 17px 17px,
+            linear-gradient(135deg, transparent 0 48%, rgb(52 57 75 / 0.1) 48.2% 48.4%, transparent 48.6% 100%);
+        mask-image: linear-gradient(90deg, #000, transparent 34%, transparent 75%, #000);
         content: '';
     }
 
@@ -625,75 +690,149 @@ const portfolios = Array.from(
         position: absolute;
         inset: auto 0 0;
         z-index: -1;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, var(--team-accent-pink), var(--team-accent-purple), var(--team-accent-blue), transparent);
+        height: 2px;
+        background: linear-gradient(90deg, var(--team-accent-pink), var(--team-accent-purple) 44%, var(--team-accent-blue) 78%, transparent);
         content: '';
     }
 
-    .hero-cloud {
+    .hero-copy {
         position: absolute;
-        z-index: -1;
-        width: clamp(8rem, 16vw, 13rem);
+        z-index: 1;
+        left: clamp(1.5rem, 4vw, 4.5rem);
+        top: 50%;
+        width: min(59%, 42rem);
+        transform: translateY(-50%);
+    }
+
+    .hero-art {
+        position: absolute;
+        inset: 0 0 0 auto;
+        width: 47%;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .hero-disc {
+        position: absolute;
+        top: 50%;
+        left: 47%;
+        width: clamp(10rem, 21vw, 20rem);
         aspect-ratio: 1;
         border-radius: 50%;
-        filter: blur(7px);
-        transform: translate3d(0, var(--parallax-y, 0), 0);
-    }
-
-    .cloud-left {
-        top: -60%;
-        left: 7%;
-        background: radial-gradient(circle, rgb(140 120 152 / 0.28), transparent 70%);
-    }
-
-    .cloud-right {
-        right: 6%;
-        bottom: -75%;
-        background: radial-gradient(circle, rgb(58 113 139 / 0.26), rgb(217 74 101 / 0.16), transparent 70%);
+        background:
+            radial-gradient(circle at 35% 33%, rgb(255 252 243 / 0.82), transparent 18%),
+            radial-gradient(circle at 40% 38%, #e6c0b5, #cbb9cf 48%, #9ab8c1 76%, #547d8a);
+        box-shadow: 1.1rem 1.2rem 0 rgb(52 57 75 / 0.09), 0 1.2rem 3rem rgb(52 57 75 / 0.16);
+        transform: translate3d(0, calc(-50% + var(--parallax-y, 0px)), 0);
     }
 
     .hero-orbit {
         position: absolute;
-        z-index: -1;
-        width: clamp(3rem, 8vw, 6.5rem);
+        top: 50%;
+        left: 47%;
+        width: clamp(13rem, 27vw, 26rem);
         aspect-ratio: 1;
-        border: 1px solid rgb(52 57 75 / 0.2);
+        border: 1px solid rgb(52 57 75 / 0.35);
         border-radius: 50%;
-    }
-
-    .orbit-one {
-        top: 15%;
-        left: 21%;
+        transform: translate3d(0, calc(-50% + var(--parallax-y, 0px)), 0);
     }
 
     .orbit-two {
-        right: 20%;
-        bottom: 12%;
-        width: clamp(2rem, 5vw, 4rem);
+        width: clamp(11rem, 23vw, 22rem);
+        border-color: rgb(217 74 101 / 0.48);
         border-style: dashed;
+        transform: translate3d(0, calc(-50% + var(--parallax-y, 0px)), 0) rotate(24deg);
+    }
+
+    .hero-cross {
+        position: absolute;
+        top: 19%;
+        right: 17%;
+        width: 1.5rem;
+        height: 1.5rem;
+        background:
+            linear-gradient(var(--team-ink), var(--team-ink)) center / 1px 100% no-repeat,
+            linear-gradient(90deg, var(--team-ink), var(--team-ink)) center / 100% 1px no-repeat;
+        opacity: 0.7;
+    }
+
+    .hero-pixels {
+        position: absolute;
+        right: 9%;
+        bottom: 17%;
+        width: 2.4rem;
+        height: 2.4rem;
+        background: radial-gradient(circle, var(--team-accent-blue) 1.5px, transparent 2px) 0 0 / 8px 8px;
+        mask-image: linear-gradient(135deg, #000, transparent);
+    }
+
+    .hero-art-label {
+        position: absolute;
+        right: 12%;
+        bottom: 14%;
+        padding: 0.65rem 0.8rem;
+        border: 1px solid rgb(52 57 75 / 0.25);
+        background: rgb(255 252 243 / 0.8);
+        color: var(--team-ink);
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+        font-style: italic;
+        line-height: 1.2;
     }
 
     .team-eyebrow {
-        margin: 0 0 0.75rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.65rem;
+        margin: 0 0 1rem;
         color: var(--team-blue);
         font-size: 0.8rem;
         font-weight: 700;
-        letter-spacing: 0.16em;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
+    }
+
+    .team-eyebrow span:nth-child(2) {
+        color: var(--team-accent-pink);
     }
 
     .team-hero h1 {
         margin: 0;
         font-family: Georgia, 'Times New Roman', serif;
-        font-size: clamp(2rem, 4vw, 3.4rem);
-        font-weight: 500;
-        letter-spacing: -0.035em;
+        font-size: clamp(2.8rem, 6.4vw, 6.5rem);
+        font-weight: 400;
+        letter-spacing: -0.065em;
+        line-height: 0.96;
+    }
+
+    .team-hero h1 em {
+        color: var(--team-accent-pink);
+        font-weight: 400;
     }
 
     .team-intro {
-        margin: 1rem 0 0;
+        max-width: 31rem;
+        margin: 1.1rem 0 0;
         color: var(--team-blue);
-        font-size: clamp(1rem, 2vw, 1.25rem);
+        font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+        line-height: 1.55;
+    }
+
+    .hero-index {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        margin: 1.4rem 0 0;
+        color: rgb(52 57 75 / 0.7);
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+    }
+
+    .hero-index span {
+        color: var(--team-accent-gold);
+        font-size: 1.2rem;
     }
 
     .team-roster {
