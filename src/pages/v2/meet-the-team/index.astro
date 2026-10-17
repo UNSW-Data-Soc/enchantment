@@ -31,13 +31,13 @@ type Section = {
 const leadership: Section[] = [
     {
         title: 'President',
-        sizes: '(min-width: 1024px) 276px, (min-width: 768px) 32vw, (min-width: 640px) 50vw, 70vw',
+        sizes: '(min-width: 1440px) 250px, (min-width: 768px) 22vw, (min-width: 640px) 150px, 42vw',
         eager: true,
         members: [{ name: 'Qingyuan He', role: 'President', file: 'qingyuan_h.jpg' }],
     },
     {
         title: 'Executives',
-        sizes: '(min-width: 1024px) 253px, (min-width: 768px) 28vw, (min-width: 640px) 38vw, 42vw',
+        sizes: '(min-width: 1440px) 250px, (min-width: 768px) 22vw, (min-width: 640px) 150px, 42vw',
         members: [
             { name: 'Ethan Pham', role: 'Vice President (Activities)', file: 'ethan_p.jpg' },
             { name: 'Stella Lin', role: 'Vice President (Development)', file: 'stella_l.jpg' },
@@ -80,7 +80,7 @@ const portfolios = Array.from(
     }, new Map<string, Member[]>()),
     ([title, members]) => ({
         title,
-        sizes: '(min-width: 1440px) 265px, (min-width: 768px) 18vw, 42vw',
+        sizes: '(min-width: 1440px) 265px, (min-width: 768px) 18vw, (min-width: 640px) 20vw, 42vw',
         members,
     }),
 );
@@ -761,8 +761,7 @@ const portfolios = Array.from(
         background: rgb(255 252 243 / 0.76);
     }
 
-    .portfolio-1,
-    .portfolio-3 {
+    .portfolio-1 {
         background: rgb(229 220 250 / 0.72);
     }
 
@@ -876,7 +875,8 @@ const portfolios = Array.from(
             padding: 1rem;
         }
 
-        .member-card {
+        .leadership-members .member-card,
+        .portfolio-members .member-card {
             flex-basis: 44%;
         }
 
