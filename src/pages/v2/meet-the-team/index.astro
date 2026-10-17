@@ -169,6 +169,9 @@ const portfolios = Array.from(
 </V2Layout>
 
 <script>
+    const TRAIL_CENTER_X = 0.5;
+    const TRAIL_RIGHT_X = 0.86;
+    const TRAIL_LEFT_X = 0.14;
     const page = document.querySelector<HTMLElement>('.team-page');
     const panel = page?.querySelector<HTMLElement>('.team-panel');
     const trail = panel?.querySelector<SVGSVGElement>('.scroll-trail');
@@ -198,8 +201,8 @@ const portfolios = Array.from(
                 const heading = anchor.querySelector<HTMLElement>('h1, h2') ?? anchor;
                 const rect = heading.getBoundingClientRect();
                 return {
-                    x: width * (index === 0 ? 0.5 : index % 2 ? 0.86 : 0.14),
-                    y: rect.top - bounds.top + panel.scrollTop + rect.height / 2,
+                    x: width * (index === 0 ? TRAIL_CENTER_X : index % 2 ? TRAIL_RIGHT_X : TRAIL_LEFT_X),
+                    y: rect.top - bounds.top + rect.height / 2,
                 };
             });
             firstY = points[0]?.y ?? 0;
@@ -244,13 +247,13 @@ const portfolios = Array.from(
             trailDot.setAttribute('cx', String(point.x));
             trailDot.setAttribute('cy', String(point.y));
 
-            layers.forEach((layer) => {
+            const layerOffsets = layers.map((layer) => {
                 const rect = layer.getBoundingClientRect();
                 const speed = Number(layer.dataset.depth) || 0;
                 const currentOffset = parseFloat(layer.style.getPropertyValue('--parallax-y')) || 0;
-                const offset = (innerHeight / 2 - rect.top + currentOffset - rect.height / 2) * speed;
-                layer.style.setProperty('--parallax-y', `${offset}px`);
+                return (innerHeight / 2 - rect.top + currentOffset - rect.height / 2) * speed;
             });
+            layers.forEach((layer, index) => layer.style.setProperty('--parallax-y', `${layerOffsets[index]}px`));
         };
 
         const schedule = () => {
@@ -272,9 +275,8 @@ const portfolios = Array.from(
         addEventListener('load', scheduleDraw);
         document.fonts.ready.then(scheduleDraw);
         const resizeObserver = new ResizeObserver(scheduleDraw);
-        panel.querySelectorAll<HTMLElement>('[data-trail-section]').forEach((section) => {
-            resizeObserver.observe(section);
-        });
+        const content = panel.querySelector<HTMLElement>('.team-content');
+        if (content) resizeObserver.observe(content);
         reducedMotion.addEventListener('change', schedule);
     }
 </script>
