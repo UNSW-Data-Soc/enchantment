@@ -127,9 +127,6 @@ const portfolios = Array.from(
                         <span class="hero-cloud cloud-right" data-depth="0.08" aria-hidden="true"></span>
                         <span class="hero-orbit orbit-one" aria-hidden="true"></span>
                         <span class="hero-orbit orbit-two" aria-hidden="true"></span>
-                        <span class="hero-pixel pixel-one" aria-hidden="true"></span>
-                        <span class="hero-pixel pixel-two" aria-hidden="true"></span>
-                        <span class="hero-diamond" aria-hidden="true"></span>
                         <p class="team-eyebrow">UNSW Data Science Society</p>
                         <h1>Meet the team</h1>
                         <p class="team-intro">Meet the people behind UNSW DataSoc.</p>
@@ -388,12 +385,12 @@ const portfolios = Array.from(
 
 <style>
     .team-page {
-        --team-ink: #484b70;
+        --team-ink: #34394b;
         --team-cream: #fffcf3;
-        --team-blue: #087fae;
-        --team-purple: #7450cb;
-        --team-accent-pink: #ee547d;
-        --team-accent-purple: #8558d8;
+        --team-blue: #3a718b;
+        --team-purple: #776b87;
+        --team-accent-pink: #d94a65;
+        --team-accent-purple: #8c7898;
         --team-accent-blue: #119bd6;
         --team-accent-gold: #f4b000;
         position: relative;
@@ -402,9 +399,9 @@ const portfolios = Array.from(
         min-height: 100vh;
         padding: 0 clamp(10px, 2.4vw, 38px);
         background:
-            radial-gradient(circle, rgb(72 75 112 / 0.32) 1.2px, transparent 1.8px) 0 0 / 19px 19px,
-            linear-gradient(90deg, rgb(17 155 214 / 0.3), transparent 24%, transparent 76%, rgb(133 88 216 / 0.32)),
-            linear-gradient(135deg, #f1a4bc 0%, #d0b3ed 32%, #a9d8f1 57%, #f4b8a2 78%, #f7d47f 100%);
+            radial-gradient(circle, rgb(52 57 75 / 0.18) 1px, transparent 1.5px) 0 0 / 18px 18px,
+            linear-gradient(90deg, rgb(217 74 101 / 0.14), transparent 21%, transparent 79%, rgb(58 113 139 / 0.18)),
+            linear-gradient(135deg, #e7c5c1 0%, #e0d5e7 33%, #c8dce3 62%, #e9d3bd 100%);
         color: var(--team-ink);
         font-family: var(--font-syne), sans-serif;
     }
@@ -420,19 +417,16 @@ const portfolios = Array.from(
 
     .team-page::before {
         background:
-            repeating-linear-gradient(135deg, transparent 0 17px, rgb(72 75 112 / 0.08) 18px 20px, transparent 21px 39px) left top / 8vw 100%,
-            repeating-linear-gradient(45deg, transparent 0 17px, rgb(72 75 112 / 0.08) 18px 20px, transparent 21px 39px) right top / 8vw 100%;
+            radial-gradient(circle, rgb(52 57 75 / 0.16) 1px, transparent 1.5px) left top / 8vw 18px,
+            radial-gradient(circle, rgb(52 57 75 / 0.16) 1px, transparent 1.5px) right top / 8vw 18px;
         background-repeat: repeat-y;
     }
 
     .team-page::after {
         background:
-            radial-gradient(circle at center, transparent 42%, rgb(116 80 203 / 0.36) 43% 45%, transparent 46%) 1vw 13rem / 5rem 5rem no-repeat,
-            radial-gradient(circle at center, transparent 38%, rgb(17 155 214 / 0.42) 39% 42%, transparent 43%) calc(100% - 1vw) 44rem / 6rem 6rem no-repeat,
-            conic-gradient(from 45deg, var(--team-accent-pink) 0 25%, var(--team-accent-purple) 0 50%, var(--team-accent-blue) 0 75%, var(--team-accent-gold) 0) 0 0 / 1.1rem 1.1rem no-repeat,
-            conic-gradient(from 45deg, var(--team-accent-pink) 0 25%, var(--team-accent-purple) 0 50%, var(--team-accent-blue) 0 75%, var(--team-accent-gold) 0) calc(100% - 1vw) 82rem / 0.8rem 0.8rem no-repeat;
-        mask-image: linear-gradient(90deg, #000 0, transparent 10%, transparent 90%, #000 100%);
-        opacity: 0.7;
+            radial-gradient(circle at center, transparent 43%, rgb(119 107 135 / 0.34) 44% 45%, transparent 46%) 1vw 12rem / 5rem 5rem no-repeat,
+            radial-gradient(circle at center, transparent 43%, rgb(58 113 139 / 0.36) 44% 45%, transparent 46%) calc(100% - 1vw) 42rem / 6rem 6rem no-repeat;
+        opacity: 0.6;
     }
 
     .ambient-background {
@@ -445,23 +439,23 @@ const portfolios = Array.from(
 
     .ambient-cloud {
         position: absolute;
-        width: clamp(12rem, 29vw, 30rem);
+        width: clamp(12rem, 25vw, 27rem);
         aspect-ratio: 1;
         border-radius: 50%;
-        filter: blur(3px);
+        filter: blur(8px);
         transform: translate3d(0, var(--parallax-y, 0), 0);
     }
 
     .cloud-one {
         top: 8%;
         left: -12%;
-        background: radial-gradient(circle, rgb(123 101 224 / 0.6), rgb(245 138 151 / 0.36) 52%, transparent 72%);
+        background: radial-gradient(circle, rgb(140 120 152 / 0.34), rgb(217 74 101 / 0.18) 52%, transparent 72%);
     }
 
     .cloud-two {
         top: 45%;
         right: -12%;
-        background: radial-gradient(circle, rgb(97 183 234 / 0.72), rgb(232 139 157 / 0.38) 52%, transparent 72%);
+        background: radial-gradient(circle, rgb(58 113 139 / 0.34), rgb(217 188 176 / 0.3) 52%, transparent 72%);
     }
 
     .ambient-sun {
@@ -471,7 +465,7 @@ const portfolios = Array.from(
         width: 22rem;
         aspect-ratio: 1;
         border-radius: 50%;
-        background: radial-gradient(circle, rgb(242 155 192 / 0.78), rgb(255 224 158 / 0.5), transparent 70%);
+        background: radial-gradient(circle, rgb(217 74 101 / 0.2), rgb(244 176 0 / 0.16), transparent 70%);
         transform: translate3d(0, var(--parallax-y, 0), 0);
     }
 
@@ -483,12 +477,12 @@ const portfolios = Array.from(
         border-right: 1px solid rgb(72 75 112 / 0.12);
         border-left: 1px solid rgb(72 75 112 / 0.12);
         background: var(--team-cream);
-        box-shadow: 0 0 4rem rgb(72 47 65 / 0.19);
+        box-shadow: 0 0 3rem rgb(52 57 75 / 0.12);
     }
 
     .team-body {
         position: relative;
-        padding-left: clamp(2.25rem, 4.4vw, 4.25rem);
+        padding-left: 4.13%;
     }
 
     .team-content {
@@ -519,25 +513,25 @@ const portfolios = Array.from(
 
     .trail-progress {
         stroke-width: 4;
-        filter: drop-shadow(0 0 5px rgb(133 88 216 / 0.5));
+        filter: drop-shadow(0 0 4px rgb(119 107 135 / 0.32));
     }
 
     .trail-dot {
         fill: #fffcf3;
         stroke: var(--team-accent-purple);
         stroke-width: 4;
-        filter: drop-shadow(0 0 7px rgb(133 88 216 / 0.65));
+        filter: drop-shadow(0 0 5px rgb(119 107 135 / 0.4));
     }
 
     .team-progress-rail {
         position: absolute;
         inset: 0 auto 0 0;
         z-index: 3;
-        width: clamp(2.25rem, 4.4vw, 4.25rem);
+        width: 4.13%;
         overflow: clip;
         background:
-            radial-gradient(circle, rgb(255 252 243 / 0.42) 1px, transparent 1.6px) center / 11px 11px,
-            linear-gradient(180deg, #484b70, #7450cb 48%, #087fae);
+            radial-gradient(circle, rgb(255 252 243 / 0.2) 1px, transparent 1.5px) center / 12px 12px,
+            #484b70;
         pointer-events: none;
     }
 
@@ -555,49 +549,54 @@ const portfolios = Array.from(
         transform: translateY(-50%);
     }
 
+    @property --on {
+        syntax: '<percentage>';
+        inherits: true;
+        initial-value: 0%;
+    }
+
     .rail-stars :global(button) {
         display: grid;
         place-items: center;
         width: 100%;
-        min-height: 42px;
-        padding: 0.45rem 0;
+        min-height: 24px;
+        padding: 0.295vw 0;
         border: 0;
         background: none;
         cursor: pointer;
         pointer-events: auto;
-        --star-tint: var(--star-colour, var(--own-colour, #fffcf3));
-        filter: drop-shadow(0 0 0.3rem color-mix(in oklab, var(--star-tint) 65%, transparent));
-        transition:
-            filter 180ms ease,
-            transform 180ms ease;
+        --tint: var(--star-colour, var(--own-colour));
+        --colour: color-mix(in oklab, var(--tint) var(--on), #fffcf3);
+        filter: drop-shadow(0 0 0.25vw color-mix(in oklab, var(--tint) var(--on), transparent));
+        transition: --on 150ms ease;
     }
 
     .rail-stars :global(button[aria-current]) {
-        --star-colour: var(--own-colour);
-        transform: scale(1.14);
+        --on: 100%;
+        transition-duration: 250ms;
+    }
+
+    .rail-stars :global(button:not([aria-current]):hover) {
+        --on: 50%;
     }
 
     @media (prefers-reduced-motion: reduce) {
         .rail-stars :global(button) {
             transition: none;
         }
-
-        .rail-stars :global(button[aria-current]) {
-            transform: none;
-        }
     }
 
     .rail-stars :global(button:focus-visible) {
         outline: 2px solid #fffcf3;
-        outline-offset: -4px;
+        outline-offset: -2px;
     }
 
     .rail-stars :global(i) {
         display: block;
-        width: 1.35rem;
-        height: 1.35rem;
-        background: var(--star-tint);
-        mask: var(--star) center / contain no-repeat;
+        width: 1.17vw;
+        height: 1.17vw;
+        background: var(--colour);
+        mask: var(--star) -0.756vw -0.549vw / 2.8vw no-repeat;
     }
 
     .team-hero {
@@ -607,18 +606,18 @@ const portfolios = Array.from(
         padding: clamp(2rem, 3.5vw, 3rem) 1.5rem;
         text-align: center;
         background:
-            radial-gradient(ellipse at 20% 0%, rgb(238 84 125 / 0.24), transparent 42%),
-            radial-gradient(ellipse at 90% 100%, rgb(127 93 218 / 0.27), transparent 44%),
-            radial-gradient(ellipse at 70% 30%, rgb(17 155 214 / 0.16), transparent 36%),
-            linear-gradient(110deg, #f3e9e6, #fefbf0);
+            radial-gradient(ellipse at 18% 0%, rgb(217 74 101 / 0.1), transparent 42%),
+            radial-gradient(ellipse at 92% 100%, rgb(119 107 135 / 0.12), transparent 44%),
+            radial-gradient(ellipse at 70% 30%, rgb(58 113 139 / 0.1), transparent 36%),
+            linear-gradient(110deg, #f2e9e3, #fffcf3);
     }
 
     .team-hero::before {
         position: absolute;
         inset: 0;
         z-index: -1;
-        background: radial-gradient(circle, rgb(72 75 112 / 0.2) 1px, transparent 1.6px) 50% 50% / 15px 15px;
-        mask-image: linear-gradient(90deg, #000, transparent 28%, transparent 72%, #000);
+        background: radial-gradient(circle, rgb(52 57 75 / 0.11) 1px, transparent 1.6px) 50% 50% / 19px 19px;
+        mask-image: linear-gradient(90deg, #000, transparent 20%, transparent 80%, #000);
         content: '';
     }
 
@@ -626,31 +625,31 @@ const portfolios = Array.from(
         position: absolute;
         inset: auto 0 0;
         z-index: -1;
-        height: 0.35rem;
-        background: linear-gradient(90deg, var(--team-accent-pink), var(--team-accent-purple), var(--team-accent-blue), var(--team-accent-gold));
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--team-accent-pink), var(--team-accent-purple), var(--team-accent-blue), transparent);
         content: '';
     }
 
     .hero-cloud {
         position: absolute;
         z-index: -1;
-        width: clamp(8rem, 19vw, 15rem);
+        width: clamp(8rem, 16vw, 13rem);
         aspect-ratio: 1;
         border-radius: 50%;
-        filter: blur(2px);
+        filter: blur(7px);
         transform: translate3d(0, var(--parallax-y, 0), 0);
     }
 
     .cloud-left {
         top: -60%;
         left: 7%;
-        background: radial-gradient(circle, rgb(133 88 216 / 0.38), transparent 70%);
+        background: radial-gradient(circle, rgb(140 120 152 / 0.28), transparent 70%);
     }
 
     .cloud-right {
         right: 6%;
         bottom: -75%;
-        background: radial-gradient(circle, rgb(17 155 214 / 0.34), rgb(255 84 125 / 0.28), transparent 70%);
+        background: radial-gradient(circle, rgb(58 113 139 / 0.26), rgb(217 74 101 / 0.16), transparent 70%);
     }
 
     .hero-orbit {
@@ -658,7 +657,7 @@ const portfolios = Array.from(
         z-index: -1;
         width: clamp(3rem, 8vw, 6.5rem);
         aspect-ratio: 1;
-        border: 1px solid rgb(72 75 112 / 0.25);
+        border: 1px solid rgb(52 57 75 / 0.2);
         border-radius: 50%;
     }
 
@@ -674,38 +673,6 @@ const portfolios = Array.from(
         border-style: dashed;
     }
 
-    .hero-pixel {
-        position: absolute;
-        z-index: -1;
-        width: 0.65rem;
-        aspect-ratio: 1;
-        background: #ee8796;
-        box-shadow: 0.9rem 0.7rem 0 #ffe3a6, 1.8rem -0.2rem 0 #c3ffff;
-        transform: rotate(15deg);
-    }
-
-    .pixel-one {
-        top: 24%;
-        right: 31%;
-    }
-
-    .pixel-two {
-        bottom: 26%;
-        left: 30%;
-        transform: rotate(-15deg) scale(0.7);
-    }
-
-    .hero-diamond {
-        position: absolute;
-        top: 18%;
-        left: 37%;
-        z-index: -1;
-        width: clamp(1.25rem, 2.8vw, 2.5rem);
-        aspect-ratio: 1;
-        border: 2px solid rgb(116 80 203 / 0.5);
-        transform: rotate(45deg);
-    }
-
     .team-eyebrow {
         margin: 0 0 0.75rem;
         color: var(--team-blue);
@@ -717,9 +684,10 @@ const portfolios = Array.from(
 
     .team-hero h1 {
         margin: 0;
-        font-size: clamp(2rem, 4.2vw, 3.65rem);
-        font-weight: 800;
-        letter-spacing: -0.055em;
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: clamp(2rem, 4vw, 3.4rem);
+        font-weight: 500;
+        letter-spacing: -0.035em;
     }
 
     .team-intro {
@@ -737,11 +705,11 @@ const portfolios = Array.from(
         width: fit-content;
         margin: 0 auto;
         padding-bottom: 0.55rem;
-        border-bottom: 3px solid transparent;
-        border-image: linear-gradient(90deg, var(--team-accent-pink), var(--team-accent-purple), var(--team-accent-blue)) 1;
+        border-bottom: 1px solid rgb(119 107 135 / 0.62);
         color: var(--team-ink);
-        font-size: clamp(1.5rem, 3vw, 2rem);
-        font-weight: 700;
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: clamp(1.5rem, 2.8vw, 1.9rem);
+        font-weight: 500;
         text-align: center;
     }
 
@@ -749,18 +717,18 @@ const portfolios = Array.from(
         scroll-margin-top: 6rem;
         position: relative;
         padding: clamp(1.25rem, 2.6vw, 2.5rem);
-        border: 1px solid rgb(72 75 112 / 0.1);
-        border-radius: 1.25rem;
+        border: 1px solid rgb(52 57 75 / 0.1);
+        border-radius: 0.45rem;
         background: rgb(255 252 243 / 0.82);
-        box-shadow: 0 0.75rem 2rem rgb(72 75 112 / 0.07);
+        box-shadow: 0 0.5rem 1.5rem rgb(52 57 75 / 0.045);
     }
 
     .leadership-0 {
-        background: linear-gradient(125deg, rgb(193 230 247 / 0.72), rgb(255 252 243 / 0.92) 55%, rgb(239 224 255 / 0.7));
+        background: linear-gradient(125deg, rgb(208 226 231 / 0.48), rgb(255 252 243 / 0.95) 55%, rgb(230 220 230 / 0.5));
     }
 
     .leadership-1 {
-        background: linear-gradient(125deg, rgb(244 220 237 / 0.78), rgb(255 252 243 / 0.92) 52%, rgb(205 229 249 / 0.76));
+        background: linear-gradient(125deg, rgb(239 222 222 / 0.52), rgb(255 252 243 / 0.95) 52%, rgb(211 227 232 / 0.56));
     }
 
     .leadership-members {
@@ -776,8 +744,8 @@ const portfolios = Array.from(
 
     .directors-section {
         background:
-            radial-gradient(circle, rgb(116 80 203 / 0.11) 1px, transparent 1.7px) 0 0 / 17px 17px,
-            linear-gradient(135deg, rgb(246 221 239 / 0.88), rgb(222 239 249 / 0.86) 52%, rgb(255 239 213 / 0.9));
+            radial-gradient(circle, rgb(119 107 135 / 0.08) 1px, transparent 1.7px) 0 0 / 20px 20px,
+            linear-gradient(135deg, rgb(243 231 226 / 0.92), rgb(228 235 234 / 0.9) 52%, rgb(244 235 218 / 0.92));
     }
 
     .portfolio-grid {
@@ -789,28 +757,28 @@ const portfolios = Array.from(
     .portfolio-section {
         min-width: 0;
         padding: clamp(0.75rem, 1.4vw, 1.25rem);
-        border: 1px solid rgb(72 75 112 / 0.11);
-        border-radius: 1rem;
-        background: rgb(255 252 243 / 0.76);
+        border: 1px solid rgb(52 57 75 / 0.11);
+        border-radius: 0.45rem;
+        background: rgb(255 252 243 / 0.82);
     }
 
     .portfolio-1 {
-        background: rgb(229 220 250 / 0.72);
+        background: rgb(232 225 233 / 0.78);
     }
 
     .portfolio-2 {
-        background: rgb(217 239 249 / 0.76);
+        background: rgb(220 233 235 / 0.8);
     }
 
     .portfolio-3 {
-        background: rgb(251 225 224 / 0.78);
+        background: rgb(244 229 219 / 0.82);
     }
 
     .portfolio-section h3 {
         width: fit-content;
         margin: 0 auto 0.9rem;
         padding: 0 0.25rem 0.35rem;
-        border-bottom: 2px solid var(--team-accent-purple);
+        border-bottom: 1px solid var(--team-accent-purple);
         color: var(--team-ink);
         font-size: clamp(0.95rem, 1.5vw, 1.2rem);
         font-weight: 700;
@@ -833,18 +801,18 @@ const portfolios = Array.from(
         min-width: 0;
         overflow: hidden;
         padding: 0.45rem 0.45rem 0.75rem;
-        border: 1px solid rgb(72 75 112 / 0.1);
-        border-radius: 0.85rem;
+        border: 1px solid rgb(52 57 75 / 0.1);
+        border-radius: 0.4rem;
         background: rgb(255 254 250 / 0.96);
-        box-shadow: 0 0.35rem 1rem rgb(72 75 112 / 0.1);
+        box-shadow: 0 0.25rem 0.75rem rgb(52 57 75 / 0.075);
         transition:
             transform 250ms ease,
             box-shadow 250ms ease;
     }
 
     .member-card:hover {
-        transform: translateY(-0.25rem);
-        box-shadow: 0 0.85rem 2rem rgb(72 75 112 / 0.14);
+        transform: translateY(-0.12rem);
+        box-shadow: 0 0.6rem 1.25rem rgb(52 57 75 / 0.11);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -865,14 +833,6 @@ const portfolios = Array.from(
 
         .team-panel {
             border: 0;
-        }
-
-        .team-body {
-            padding-left: 2.25rem;
-        }
-
-        .team-progress-rail {
-            width: 2.25rem;
         }
 
         .portfolio-grid {
@@ -896,12 +856,5 @@ const portfolios = Array.from(
             right: 4%;
         }
 
-        .pixel-one {
-            right: 16%;
-        }
-
-        .pixel-two {
-            left: 15%;
-        }
     }
 </style>
