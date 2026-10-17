@@ -20,6 +20,9 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
     overflow: clip;
     border-radius: 0 0 50% 50% / 0 0 0.72% 0.72%;
     pointer-events: none;
+    /* Repaints the bar from the same background image, so content running under it (the Latest Publications cards)
+       passes behind the bar instead of over it. */
+    background: url('/backgrounds/homepage-bg-v2-p00.png') 0 0 / calc(100% / 0.0413) auto no-repeat;
   }
 
   /* Extends half a screen past both ends so the stars can stay at 50% until the bar's end has scrolled past them. */
