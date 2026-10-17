@@ -24,7 +24,7 @@ const start = events.length ? 0 : 1;
   </h2>
 
   <div class="tagline">
-    <ParallaxContainer speed={0.12}>Stay up<br />to date<br />with<br />our latest<br />events<br />and<br />activities!</ParallaxContainer>
+    <ParallaxContainer speed={0.12}>Stay up<br /> to date<br /> with<br /> our latest<br /> events<br /> and<br /> activities!</ParallaxContainer>
   </div>
 
   <ParallaxContainer speed={0.2}>
@@ -105,7 +105,7 @@ const start = events.length ? 0 : 1;
 
   /* Shows exactly the centre card and its two neighbours; clips sideways only so the scaled-up centre card isn't cropped. */
   .viewport {
-    width: 61.5vw; /* three 20.5vw cards */
+    width: 61.5vw; /* three 20.5vw cards. */
     overflow-x: clip;
   }
 
@@ -181,6 +181,72 @@ const start = events.length ? 0 : 1;
     .track,
     .card {
       transition: none;
+    }
+  }
+
+  /* Mobile: same three-slot track as desktop, but the side cards are invisible,
+     so only the centre card shows. Each slot is 55vw, so the viewport is 55vw x 3 = 165vw.
+     To resize the centre card, change BOTH numbers together (50vw card = 150vw viewport). */
+  @media (max-width: 768px) {
+    .latest-events {
+      zoom: 1;
+      width: 100%;
+      padding-bottom: 2rem;
+    }
+
+    .bg {
+      display: none;
+    }
+
+    h2 img {
+      width: 70vw;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .tagline {
+      position: static;
+      font-size: 1rem;
+      line-height: 1.4;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      text-align: center;
+      margin: 0.75rem auto 1.25rem;
+      width: 80%;
+    }
+
+    .tagline br {
+      display: none;
+    }
+
+    .viewport {
+      width: 165vw;
+      flex-shrink: 0;
+    }
+
+    .card {
+      transform: scale(0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.5s ease;
+    }
+
+    .card[data-active],
+    .card[data-active]:hover {
+      transform: scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .controls {
+      margin-top: 1rem;
+      gap: 2rem;
+    }
+
+    .controls img {
+      width: 2.5rem;
     }
   }
 </style>
