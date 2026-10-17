@@ -58,6 +58,12 @@ const { title = 'UNSW DataSoc' } = Astro.props;
     window.dispatchEvent(new Event('v2-lenis-scroll'));
   });
 
+  window.addEventListener('v2-lenis-scroll-to', (event) => {
+    const { top, immediate } = (event as CustomEvent<{ top: number; immediate: boolean }>).detail;
+    lenis.scrollTo(top, { immediate });
+    event.preventDefault();
+  });
+
   const raf = (time: number) => {
     lenis.raf(time);
     requestAnimationFrame(raf);

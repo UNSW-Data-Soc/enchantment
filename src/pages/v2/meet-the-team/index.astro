@@ -1,11 +1,1051 @@
 ---
-import V2Layout from "../../../layouts/V2Layout.astro";
-import Footer from "../../../components/v2/Footer.astro";
+import Container from '../../../components/Container.astro';
+import Footer from '../../../components/v2/Footer.astro';
+import TeamMemberDetails from '../../../components/v2/TeamMemberDetails.astro';
+import V2Layout from '../../../layouts/V2Layout.astro';
+import star from '../../../assets/ui/shapes/one-star.svg?url';
+import type { ImageMetadata } from 'astro';
+
+const LEADERSHIP_SIZES = '(min-width: 1440px) 250px, (min-width: 768px) 22vw, (min-width: 640px) 150px, 42vw';
+const PORTFOLIO_SIZES = '(min-width: 1440px) 265px, (min-width: 768px) 18vw, (min-width: 640px) 20vw, 42vw';
+const PORTFOLIO_VARIANTS = 4;
+const photos = import.meta.glob<{ default: ImageMetadata }>(
+    '../../../assets/meet-the-team/datasoc-board-photos/*.jpg',
+    { eager: true },
+);
+
+function photo(file?: string): ImageMetadata | undefined {
+    if (!file) return undefined;
+    const entry = photos[`../../../assets/meet-the-team/datasoc-board-photos/${file}`];
+    if (!entry) throw new Error(`Board photo not found: ${file}`);
+    return entry.default;
+}
+
+type Member = { name: string; role: string; file?: string };
+type Section = {
+    title: string;
+    sizes: string;
+    eager?: boolean;
+    members: Member[];
+};
+
+const leadership: Section[] = [
+    {
+        title: 'President',
+        sizes: LEADERSHIP_SIZES,
+        eager: true,
+        members: [{ name: 'Qingyuan He', role: 'President', file: 'qingyuan_h.jpg' }],
+    },
+    {
+        title: 'Executives',
+        sizes: LEADERSHIP_SIZES,
+        members: [
+            { name: 'Ethan Pham', role: 'Vice President (Activities)', file: 'ethan_p.jpg' },
+            { name: 'Stella Lin', role: 'Vice President (Development)', file: 'stella_l.jpg' },
+            { name: 'Naisha Kulshreshtha', role: 'Vice President (External)' },
+            { name: 'Andre Baruah', role: 'Vice President (Operations)', file: 'andre_b.jpg' },
+            { name: 'Akhil Panwar', role: 'Secretary', file: 'akhil_p.jpg' },
+            { name: 'Aaron Chen', role: 'Treasurer' },
+        ],
+    },
+];
+
+const directors: Member[] = [
+    { name: 'Aaron Wong', role: 'Human Resources Director' },
+    { name: 'Yatha Shah', role: 'Human Resources Director', file: 'yatha_s.jpg' },
+    { name: 'Linh Pham', role: 'Social Director', file: 'linh_p.jpg' },
+    { name: 'Jason Nguyen', role: 'Social Director' },
+    { name: 'Lily Tang', role: 'Education Director', file: 'lily_t.jpg' },
+    { name: 'Minjun Kim', role: 'Education Director', file: 'minjun_k.jpg' },
+    { name: 'Anoushka Pandey', role: 'Philanthropy & Projects Director', file: 'anoushka_p.jpg' },
+    { name: 'Isabella Fan', role: 'Philanthropy & Projects Director', file: 'isabella_f.jpg' },
+    { name: 'Liam Lightfoot', role: 'Careers Director' },
+    { name: 'Vidisha Trivedi', role: 'Careers Director', file: 'vidisha_t.jpg' },
+    { name: 'Cathy Dinh', role: 'Sponsorships Director', file: 'cathy_d.jpg' },
+    { name: 'Simon Shen', role: 'Sponsorships Director' },
+    { name: 'Kai Lu', role: 'Technology Director', file: 'kai_l.jpg' },
+    { name: 'Shafquat Tabeeb', role: 'Technology Director', file: 'shafquat_t.jpg' },
+    { name: 'Jennifer Lee', role: 'Marketing Director', file: 'jennifer_l.jpg' },
+    { name: 'Shashwat Manish', role: 'Marketing Director' },
+    { name: 'Shreya Verma', role: 'Media Director', file: 'shreya_v.jpg' },
+    { name: 'Vedant Tyagi', role: 'Media Director', file: 'vedant_t.jpg' },
+];
+
+const portfolios = Array.from(
+    directors.reduce((groups, member) => {
+        const title = member.role.replace(/ Director$/, '');
+        const members = groups.get(title) ?? [];
+        members.push(member);
+        groups.set(title, members);
+        return groups;
+    }, new Map<string, Member[]>()),
+    ([title, members]) => ({
+        title,
+        sizes: PORTFOLIO_SIZES,
+        members,
+    }),
+);
 ---
 
-<V2Layout>
-	<h1>Meet the Team</h1>
-	<p>This page is coming soon.</p>
+<V2Layout title="Meet the team - UNSW DataSoc">
+    <div class="team-page">
+        <div class="ambient-background" aria-hidden="true">
+            <span class="ambient-cloud cloud-one" data-depth="0.06"></span>
+            <span class="ambient-cloud cloud-two" data-depth="0.1"></span>
+            <span class="ambient-sun" data-depth="0.035"></span>
+            <span class="side-geometry geometry-left-one" data-depth="0.025"></span>
+            <span class="side-geometry geometry-right-one" data-depth="0.04"></span>
+            <span class="side-geometry geometry-left-two" data-depth="0.035"></span>
+            <span class="side-geometry geometry-right-two" data-depth="0.025"></span>
+        </div>
 
-	<Footer />
+        <svg class="scroll-trail" aria-hidden="true" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="trail-gradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="var(--team-accent-pink)" />
+                    <stop offset="48%" stop-color="var(--team-accent-purple)" />
+                    <stop offset="100%" stop-color="var(--team-accent-blue)" />
+                </linearGradient>
+            </defs>
+            <path class="trail-base" />
+            <path class="trail-progress" />
+            <circle class="trail-dot" r="8" />
+        </svg>
+
+        <nav class="team-progress-rail" aria-label="Page sections" style={`--star: url("${star}")`}>
+            <div class="rail-track">
+                <div class="rail-stars"></div>
+            </div>
+        </nav>
+
+        <div class="team-panel">
+            <div class="team-body">
+                <main
+                    class="team-content"
+                    data-trail-section
+                    data-team-stop="Meet the team & President"
+                    tabindex="-1"
+                >
+                    <header class="team-hero">
+                        <div class="hero-copy">
+                            <p class="team-eyebrow"><span>UNSW DataSoc</span><span>—</span><span>People &amp; portfolios</span></p>
+                            <h1>Meet the <em>team</em></h1>
+                            <p class="team-intro">The people shaping our year, our community, and what comes next.</p>
+                            <p class="hero-index">BOARD 2026 <span>✳</span> UNSW</p>
+                        </div>
+                        <div class="hero-art" aria-hidden="true">
+                            <span class="hero-disc" data-depth="0.08"></span>
+                            <span class="hero-orbit orbit-one" data-depth="0.04"></span>
+                            <span class="hero-orbit orbit-two" data-depth="0.06"></span>
+                            <span class="hero-cross"></span>
+                            <span class="hero-pixels"></span>
+                            <span class="hero-art-label">A collective<br />of curious minds</span>
+                        </div>
+                    </header>
+
+                    <Container class="team-roster max-w-[1440px]">
+                        {leadership.map((section, index) => (
+                            <section
+                                class:list={['team-section space-y-6', `leadership-section leadership-${index}`]}
+                                data-trail-section={index === 1 ? '' : undefined}
+                                data-team-stop={index === 1 ? 'Executives' : undefined}
+                                tabindex={index === 1 ? -1 : undefined}
+                            >
+                                <h2>{section.title}</h2>
+                                <div class="leadership-members">
+                                    {section.members.map((member) => {
+                                        const image = photo(member.file);
+                                        return (
+                                            <div class="member-card text-center">
+                                                <TeamMemberDetails member={member} image={image} sizes={section.sizes} eager={section.eager} />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </section>
+                        ))}
+
+                        <section class="team-section directors-section space-y-6" data-trail-section data-team-stop="Directors" tabindex="-1">
+                            <h2>Directors</h2>
+                            <div class="portfolio-grid">
+                                {portfolios.map((section, index) => (
+                                    <section class:list={['portfolio-section', `portfolio-${index % PORTFOLIO_VARIANTS}`]}>
+                                        <h3>{section.title}</h3>
+                                        <div class="portfolio-members">
+                                            {section.members.map((member) => {
+                                                const image = photo(member.file);
+                                                return (
+                                                    <div class="member-card text-center">
+                                                        <TeamMemberDetails member={member} image={image} sizes={section.sizes} />
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </section>
+                                ))}
+                            </div>
+                        </section>
+                    </Container>
+                </main>
+            </div>
+            <div class="team-footer" data-trail-section data-trail-end>
+                <Footer />
+            </div>
+        </div>
+    </div>
 </V2Layout>
+
+<script>
+    const TRAIL_CENTER_X = 0.5;
+    const TRAIL_RIGHT_X = 0.86;
+    const TRAIL_LEFT_X = 0.14;
+    const TRAIL_READING_LINE = 0.45;
+    // Eighteen bisection steps locate the trail position to well under a pixel.
+    const TRAIL_SEARCH_ITERATIONS = 18;
+    const page = document.querySelector<HTMLElement>('.team-page');
+    const trail = page?.querySelector<SVGSVGElement>('.scroll-trail');
+    const trailBase = trail?.querySelector<SVGPathElement>('.trail-base');
+    const trailProgress = trail?.querySelector<SVGPathElement>('.trail-progress');
+    const trailDot = trail?.querySelector<SVGCircleElement>('.trail-dot');
+    const layers = Array.from(page?.querySelectorAll<HTMLElement>('[data-depth]') ?? []);
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const stopElements = Array.from(page?.querySelectorAll<HTMLElement>('[data-team-stop]') ?? []);
+    const railStars = page?.querySelector<HTMLElement>('.rail-stars');
+    const stopOffsets = new Map<HTMLElement, number>();
+    const refreshStopOffsets = () => {
+        stopElements.forEach((element) => stopOffsets.set(element, element.getBoundingClientRect().top + scrollY));
+    };
+    const layerDocumentCentres = new Map<HTMLElement, number>();
+    const refreshLayerCentres = () => {
+        layers.forEach((layer) => {
+            const rect = layer.getBoundingClientRect();
+            const currentOffset = parseFloat(layer.style.getPropertyValue('--parallax-y')) || 0;
+            layerDocumentCentres.set(layer, rect.top + scrollY - currentOffset + rect.height / 2);
+        });
+    };
+    const scrollUpdates = new Set<() => void>();
+    let scrollFrame = 0;
+    const scheduleScrollUpdates = () => {
+        if (scrollFrame) return;
+        scrollFrame = requestAnimationFrame(() => {
+            scrollFrame = 0;
+            scrollUpdates.forEach((update) => update());
+        });
+    };
+    const updateParallax = () => {
+        if (reducedMotion.matches) {
+            layers.forEach((layer) => layer.style.removeProperty('--parallax-y'));
+            return;
+        }
+        layers.forEach((layer) => {
+            const speed = Number(layer.dataset.depth) || 0;
+            const centre = layerDocumentCentres.get(layer) ?? scrollY;
+            const offset = (innerHeight / 2 - centre + scrollY) * speed;
+            layer.style.setProperty('--parallax-y', `${offset}px`);
+        });
+    };
+    scrollUpdates.add(updateParallax);
+    reducedMotion.addEventListener('change', updateParallax);
+    const refreshAndUpdatePositions = () => {
+        if (page && railStars) railStars.closest<HTMLElement>('.team-progress-rail')!.style.height = `${page.scrollHeight * 0.98}px`;
+        refreshStopOffsets();
+        refreshLayerCentres();
+        scheduleScrollUpdates();
+    };
+    refreshAndUpdatePositions();
+    updateParallax();
+    addEventListener('load', refreshAndUpdatePositions);
+    document.fonts.ready.then(refreshAndUpdatePositions);
+
+    if (page && railStars && stopElements.length) {
+        const names = stopElements.map((element) => element.dataset.teamStop ?? 'Section');
+        const styles = getComputedStyle(page);
+        const colours = ['--team-accent-pink', '--team-accent-purple', '--team-accent-blue'].map((name) =>
+            styles.getPropertyValue(name).trim(),
+        );
+        const stops = stopElements.map((element, index) => {
+            const button = railStars.appendChild(document.createElement('button'));
+            button.appendChild(document.createElement('i'));
+            button.type = 'button';
+            button.setAttribute('aria-label', `Go to ${names[index]}`);
+            button.style.setProperty('--own-colour', colours[index % colours.length]);
+            button.addEventListener('click', () => {
+                const scrollMargin = parseFloat(getComputedStyle(element).scrollMarginTop) || 0;
+                const top = element.getBoundingClientRect().top + scrollY - scrollMargin;
+                element.focus({ preventScroll: true });
+                const lenisScroll = new CustomEvent('v2-lenis-scroll-to', {
+                    cancelable: true,
+                    detail: { top, immediate: reducedMotion.matches },
+                });
+                if (dispatchEvent(lenisScroll)) {
+                    scrollTo({ top, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+                }
+            });
+            return { element, button };
+        });
+
+        const updateStops = () => {
+            const readingLine = innerHeight * TRAIL_READING_LINE;
+            const atPageBottom = scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
+            let current = stops.length - 1;
+            if (!atPageBottom) {
+                const readingPosition = scrollY + readingLine;
+                current = 0;
+                for (let index = stops.length - 1; index > 0; index -= 1) {
+                    if ((stopOffsets.get(stops[index].element) ?? 0) <= readingPosition) {
+                        current = index;
+                        break;
+                    }
+                }
+            }
+            stops.forEach(({ button }, index) => {
+                if (index === current) button.setAttribute('aria-current', 'location');
+                else button.removeAttribute('aria-current');
+            });
+        };
+
+        scrollUpdates.add(updateStops);
+        updateStops();
+    }
+
+    if (page && trail && trailBase && trailProgress && trailDot) {
+        let pathLength = 0;
+        let firstY = 0;
+        let lastY = 0;
+        let drawFrame = 0;
+
+        const drawTrail = () => {
+            const bounds = page.getBoundingClientRect();
+            const width = page.clientWidth;
+            const height = page.scrollHeight;
+            trail.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            trail.setAttribute('width', String(width));
+            trail.setAttribute('height', String(height));
+
+            const anchors = Array.from(page.querySelectorAll<HTMLElement>('[data-trail-section]'));
+            const points = anchors.map((anchor, index) => {
+                const heading = anchor.querySelector<HTMLElement>('h1, h2') ?? anchor;
+                const rect = heading.getBoundingClientRect();
+                return {
+                    x: width * (index === 0 ? TRAIL_CENTER_X : index % 2 ? TRAIL_RIGHT_X : TRAIL_LEFT_X),
+                    y: anchor.hasAttribute('data-trail-end') ? height - 8 : rect.top - bounds.top + rect.height / 2,
+                };
+            });
+            firstY = points[0]?.y ?? 0;
+            lastY = points.at(-1)?.y ?? firstY;
+
+            const path = points.reduce((data, point, index) => {
+                if (index === 0) return `M ${point.x} ${point.y}`;
+                const previous = points[index - 1];
+                const middleY = (previous.y + point.y) / 2;
+                return `${data} C ${previous.x} ${middleY}, ${point.x} ${middleY}, ${point.x} ${point.y}`;
+            }, '');
+
+            trailBase.setAttribute('d', path);
+            trailProgress.setAttribute('d', path);
+            pathLength = trailProgress.getTotalLength();
+            trailProgress.style.strokeDasharray = `${pathLength} ${pathLength}`;
+            update();
+        };
+
+        const update = () => {
+            const bounds = page.getBoundingClientRect();
+            if (reducedMotion.matches) {
+                trailProgress.style.strokeDashoffset = '0';
+                trailDot.setAttribute('visibility', 'hidden');
+                return;
+            }
+
+            trailDot.removeAttribute('visibility');
+            const targetY = Math.min(Math.max(innerHeight * TRAIL_READING_LINE - bounds.top, firstY), lastY);
+            let low = 0;
+            let high = pathLength;
+            for (let i = 0; i < TRAIL_SEARCH_ITERATIONS; i += 1) {
+                const middle = (low + high) / 2;
+                if (trailProgress.getPointAtLength(middle).y < targetY) low = middle;
+                else high = middle;
+            }
+            const length = (low + high) / 2;
+            trailProgress.style.strokeDashoffset = String(pathLength - length);
+            const point = trailProgress.getPointAtLength(length);
+            trailDot.setAttribute('cx', String(point.x));
+            trailDot.setAttribute('cy', String(point.y));
+        };
+
+        const scheduleDraw = () => {
+            if (drawFrame) return;
+            drawFrame = requestAnimationFrame(() => {
+                drawFrame = 0;
+                drawTrail();
+            });
+        };
+
+        scrollUpdates.add(update);
+        drawTrail();
+        addEventListener('resize', scheduleDraw);
+        addEventListener('load', scheduleDraw);
+        document.fonts.ready.then(scheduleDraw);
+        const resizeObserver = new ResizeObserver(scheduleDraw);
+        resizeObserver.observe(page);
+        reducedMotion.addEventListener('change', scheduleDraw);
+    }
+
+    addEventListener('resize', refreshAndUpdatePositions);
+    addEventListener('scroll', scheduleScrollUpdates, { passive: true });
+    addEventListener('v2-lenis-scroll', scheduleScrollUpdates);
+</script>
+
+<style>
+    .team-page {
+        --team-ink: #34394b;
+        --team-cream: #fffcf3;
+        --team-blue: #3a718b;
+        --team-purple: #776b87;
+        --team-accent-pink: #d94a65;
+        --team-accent-purple: #8c7898;
+        --team-accent-blue: #119bd6;
+        --team-accent-gold: #f4b000;
+        position: relative;
+        isolation: isolate;
+        overflow: clip;
+        min-height: 100vh;
+        padding: 0;
+        background:
+            radial-gradient(circle, rgb(52 57 75 / 0.18) 1px, transparent 1.5px) 0 0 / 18px 18px,
+            radial-gradient(circle, rgb(255 252 243 / 0.48) 1px, transparent 1.7px) 88% 12rem / 11px 11px,
+            linear-gradient(90deg, rgb(217 74 101 / 0.18), transparent 18%, transparent 78%, rgb(58 113 139 / 0.22)),
+            linear-gradient(135deg, #e7c5c1 0%, #e0d5e7 33%, #c8dce3 62%, #e9d3bd 100%);
+        color: var(--team-ink);
+        font-family: var(--font-syne), sans-serif;
+    }
+
+    .team-page::before,
+    .team-page::after {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        content: '';
+    }
+
+    .team-page::before {
+        background:
+            repeating-linear-gradient(135deg, transparent 0 18px, rgb(52 57 75 / 0.12) 19px 20px, transparent 21px 38px) left top / 7vw 100%,
+            repeating-linear-gradient(45deg, transparent 0 18px, rgb(52 57 75 / 0.12) 19px 20px, transparent 21px 38px) right top / 7vw 100%,
+            radial-gradient(circle, rgb(52 57 75 / 0.2) 1px, transparent 1.5px) left top / 7vw 14px,
+            radial-gradient(circle, rgb(52 57 75 / 0.2) 1px, transparent 1.5px) right top / 7vw 14px;
+        background-repeat: repeat-y;
+    }
+
+    .team-page::after {
+        background:
+            radial-gradient(circle at center, transparent 42%, rgb(119 107 135 / 0.3) 43% 44%, transparent 45%) 1vw 12rem / 5rem 5rem no-repeat,
+            radial-gradient(circle at center, transparent 42%, rgb(58 113 139 / 0.34) 43% 44%, transparent 45%) calc(100% - 1vw) 42rem / 6rem 6rem no-repeat,
+            conic-gradient(from 45deg, var(--team-accent-pink) 0 25%, var(--team-accent-purple) 0 50%, var(--team-accent-blue) 0 75%, var(--team-accent-gold) 0) 1.8vw 33rem / 0.7rem 0.7rem no-repeat,
+            conic-gradient(from 45deg, var(--team-accent-pink) 0 25%, var(--team-accent-purple) 0 50%, var(--team-accent-blue) 0 75%, var(--team-accent-gold) 0) calc(100% - 2vw) 67rem / 0.9rem 0.9rem no-repeat;
+        opacity: 0.65;
+    }
+
+    .ambient-background {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .ambient-cloud {
+        position: absolute;
+        width: clamp(12rem, 25vw, 27rem);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        filter: blur(8px);
+        transform: translate3d(0, var(--parallax-y, 0), 0);
+    }
+
+    .cloud-one {
+        top: 8%;
+        left: -12%;
+        background: radial-gradient(circle, rgb(140 120 152 / 0.34), rgb(217 74 101 / 0.18) 52%, transparent 72%);
+    }
+
+    .cloud-two {
+        top: 45%;
+        right: -12%;
+        background: radial-gradient(circle, rgb(58 113 139 / 0.34), rgb(217 188 176 / 0.3) 52%, transparent 72%);
+    }
+
+    .ambient-sun {
+        position: absolute;
+        top: 75%;
+        left: 0;
+        width: 22rem;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgb(217 74 101 / 0.2), rgb(244 176 0 / 0.16), transparent 70%);
+        transform: translate3d(0, var(--parallax-y, 0), 0);
+    }
+
+    .side-geometry {
+        position: absolute;
+        width: clamp(3rem, 6vw, 6rem);
+        aspect-ratio: 1;
+        border: 1px solid rgb(52 57 75 / 0.28);
+        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(45deg);
+    }
+
+    .geometry-left-one {
+        top: 19%;
+        left: 1.5%;
+        border-radius: 50%;
+        box-shadow: inset 0 0 0 0.5rem rgb(255 252 243 / 0.12), 0 0 0 0.5rem rgb(217 74 101 / 0.12);
+    }
+
+    .geometry-right-one {
+        top: 35%;
+        right: 1.2%;
+        width: clamp(2rem, 4vw, 4rem);
+        background: repeating-linear-gradient(0deg, transparent 0 5px, rgb(52 57 75 / 0.2) 6px 7px);
+    }
+
+    .geometry-left-two {
+        top: 64%;
+        left: 2%;
+        width: clamp(2rem, 3.8vw, 4rem);
+        border-color: rgb(58 113 139 / 0.5);
+        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(45deg) scale(0.82);
+    }
+
+    .geometry-right-two {
+        top: 82%;
+        right: 1.6%;
+        border-radius: 50%;
+        border-style: dashed;
+        box-shadow: inset 0 0 0 0.6rem rgb(140 120 152 / 0.12);
+    }
+
+    .team-panel {
+        position: relative;
+        width: auto;
+        margin: 0 clamp(10px, 2.4vw, 38px) 0 calc(4.13vw + clamp(10px, 1.4vw, 22px));
+        overflow: clip;
+        border-right: 1px solid rgb(72 75 112 / 0.12);
+        border-left: 1px solid rgb(72 75 112 / 0.12);
+        background: var(--team-cream);
+        box-shadow: 0 0 3rem rgb(52 57 75 / 0.12);
+    }
+
+    .team-body {
+        position: relative;
+    }
+
+    .team-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .team-footer {
+        position: relative;
+        z-index: 2;
+    }
+
+    .scroll-trail {
+        position: absolute;
+        inset: 0 auto auto 0;
+        z-index: 1;
+        overflow: visible;
+        pointer-events: none;
+    }
+
+    .trail-base,
+    .trail-progress {
+        fill: none;
+        stroke: url(#trail-gradient);
+        stroke-linecap: round;
+    }
+
+    .trail-base {
+        stroke-width: 3;
+        stroke-dasharray: 2 13;
+        opacity: 0.28;
+    }
+
+    .trail-progress {
+        stroke-width: 4;
+        filter: drop-shadow(0 0 4px rgb(119 107 135 / 0.32));
+    }
+
+    .trail-dot {
+        fill: #fffcf3;
+        stroke: var(--team-accent-purple);
+        stroke-width: 4;
+        filter: drop-shadow(0 0 5px rgb(119 107 135 / 0.4));
+    }
+
+    .team-progress-rail {
+        position: absolute;
+        top: 0;
+        bottom: auto;
+        left: 0;
+        z-index: 4;
+        width: 4.13vw;
+        height: 98%;
+        overflow: clip;
+        border-radius: 0 0 50% 50% / 0 0 0.72% 0.72%;
+        background:
+            url('/backgrounds/homepage-bg-v2-p00.png') 0 0 / calc(100% / 0.0413) auto no-repeat,
+            #484b70;
+        pointer-events: none;
+    }
+
+    .rail-track {
+        position: absolute;
+        inset: -50vh 0;
+    }
+
+    .rail-stars {
+        position: sticky;
+        top: 50vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform: translateY(-50%);
+    }
+
+    @property --on {
+        syntax: '<percentage>';
+        inherits: true;
+        initial-value: 0%;
+    }
+
+    .rail-stars :global(button) {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        min-height: 24px;
+        padding: 0.295vw 0;
+        border: 0;
+        background: none;
+        cursor: pointer;
+        pointer-events: auto;
+        --tint: var(--star-colour, var(--own-colour));
+        --colour: color-mix(in oklab, var(--tint) var(--on), #fffcf3);
+        filter: drop-shadow(0 0 0.25vw color-mix(in oklab, var(--tint) var(--on), transparent));
+        transition: --on 150ms ease;
+    }
+
+    .rail-stars :global(button[aria-current]) {
+        --on: 100%;
+        transition-duration: 250ms;
+    }
+
+    .rail-stars :global(button:not([aria-current]):hover) {
+        --on: 50%;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .rail-stars :global(button) {
+            transition: none;
+        }
+    }
+
+    .rail-stars :global(button:focus-visible) {
+        outline: 2px solid #fffcf3;
+        outline-offset: -2px;
+    }
+
+    .rail-stars :global(i) {
+        display: block;
+        width: 1.17vw;
+        height: 1.17vw;
+        background: var(--colour);
+        mask: var(--star) -0.756vw -0.549vw / 2.8vw no-repeat;
+    }
+
+    .team-hero {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        min-height: clamp(16rem, 25vw, 23rem);
+        padding: clamp(1.5rem, 3.3vw, 3rem) clamp(1.5rem, 4vw, 4.5rem);
+        background:
+            radial-gradient(ellipse at 8% 6%, rgb(217 74 101 / 0.14), transparent 39%),
+            radial-gradient(ellipse at 86% 92%, rgb(119 107 135 / 0.18), transparent 42%),
+            radial-gradient(ellipse at 65% 12%, rgb(58 113 139 / 0.16), transparent 35%),
+            linear-gradient(110deg, #f2e9e3, #fffcf3 54%, #e9edf0);
+    }
+
+    .team-hero::before {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background:
+            radial-gradient(circle, rgb(52 57 75 / 0.13) 1px, transparent 1.6px) 50% 50% / 17px 17px,
+            linear-gradient(135deg, transparent 0 48%, rgb(52 57 75 / 0.1) 48.2% 48.4%, transparent 48.6% 100%);
+        mask-image: linear-gradient(90deg, #000, transparent 34%, transparent 75%, #000);
+        content: '';
+    }
+
+    .team-hero::after {
+        position: absolute;
+        inset: auto 0 0;
+        z-index: -1;
+        height: 2px;
+        background: linear-gradient(90deg, var(--team-accent-pink), var(--team-accent-purple) 44%, var(--team-accent-blue) 78%, transparent);
+        content: '';
+    }
+
+    .hero-copy {
+        position: absolute;
+        z-index: 1;
+        left: clamp(1.5rem, 4vw, 4.5rem);
+        top: 50%;
+        width: min(59%, 42rem);
+        transform: translateY(-50%);
+    }
+
+    .hero-art {
+        position: absolute;
+        inset: 0 0 0 auto;
+        width: 47%;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .hero-disc {
+        position: absolute;
+        top: 50%;
+        left: 47%;
+        width: clamp(10rem, 21vw, 20rem);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background:
+            radial-gradient(circle at 35% 33%, rgb(255 252 243 / 0.82), transparent 18%),
+            radial-gradient(circle at 40% 38%, #e6c0b5, #cbb9cf 48%, #9ab8c1 76%, #547d8a);
+        box-shadow: 1.1rem 1.2rem 0 rgb(52 57 75 / 0.09), 0 1.2rem 3rem rgb(52 57 75 / 0.16);
+        transform: translate3d(0, calc(-50% + var(--parallax-y, 0px)), 0);
+    }
+
+    .hero-orbit {
+        position: absolute;
+        top: 50%;
+        left: 47%;
+        width: clamp(13rem, 27vw, 26rem);
+        aspect-ratio: 1;
+        border: 1px solid rgb(52 57 75 / 0.35);
+        border-radius: 50%;
+        transform: translate3d(0, calc(-50% + var(--parallax-y, 0px)), 0);
+    }
+
+    .orbit-two {
+        width: clamp(11rem, 23vw, 22rem);
+        border-color: rgb(217 74 101 / 0.48);
+        border-style: dashed;
+        transform: translate3d(0, calc(-50% + var(--parallax-y, 0px)), 0) rotate(24deg);
+    }
+
+    .hero-cross {
+        position: absolute;
+        top: 19%;
+        right: 17%;
+        width: 1.5rem;
+        height: 1.5rem;
+        background:
+            linear-gradient(var(--team-ink), var(--team-ink)) center / 1px 100% no-repeat,
+            linear-gradient(90deg, var(--team-ink), var(--team-ink)) center / 100% 1px no-repeat;
+        opacity: 0.7;
+    }
+
+    .hero-pixels {
+        position: absolute;
+        right: 9%;
+        bottom: 17%;
+        width: 2.4rem;
+        height: 2.4rem;
+        background: radial-gradient(circle, var(--team-accent-blue) 1.5px, transparent 2px) 0 0 / 8px 8px;
+        mask-image: linear-gradient(135deg, #000, transparent);
+    }
+
+    .hero-art-label {
+        position: absolute;
+        right: 12%;
+        bottom: 14%;
+        padding: 0.65rem 0.8rem;
+        border: 1px solid rgb(52 57 75 / 0.25);
+        background: rgb(255 252 243 / 0.8);
+        color: var(--team-ink);
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+        font-style: italic;
+        line-height: 1.2;
+    }
+
+    .team-eyebrow {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.65rem;
+        margin: 0 0 1rem;
+        color: var(--team-blue);
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .team-eyebrow span:nth-child(2) {
+        color: var(--team-accent-pink);
+    }
+
+    .team-hero h1 {
+        margin: 0;
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: clamp(2.8rem, 6.4vw, 6.5rem);
+        font-weight: 400;
+        letter-spacing: -0.065em;
+        line-height: 0.96;
+    }
+
+    .team-hero h1 em {
+        color: var(--team-accent-pink);
+        font-weight: 400;
+    }
+
+    .team-intro {
+        max-width: 31rem;
+        margin: 1.1rem 0 0;
+        color: var(--team-blue);
+        font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+        line-height: 1.55;
+    }
+
+    .hero-index {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        margin: 1.4rem 0 0;
+        color: rgb(52 57 75 / 0.7);
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+    }
+
+    .hero-index span {
+        color: var(--team-accent-gold);
+        font-size: 1.2rem;
+    }
+
+    .team-roster {
+        padding-top: clamp(1.5rem, 3.5vw, 3rem);
+        padding-bottom: clamp(2rem, 4vw, 3.5rem);
+    }
+
+    .team-section h2 {
+        width: fit-content;
+        margin: 0 auto;
+        padding-bottom: 0.55rem;
+        border-bottom: 1px solid rgb(119 107 135 / 0.62);
+        color: var(--team-ink);
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: clamp(1.5rem, 2.8vw, 1.9rem);
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .team-section {
+        scroll-margin-top: 6rem;
+        position: relative;
+        padding: clamp(1.25rem, 2.6vw, 2.5rem);
+        border: 1px solid rgb(52 57 75 / 0.1);
+        border-radius: 0.45rem;
+        background: rgb(255 252 243 / 0.82);
+        box-shadow: 0 0.5rem 1.5rem rgb(52 57 75 / 0.045);
+    }
+
+    .leadership-0 {
+        background: linear-gradient(125deg, rgb(208 226 231 / 0.48), rgb(255 252 243 / 0.95) 55%, rgb(230 220 230 / 0.5));
+    }
+
+    .leadership-1 {
+        background: linear-gradient(125deg, rgb(239 222 222 / 0.52), rgb(255 252 243 / 0.95) 52%, rgb(211 227 232 / 0.56));
+    }
+
+    .leadership-members {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: clamp(0.75rem, 2vw, 1.5rem);
+    }
+
+    .leadership-members .member-card {
+        flex-basis: clamp(150px, 22%, 250px);
+    }
+
+    .directors-section {
+        background:
+            radial-gradient(circle, rgb(119 107 135 / 0.08) 1px, transparent 1.7px) 0 0 / 20px 20px,
+            linear-gradient(135deg, rgb(243 231 226 / 0.92), rgb(228 235 234 / 0.9) 52%, rgb(244 235 218 / 0.92));
+    }
+
+    .portfolio-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: clamp(0.75rem, 1.5vw, 1.5rem);
+    }
+
+    .portfolio-section {
+        min-width: 0;
+        padding: clamp(0.75rem, 1.4vw, 1.25rem);
+        border: 1px solid rgb(52 57 75 / 0.11);
+        border-radius: 0.45rem;
+        background: rgb(255 252 243 / 0.82);
+    }
+
+    .portfolio-1 {
+        background: rgb(232 225 233 / 0.78);
+    }
+
+    .portfolio-2 {
+        background: rgb(220 233 235 / 0.8);
+    }
+
+    .portfolio-3 {
+        background: rgb(244 229 219 / 0.82);
+    }
+
+    .portfolio-section h3 {
+        width: fit-content;
+        margin: 0 auto 0.9rem;
+        padding: 0 0.25rem 0.35rem;
+        border-bottom: 1px solid var(--team-accent-purple);
+        color: var(--team-ink);
+        font-size: clamp(0.95rem, 1.5vw, 1.2rem);
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .portfolio-members {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: clamp(0.5rem, 1vw, 0.9rem);
+    }
+
+    .portfolio-members .member-card {
+        flex-basis: calc(50% - 0.5rem);
+    }
+
+    .member-card {
+        flex: 0 1 42%;
+        min-width: 0;
+        overflow: hidden;
+        padding: 0.45rem 0.45rem 0.75rem;
+        border: 1px solid rgb(52 57 75 / 0.1);
+        border-radius: 0.4rem;
+        background: rgb(255 254 250 / 0.96);
+        box-shadow: 0 0.25rem 0.75rem rgb(52 57 75 / 0.075);
+        transition:
+            transform 250ms ease,
+            box-shadow 250ms ease;
+    }
+
+    .member-card:hover {
+        transform: translateY(-0.12rem);
+        box-shadow: 0 0.6rem 1.25rem rgb(52 57 75 / 0.11);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .member-card {
+            transition: none;
+        }
+
+        .member-card:hover {
+            transform: none;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .team-page {
+            padding: 0;
+            background-size: 17px 17px, 11px 11px, auto, auto;
+        }
+
+        .team-panel {
+            margin: 0 0 0 calc(4.13vw + 8px);
+            border: 0;
+        }
+
+        .team-hero {
+            display: block;
+            min-height: 21rem;
+            padding: 1.5rem 1.25rem;
+        }
+
+        .hero-copy {
+            left: 1.25rem;
+            width: 68%;
+        }
+
+        .team-eyebrow {
+            gap: 0.35rem;
+            font-size: 0.62rem;
+            letter-spacing: 0.08em;
+        }
+
+        .team-hero h1 {
+            font-size: clamp(2.15rem, 8vw, 3.5rem);
+        }
+
+        .team-intro {
+            font-size: 0.9rem;
+        }
+
+        .hero-disc {
+            left: 40%;
+            width: clamp(8rem, 38vw, 12rem);
+        }
+
+        .hero-orbit {
+            left: 40%;
+            width: clamp(10rem, 46vw, 15rem);
+        }
+
+        .orbit-two {
+            width: clamp(8.5rem, 41vw, 13rem);
+        }
+
+        .hero-art-label {
+            right: 5%;
+            bottom: 8%;
+            padding: 0.45rem 0.55rem;
+            font-size: 0.65rem;
+        }
+
+        .hero-pixels {
+            right: 3%;
+            bottom: 35%;
+            width: 1.5rem;
+            height: 1.5rem;
+            background-size: 6px 6px;
+        }
+
+        .hero-cross {
+            right: 9%;
+            top: 18%;
+        }
+
+        .portfolio-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .team-section {
+            padding: 1rem;
+        }
+
+        .leadership-members .member-card,
+        .portfolio-members .member-card {
+            flex-basis: 44%;
+        }
+
+    }
+</style>
