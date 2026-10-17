@@ -172,6 +172,9 @@ const portfolios = Array.from(
     const TRAIL_CENTER_X = 0.5;
     const TRAIL_RIGHT_X = 0.86;
     const TRAIL_LEFT_X = 0.14;
+    const TRAIL_READING_LINE = 0.45;
+    // Eighteen bisection steps locate the trail position to well under a pixel.
+    const TRAIL_SEARCH_ITERATIONS = 18;
     const page = document.querySelector<HTMLElement>('.team-page');
     const panel = page?.querySelector<HTMLElement>('.team-panel');
     const trail = panel?.querySelector<SVGSVGElement>('.scroll-trail');
@@ -187,6 +190,7 @@ const portfolios = Array.from(
         let lastY = 0;
         let frame = 0;
         let drawFrame = 0;
+        const layerDocumentCentres = new Map<HTMLElement, number>();
 
         const drawTrail = () => {
             const bounds = panel.getBoundingClientRect();
@@ -195,6 +199,12 @@ const portfolios = Array.from(
             trail.setAttribute('viewBox', `0 0 ${width} ${height}`);
             trail.setAttribute('width', String(width));
             trail.setAttribute('height', String(height));
+
+            layers.forEach((layer) => {
+                const rect = layer.getBoundingClientRect();
+                const currentOffset = parseFloat(layer.style.getPropertyValue('--parallax-y')) || 0;
+                layerDocumentCentres.set(layer, rect.top + scrollY - currentOffset + rect.height / 2);
+            });
 
             const anchors = Array.from(panel.querySelectorAll<HTMLElement>('[data-trail-section]'));
             const points = anchors.map((anchor, index) => {
@@ -233,10 +243,10 @@ const portfolios = Array.from(
             }
 
             trailDot.removeAttribute('visibility');
-            const targetY = Math.min(Math.max(innerHeight * 0.45 - bounds.top, firstY), lastY);
+            const targetY = Math.min(Math.max(innerHeight * TRAIL_READING_LINE - bounds.top, firstY), lastY);
             let low = 0;
             let high = pathLength;
-            for (let i = 0; i < 18; i += 1) {
+            for (let i = 0; i < TRAIL_SEARCH_ITERATIONS; i += 1) {
                 const middle = (low + high) / 2;
                 if (trailProgress.getPointAtLength(middle).y < targetY) low = middle;
                 else high = middle;
@@ -248,10 +258,9 @@ const portfolios = Array.from(
             trailDot.setAttribute('cy', String(point.y));
 
             const layerOffsets = layers.map((layer) => {
-                const rect = layer.getBoundingClientRect();
                 const speed = Number(layer.dataset.depth) || 0;
-                const currentOffset = parseFloat(layer.style.getPropertyValue('--parallax-y')) || 0;
-                return (innerHeight / 2 - rect.top + currentOffset - rect.height / 2) * speed;
+                const centre = layerDocumentCentres.get(layer) ?? scrollY;
+                return (innerHeight / 2 - centre + scrollY) * speed;
             });
             layers.forEach((layer, index) => layer.style.setProperty('--parallax-y', `${layerOffsets[index]}px`));
         };
