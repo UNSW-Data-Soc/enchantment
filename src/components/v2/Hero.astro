@@ -22,7 +22,7 @@ const {
 					src={heroLogo}
 					alt="UNSW Data Science Society"
 					width={1127}
-					sizes="(max-width: 600px) 70vw, 50vw"
+					sizes="(max-width: 600px) 55vw, 42.5vw"
 					class="logo-image"
 					loading="eager"
 					fetchpriority="high"
@@ -30,13 +30,19 @@ const {
 			</h1>
 
 			<p class="hero-description">
-				Uniting students with a passion for data science,
+				<span class="caption-first-line">
+					Uniting students with a passion for data science,
+				</span>
 				machine learning, and artificial intelligence.
 			</p>
 
 			<div class="hero-buttons">
-				<a href={aboutHref} class="hero-button team-button">Meet the Team</a>
-				<a href={joinHref} class="hero-button join-button">Join Us</a>
+				<a href={aboutHref} class="hero-button team-button">
+					Meet the Team
+				</a>
+				<a href={joinHref} class="hero-button join-button">
+					Join Us
+				</a>
 			</div>
 		</div>
 	</ParallaxContainer>
@@ -44,10 +50,10 @@ const {
 
 <style>
 	.hero {
+		--logo-width: 42.5vw;
 		box-sizing: border-box;
 		height: 100%;
-		padding: 15vw 0 0 3.3vw;
-		font-family: var(--font-syne), sans-serif;
+		padding: 13.5vw 0 0 3.3vw;
 		color: #fffcf3;
 	}
 
@@ -56,36 +62,51 @@ const {
 	}
 
 	.hero-content {
-		width: 50vw;
+		width: var(--logo-width);
 	}
 
 	.hero-logo {
 		margin: 0;
-		width: 50vw;
-		/* The logo has transparent space below its lettering. */
-		height: 28vw;
-		overflow: clip;
+		width: var(--logo-width);
+		/* Account for transparent space below the lettering. */
+		height: calc(var(--logo-width) * 0.56);
+		pointer-events: none;
 	}
 
 	.logo-image {
 		display: block;
 		width: 100%;
 		height: auto;
+		filter: drop-shadow(0 6px 5px rgb(36 45 60 / 0.35));
 	}
 
 	.hero-description {
-		width: 33.5vw;
-		margin: 0 0 0 5.7vw;
-		font-size: clamp(0.75rem, 1.3vw, 1.5rem);
-		line-height: 1.15;
+		width: 25.9em;
+		margin: 0 0 0 4.85vw;
+		padding-bottom: 0.2em;
+		font-family: Arial, sans-serif;
+		font-size: clamp(0.75rem, 1.1vw, 2rem);
+		font-weight: 400;
+		line-height: 1.1;
+		text-align: left;
+		text-shadow: 0 2px 3px rgb(36 45 60 / 0.35);
+	}
+
+	.caption-first-line {
+		display: block;
+		padding-left: 1.85em;
 		text-align: justify;
-		text-shadow: 0 1px 6px rgb(36 59 83 / 0.35);
+		text-align-last: justify;
 	}
 
 	.hero-buttons {
+		position: relative;
+		z-index: 1;
 		display: flex;
-		gap: 1.7vw;
-		margin: 2.2vw 0 0 6.7vw;
+		gap: 1.45vw;
+		width: max-content;
+		max-width: 100%;
+		margin: 1.9vw 0 0 5.7vw;
 	}
 
 	.hero-button {
@@ -93,24 +114,33 @@ const {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 14.5vw;
-		min-height: max(44px, 3.1vw);
-		padding: 0.65vw 1vw;
+		width: max(8rem, 12.3vw);
+		min-height: max(44px, 2.65vw);
+		padding: 0.55vw 0.85vw;
 		border: 2px solid #fffcf3;
-		border-radius: 1vw;
-		background: linear-gradient(
-			110deg,
-			rgb(124 144 211 / 0.65),
-			rgb(152 102 186 / 0.7),
-			rgb(233 124 147 / 0.65)
-		);
+		border-radius: 0.85vw;
 		color: #fffcf3;
-		font-size: clamp(0.75rem, 1.15vw, 1.375rem);
+		font-family: var(--font-inter), Arial, sans-serif;
+		font-size: clamp(0.75rem, 1vw, 1.5rem);
 		font-weight: 700;
-		line-height: 1.3;
+		line-height: 1.2;
 		white-space: nowrap;
 		text-decoration: none;
-		box-shadow: 0 0.25vw 0.8vw rgb(36 59 83 / 0.2);
+		box-shadow: 0 5px 10px rgb(36 45 60 / 0.3);
+	}
+
+	.team-button {
+		background: rgb(99 100 118 / 0.32);
+	}
+
+	.join-button {
+		background: linear-gradient(
+			105deg,
+			#9d7ec7 0%,
+			#7971be 42%,
+			#848bcb 66%,
+			#b97bb1 100%
+		);
 	}
 
 	.hero-button:focus-visible {
@@ -129,7 +159,7 @@ const {
 
 		.hero-button:hover {
 			transform: translateY(-3px);
-			box-shadow: 0 0.45vw 1vw rgb(36 59 83 / 0.3);
+			box-shadow: 0 9px 16px rgb(36 45 60 / 0.35);
 		}
 
 		.hero-button:active {
@@ -142,6 +172,7 @@ const {
 			opacity: 0;
 			transform: translateY(20px);
 		}
+
 		to {
 			opacity: 1;
 			transform: translateY(0);
@@ -150,38 +181,42 @@ const {
 
 	@media (max-width: 600px) {
 		.hero {
-			padding: 8vw 0 0;
+			--logo-width: 55vw;
+			/* Leave room for the fixed navbar. */
+			padding: calc(4rem + 3vw) 2vw 3vw;
 		}
 
 		.hero-content {
-			width: 88vw;
-		}
-
-		.hero-logo {
-			width: 70vw;
-			height: 40vw;
+			width: 100%;
 		}
 
 		.hero-description {
-			width: 82vw;
+			width: 100%;
+			margin: 0;
 			font-size: 0.75rem;
-			line-height: 1.35;
-			text-align: left;
+			line-height: 1.3;
+		}
+
+		.caption-first-line {
+			display: inline;
+			padding-left: 0;
+			text-align-last: auto;
 		}
 
 		.hero-buttons {
-			width: 82vw;
-			gap: 0.5rem;
-			margin-top: 0.75rem;
+			width: 100%;
+			gap: 2vw;
+			margin: 2vw 0 0;
 		}
 
 		.hero-button {
-			flex: 1;
+			flex: 1 1 0;
+			min-width: 0;
 			width: auto;
-			min-height: 44px;
 			padding: 0.5rem;
 			border-radius: 0.5rem;
 			font-size: 0.75rem;
+			white-space: normal;
 		}
 	}
 
@@ -189,45 +224,6 @@ const {
 		.hero :global(.parallax-container) {
 			transform: none;
 			will-change: auto;
-		}
-	}
-
-	.hero-logo {
-		overflow: visible;
-	}
-
-	.logo-image {
-		filter: drop-shadow(0 6px 5px rgb(36 45 60 / 0.35));
-	}
-
-	/* Give letters such as g and y more vertical space. */
-	.hero-description {
-		font-family: Arial, sans-serif;
-		line-height: 1.4;
-		padding-bottom: 0.2em;
-		overflow: visible;
-		text-shadow: 0 2px 3px rgb(36 45 60 / 0.35);
-		text-indent: 2.4vw;
-	}
-	.hero-button {
-		background: rgb(99 100 118 / 0.32);
-		box-shadow: 0 5px 10px rgb(36 45 60 / 0.3);
-	}
-
-	.hero-button.join-button {
-		background: linear-gradient(
-			105deg,
-			#9d7ec7 0%,
-			#7971be 42%,
-			#848bcb 66%,
-			#b97bb1 100%
-		);
-	}
-
-	@media (prefers-reduced-motion: no-preference) {
-		.hero-button:hover {
-			transform: translateY(-3px);
-			box-shadow: 0 9px 16px rgb(36 45 60 / 0.35);
 		}
 	}
 </style>
