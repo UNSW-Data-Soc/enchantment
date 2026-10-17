@@ -20,6 +20,7 @@ import StarsScrollbar from './StarsScrollbar.astro';
   .v2-home {
     position: relative;
     width: 100%;
+    overflow-x: hidden;
   }
 
   .v2-home img {
@@ -41,5 +42,20 @@ import StarsScrollbar from './StarsScrollbar.astro';
     left: 0;
     right: 0;
     pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    .v2-home img {
+      height: 240vw;
+      object-fit: cover;
+      object-position: top;
+    }
+
+    .latest-events-slot {
+      left: 0;
+      right: 0;
+      top: 28.5%;
+      pointer-events: auto;
+    }
   }
 </style>
