@@ -87,7 +87,7 @@ const portfolios = Array.from(
 );
 ---
 
-<V2Layout title="Meet the team - UNSW Data Science Society">
+<V2Layout title="Meet the team - UNSW DataSoc">
     <div class="team-page">
         <div class="ambient-background" aria-hidden="true">
             <span class="ambient-cloud cloud-one" data-depth="0.06"></span>
@@ -349,7 +349,7 @@ const portfolios = Array.from(
         };
 
         const update = () => {
-            const bounds = panel.getBoundingClientRect();
+            const bounds = page.getBoundingClientRect();
             if (reducedMotion.matches) {
                 trailProgress.style.strokeDashoffset = '0';
                 trailDot.setAttribute('visibility', 'hidden');
@@ -423,7 +423,7 @@ const portfolios = Array.from(
     .team-page::after {
         position: absolute;
         inset: 0;
-        z-index: 0;
+        z-index: -1;
         pointer-events: none;
         content: '';
     }
@@ -449,7 +449,7 @@ const portfolios = Array.from(
     .ambient-background {
         position: absolute;
         inset: 0;
-        z-index: 0;
+        z-index: -1;
         overflow: hidden;
         pointer-events: none;
     }
@@ -592,7 +592,9 @@ const portfolios = Array.from(
         height: 98%;
         overflow: clip;
         border-radius: 0 0 50% 50% / 0 0 0.72% 0.72%;
-        background: url('/backgrounds/homepage-bg-v2-p00.png') 0 0 / calc(100% / 0.0413) auto no-repeat;
+        background:
+            url('/backgrounds/homepage-bg-v2-p00.png') 0 0 / calc(100% / 0.0413) auto no-repeat,
+            #484b70;
         pointer-events: none;
     }
 
@@ -664,9 +666,6 @@ const portfolios = Array.from(
         position: relative;
         isolation: isolate;
         overflow: hidden;
-        display: grid;
-        grid-template-columns: minmax(0, 1.2fr) minmax(14rem, 0.8fr);
-        align-items: center;
         min-height: clamp(16rem, 25vw, 23rem);
         padding: clamp(1.5rem, 3.3vw, 3rem) clamp(1.5rem, 4vw, 4.5rem);
         background:
