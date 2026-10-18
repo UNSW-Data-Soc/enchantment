@@ -1,0 +1,221 @@
+---
+interface Props {
+  title: string;
+  titleAccent?: string;
+  eyebrow?: string;
+  eyebrowDetail?: string;
+  caption?: string;
+  index?: string;
+  sectionName?: string;
+  sectionAnchor?: boolean;
+  showOrb?: boolean;
+}
+
+const {
+  title,
+  titleAccent,
+  eyebrow,
+  eyebrowDetail,
+  caption,
+  index,
+  sectionName = titleAccent ? `${title} ${titleAccent}` : title,
+  sectionAnchor = true,
+  showOrb = false,
+} = Astro.props;
+---
+
+<header class:list={['page-header', { 'with-orb': showOrb }]} data-section={sectionAnchor ? sectionName : undefined}>
+  <div class="header-copy">
+    {(eyebrow || eyebrowDetail) && (
+      <p class="header-eyebrow">
+        {eyebrow && <span>{eyebrow}</span>}
+        {eyebrow && eyebrowDetail && <span class="eyebrow-divider">—</span>}
+        {eyebrowDetail && <span>{eyebrowDetail}</span>}
+      </p>
+    )}
+    <h1>{title}{titleAccent && <> <em>{titleAccent}</em></>}</h1>
+    {caption && <p class="header-caption">{caption}</p>}
+    {index && <p class="header-index">{index}</p>}
+  </div>
+  {showOrb && (
+    <div class="header-art" aria-hidden="true">
+      <div class="header-orb"></div>
+    </div>
+  )}
+</header>
+
+<style>
+  .page-header {
+    --header-ink: #34394b;
+    --header-blue: #3a718b;
+    --header-pink: #d94a65;
+    --header-purple: #776b87;
+    --header-gold: #f4b000;
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    min-height: clamp(16rem, 25vw, 23rem);
+    padding: clamp(1.5rem, 3.3vw, 3rem) clamp(1.5rem, 4vw, 4.5rem);
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at 8% 6%, rgb(217 74 101 / 0.14), transparent 39%),
+      radial-gradient(ellipse at 86% 92%, rgb(119 107 135 / 0.18), transparent 42%),
+      radial-gradient(ellipse at 65% 12%, rgb(58 113 139 / 0.16), transparent 35%),
+      linear-gradient(110deg, #f2e9e3, #fffcf3 54%, #e9edf0);
+  }
+
+  .page-header::before {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(circle, rgb(52 57 75 / 0.2) 1px, transparent 1.6px) 0 0 / 13px 13px,
+      repeating-linear-gradient(135deg, transparent 0 15px, rgb(52 57 75 / 0.1) 16px 17px, transparent 18px 32px),
+      repeating-linear-gradient(45deg, transparent 0 21px, rgb(119 107 135 / 0.1) 22px 23px, transparent 24px 42px);
+    mask-image: linear-gradient(270deg, #000 0%, rgb(0 0 0 / 0.78) 34%, transparent 100%);
+    content: '';
+  }
+
+  .page-header::after {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: -1;
+    height: 2px;
+    background: linear-gradient(90deg, var(--header-pink), #8c7898 44%, #119bd6 78%, transparent);
+    content: '';
+  }
+
+  .header-copy {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+  }
+
+  .with-orb .header-copy {
+    width: min(54%, 42rem);
+  }
+
+  .header-eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+    margin: 0 0 1rem;
+    color: var(--header-blue);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .eyebrow-divider {
+    color: var(--header-pink);
+  }
+
+  .page-header h1 {
+    margin: 0;
+    color: var(--header-ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(2.8rem, 6.4vw, 6.5rem);
+    font-weight: 400;
+    letter-spacing: -0.065em;
+    line-height: 0.96;
+  }
+
+  .page-header h1 em {
+    color: var(--header-pink);
+    font-weight: 400;
+  }
+
+  .header-caption {
+    max-width: 31rem;
+    margin: 1.1rem 0 0;
+    color: var(--header-blue);
+    font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+    line-height: 1.55;
+  }
+
+  .header-index {
+    margin: 1.4rem 0 0;
+    color: rgb(52 57 75 / 0.7);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+  }
+
+  .header-art {
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 47%;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .header-orb {
+    position: absolute;
+    top: 50%;
+    right: -50%;
+    width: clamp(20rem, 40vw, 34rem);
+    aspect-ratio: 1;
+    border: 1px solid rgb(255 255 255 / 0.55);
+    border-radius: 50%;
+    background:
+      radial-gradient(ellipse at 28% 22%, rgb(255 255 255 / 0.9), transparent 14%),
+      radial-gradient(ellipse at 34% 27%, rgb(255 252 243 / 0.88), transparent 34%),
+      radial-gradient(circle at 72% 72%, #8c7898 0%, #b9a6c3 34%, #d9b7c5 62%, #e9d3bd 100%);
+    box-shadow:
+      inset -1.4rem -1.5rem 2.5rem rgb(52 57 75 / 0.2),
+      inset 0.8rem 0.6rem 1.5rem rgb(255 255 255 / 0.38),
+      0 1.5rem 3rem rgb(119 107 135 / 0.2);
+    clip-path: inset(0 50% 0 0);
+    transform: translateY(-50%);
+  }
+
+  .header-orb::after {
+    position: absolute;
+    inset: 8%;
+    border: 1px solid rgb(255 255 255 / 0.32);
+    border-radius: 50%;
+    content: '';
+    transform: rotate(-28deg) scaleX(0.82);
+  }
+
+  @media (max-width: 640px) {
+    .page-header {
+      display: block;
+      min-height: 21rem;
+      padding: 1.5rem 1.25rem;
+    }
+
+    .with-orb .header-art {
+      width: 60%;
+    }
+
+    .with-orb .header-copy {
+      position: absolute;
+      top: 50%;
+      left: 1.25rem;
+      width: 68%;
+      transform: translateY(-50%);
+    }
+
+    .header-eyebrow {
+      gap: 0.35rem;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+    }
+
+    .page-header h1 {
+      font-size: clamp(2.15rem, 8vw, 3.5rem);
+    }
+
+    .header-caption {
+      font-size: 0.9rem;
+    }
+
+    .header-orb {
+      width: clamp(18rem, 70vw, 25rem);
+    }
+  }
+</style>

@@ -1,35 +1,52 @@
 ---
 import Footer from './Footer.astro';
+import PageHeader from './PageHeader.astro';
 import StarsScrollbar from './StarsScrollbar.astro';
 import V2Layout from '../../layouts/V2Layout.astro';
 
 interface Props {
   title: string;
+  titleAccent?: string;
+  eyebrow?: string;
+  eyebrowDetail?: string;
+  caption?: string;
+  index?: string;
 }
 
-const { title } = Astro.props;
+const { title, titleAccent, eyebrow = 'UNSW DataSoc', eyebrowDetail, caption, index } = Astro.props;
 ---
 
 <V2Layout title={`${title} - UNSW DataSoc`}>
   <div class="content-page">
-    <StarsScrollbar length="100%" />
+    <StarsScrollbar
+      length="100%"
+      underlay="/backgrounds/homepage-bg-v2-p00-no-sidebar.png"
+      underlaySize="100% 100%"
+    />
     <main class="content-panel">
-      <header class="content-header" data-section={title}>
-        <p class="content-eyebrow">UNSW DataSoc</p>
-        <h1>{title}</h1>
-      </header>
+      <PageHeader
+        title={title}
+        titleAccent={titleAccent}
+        eyebrow={eyebrow}
+        eyebrowDetail={eyebrowDetail}
+        caption={caption}
+        index={index}
+      />
       <div class="content-body">
         <slot />
       </div>
     </main>
+    <div class="rail-tail-space" aria-hidden="true"></div>
   </div>
   <Footer />
 </V2Layout>
 
 <style>
   .content-page {
+    --stars-scrollbar-width: 4.2;
     position: relative;
-    min-height: calc(100vh - 4rem);
+    isolation: isolate;
+    min-height: 100vh;
     container-type: inline-size;
     overflow: clip;
     color: #34394b;
@@ -41,68 +58,31 @@ const { title } = Astro.props;
 
   .content-panel {
     position: relative;
-    min-height: calc(100vh - 7rem);
-    margin: 1.5rem clamp(1rem, 1.4vw, 22px) 2rem calc(var(--stars-scrollbar-width, 4.2) * 1vw + clamp(10px, 1.4vw, 22px));
+    width: auto;
+    margin: 0 calc(var(--stars-scrollbar-width) * 1vw + clamp(10px, 1.4vw, 22px));
     overflow: clip;
-    border: 1px solid rgb(72 75 112 / 0.12);
-    border-radius: 0.45rem;
-    background: rgb(255 252 243 / 0.66);
+    border-right: 1px solid rgb(72 75 112 / 0.12);
+    border-left: 1px solid rgb(72 75 112 / 0.12);
+    background: transparent;
     box-shadow: 0 0 3rem rgb(52 57 75 / 0.08);
-  }
-
-  .content-header {
-    position: relative;
-    overflow: hidden;
-    padding: clamp(2rem, 5vw, 4.5rem) clamp(1.25rem, 5vw, 5rem);
-    background:
-      radial-gradient(ellipse at 90% 0%, rgb(119 107 135 / 0.2), transparent 48%),
-      linear-gradient(110deg, rgb(242 233 227 / 0.96), rgb(255 252 243 / 0.88) 55%, rgb(233 237 240 / 0.94));
-  }
-
-  .content-header::after {
-    position: absolute;
-    inset: auto 0 0;
-    height: 2px;
-    background: linear-gradient(90deg, #d94a65, #8c7898 44%, #119bd6 78%, transparent);
-    content: '';
-  }
-
-  .content-eyebrow {
-    margin: 0 0 0.75rem;
-    color: #3a718b;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .content-eyebrow span {
-    padding-inline: 0.35rem;
-  }
-
-  .content-header h1 {
-    margin: 0;
-    color: #34394b;
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: clamp(2.25rem, 5vw, 4.5rem);
-    font-weight: 500;
-    line-height: 1.05;
   }
 
   .content-body {
     min-height: 12rem;
-    padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1.25rem, 5vw, 5rem);
+    padding: clamp(1.5rem, 3.5vw, 3rem) clamp(1.25rem, 2vw, 1.75rem) clamp(2rem, 4vw, 3.5rem);
     font-size: clamp(1rem, 1.4vw, 1.2rem);
+    background: #fffcf3;
+  }
+
+  .rail-tail-space {
+    height: clamp(2.5rem, 5vw, 4rem);
+    background: #fffcf3;
   }
 
   @media (max-width: 640px) {
     .content-panel {
-      min-height: calc(100vh - 6rem);
-      margin: 1rem 0.5rem 1.5rem calc(var(--stars-scrollbar-width, 4.2) * 1vw + 8px);
-    }
-
-    .content-eyebrow {
-      font-size: 0.62rem;
+      margin: 0 calc(var(--stars-scrollbar-width) * 1vw + 8px);
+      border: 0;
     }
   }
 </style>
