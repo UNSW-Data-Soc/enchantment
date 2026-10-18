@@ -135,11 +135,21 @@ const portfolios = Array.from(
                         <div class="hero-copy">
                             <p class="team-eyebrow"><span>UNSW DataSoc</span><span>—</span><span>People &amp; portfolios</span></p>
                             <h1>Meet the <em>team</em></h1>
-                            <p class="team-intro">The people shaping our year, our community, and what comes next.</p>
+                            <p class="team-intro sr-only">The people shaping our year, our community, and what comes next.</p>
                             <p class="hero-index">BOARD {currentYear} <span>✳</span> UNSW</p>
                         </div>
                         <div class="hero-art" aria-hidden="true">
                             <div class="hero-orb"></div>
+                            <svg class="orb-caption" viewBox="0 0 300 300" aria-hidden="true">
+                                <defs>
+                                    <path id="orb-caption-path" d="M 150 24 A 126 126 0 0 0 150 276" />
+                                </defs>
+                                <text>
+                                    <textPath href="#orb-caption-path" startOffset="50%" text-anchor="middle" textLength="390" lengthAdjust="spacingAndGlyphs">
+                                        The people shaping our year, our community, and what comes next.
+                                    </textPath>
+                                </text>
+                            </svg>
                         </div>
                     </header>
 
@@ -209,6 +219,8 @@ const portfolios = Array.from(
     const trailBase = trail?.querySelector<SVGPathElement>('.trail-base');
     const trailProgress = trail?.querySelector<SVGPathElement>('.trail-progress');
     const trailDot = trail?.querySelector<SVGCircleElement>('.trail-dot');
+    const hero = page?.querySelector<HTMLElement>('.team-hero');
+    const orbCaption = page?.querySelector<SVGSVGElement>('.orb-caption');
     const layers = Array.from(page?.querySelectorAll<HTMLElement>('[data-depth]') ?? []);
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const layerDocumentCentres = new Map<HTMLElement, number>();
@@ -244,7 +256,18 @@ const portfolios = Array.from(
             layer.style.setProperty('--parallax-y', `${offset}px`);
         });
     };
+    const updateOrbCaption = () => {
+        if (!hero || !orbCaption) return;
+        if (reducedMotion.matches) {
+            orbCaption.style.setProperty('--caption-rotation', '0deg');
+            return;
+        }
+        const bounds = hero.getBoundingClientRect();
+        const progress = Math.min(Math.max((innerHeight - bounds.top) / (innerHeight + bounds.height), 0), 1);
+        orbCaption.style.setProperty('--caption-rotation', `${progress * 180}deg`);
+    };
     scrollUpdates.add(updateParallax);
+    scrollUpdates.add(updateOrbCaption);
     reducedMotion.addEventListener('change', updateParallax);
     let layerRefreshFrame = 0;
     const scheduleLayerRefresh = () => {
@@ -253,6 +276,7 @@ const portfolios = Array.from(
             layerRefreshFrame = 0;
             refreshLayerCentres();
             updateParallax();
+            updateOrbCaption();
         });
     };
     refreshLayerCentres();
@@ -612,8 +636,8 @@ const portfolios = Array.from(
     .hero-orb {
         position: absolute;
         top: 50%;
-        right: clamp(1rem, 8vw, 8rem);
-        width: clamp(10rem, 24vw, 22rem);
+        right: -50%;
+        width: clamp(20rem, 40vw, 34rem);
         aspect-ratio: 1;
         border: 1px solid rgb(255 255 255 / 0.55);
         border-radius: 50%;
@@ -625,6 +649,7 @@ const portfolios = Array.from(
             inset -1.4rem -1.5rem 2.5rem rgb(52 57 75 / 0.2),
             inset 0.8rem 0.6rem 1.5rem rgb(255 255 255 / 0.38),
             0 1.5rem 3rem rgb(119 107 135 / 0.2);
+        clip-path: inset(0 50% 0 0);
         transform: translateY(-50%);
     }
 
@@ -635,6 +660,24 @@ const portfolios = Array.from(
         border-radius: 50%;
         content: '';
         transform: rotate(-28deg) scaleX(0.82);
+    }
+
+    .orb-caption {
+        position: absolute;
+        top: 50%;
+        right: -50%;
+        width: clamp(20rem, 40vw, 34rem);
+        overflow: visible;
+        color: var(--team-ink);
+        fill: currentColor;
+        font-family: var(--font-syne), sans-serif;
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        transform: translateY(-50%) rotate(var(--caption-rotation, 0deg));
+        transform-origin: 50% 50%;
+        pointer-events: none;
     }
 
     .team-eyebrow {
@@ -753,7 +796,7 @@ const portfolios = Array.from(
     .portfolio-section {
         width: 50%;
         min-width: 0;
-        padding: clamp(2.5rem, 5vw, 4rem) clamp(0.75rem, 1.4vw, 1.25rem);
+        padding: clamp(1.75rem, 3.5vw, 3rem) clamp(0.75rem, 1.4vw, 1.25rem);
         margin-left: 0;
         border: 1px solid rgb(52 57 75 / 0.11);
         border-radius: 0.45rem;
@@ -872,8 +915,11 @@ const portfolios = Array.from(
         }
 
         .hero-orb {
-            right: -1.5rem;
-            width: clamp(10rem, 44vw, 16rem);
+            width: clamp(18rem, 70vw, 25rem);
+        }
+
+        .orb-caption {
+            width: clamp(18rem, 70vw, 25rem);
         }
 
         .portfolio-grid {
