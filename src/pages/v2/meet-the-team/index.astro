@@ -39,7 +39,7 @@ const matrixCells = Array.from({ length: MATRIX_COLUMNS * MATRIX_ROWS }, (_, ind
     const x = index % MATRIX_COLUMNS;
     const y = Math.floor(index / MATRIX_COLUMNS);
     const hue = MATRIX_ACCENTS.get(index) ?? MATRIX_HUES[(x + y * 2) % MATRIX_HUES.length];
-    const opacity = Number((0.52 + ((x + y) % 4) * 0.1).toFixed(2));
+    const opacity = Number((0.68 + ((x + y) % 4) * 0.07).toFixed(2));
     return { x, y, hue, opacity };
 });
 
@@ -671,6 +671,7 @@ const portfolios = Array.from(
 
     @media (hover: hover) and (pointer: fine) {
         .matrix-cell:hover {
+            z-index: 1;
             transform: rotateY(180deg) scale(1.04);
         }
     }
@@ -681,7 +682,7 @@ const portfolios = Array.from(
         }
 
         .matrix-cell:hover {
-            transform: rotateY(180deg);
+            transform: none;
         }
     }
 
