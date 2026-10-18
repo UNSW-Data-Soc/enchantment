@@ -23,8 +23,9 @@ const { length = '98%' } = Astro.props;
      width; HomePage is the container) so they stay at the same place on the page whatever the bar's length. The stops
      and the painted-out rows come from scripts/paint-out-scrollbar-bar.py; re-measure both for a new background. */
   .stars-scrollbar {
-    /* The bar's width as a percentage of the page's width. */
-    --width: 4.13;
+    /* The bar's width as a percentage of the page's width: the image's bar is 71.75px of 1708 (edge anti-aliased),
+       and the drawn part has to meet it exactly or a sliver shows at the join. */
+    --width: 4.2;
     position: absolute;
     top: 0;
     left: 0;
@@ -36,7 +37,7 @@ const { length = '98%' } = Astro.props;
     pointer-events: none;
     /* Opaque, so content running under it (the Latest Publications cards) passes behind the bar instead of over it. */
     background:
-      linear-gradient(transparent 109.37cqw, #636478 0, #636478 198.3cqw, #384151 227.81cqw),
+      linear-gradient(transparent 109.95cqw, #636478 0, #636478 198.3cqw, #384151 227.81cqw),
       url('/backgrounds/homepage-bg-v2-p00-no-bar.png') 0 0 / 100cqw auto no-repeat;
   }
 
@@ -46,7 +47,7 @@ const { length = '98%' } = Astro.props;
     .stars-scrollbar {
       border-radius: 0 0 50% 50% / 0 0 0.72% 0.72%;
       background:
-        linear-gradient(transparent 38.2%, #636478 0, #636478 69.3%, #384151 79.6%),
+        linear-gradient(transparent 38.4%, #636478 0, #636478 69.3%, #384151 79.6%),
         url('/backgrounds/homepage-bg-v2-p00-no-bar.png') 0 0 / calc(100% * 100 / var(--width)) auto no-repeat;
     }
   }
