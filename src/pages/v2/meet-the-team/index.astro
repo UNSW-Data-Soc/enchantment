@@ -159,7 +159,6 @@ const portfolios = Array.from(
                                 {matrixCells.map(({ hue, opacity }) => (
                                     <span
                                         class="matrix-cell"
-                                        data-opacity={opacity}
                                         style={`--cell-hue:${hue}; --cell-opacity:${opacity}`}
                                     ></span>
                                 ))}
@@ -807,7 +806,7 @@ const portfolios = Array.from(
     }
 
     .portfolio-members .member-card {
-        flex: 0 1 clamp(150px, 22%, 250px);
+        flex: 0 1 clamp(150px, 18vw, 250px);
     }
 
     .member-card {
