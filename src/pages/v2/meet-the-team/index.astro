@@ -534,7 +534,7 @@ const portfolios = Array.from(
 
     .rail-tail-space {
         height: clamp(2.5rem, 5vw, 4rem);
-        background: #fffcf3;
+        background: var(--team-cream);
     }
 
     .team-body {
@@ -653,8 +653,7 @@ const portfolios = Array.from(
         pointer-events: auto;
         border: 1px solid hsl(var(--cell-hue) 48% 74% / 0.55);
         background:
-            linear-gradient(90deg, hsl(var(--cell-hue) 60% 84%), hsl(calc(var(--cell-hue) + 18) 62% 79%) 52%, hsl(calc(var(--cell-hue) + 36) 58% 84%));
-        opacity: var(--cell-opacity);
+            linear-gradient(90deg, hsl(var(--cell-hue) 60% 84% / var(--cell-opacity)), hsl(calc(var(--cell-hue) + 18) 62% 79% / var(--cell-opacity)) 52%, hsl(calc(var(--cell-hue) + 36) 58% 84% / var(--cell-opacity)));
         transform-style: preserve-3d;
         backface-visibility: hidden;
         transition: transform 480ms cubic-bezier(0.22, 0.72, 0.24, 1);
@@ -664,7 +663,7 @@ const portfolios = Array.from(
         position: absolute;
         inset: 0;
         border: 1px solid hsl(calc(var(--cell-hue) + 42) 52% 82% / 0.75);
-        background: linear-gradient(90deg, hsl(calc(var(--cell-hue) + 42) 62% 82%), hsl(calc(var(--cell-hue) + 72) 64% 75%) 54%, hsl(calc(var(--cell-hue) + 102) 58% 83%));
+        background: linear-gradient(90deg, hsl(calc(var(--cell-hue) + 42) 62% 82% / var(--cell-opacity)), hsl(calc(var(--cell-hue) + 72) 64% 75% / var(--cell-opacity)) 54%, hsl(calc(var(--cell-hue) + 102) 58% 83% / var(--cell-opacity)));
         content: '';
         transform: rotateY(180deg);
         backface-visibility: hidden;
