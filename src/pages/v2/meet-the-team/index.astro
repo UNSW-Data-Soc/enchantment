@@ -140,12 +140,15 @@ const portfolios = Array.from(
                         </div>
                         <div class="hero-art" aria-hidden="true">
                             <div class="hero-orb"></div>
-                            <svg class="orb-caption" viewBox="0 0 300 300" aria-hidden="true">
+                            <svg class="orb-caption" viewBox="0 0 600 600" aria-hidden="true">
                                 <defs>
-                                    <path id="orb-caption-path" d="M 150 24 A 126 126 0 0 0 150 276" />
+                                    <path id="orb-caption-path" d="M 300 24 A 276 276 0 0 0 300 576" />
                                 </defs>
                                 <text>
-                                    <textPath href="#orb-caption-path" startOffset="50%" text-anchor="middle" textLength="390" lengthAdjust="spacingAndGlyphs">
+                                    <textPath href="#orb-caption-path" startOffset="40" textLength="370" lengthAdjust="spacingAndGlyphs">
+                                        The people shaping our year, our community, and what comes next.
+                                    </textPath>
+                                    <textPath href="#orb-caption-path" startOffset="457" textLength="370" lengthAdjust="spacingAndGlyphs">
                                         The people shaping our year, our community, and what comes next.
                                     </textPath>
                                 </text>
@@ -219,8 +222,6 @@ const portfolios = Array.from(
     const trailBase = trail?.querySelector<SVGPathElement>('.trail-base');
     const trailProgress = trail?.querySelector<SVGPathElement>('.trail-progress');
     const trailDot = trail?.querySelector<SVGCircleElement>('.trail-dot');
-    const hero = page?.querySelector<HTMLElement>('.team-hero');
-    const orbCaption = page?.querySelector<SVGSVGElement>('.orb-caption');
     const layers = Array.from(page?.querySelectorAll<HTMLElement>('[data-depth]') ?? []);
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const layerDocumentCentres = new Map<HTMLElement, number>();
@@ -256,18 +257,7 @@ const portfolios = Array.from(
             layer.style.setProperty('--parallax-y', `${offset}px`);
         });
     };
-    const updateOrbCaption = () => {
-        if (!hero || !orbCaption) return;
-        if (reducedMotion.matches) {
-            orbCaption.style.setProperty('--caption-rotation', '0deg');
-            return;
-        }
-        const bounds = hero.getBoundingClientRect();
-        const progress = Math.min(Math.max((innerHeight - bounds.top) / (innerHeight + bounds.height), 0), 1);
-        orbCaption.style.setProperty('--caption-rotation', `${progress * 180}deg`);
-    };
     scrollUpdates.add(updateParallax);
-    scrollUpdates.add(updateOrbCaption);
     reducedMotion.addEventListener('change', updateParallax);
     let layerRefreshFrame = 0;
     const scheduleLayerRefresh = () => {
@@ -276,7 +266,6 @@ const portfolios = Array.from(
             layerRefreshFrame = 0;
             refreshLayerCentres();
             updateParallax();
-            updateOrbCaption();
         });
     };
     refreshLayerCentres();
@@ -671,13 +660,20 @@ const portfolios = Array.from(
         color: var(--team-ink);
         fill: currentColor;
         font-family: var(--font-syne), sans-serif;
-        font-size: 8px;
+        font-size: 12px;
         font-weight: 700;
         letter-spacing: 1.4px;
         text-transform: uppercase;
-        transform: translateY(-50%) rotate(var(--caption-rotation, 0deg));
+        animation: orb-caption-rotation 36s linear infinite;
+        transform: translateY(-50%);
         transform-origin: 50% 50%;
         pointer-events: none;
+    }
+
+    @keyframes orb-caption-rotation {
+        to {
+            rotate: 360deg;
+        }
     }
 
     .team-eyebrow {
@@ -864,6 +860,10 @@ const portfolios = Array.from(
     }
 
     @media (prefers-reduced-motion: reduce) {
+        .orb-caption {
+            animation: none;
+        }
+
         .member-card {
             transition: none;
         }
