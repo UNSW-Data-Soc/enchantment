@@ -60,8 +60,9 @@ const { title = 'UNSW DataSoc' } = Astro.props;
 
   // Dispatch a cancelable CustomEvent<{ top: number; immediate: boolean }> to request a Lenis scroll.
   window.addEventListener('v2-lenis-scroll-to', (event) => {
-    const { top, immediate } = (event as CustomEvent<{ top: number; immediate: boolean }>).detail;
-    lenis.scrollTo(top, { immediate });
+    const detail = (event as CustomEvent<{ top?: unknown; immediate?: unknown }>).detail;
+    if (!detail || typeof detail.top !== 'number' || !Number.isFinite(detail.top)) return;
+    lenis.scrollTo(detail.top, { immediate: detail.immediate === true });
     event.preventDefault();
   });
 

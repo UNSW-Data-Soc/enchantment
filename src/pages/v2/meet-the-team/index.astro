@@ -235,15 +235,29 @@ const portfolios = Array.from(
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const layerDocumentCentres = new Map<HTMLElement, number>();
     const refreshLayerCentres = () => {
-        layers.forEach((layer) => {
-            const transform = layer.style.transform;
-            const transition = layer.style.transition;
-            layer.style.transition = 'none';
-            layer.style.transform = 'none';
-            const rect = layer.getBoundingClientRect();
-            layer.style.transform = transform;
-            layer.style.transition = transition;
-            layerDocumentCentres.set(layer, rect.top + scrollY + rect.height / 2);
+        const originalStyles = layers.map((layer) => ({
+            layer,
+            transform: layer.style.transform,
+            transition: layer.style.transition,
+        }));
+        const centres: [HTMLElement, number][] = [];
+        try {
+            originalStyles.forEach(({ layer }) => {
+                layer.style.transition = 'none';
+                layer.style.transform = 'none';
+            });
+            layers.forEach((layer) => {
+                const rect = layer.getBoundingClientRect();
+                centres.push([layer, rect.top + scrollY + rect.height / 2]);
+            });
+        } finally {
+            originalStyles.forEach(({ layer, transform, transition }) => {
+                layer.style.transform = transform;
+                layer.style.transition = transition;
+            });
+        }
+        centres.forEach(([layer, centre]) => {
+            layerDocumentCentres.set(layer, centre);
         });
     };
     const scrollUpdates = new Set<() => void>();
@@ -794,8 +808,7 @@ const portfolios = Array.from(
         background: rgb(255 252 243 / 0.62);
     }
 
-    .portfolio-section:nth-child(even) {
-        width: 50%;
+    .portfolio-section[data-trail-side="right"] {
         margin-left: auto;
     }
 
@@ -916,7 +929,7 @@ const portfolios = Array.from(
         }
 
         .portfolio-section,
-        .portfolio-section:nth-child(even) {
+        .portfolio-section[data-trail-side="right"] {
             width: 100%;
             margin-left: 0;
         }
