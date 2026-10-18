@@ -6,16 +6,14 @@ interface Props {
   length?: string;
   /** Optional artwork layered beneath the CSS bar, sized to its first half. */
   underlay?: string;
-  /** Background sizing for the optional artwork beneath the CSS bar. */
-  underlaySize?: string;
 }
-const { length = '98%', underlay, underlaySize = '100% auto' } = Astro.props;
+const { length = '98%', underlay } = Astro.props;
 ---
 
 <!-- One star per [data-section] on the page; the section crossing the middle of the screen is highlighted, and clicking a star scrolls to its section. -->
 <div
   class="stars-scrollbar"
-  style={`--star: url("${star}"); --length: ${length}; --underlay: ${underlay ? `url("${underlay}")` : 'none'}; --underlay-size: ${underlaySize}`}
+  style={`--star: url("${star}"); --length: ${length}; --underlay: ${underlay ? `url("${underlay}")` : 'none'}`}
 >
   <div class="track">
     <div class="stars"></div>
@@ -49,7 +47,7 @@ const { length = '98%', underlay, underlaySize = '100% auto' } = Astro.props;
       #636478 198.3cqw,
       #384151 227.81cqw
     ), var(--underlay, none);
-    background-size: auto, var(--underlay-size, 100% auto);
+    background-size: auto, 100% auto;
     background-position: 0 0, 0 0;
     background-repeat: no-repeat;
   }
@@ -68,7 +66,7 @@ const { length = '98%', underlay, underlaySize = '100% auto' } = Astro.props;
         #636478 69.27%,
         #384151 79.58%
       ), var(--underlay, none);
-      background-size: auto, var(--underlay-size, 100% auto);
+      background-size: auto, 100% auto;
       background-position: 0 0, 0 0;
       background-repeat: no-repeat;
     }
