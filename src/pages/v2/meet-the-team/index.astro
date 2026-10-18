@@ -9,15 +9,6 @@ import type { ImageMetadata } from 'astro';
 const LEADERSHIP_SIZES = '(min-width: 1440px) 250px, (min-width: 768px) 22vw, (min-width: 640px) 150px, 42vw';
 const PORTFOLIO_SIZES = '(min-width: 1390px) 250px, (min-width: 834px) 18vw, (min-width: 640px) 150px, 34vw';
 const PORTFOLIO_VARIANTS = 4;
-const MATRIX_COLUMNS = 12;
-const MATRIX_ROWS = 10;
-const MATRIX_HUES = [264, 276, 288, 300, 312, 324, 336, 348];
-const MATRIX_ACCENTS = new Map([
-    [2 * MATRIX_COLUMNS + 10, 42],
-    [4 * MATRIX_COLUMNS + 8, 34],
-    [6 * MATRIX_COLUMNS + 11, 50],
-    [8 * MATRIX_COLUMNS + 9, 38],
-]);
 const CARD_PARALLAX_DEPTHS = [0.04, -0.045, 0.028, -0.035, 0.05, -0.025];
 const photos = import.meta.glob<{ default: ImageMetadata }>(
     '../../../assets/meet-the-team/datasoc-board-photos/*.jpg',
@@ -34,14 +25,6 @@ function photo(file?: string): ImageMetadata | undefined {
 function cardDepth(index: number): number {
     return CARD_PARALLAX_DEPTHS[index % CARD_PARALLAX_DEPTHS.length];
 }
-
-const matrixCells = Array.from({ length: MATRIX_COLUMNS * MATRIX_ROWS }, (_, index) => {
-    const x = index % MATRIX_COLUMNS;
-    const y = Math.floor(index / MATRIX_COLUMNS);
-    const hue = MATRIX_ACCENTS.get(index) ?? MATRIX_HUES[Math.round((x / (MATRIX_COLUMNS - 1)) * (MATRIX_HUES.length - 1))];
-    const opacity = Number((0.78 + ((x + y) % 4) * 0.05).toFixed(2));
-    return { x, y, hue, opacity };
-});
 
 const currentYear = new Date().getFullYear();
 
@@ -156,14 +139,7 @@ const portfolios = Array.from(
                             <p class="hero-index">BOARD {currentYear} <span>✳</span> UNSW</p>
                         </div>
                         <div class="hero-art" aria-hidden="true">
-                            <div class="hero-matrix" style={`--matrix-columns:${MATRIX_COLUMNS}; --matrix-rows:${MATRIX_ROWS}`}>
-                                {matrixCells.map(({ hue, opacity }) => (
-                                    <span
-                                        class="matrix-cell"
-                                        style={`--cell-hue:${hue}; --cell-opacity:${opacity}`}
-                                    ></span>
-                                ))}
-                            </div>
+                            <div class="hero-orb"></div>
                         </div>
                     </header>
 
@@ -198,10 +174,10 @@ const portfolios = Array.from(
                                     <section class:list={['portfolio-section', `portfolio-${index % PORTFOLIO_VARIANTS}`]} data-trail-section data-trail-side={index % 2 === 0 ? 'left' : 'right'}>
                                         <h3>{section.title}</h3>
                                         <div class="portfolio-members">
-                                            {section.members.map((member) => {
+                                            {section.members.map((member, memberIndex) => {
                                                 const image = photo(member.file);
                                                 return (
-                                                    <div class="member-card text-center">
+                                                    <div class="member-card text-center" data-depth={cardDepth(memberIndex + index)}>
                                                         <TeamMemberDetails member={member} image={image} sizes={section.sizes} />
                                                     </div>
                                                 );
@@ -600,9 +576,10 @@ const portfolios = Array.from(
         inset: 0;
         z-index: -1;
         background:
-            radial-gradient(circle, rgb(52 57 75 / 0.13) 1px, transparent 1.6px) 50% 50% / 17px 17px,
-            linear-gradient(135deg, transparent 0 48%, rgb(52 57 75 / 0.1) 48.2% 48.4%, transparent 48.6% 100%);
-        mask-image: linear-gradient(90deg, #000, transparent 34%, transparent 75%, #000);
+            radial-gradient(circle, rgb(52 57 75 / 0.2) 1px, transparent 1.6px) 0 0 / 13px 13px,
+            repeating-linear-gradient(135deg, transparent 0 15px, rgb(52 57 75 / 0.1) 16px 17px, transparent 18px 32px),
+            repeating-linear-gradient(45deg, transparent 0 21px, rgb(119 107 135 / 0.1) 22px 23px, transparent 24px 42px);
+        mask-image: linear-gradient(270deg, #000 0%, rgb(0 0 0 / 0.78) 34%, transparent 100%);
         content: '';
     }
 
@@ -632,67 +609,32 @@ const portfolios = Array.from(
         pointer-events: none;
     }
 
-    .hero-matrix {
+    .hero-orb {
         position: absolute;
-        inset: 0 0 0 auto;
-        display: grid;
-        width: 100%;
-        perspective: 800px;
-        grid-template-columns: repeat(var(--matrix-columns), minmax(0, 1fr));
-        grid-template-rows: repeat(var(--matrix-rows), minmax(0, 1fr));
-        gap: clamp(2px, 0.35vw, 6px);
-        padding: 1.25rem 0;
+        top: 50%;
+        right: clamp(1rem, 8vw, 8rem);
+        width: clamp(10rem, 24vw, 22rem);
+        aspect-ratio: 1;
+        border: 1px solid rgb(255 255 255 / 0.55);
+        border-radius: 50%;
         background:
-            radial-gradient(ellipse at 88% 50%, rgb(17 155 214 / 0.25), transparent 62%),
-            linear-gradient(115deg, transparent 2%, rgb(140 120 152 / 0.12) 49%, rgb(217 74 101 / 0.2));
-        clip-path: polygon(100% 0, 100% 100%, 17% 100%, 21% 91%, 11% 83%, 18% 74%, 8% 65%, 15% 55%, 4% 45%, 13% 35%, 6% 25%, 17% 16%, 10% 8%, 22% 0);
-        mask-image: linear-gradient(90deg, transparent 0%, #000 36%, #000 100%);
+            radial-gradient(ellipse at 28% 22%, rgb(255 255 255 / 0.9), transparent 14%),
+            radial-gradient(ellipse at 34% 27%, rgb(255 252 243 / 0.88), transparent 34%),
+            radial-gradient(circle at 72% 72%, #8c7898 0%, #b9a6c3 34%, #d9b7c5 62%, #e9d3bd 100%);
+        box-shadow:
+            inset -1.4rem -1.5rem 2.5rem rgb(52 57 75 / 0.2),
+            inset 0.8rem 0.6rem 1.5rem rgb(255 255 255 / 0.38),
+            0 1.5rem 3rem rgb(119 107 135 / 0.2);
+        transform: translateY(-50%);
     }
 
-    .matrix-cell {
-        position: relative;
-        min-width: 0;
-        min-height: 0;
-        pointer-events: auto;
-        transform-style: preserve-3d;
-        transition: transform 480ms cubic-bezier(0.22, 0.72, 0.24, 1);
-    }
-
-    .matrix-cell::before {
+    .hero-orb::after {
         position: absolute;
-        inset: 0;
-        border: 1px solid hsl(var(--cell-hue) 48% 74% / 0.55);
-        background: linear-gradient(90deg, hsl(var(--cell-hue) 60% 84% / var(--cell-opacity)), hsl(calc(var(--cell-hue) + 18) 62% 79% / var(--cell-opacity)) 52%, hsl(calc(var(--cell-hue) + 36) 58% 84% / var(--cell-opacity)));
+        inset: 8%;
+        border: 1px solid rgb(255 255 255 / 0.32);
+        border-radius: 50%;
         content: '';
-        backface-visibility: hidden;
-    }
-
-    .matrix-cell::after {
-        position: absolute;
-        inset: 0;
-        border: 1px solid hsl(calc(var(--cell-hue) + 42) 52% 82% / 0.75);
-        background: linear-gradient(90deg, hsl(calc(var(--cell-hue) + 42) 62% 82% / var(--cell-opacity)), hsl(calc(var(--cell-hue) + 72) 64% 75% / var(--cell-opacity)) 54%, hsl(calc(var(--cell-hue) + 102) 58% 83% / var(--cell-opacity)));
-        content: '';
-        transform: rotateY(180deg);
-        backface-visibility: hidden;
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-        .matrix-cell:hover {
-            z-index: 1;
-            transform: rotateY(180deg);
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .matrix-cell {
-            transition: none;
-            pointer-events: none;
-        }
-
-        .matrix-cell:hover {
-            transform: none;
-        }
+        transform: rotate(-28deg) scaleX(0.82);
     }
 
     .team-eyebrow {
@@ -811,7 +753,7 @@ const portfolios = Array.from(
     .portfolio-section {
         width: 50%;
         min-width: 0;
-        padding: clamp(0.75rem, 1.4vw, 1.25rem);
+        padding: clamp(2.5rem, 5vw, 4rem) clamp(0.75rem, 1.4vw, 1.25rem);
         margin-left: 0;
         border: 1px solid rgb(52 57 75 / 0.11);
         border-radius: 0.45rem;
@@ -929,9 +871,9 @@ const portfolios = Array.from(
             font-size: 0.9rem;
         }
 
-        .hero-matrix {
-            padding: 3rem 0 1.5rem;
-            clip-path: polygon(100% 0, 100% 100%, 16% 100%, 22% 89%, 10% 78%, 18% 66%, 7% 54%, 15% 43%, 6% 31%, 18% 20%, 9% 10%, 23% 0);
+        .hero-orb {
+            right: -1.5rem;
+            width: clamp(10rem, 44vw, 16rem);
         }
 
         .portfolio-grid {
