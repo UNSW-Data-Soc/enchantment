@@ -172,6 +172,7 @@ const portfolios = Array.from(
                                 class:list={['team-section space-y-16', `leadership-section leadership-${index}`]}
                                 data-trail-section={index === 1 ? '' : undefined}
                                 data-section={index === 1 ? 'Executives' : undefined}
+                                data-scroll-offset={index === 1 ? '48' : undefined}
                                 data-team-stop={index === 1 ? 'Executives' : undefined}
                                 tabindex={index === 1 ? -1 : undefined}
                             >
@@ -631,6 +632,7 @@ const portfolios = Array.from(
         inset: 0 0 0 auto;
         display: grid;
         width: 100%;
+        perspective: 800px;
         grid-template-columns: repeat(var(--matrix-columns), minmax(0, 1fr));
         grid-template-rows: repeat(var(--matrix-rows), minmax(0, 1fr));
         gap: clamp(2px, 0.35vw, 6px);
@@ -643,26 +645,34 @@ const portfolios = Array.from(
     }
 
     .matrix-cell {
+        position: relative;
         min-width: 0;
         min-height: 0;
         pointer-events: auto;
+        overflow: hidden;
         border: 1px solid hsl(var(--cell-hue) 72% 76% / 0.5);
         background:
-            linear-gradient(135deg, hsl(var(--cell-hue) 80% 72% / 0.88), hsl(calc(var(--cell-hue) + 34) 70% 62% / 0.8));
-        box-shadow: 0 0 1rem hsl(var(--cell-hue) 80% 68% / 0.22);
+            linear-gradient(135deg, hsl(var(--cell-hue) 88% 78%), hsl(calc(var(--cell-hue) + 24) 86% 65%) 52%, hsl(calc(var(--cell-hue) + 48) 84% 76%));
         opacity: var(--cell-opacity);
-        transform: translateY(0) scale(1);
-        transition:
-            transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1),
-            filter 280ms ease,
-            box-shadow 280ms ease;
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+        transition: transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
-    .matrix-cell:hover {
-        z-index: 1;
-        filter: brightness(1.16) saturate(1.1);
-        transform: translateY(-2px) scale(1.1);
-        box-shadow: 0 0 1.15rem hsl(var(--cell-hue) 90% 76% / 0.5);
+    .matrix-cell::after {
+        position: absolute;
+        inset: 0;
+        border: 1px solid hsl(calc(var(--cell-hue) + 42) 90% 86% / 0.7);
+        background: linear-gradient(135deg, hsl(calc(var(--cell-hue) + 52) 86% 70%), hsl(calc(var(--cell-hue) + 92) 82% 62%) 54%, hsl(calc(var(--cell-hue) + 132) 80% 75%));
+        content: '';
+        transform: rotateY(180deg);
+        backface-visibility: hidden;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .matrix-cell:hover {
+            transform: rotateY(180deg) scale(1.04);
+        }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -671,7 +681,7 @@ const portfolios = Array.from(
         }
 
         .matrix-cell:hover {
-            transform: none;
+            transform: rotateY(180deg);
         }
     }
 
@@ -737,7 +747,7 @@ const portfolios = Array.from(
 
     .team-section h2 {
         width: fit-content;
-        margin: 0 auto;
+        margin: 0 auto 1.25rem;
         padding-bottom: 0.16rem;
         border-bottom: 1px solid rgb(119 107 135 / 0.62);
         color: var(--team-ink);

@@ -181,7 +181,8 @@ const { length = '98%', underlay } = Astro.props;
     mark.append(document.createElement('i'));
     mark.addEventListener('click', () => {
       target = i;
-      scrollTo({ top: section.getBoundingClientRect().top + scrollY, behavior });
+      const offset = Number((section as HTMLElement).dataset.scrollOffset) || 0;
+      scrollTo({ top: Math.max(0, section.getBoundingClientRect().top + scrollY - offset), behavior });
       schedule();
     });
     // Once faded out, a star drops its live colour so hovering it previews its own.
