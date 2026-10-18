@@ -165,7 +165,7 @@ const portfolios = Array.from(
                                     {section.members.map((member, memberIndex) => {
                                         const image = photo(member.file);
                                         return (
-                                                <div class="member-card text-center" data-depth={cardDepth(memberIndex + index)}>
+                                            <div class="member-card text-center" data-depth={cardDepth(memberIndex + index)}>
                                                 <TeamMemberDetails member={member} image={image} sizes={section.sizes} eager={section.eager} />
                                             </div>
                                         );
@@ -702,7 +702,7 @@ const portfolios = Array.from(
         z-index: 1;
         left: clamp(1.5rem, 4vw, 4.5rem);
         top: 50%;
-        width: min(59%, 42rem);
+        width: min(54%, 42rem);
         transform: translateY(-50%);
     }
 
@@ -1040,18 +1040,21 @@ const portfolios = Array.from(
         }
 
         .hero-art-wordmark {
-            top: 62%;
-            left: -8%;
-            width: 108%;
+            top: auto;
+            bottom: 7%;
+            left: 40%;
+            width: 60%;
         }
 
         .wordmark-main {
-            font-size: clamp(2.15rem, 10vw, 3.5rem);
+            font-size: clamp(1.35rem, 5.8vw, 2.1rem);
+            white-space: nowrap;
         }
 
         .wordmark-kicker,
         .wordmark-foot {
-            font-size: 0.48rem;
+            font-size: 0.42rem;
+            letter-spacing: 0.1em;
         }
 
         .hero-pixels {
