@@ -28,11 +28,11 @@ const { length = '98%', underlay } = Astro.props;
      container. */
   .stars-scrollbar {
     /* The bar's width as a percentage of the page's width. */
-    --width: 4.2;
+    --width: var(--stars-scrollbar-width, 4.2);
     position: absolute;
     top: 0;
     left: 0;
-    width: var(--team-scrollbar-width, calc(var(--width) * 1%));
+    width: calc(var(--width) * 1%);
     height: var(--length);
     overflow: clip;
     border-radius: 0 0 calc(var(--width) * 0.5cqw) calc(var(--width) * 0.5cqw);

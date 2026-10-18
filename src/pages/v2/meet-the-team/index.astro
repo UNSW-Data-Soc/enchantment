@@ -392,7 +392,7 @@ const portfolios = Array.from(
 
 <style>
     .team-page {
-        --team-scrollbar-width: 4.2%;
+        --stars-scrollbar-width: 4.2;
         --team-ink: #34394b;
         --team-cream: #fffcf3;
         --team-blue: #3a718b;
@@ -524,7 +524,7 @@ const portfolios = Array.from(
     .team-panel {
         position: relative;
         width: auto;
-        margin: 0 calc(var(--team-scrollbar-width) + clamp(10px, 1.4vw, 22px));
+        margin: 0 calc(var(--stars-scrollbar-width) * 1vw + clamp(10px, 1.4vw, 22px));
         overflow: clip;
         border-right: 1px solid rgb(72 75 112 / 0.12);
         border-left: 1px solid rgb(72 75 112 / 0.12);
@@ -651,7 +651,6 @@ const portfolios = Array.from(
         min-width: 0;
         min-height: 0;
         pointer-events: auto;
-        overflow: hidden;
         border: 1px solid hsl(var(--cell-hue) 48% 74% / 0.55);
         background:
             linear-gradient(90deg, hsl(var(--cell-hue) 60% 84%), hsl(calc(var(--cell-hue) + 18) 62% 79%) 52%, hsl(calc(var(--cell-hue) + 36) 58% 84%));
@@ -889,7 +888,7 @@ const portfolios = Array.from(
         }
 
         .team-panel {
-            margin: 0 calc(var(--team-scrollbar-width) + 8px);
+            margin: 0 calc(var(--stars-scrollbar-width) * 1vw + 8px);
             border: 0;
         }
 
