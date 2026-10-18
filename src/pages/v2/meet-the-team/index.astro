@@ -222,6 +222,8 @@ const portfolios = Array.from(
     const TRAIL_RIGHT_X = 0.86;
     const TRAIL_LEFT_X = 0.14;
     const TRAIL_READING_LINE = 0.58;
+    const MATRIX_COLUMN_COUNT = 12;
+    const MATRIX_ROW_COUNT = 10;
     // Eighteen bisection steps locate the trail position to well under a pixel.
     const TRAIL_SEARCH_ITERATIONS = 18;
     const page = document.querySelector<HTMLElement>('.team-page');
@@ -286,8 +288,8 @@ const portfolios = Array.from(
         matrix.addEventListener('pointermove', (event) => {
             if (reducedMotion.matches) return;
             const bounds = matrix.getBoundingClientRect();
-            const pointerX = ((event.clientX - bounds.left) / bounds.width) * MATRIX_COLUMNS;
-            const pointerY = ((event.clientY - bounds.top) / bounds.height) * MATRIX_ROWS;
+            const pointerX = ((event.clientX - bounds.left) / bounds.width) * MATRIX_COLUMN_COUNT;
+            const pointerY = ((event.clientY - bounds.top) / bounds.height) * MATRIX_ROW_COUNT;
             const radius = 4.25;
 
             matrixCells.forEach((cell) => {
