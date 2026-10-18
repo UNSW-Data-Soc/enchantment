@@ -11,14 +11,15 @@ interface Props {
   eyebrowDetail?: string;
   caption?: string;
   index?: string;
+  teamBackground?: boolean;
 }
 
-const { title, titleAccent, eyebrow = 'UNSW DataSoc', eyebrowDetail, caption, index } = Astro.props;
+const { title, titleAccent, eyebrow = 'UNSW DataSoc', eyebrowDetail, caption, index, teamBackground = false } = Astro.props;
 ---
 
 <V2Layout title={`${title} - UNSW DataSoc`}>
   <link slot="head" rel="preload" as="image" href="/backgrounds/meet-the-team-scrollbar-underlay.png" fetchpriority="high" />
-  <div class="content-page">
+  <div class:list={['content-page', { 'team-background': teamBackground }]}>
     <StarsScrollbar
       length="100%"
       underlay="/backgrounds/meet-the-team-scrollbar-underlay.png"
@@ -44,6 +45,10 @@ const { title, titleAccent, eyebrow = 'UNSW DataSoc', eyebrowDetail, caption, in
 <style>
   .content-page {
     --stars-scrollbar-width: 4.2;
+    --team-accent-pink: #d94a65;
+    --team-accent-purple: #8c7898;
+    --team-accent-blue: #119bd6;
+    --team-accent-gold: #f4b000;
     position: relative;
     isolation: isolate;
     min-height: 100vh;
@@ -54,6 +59,41 @@ const { title, titleAccent, eyebrow = 'UNSW DataSoc', eyebrowDetail, caption, in
       radial-gradient(circle, rgb(52 57 75 / 0.16) 1px, transparent 1.5px) 0 0 / 18px 18px,
       linear-gradient(135deg, #e7c5c1, #e0d5e7 36%, #c8dce3 70%, #e9d3bd);
     font-family: var(--font-syne), sans-serif;
+  }
+
+  .team-background {
+    background:
+      radial-gradient(circle, rgb(52 57 75 / 0.18) 1px, transparent 1.5px) 0 0 / 18px 18px,
+      radial-gradient(circle, rgb(255 252 243 / 0.48) 1px, transparent 1.7px) 88% 12rem / 11px 11px,
+      linear-gradient(90deg, rgb(217 74 101 / 0.18), transparent 18%, transparent 78%, rgb(58 113 139 / 0.22)),
+      linear-gradient(135deg, #e7c5c1 0%, #e0d5e7 33%, #c8dce3 62%, #e9d3bd 100%);
+  }
+
+  .team-background::before,
+  .team-background::after {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    content: '';
+  }
+
+  .team-background::before {
+    background:
+      repeating-linear-gradient(135deg, transparent 0 18px, rgb(52 57 75 / 0.12) 19px 20px, transparent 21px 38px) left top / 7vw 100%,
+      repeating-linear-gradient(45deg, transparent 0 18px, rgb(52 57 75 / 0.12) 19px 20px, transparent 21px 38px) right top / 7vw 100%,
+      radial-gradient(circle, rgb(52 57 75 / 0.2) 1px, transparent 1.5px) left top / 7vw 14px,
+      radial-gradient(circle, rgb(52 57 75 / 0.2) 1px, transparent 1.5px) right top / 7vw 14px;
+    background-repeat: repeat-y;
+  }
+
+  .team-background::after {
+    background:
+      radial-gradient(circle at center, transparent 42%, rgb(119 107 135 / 0.3) 43% 44%, transparent 45%) 1vw 12rem / 5rem 5rem no-repeat,
+      radial-gradient(circle at center, transparent 42%, rgb(58 113 139 / 0.34) 43% 44%, transparent 45%) calc(100% - 1vw) 42rem / 6rem 6rem no-repeat,
+      conic-gradient(from 45deg, var(--team-accent-pink) 0 25%, var(--team-accent-purple) 0 50%, var(--team-accent-blue) 0 75%, var(--team-accent-gold) 0) 1.8vw 33rem / 0.7rem 0.7rem no-repeat,
+      conic-gradient(from 45deg, var(--team-accent-pink) 0 25%, var(--team-accent-purple) 0 50%, var(--team-accent-blue) 0 75%, var(--team-accent-gold) 0) calc(100% - 2vw) 67rem / 0.9rem 0.9rem no-repeat;
+    opacity: 0.65;
   }
 
   .content-panel {
