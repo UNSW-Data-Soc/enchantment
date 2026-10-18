@@ -9,8 +9,9 @@ import sys
 from collections import Counter
 from PIL import Image
 
-START = 1880  # first row painted out: the bar is solid #636478 with no halftone dots over it from row 1868. The drawn
-# bar starts 2 rows above (109.95cqw) to cover the join; any earlier would darken the image's anti-aliased edge twice.
+# First row painted out. The image's bar is plain solid #636478 from row 1868 (no halftone dots over it), and the drawn
+# bar fades in over rows 1868..2100 so its edge takes over from the image's gradually instead of in one visible step.
+START = 2100
 BAR = 73  # columns 0..72 cover the bar (4.2% of 1708px, its edge anti-aliased across column 71) and that edge
 CHEVRONS = range(4100, 4220)  # rows where the mirror would copy the Latest Publications chevrons into the bar
 

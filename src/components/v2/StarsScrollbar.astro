@@ -2,7 +2,7 @@
 import star from '../../assets/ui/shapes/one-star.svg?url';
 
 interface Props {
-  /** How far down the page the bar runs, as a CSS length or percentage of the page's height. At least 38.4%: above
+  /** How far down the page the bar runs, as a CSS length or percentage of the page's height. At least 42.9%: above
    *  that the bar is part of the background image. */
   length?: string;
 }
@@ -20,7 +20,9 @@ const { length = '98%' } = Astro.props;
   /* The dark bar down the page's left edge, which clips the stars to it. Over the hero it's see-through and blended
      into the background image, so that part is repainted from the image; from just below the hero (where the image's
      bar has been painted out) it's drawn here, so its length can change. Gradient stops are in cqw (1% of the page's
-     width; HomePage is the container) so they stay at the same place on the page whatever the bar's length. The stops
+     width; HomePage is the container) so they stay at the same place on the page whatever the bar's length. Where the
+     two meet, the drawn bar fades in over the image's (same colour), so the edge switches from the image's anti-aliasing
+     to the browser's gradually rather than in a one-pixel step. The stops
      and the painted-out rows come from scripts/paint-out-scrollbar-bar.py; re-measure both for a new background. */
   .stars-scrollbar {
     /* The bar's width as a percentage of the page's width: the image's bar is 71.75px of 1708 (edge anti-aliased),
@@ -30,14 +32,14 @@ const { length = '98%' } = Astro.props;
     top: 0;
     left: 0;
     width: calc(var(--width) * 1%);
-    /* The image's bar is painted out from 37.7% down; a shorter bar would leave it showing past the rounded end. */
-    height: max(var(--length), 38.4%);
+    /* The image's bar is painted out from 42.1% down; a shorter bar would leave it showing past the rounded end. */
+    height: max(var(--length), 42.9%);
     overflow: clip;
     border-radius: 0 0 calc(var(--width) * 0.5cqw) calc(var(--width) * 0.5cqw);
     pointer-events: none;
     /* Opaque, so content running under it (the Latest Publications cards) passes behind the bar instead of over it. */
     background:
-      linear-gradient(transparent 109.95cqw, #636478 0, #636478 198.3cqw, #384151 227.81cqw),
+      linear-gradient(rgb(99 100 120 / 0) 109.37cqw, #636478 122.95cqw, #636478 198.3cqw, #384151 227.81cqw),
       url('/backgrounds/homepage-bg-v2-p00-no-bar.png') 0 0 / 100cqw auto no-repeat;
   }
 
@@ -47,7 +49,7 @@ const { length = '98%' } = Astro.props;
     .stars-scrollbar {
       border-radius: 0 0 50% 50% / 0 0 0.72% 0.72%;
       background:
-        linear-gradient(transparent 38.4%, #636478 0, #636478 69.3%, #384151 79.6%),
+        linear-gradient(rgb(99 100 120 / 0) 38.2%, #636478 43%, #636478 69.3%, #384151 79.6%),
         url('/backgrounds/homepage-bg-v2-p00-no-bar.png') 0 0 / calc(100% * 100 / var(--width)) auto no-repeat;
     }
   }
