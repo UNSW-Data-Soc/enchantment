@@ -5,12 +5,16 @@ body {
 }
 
 body :is(a, button, summary, [role="button"]) {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' shape-rendering='crispEdges'%3E%3Cpath d='M5 19v-7H3v-2h3V8h2V2h2v8h2v2h3v5l-3 2z' fill='%23f4b6cc' stroke='%23514368' stroke-width='1'/%3E%3Cpath d='M8 3h2v6H8z' fill='%23ffe4ef'/%3E%3C/svg%3E") 9 3, pointer !important;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' shape-rendering='crispEdges'%3E%3Cpath d='M5 19v-7H3v-2h3V8h2V2h2v8h2v2h3v5l-3 2z' fill='%23f4b6cc' stroke='%23514368' stroke-width='1'/%3E%3Cpath d='M8 3h2v6H8z' fill='%23ffe4ef'/%3E%3C/svg%3E") 9 3, pointer;
+}
+
+body :is(input, textarea, [contenteditable]:not([contenteditable="false"]), [role="textbox"]) {
+  cursor: text;
 }
 
 @media (pointer: coarse) {
   body,
   body :is(a, button, summary, [role="button"]) {
-    cursor: auto !important;
+    cursor: auto;
   }
 }

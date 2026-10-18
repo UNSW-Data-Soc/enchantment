@@ -225,8 +225,7 @@ const portfolios = Array.from(
     const TRAIL_RIGHT_X = 0.72;
     const TRAIL_LEFT_X = 0.28;
     const TRAIL_READING_LINE = 0.58;
-    // Eighteen bisection steps locate the trail position to well under a pixel.
-    const TRAIL_SEARCH_ITERATIONS = 18;
+    const TRAIL_SAMPLE_SPACING = 12;
     const page = document.querySelector<HTMLElement>('.team-page');
     const trail = page?.querySelector<SVGSVGElement>('.scroll-trail');
     const trailBase = trail?.querySelector<SVGPathElement>('.trail-base');
@@ -237,9 +236,14 @@ const portfolios = Array.from(
     const layerDocumentCentres = new Map<HTMLElement, number>();
     const refreshLayerCentres = () => {
         layers.forEach((layer) => {
+            const transform = layer.style.transform;
+            const transition = layer.style.transition;
+            layer.style.transition = 'none';
+            layer.style.transform = 'none';
             const rect = layer.getBoundingClientRect();
-            const currentOffset = parseFloat(layer.style.getPropertyValue('--parallax-y')) || 0;
-            layerDocumentCentres.set(layer, rect.top + scrollY - currentOffset + rect.height / 2);
+            layer.style.transform = transform;
+            layer.style.transition = transition;
+            layerDocumentCentres.set(layer, rect.top + scrollY + rect.height / 2);
         });
     };
     const scrollUpdates = new Set<() => void>();
@@ -278,6 +282,7 @@ const portfolios = Array.from(
         let pathLength = 0;
         let firstY = 0;
         let lastY = 0;
+        let trailSamples: { length: number; x: number; y: number }[] = [];
         let drawFrame = 0;
 
         const drawTrail = () => {
@@ -290,7 +295,7 @@ const portfolios = Array.from(
 
             const anchors = Array.from(page.querySelectorAll<HTMLElement>('[data-trail-section]'));
             const points = anchors.map((anchor, index) => {
-                const heading = anchor.querySelector<HTMLElement>('h1, h2, h3') ?? anchor;
+                const heading = anchor.querySelector<HTMLElement>(':scope > header h1, :scope > h1, :scope > h2, :scope > h3') ?? anchor;
                 const rect = heading.getBoundingClientRect();
                 const trailSide = anchor.dataset.trailSide;
                 const x = trailSide === 'left'
@@ -321,6 +326,12 @@ const portfolios = Array.from(
             trailProgress.setAttribute('d', path);
             pathLength = trailProgress.getTotalLength();
             trailProgress.style.strokeDasharray = `${pathLength} ${pathLength}`;
+            const sampleCount = Math.max(1, Math.ceil(pathLength / TRAIL_SAMPLE_SPACING));
+            trailSamples = Array.from({ length: sampleCount + 1 }, (_, index) => {
+                const length = (pathLength * index) / sampleCount;
+                const point = trailProgress.getPointAtLength(length);
+                return { length, x: point.x, y: point.y };
+            });
             update();
         };
 
@@ -335,17 +346,19 @@ const portfolios = Array.from(
             trailDot.removeAttribute('visibility');
             const targetY = Math.min(Math.max(innerHeight * TRAIL_READING_LINE - bounds.top, firstY), lastY);
             let low = 0;
-            let high = pathLength;
-            for (let i = 0; i < TRAIL_SEARCH_ITERATIONS; i += 1) {
-                const middle = (low + high) / 2;
-                if (trailProgress.getPointAtLength(middle).y < targetY) low = middle;
+            let high = trailSamples.length - 1;
+            while (high - low > 1) {
+                const middle = Math.floor((low + high) / 2);
+                if (trailSamples[middle].y < targetY) low = middle;
                 else high = middle;
             }
-            const length = (low + high) / 2;
+            const start = trailSamples[low];
+            const end = trailSamples[high];
+            const progress = Math.min(Math.max((targetY - start.y) / (end.y - start.y || 1), 0), 1);
+            const length = start.length + (end.length - start.length) * progress;
             trailProgress.style.strokeDashoffset = String(pathLength - length);
-            const point = trailProgress.getPointAtLength(length);
-            trailDot.setAttribute('cx', String(point.x));
-            trailDot.setAttribute('cy', String(point.y));
+            trailDot.setAttribute('cx', String(start.x + (end.x - start.x) * progress));
+            trailDot.setAttribute('cy', String(start.y + (end.y - start.y) * progress));
         };
 
         const scheduleDraw = () => {
