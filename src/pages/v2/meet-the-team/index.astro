@@ -380,7 +380,10 @@ const portfolios = Array.from(
         addEventListener('resize', scheduleDraw);
         addEventListener('load', scheduleDraw);
         document.fonts.ready.then(scheduleDraw);
-        const resizeObserver = new ResizeObserver(scheduleDraw);
+        const resizeObserver = new ResizeObserver(() => {
+            scheduleDraw();
+            scheduleLayerRefresh();
+        });
         resizeObserver.observe(page);
         reducedMotion.addEventListener('change', scheduleDraw);
     }
@@ -684,6 +687,7 @@ const portfolios = Array.from(
     @media (prefers-reduced-motion: reduce) {
         .matrix-cell {
             transition: none;
+            pointer-events: none;
         }
 
         .matrix-cell:hover {
