@@ -713,7 +713,7 @@ const portfolios = Array.from(
     .team-section {
         scroll-margin-top: 6rem;
         position: relative;
-        padding: clamp(1.25rem, 2.6vw, 2.5rem);
+        padding: clamp(1.5rem, 2.5vw, 2.25rem) clamp(1.25rem, 2vw, 1.75rem) clamp(2rem, 3vw, 2.75rem);
         border: 1px solid rgb(52 57 75 / 0.1);
         border-radius: 0.45rem;
         background: rgb(255 252 243 / 0.58);
@@ -739,11 +739,8 @@ const portfolios = Array.from(
         flex-basis: clamp(150px, 22%, 250px);
     }
 
-    .leadership-section {
-        padding-block: clamp(4rem, 7vw, 6.5rem);
-    }
-
     .directors-section {
+        padding: clamp(1.5rem, 2.5vw, 2.25rem) clamp(1.25rem, 2vw, 1.75rem) clamp(2rem, 3vw, 2.75rem);
         background:
             radial-gradient(circle, rgb(119 107 135 / 0.08) 1px, transparent 1.7px) 0 0 / 20px 20px,
             linear-gradient(135deg, rgb(243 231 226 / 0.62), rgb(228 235 234 / 0.62) 52%, rgb(244 235 218 / 0.64));
@@ -758,7 +755,7 @@ const portfolios = Array.from(
     .portfolio-section {
         width: 50%;
         min-width: 0;
-        padding: clamp(1.75rem, 3.5vw, 3rem) clamp(0.75rem, 1.4vw, 1.25rem);
+        padding: clamp(1.5rem, 2.5vw, 2.25rem) clamp(0.75rem, 1.4vw, 1.25rem) clamp(2rem, 3vw, 2.75rem);
         margin-left: 0;
         border: 1px solid rgb(52 57 75 / 0.11);
         border-radius: 0.45rem;
@@ -897,16 +894,13 @@ const portfolios = Array.from(
             text-align: center;
         }
 
-        .team-section {
-            padding: 1rem;
+        .team-section,
+        .directors-section {
+            padding: 1.5rem 1rem 2rem;
         }
 
         .team-section.space-y-16 > :not(:first-child) {
             margin-top: 3.5rem;
-        }
-
-        .leadership-section {
-            padding-block: 4.5rem;
         }
 
         .leadership-members .member-card,
