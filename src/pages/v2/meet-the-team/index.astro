@@ -9,6 +9,7 @@ import type { ImageMetadata } from 'astro';
 const LEADERSHIP_SIZES = '(min-width: 1440px) 250px, (min-width: 768px) 22vw, (min-width: 640px) 150px, 42vw';
 const PORTFOLIO_SIZES = '(min-width: 1440px) 265px, (min-width: 768px) 18vw, (min-width: 640px) 20vw, 42vw';
 const PORTFOLIO_VARIANTS = 4;
+const CARD_PARALLAX_DEPTHS = [0.04, -0.045, 0.028, -0.035, 0.05, -0.025];
 const photos = import.meta.glob<{ default: ImageMetadata }>(
     '../../../assets/meet-the-team/datasoc-board-photos/*.jpg',
     { eager: true },
@@ -19,6 +20,10 @@ function photo(file?: string): ImageMetadata | undefined {
     const entry = photos[`../../../assets/meet-the-team/datasoc-board-photos/${file}`];
     if (!entry) throw new Error(`Board photo not found: ${file}`);
     return entry.default;
+}
+
+function cardDepth(index: number): number {
+    return CARD_PARALLAX_DEPTHS[index % CARD_PARALLAX_DEPTHS.length];
 }
 
 type Member = { name: string; role: string; file?: string };
@@ -139,7 +144,11 @@ const portfolios = Array.from(
                             <span class="hero-orbit orbit-two" data-depth="0.06"></span>
                             <span class="hero-cross"></span>
                             <span class="hero-pixels"></span>
-                            <span class="hero-art-label">A collective<br />of curious minds</span>
+                            <div class="hero-art-wordmark">
+                                <span class="wordmark-kicker">The people behind</span>
+                                <span class="wordmark-main">Data<span>Soc</span></span>
+                                <span class="wordmark-foot">Curiosity in good company</span>
+                            </div>
                         </div>
                     </header>
 
@@ -153,10 +162,10 @@ const portfolios = Array.from(
                             >
                                 <h2>{section.title}</h2>
                                 <div class="leadership-members">
-                                    {section.members.map((member) => {
+                                    {section.members.map((member, memberIndex) => {
                                         const image = photo(member.file);
                                         return (
-                                            <div class="member-card text-center">
+                                                <div class="member-card text-center" data-depth={cardDepth(memberIndex + index)}>
                                                 <TeamMemberDetails member={member} image={image} sizes={section.sizes} eager={section.eager} />
                                             </div>
                                         );
@@ -172,10 +181,10 @@ const portfolios = Array.from(
                                     <section class:list={['portfolio-section', `portfolio-${index % PORTFOLIO_VARIANTS}`]}>
                                         <h3>{section.title}</h3>
                                         <div class="portfolio-members">
-                                            {section.members.map((member) => {
+                                            {section.members.map((member, memberIndex) => {
                                                 const image = photo(member.file);
                                                 return (
-                                                    <div class="member-card text-center">
+                                                    <div class="member-card text-center" data-depth={cardDepth(memberIndex + index + 2)}>
                                                         <TeamMemberDetails member={member} image={image} sizes={section.sizes} />
                                                     </div>
                                                 );
@@ -188,18 +197,16 @@ const portfolios = Array.from(
                     </Container>
                 </main>
             </div>
-            <div class="team-footer" data-trail-section data-trail-end>
-                <Footer />
-            </div>
         </div>
     </div>
+    <Footer />
 </V2Layout>
 
 <script>
     const TRAIL_CENTER_X = 0.5;
     const TRAIL_RIGHT_X = 0.86;
     const TRAIL_LEFT_X = 0.14;
-    const TRAIL_READING_LINE = 0.45;
+    const TRAIL_READING_LINE = 0.58;
     // Eighteen bisection steps locate the trail position to well under a pixel.
     const TRAIL_SEARCH_ITERATIONS = 18;
     const page = document.querySelector<HTMLElement>('.team-page');
@@ -531,8 +538,8 @@ const portfolios = Array.from(
         overflow: clip;
         border-right: 1px solid rgb(72 75 112 / 0.12);
         border-left: 1px solid rgb(72 75 112 / 0.12);
-        background: var(--team-cream);
-        box-shadow: 0 0 3rem rgb(52 57 75 / 0.12);
+        background: transparent;
+        box-shadow: 0 0 3rem rgb(52 57 75 / 0.08);
     }
 
     .team-body {
@@ -540,11 +547,6 @@ const portfolios = Array.from(
     }
 
     .team-content {
-        position: relative;
-        z-index: 2;
-    }
-
-    .team-footer {
         position: relative;
         z-index: 2;
     }
@@ -565,14 +567,14 @@ const portfolios = Array.from(
     }
 
     .trail-base {
-        stroke-width: 3;
-        stroke-dasharray: 2 13;
-        opacity: 0.28;
+        stroke-width: 4;
+        stroke-dasharray: 3 10;
+        opacity: 0.5;
     }
 
     .trail-progress {
-        stroke-width: 4;
-        filter: drop-shadow(0 0 4px rgb(119 107 135 / 0.32));
+        stroke-width: 5;
+        filter: drop-shadow(0 0 6px rgb(119 107 135 / 0.52));
     }
 
     .trail-dot {
@@ -766,18 +768,40 @@ const portfolios = Array.from(
         mask-image: linear-gradient(135deg, #000, transparent);
     }
 
-    .hero-art-label {
+    .hero-art-wordmark {
         position: absolute;
-        right: 12%;
-        bottom: 14%;
-        padding: 0.65rem 0.8rem;
-        border: 1px solid rgb(52 57 75 / 0.25);
-        background: rgb(255 252 243 / 0.8);
+        top: 50%;
+        left: 0;
+        z-index: 2;
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        transform: translateY(-50%);
         color: var(--team-ink);
+        text-align: center;
+        text-shadow: 0 1px 10px rgb(255 252 243 / 0.8);
+    }
+
+    .wordmark-kicker,
+    .wordmark-foot {
+        font-size: clamp(0.55rem, 0.8vw, 0.75rem);
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+    }
+
+    .wordmark-main {
         font-family: Georgia, 'Times New Roman', serif;
-        font-size: clamp(0.75rem, 1.1vw, 0.95rem);
-        font-style: italic;
-        line-height: 1.2;
+        font-size: clamp(2.5rem, 6vw, 6rem);
+        font-weight: 500;
+        letter-spacing: -0.09em;
+        line-height: 0.95;
+    }
+
+    .wordmark-main span {
+        color: transparent;
+        -webkit-text-stroke: 1px var(--team-accent-pink);
     }
 
     .team-eyebrow {
@@ -843,7 +867,7 @@ const portfolios = Array.from(
     .team-section h2 {
         width: fit-content;
         margin: 0 auto;
-        padding-bottom: 0.55rem;
+        padding-bottom: 0.16rem;
         border-bottom: 1px solid rgb(119 107 135 / 0.62);
         color: var(--team-ink);
         font-family: Georgia, 'Times New Roman', serif;
@@ -858,16 +882,16 @@ const portfolios = Array.from(
         padding: clamp(1.25rem, 2.6vw, 2.5rem);
         border: 1px solid rgb(52 57 75 / 0.1);
         border-radius: 0.45rem;
-        background: rgb(255 252 243 / 0.82);
+        background: rgb(255 252 243 / 0.58);
         box-shadow: 0 0.5rem 1.5rem rgb(52 57 75 / 0.045);
     }
 
     .leadership-0 {
-        background: linear-gradient(125deg, rgb(208 226 231 / 0.48), rgb(255 252 243 / 0.95) 55%, rgb(230 220 230 / 0.5));
+        background: linear-gradient(125deg, rgb(208 226 231 / 0.58), rgb(255 252 243 / 0.68) 55%, rgb(230 220 230 / 0.58));
     }
 
     .leadership-1 {
-        background: linear-gradient(125deg, rgb(239 222 222 / 0.52), rgb(255 252 243 / 0.95) 52%, rgb(211 227 232 / 0.56));
+        background: linear-gradient(125deg, rgb(239 222 222 / 0.62), rgb(255 252 243 / 0.68) 52%, rgb(211 227 232 / 0.62));
     }
 
     .leadership-members {
@@ -884,7 +908,7 @@ const portfolios = Array.from(
     .directors-section {
         background:
             radial-gradient(circle, rgb(119 107 135 / 0.08) 1px, transparent 1.7px) 0 0 / 20px 20px,
-            linear-gradient(135deg, rgb(243 231 226 / 0.92), rgb(228 235 234 / 0.9) 52%, rgb(244 235 218 / 0.92));
+            linear-gradient(135deg, rgb(243 231 226 / 0.62), rgb(228 235 234 / 0.62) 52%, rgb(244 235 218 / 0.64));
     }
 
     .portfolio-grid {
@@ -898,19 +922,19 @@ const portfolios = Array.from(
         padding: clamp(0.75rem, 1.4vw, 1.25rem);
         border: 1px solid rgb(52 57 75 / 0.11);
         border-radius: 0.45rem;
-        background: rgb(255 252 243 / 0.82);
+        background: rgb(255 252 243 / 0.62);
     }
 
     .portfolio-1 {
-        background: rgb(232 225 233 / 0.78);
+        background: rgb(232 225 233 / 0.64);
     }
 
     .portfolio-2 {
-        background: rgb(220 233 235 / 0.8);
+        background: rgb(220 233 235 / 0.64);
     }
 
     .portfolio-3 {
-        background: rgb(244 229 219 / 0.82);
+        background: rgb(244 229 219 / 0.66);
     }
 
     .portfolio-section h3 {
@@ -942,15 +966,16 @@ const portfolios = Array.from(
         padding: 0.45rem 0.45rem 0.75rem;
         border: 1px solid rgb(52 57 75 / 0.1);
         border-radius: 0.4rem;
-        background: rgb(255 254 250 / 0.96);
+        background: rgb(255 254 250 / 0.82);
         box-shadow: 0 0.25rem 0.75rem rgb(52 57 75 / 0.075);
+        transform: translate3d(0, var(--parallax-y, 0px), 0);
         transition:
             transform 250ms ease,
             box-shadow 250ms ease;
     }
 
     .member-card:hover {
-        transform: translateY(-0.12rem);
+        transform: translate3d(0, calc(var(--parallax-y, 0px) - 0.12rem), 0);
         box-shadow: 0 0.6rem 1.25rem rgb(52 57 75 / 0.11);
     }
 
@@ -1014,11 +1039,19 @@ const portfolios = Array.from(
             width: clamp(8.5rem, 41vw, 13rem);
         }
 
-        .hero-art-label {
-            right: 5%;
-            bottom: 8%;
-            padding: 0.45rem 0.55rem;
-            font-size: 0.65rem;
+        .hero-art-wordmark {
+            top: 62%;
+            left: -8%;
+            width: 108%;
+        }
+
+        .wordmark-main {
+            font-size: clamp(2.15rem, 10vw, 3.5rem);
+        }
+
+        .wordmark-kicker,
+        .wordmark-foot {
+            font-size: 0.48rem;
         }
 
         .hero-pixels {
