@@ -2,7 +2,8 @@
 import star from '../../assets/ui/shapes/one-star.svg?url';
 
 interface Props {
-  /** How far down the page the bar runs, as a CSS length or percentage of the page's height. */
+  /** How far down the page the bar runs, as a CSS length or percentage of the page's height. At least 38.4%: above
+   *  that the bar is part of the background image. */
   length?: string;
 }
 const { length = '98%' } = Astro.props;
@@ -19,20 +20,35 @@ const { length = '98%' } = Astro.props;
   /* The dark bar down the page's left edge, which clips the stars to it. Over the hero it's see-through and blended
      into the background image, so that part is repainted from the image; from just below the hero (where the image's
      bar has been painted out) it's drawn here, so its length can change. Gradient stops are in cqw (1% of the page's
-     width; HomePage is the container) so they stay at the same place on the page whatever the bar's length. */
+     width; HomePage is the container) so they stay at the same place on the page whatever the bar's length. The stops
+     and the painted-out rows come from scripts/paint-out-scrollbar-bar.py; re-measure both for a new background. */
   .stars-scrollbar {
+    /* The bar's width as a percentage of the page's width. */
+    --width: 4.13;
     position: absolute;
     top: 0;
     left: 0;
-    width: 4.13%;
-    height: var(--length);
+    width: calc(var(--width) * 1%);
+    /* The image's bar is painted out from 37.7% down; a shorter bar would leave it showing past the rounded end. */
+    height: max(var(--length), 38.4%);
     overflow: clip;
-    border-radius: 0 0 2.065cqw 2.065cqw;
+    border-radius: 0 0 calc(var(--width) * 0.5cqw) calc(var(--width) * 0.5cqw);
     pointer-events: none;
     /* Opaque, so content running under it (the Latest Publications cards) passes behind the bar instead of over it. */
     background:
       linear-gradient(transparent 109.37cqw, #636478 0, #636478 198.3cqw, #384151 227.81cqw),
-      url('/backgrounds/homepage-bg-v2-p00.png') 0 0 / calc(100% / 0.0413) auto no-repeat;
+      url('/backgrounds/homepage-bg-v2-p00-no-bar.png') 0 0 / 100cqw auto no-repeat;
+  }
+
+  /* Without container query units the rules above are dropped and the bar below the hero would vanish, so it's drawn
+     in percentages of the bar instead, which only line up with the image at the default length. */
+  @supports not (width: 1cqw) {
+    .stars-scrollbar {
+      border-radius: 0 0 50% 50% / 0 0 0.72% 0.72%;
+      background:
+        linear-gradient(transparent 38.2%, #636478 0, #636478 69.3%, #384151 79.6%),
+        url('/backgrounds/homepage-bg-v2-p00-no-bar.png') 0 0 / calc(100% * 100 / var(--width)) auto no-repeat;
+    }
   }
 
   /* Extends half a screen past both ends so the stars can stay at 50% until the bar's end has scrolled past them. */
