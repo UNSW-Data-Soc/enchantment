@@ -198,7 +198,7 @@ const portfolios = Array.from(
                                     <section class:list={['portfolio-section', `portfolio-${index % PORTFOLIO_VARIANTS}`]} data-trail-section data-trail-side={index % 2 === 0 ? 'left' : 'right'}>
                                         <h3>{section.title}</h3>
                                         <div class="portfolio-members">
-                                            {section.members.map((member, memberIndex) => {
+                                            {section.members.map((member) => {
                                                 const image = photo(member.file);
                                                 return (
                                                     <div class="member-card text-center">
@@ -392,6 +392,7 @@ const portfolios = Array.from(
 
 <style>
     .team-page {
+        --team-scrollbar-width: 4.2%;
         --team-ink: #34394b;
         --team-cream: #fffcf3;
         --team-blue: #3a718b;
@@ -523,7 +524,7 @@ const portfolios = Array.from(
     .team-panel {
         position: relative;
         width: auto;
-        margin: 0 calc(4.2vw + clamp(10px, 1.4vw, 22px));
+        margin: 0 calc(var(--team-scrollbar-width) + clamp(10px, 1.4vw, 22px));
         overflow: clip;
         border-right: 1px solid rgb(72 75 112 / 0.12);
         border-left: 1px solid rgb(72 75 112 / 0.12);
@@ -888,7 +889,7 @@ const portfolios = Array.from(
         }
 
         .team-panel {
-            margin: 0 calc(4.2vw + 8px);
+            margin: 0 calc(var(--team-scrollbar-width) + 8px);
             border: 0;
         }
 
