@@ -1,16 +1,17 @@
 ---
 import Container from '../../../components/Container.astro';
 import Footer from '../../../components/v2/Footer.astro';
+import StarsScrollbar from '../../../components/v2/StarsScrollbar.astro';
 import TeamMemberDetails from '../../../components/v2/TeamMemberDetails.astro';
 import V2Layout from '../../../layouts/V2Layout.astro';
-import star from '../../../assets/ui/shapes/one-star.svg?url';
 import type { ImageMetadata } from 'astro';
 
 const LEADERSHIP_SIZES = '(min-width: 1440px) 250px, (min-width: 768px) 22vw, (min-width: 640px) 150px, 42vw';
-const PORTFOLIO_SIZES = '(min-width: 1440px) 265px, (min-width: 768px) 18vw, (min-width: 640px) 20vw, 42vw';
+const PORTFOLIO_SIZES = LEADERSHIP_SIZES;
 const PORTFOLIO_VARIANTS = 4;
 const MATRIX_COLUMNS = 12;
 const MATRIX_ROWS = 10;
+const MATRIX_HUES = [205, 218, 232, 250, 270, 292, 315, 340, 5, 25, 43, 55];
 const CARD_PARALLAX_DEPTHS = [0.04, -0.045, 0.028, -0.035, 0.05, -0.025];
 const photos = import.meta.glob<{ default: ImageMetadata }>(
     '../../../assets/meet-the-team/datasoc-board-photos/*.jpg',
@@ -31,7 +32,7 @@ function cardDepth(index: number): number {
 const matrixCells = Array.from({ length: MATRIX_COLUMNS * MATRIX_ROWS }, (_, index) => {
     const x = index % MATRIX_COLUMNS;
     const y = Math.floor(index / MATRIX_COLUMNS);
-    const hue = Math.round(205 + (x / (MATRIX_COLUMNS - 1)) * 105 + ((x * y) % 3) * 10);
+    const hue = MATRIX_HUES[x];
     const opacity = Number((0.16 + (x / (MATRIX_COLUMNS - 1)) * 0.26 + ((x + y) % 4) * 0.045).toFixed(2));
     return { x, y, hue, opacity };
 });
@@ -129,17 +130,14 @@ const portfolios = Array.from(
             <circle class="trail-dot" r="8" />
         </svg>
 
-        <nav class="team-progress-rail" aria-label="Page sections" style={`--star: url("${star}")`}>
-            <div class="rail-track">
-                <div class="rail-stars"></div>
-            </div>
-        </nav>
+        <StarsScrollbar length="100%" />
 
         <div class="team-panel">
             <div class="team-body">
                 <main
                     class="team-content"
                     data-trail-section
+                    data-section="Meet the team & President"
                     data-team-stop="Meet the team & President"
                     tabindex="-1"
                 >
@@ -168,8 +166,9 @@ const portfolios = Array.from(
                     <Container class="team-roster max-w-[1440px]">
                         {leadership.map((section, index) => (
                             <section
-                                class:list={['team-section space-y-10', `leadership-section leadership-${index}`]}
+                                class:list={['team-section space-y-12', `leadership-section leadership-${index}`]}
                                 data-trail-section={index === 1 ? '' : undefined}
+                                data-section={index === 1 ? 'Executives' : undefined}
                                 data-team-stop={index === 1 ? 'Executives' : undefined}
                                 tabindex={index === 1 ? -1 : undefined}
                             >
@@ -187,7 +186,7 @@ const portfolios = Array.from(
                             </section>
                         ))}
 
-                        <section class="team-section directors-section space-y-10" data-trail-section data-team-stop="Directors" tabindex="-1">
+                        <section class="team-section directors-section space-y-12" data-trail-section data-section="Directors" data-team-stop="Directors" tabindex="-1">
                             <h2>Directors</h2>
                             <div class="portfolio-grid">
                                 {portfolios.map((section, index) => (
@@ -234,12 +233,6 @@ const portfolios = Array.from(
     const matrixCells = Array.from(matrix?.querySelectorAll<HTMLElement>('.matrix-cell') ?? []);
     const layers = Array.from(page?.querySelectorAll<HTMLElement>('[data-depth]') ?? []);
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-    const stopElements = Array.from(page?.querySelectorAll<HTMLElement>('[data-team-stop]') ?? []);
-    const railStars = page?.querySelector<HTMLElement>('.rail-stars');
-    const stopOffsets = new Map<HTMLElement, number>();
-    const refreshStopOffsets = () => {
-        stopElements.forEach((element) => stopOffsets.set(element, element.getBoundingClientRect().top + scrollY));
-    };
     const layerDocumentCentres = new Map<HTMLElement, number>();
     const refreshLayerCentres = () => {
         layers.forEach((layer) => {
@@ -272,8 +265,6 @@ const portfolios = Array.from(
     scrollUpdates.add(updateParallax);
     reducedMotion.addEventListener('change', updateParallax);
     const refreshAndUpdatePositions = () => {
-        if (page && railStars) railStars.closest<HTMLElement>('.team-progress-rail')!.style.height = `${page.scrollHeight}px`;
-        refreshStopOffsets();
         refreshLayerCentres();
         scheduleScrollUpdates();
     };
@@ -316,57 +307,6 @@ const portfolios = Array.from(
         reducedMotion.addEventListener('change', () => {
             if (reducedMotion.matches) resetMatrix();
         });
-    }
-
-    if (page && railStars && stopElements.length) {
-        const names = stopElements.map((element) => element.dataset.teamStop ?? 'Section');
-        const styles = getComputedStyle(page);
-        const colours = ['--team-accent-pink', '--team-accent-purple', '--team-accent-blue'].map((name) =>
-            styles.getPropertyValue(name).trim(),
-        );
-        const stops = stopElements.map((element, index) => {
-            const button = railStars.appendChild(document.createElement('button'));
-            button.appendChild(document.createElement('i'));
-            button.type = 'button';
-            button.setAttribute('aria-label', `Go to ${names[index]}`);
-            button.style.setProperty('--own-colour', colours[index % colours.length]);
-            button.addEventListener('click', () => {
-                const scrollMargin = parseFloat(getComputedStyle(element).scrollMarginTop) || 0;
-                const top = element.getBoundingClientRect().top + scrollY - scrollMargin;
-                element.focus({ preventScroll: true });
-                const lenisScroll = new CustomEvent('v2-lenis-scroll-to', {
-                    cancelable: true,
-                    detail: { top, immediate: reducedMotion.matches },
-                });
-                if (dispatchEvent(lenisScroll)) {
-                    scrollTo({ top, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
-                }
-            });
-            return { element, button };
-        });
-
-        const updateStops = () => {
-            const readingLine = innerHeight * TRAIL_READING_LINE;
-            const atPageBottom = scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
-            let current = stops.length - 1;
-            if (!atPageBottom) {
-                const readingPosition = scrollY + readingLine;
-                current = 0;
-                for (let index = stops.length - 1; index > 0; index -= 1) {
-                    if ((stopOffsets.get(stops[index].element) ?? 0) <= readingPosition) {
-                        current = index;
-                        break;
-                    }
-                }
-            }
-            stops.forEach(({ button }, index) => {
-                if (index === current) button.setAttribute('aria-current', 'location');
-                else button.removeAttribute('aria-current');
-            });
-        };
-
-        scrollUpdates.add(updateStops);
-        updateStops();
     }
 
     if (page && trail && trailBase && trailProgress && trailDot) {
@@ -468,6 +408,7 @@ const portfolios = Array.from(
         --team-accent-gold: #f4b000;
         position: relative;
         isolation: isolate;
+        container-type: inline-size;
         overflow: clip;
         min-height: 100vh;
         padding: 0;
@@ -598,15 +539,7 @@ const portfolios = Array.from(
 
     .rail-tail-space {
         height: clamp(2.5rem, 5vw, 4rem);
-        background: var(--team-cream);
-    }
-
-    .team-footer {
-        margin-top: 0;
-    }
-
-    .team-footer :global(.v2-footer) {
-        aspect-ratio: 40 / 16;
+        background: #fffcf3;
     }
 
     .team-body {
@@ -649,86 +582,6 @@ const portfolios = Array.from(
         stroke: var(--team-accent-purple);
         stroke-width: 4;
         filter: drop-shadow(0 0 5px rgb(119 107 135 / 0.4));
-    }
-
-    .team-progress-rail {
-        position: absolute;
-        top: 0;
-        bottom: auto;
-        left: 0;
-        z-index: 4;
-        width: 4.13vw;
-        height: 98%;
-        overflow: clip;
-        border-radius: 0 0 50% 50% / 0 0 2rem 2rem;
-        background:
-            url('/backgrounds/homepage-bg-v2-p00.png') 0 0 / calc(100% / 0.0413) auto no-repeat,
-            #484b70;
-        pointer-events: none;
-    }
-
-    .rail-track {
-        position: absolute;
-        inset: -50vh 0;
-    }
-
-    .rail-stars {
-        position: sticky;
-        top: 50vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        transform: translateY(-50%);
-    }
-
-    @property --on {
-        syntax: '<percentage>';
-        inherits: true;
-        initial-value: 0%;
-    }
-
-    .rail-stars :global(button) {
-        display: grid;
-        place-items: center;
-        width: 100%;
-        min-height: 24px;
-        padding: 0.295vw 0;
-        border: 0;
-        background: none;
-        cursor: pointer;
-        pointer-events: auto;
-        --tint: var(--star-colour, var(--own-colour));
-        --colour: color-mix(in oklab, var(--tint) var(--on), #fffcf3);
-        filter: drop-shadow(0 0 0.25vw color-mix(in oklab, var(--tint) var(--on), transparent));
-        transition: --on 150ms ease;
-    }
-
-    .rail-stars :global(button[aria-current]) {
-        --on: 100%;
-        transition-duration: 250ms;
-    }
-
-    .rail-stars :global(button:not([aria-current]):hover) {
-        --on: 50%;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .rail-stars :global(button) {
-            transition: none;
-        }
-    }
-
-    .rail-stars :global(button:focus-visible) {
-        outline: 2px solid #fffcf3;
-        outline-offset: -2px;
-    }
-
-    .rail-stars :global(i) {
-        display: block;
-        width: 1.17vw;
-        height: 1.17vw;
-        background: var(--colour);
-        mask: var(--star) -0.756vw -0.549vw / 2.8vw no-repeat;
     }
 
     .team-hero {
@@ -810,6 +663,13 @@ const portfolios = Array.from(
             transform 420ms cubic-bezier(0.2, 0.8, 0.2, 1),
             opacity 220ms ease,
             filter 220ms ease;
+    }
+
+    .matrix-cell:hover {
+        z-index: 1;
+        filter: brightness(1.35) saturate(1.2);
+        transform: perspective(320px) rotateY(180deg) scale(1.16);
+        transition-duration: 320ms;
     }
 
     .team-eyebrow {
@@ -922,14 +782,11 @@ const portfolios = Array.from(
     .portfolio-grid {
         display: flex;
         flex-direction: column;
-        gap: clamp(0.8rem, 1.35vw, 1.35rem);
+        gap: clamp(1.1rem, 2vw, 2rem);
     }
 
     .portfolio-section {
-        display: grid;
         width: 88%;
-        grid-template-columns: minmax(10rem, 0.7fr) minmax(0, 2fr);
-        align-items: center;
         min-width: 0;
         padding: clamp(0.75rem, 1.4vw, 1.25rem);
         margin-left: 0;
@@ -957,13 +814,13 @@ const portfolios = Array.from(
 
     .portfolio-section h3 {
         width: fit-content;
-        margin: 0;
-        padding: 0.2rem 0.8rem 0.2rem 0;
+        margin: 0 auto 1.5rem;
+        padding: 0 0.25rem 0.35rem;
         border-bottom: 1px solid var(--team-accent-purple);
         color: var(--team-ink);
         font-size: clamp(0.95rem, 1.5vw, 1.2rem);
         font-weight: 700;
-        text-align: left;
+        text-align: center;
     }
 
     .portfolio-members {
@@ -974,7 +831,7 @@ const portfolios = Array.from(
     }
 
     .portfolio-members .member-card {
-        flex: 1 1 calc(50% - 0.5rem);
+        flex: 0 1 clamp(150px, 22%, 250px);
     }
 
     .member-card {
@@ -982,44 +839,31 @@ const portfolios = Array.from(
         flex: 0 1 42%;
         min-width: 0;
         overflow: hidden;
-        padding: 0.45rem 0.45rem 0.75rem;
+        padding: 0.55rem 0.55rem 1.25rem;
         border: 1px solid rgb(52 57 75 / 0.1);
-        border-radius: 0.4rem;
-        background: rgb(255 254 250 / 0.82);
+        border-radius: 0.18rem;
+        background: #fffefa;
         box-shadow: 0 0.25rem 0.75rem rgb(52 57 75 / 0.075);
         transform: translate3d(0, var(--parallax-y, 0px), 0);
-        transition: box-shadow 250ms ease;
-    }
-
-    .portfolio-members .member-card {
-        background: rgb(255 254 250 / 0.7);
-    }
-
-    .member-card::after {
-        position: absolute;
-        inset: -65% auto -65% -55%;
-        width: 38%;
-        background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.72), transparent);
-        content: '';
-        pointer-events: none;
-        transform: translateX(-180%) rotate(20deg);
+        transition:
+            transform 250ms ease,
+            box-shadow 250ms ease;
     }
 
     .member-card:hover,
     .member-card:focus-within {
+        transform: translate3d(0, calc(var(--parallax-y, 0px) - 0.12rem), 0) scale(1.035);
         box-shadow: 0 0.6rem 1.25rem rgb(52 57 75 / 0.11);
     }
 
-    .member-card:hover::after,
-    .member-card:focus-within::after {
-        transition: transform 750ms ease;
-        transform: translateX(550%) rotate(20deg);
-    }
-
     @media (prefers-reduced-motion: reduce) {
-        .member-card::after {
+        .member-card {
             transition: none;
-            transform: none;
+        }
+
+        .member-card:hover,
+        .member-card:focus-within {
+            transform: translate3d(0, var(--parallax-y, 0px), 0);
         }
     }
 
@@ -1082,6 +926,7 @@ const portfolios = Array.from(
 
         .portfolio-section h3 {
             margin: 0 auto;
+            margin-bottom: 1.25rem;
             padding: 0 0.25rem 0.3rem;
             text-align: center;
         }
@@ -1090,13 +935,13 @@ const portfolios = Array.from(
             padding: 1rem;
         }
 
+        .team-section.space-y-12 > :not(:first-child) {
+            margin-top: 3rem;
+        }
+
         .leadership-members .member-card,
         .portfolio-members .member-card {
             flex-basis: 44%;
-        }
-
-        .team-footer :global(.v2-footer) {
-            aspect-ratio: 40 / 16;
         }
 
     }
