@@ -2,8 +2,7 @@
 import star from '../../assets/ui/shapes/one-star.svg?url';
 
 interface Props {
-  /** How far down the page the bar runs, as a CSS length or percentage of the page's height. At least 42.9%: above
-   *  that the bar is part of the background image. */
+  /** How far down the page the bar runs, as a CSS length or percentage of the page's height. */
   length?: string;
 }
 const { length = '98%' } = Astro.props;
@@ -17,40 +16,47 @@ const { length = '98%' } = Astro.props;
 </div>
 
 <style>
-  /* The dark bar down the page's left edge, which clips the stars to it. Over the hero it's see-through and blended
-     into the background image, so that part is repainted from the image; from just below the hero (where the image's
-     bar has been painted out) it's drawn here, so its length can change. Gradient stops are in cqw (1% of the page's
-     width; HomePage is the container) so they stay at the same place on the page whatever the bar's length. Where the
-     two meet, the drawn bar fades in over the image's (same colour), so the edge switches from the image's anti-aliasing
-     to the browser's gradually rather than in a one-pixel step. The stops
-     and the painted-out rows come from scripts/paint-out-scrollbar-bar.py; re-measure both for a new background. */
+  /* The dark bar down the page's left edge, which clips the stars to it. Its colours are Landing V3's (Canva: a
+     #d9c1ad to #636478 gradient, fading to #384151 lower down); the opacity ramp where it emerges from the hero was
+     fitted against Canva's exports with and without the bar. Stops are in cqw (1% of the page's width; HomePage is the
+     container) so they stay at the same place on the page whatever the bar's length. */
   .stars-scrollbar {
-    /* The bar's width as a percentage of the page's width: the image's bar is 71.75px of 1708 (edge anti-aliased),
-       and the drawn part has to meet it exactly or a sliver shows at the join. */
+    /* The bar's width as a percentage of the page's width. */
     --width: 4.2;
     position: absolute;
     top: 0;
     left: 0;
     width: calc(var(--width) * 1%);
-    /* The image's bar is painted out from 42.1% down; a shorter bar would leave it showing past the rounded end. */
-    height: max(var(--length), 42.9%);
+    height: var(--length);
     overflow: clip;
     border-radius: 0 0 calc(var(--width) * 0.5cqw) calc(var(--width) * 0.5cqw);
     pointer-events: none;
-    /* Opaque, so content running under it (the Latest Publications cards) passes behind the bar instead of over it. */
-    background:
-      linear-gradient(rgb(99 100 120 / 0) 109.37cqw, #636478 122.95cqw, #636478 198.3cqw, #384151 227.81cqw),
-      url('/backgrounds/homepage-bg-v2-p00-no-bar.png') 0 0 / 100cqw auto no-repeat;
+    /* Opaque below the hero, so content running under it (the Latest Publications cards) passes behind the bar. */
+    background: linear-gradient(
+      transparent 62.06cqw,
+      rgb(217 193 173 / 0.18) 0,
+      rgb(158 147 147 / 0.44) 74.94cqw,
+      rgb(99 100 120 / 0.69) 87.82cqw,
+      #636478 103.19cqw,
+      #636478 198.3cqw,
+      #384151 227.81cqw
+    );
   }
 
-  /* Without container query units the rules above are dropped and the bar below the hero would vanish, so it's drawn
-     in percentages of the bar instead, which only line up with the image at the default length. */
+  /* Without container query units the rules above are dropped, so the same stops are given as percentages of the bar,
+     which only land in the right place at the default length. */
   @supports not (width: 1cqw) {
     .stars-scrollbar {
       border-radius: 0 0 50% 50% / 0 0 0.72% 0.72%;
-      background:
-        linear-gradient(rgb(99 100 120 / 0) 38.2%, #636478 43%, #636478 69.3%, #384151 79.6%),
-        url('/backgrounds/homepage-bg-v2-p00-no-bar.png') 0 0 / calc(100% * 100 / var(--width)) auto no-repeat;
+      background: linear-gradient(
+        transparent 21.68%,
+        rgb(217 193 173 / 0.18) 0,
+        rgb(158 147 147 / 0.44) 26.18%,
+        rgb(99 100 120 / 0.69) 30.68%,
+        #636478 36.05%,
+        #636478 69.27%,
+        #384151 79.58%
+      );
     }
   }
 
