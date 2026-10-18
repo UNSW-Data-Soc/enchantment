@@ -23,8 +23,9 @@ const { length = '98%', underlay } = Astro.props;
 <style>
   /* The dark bar down the page's left edge, which clips the stars to it. Its colours are Landing V3's (Canva: a
      #d9c1ad to #636478 gradient, fading to #384151 lower down); the opacity ramp where it emerges from the hero was
-     fitted against Canva's exports with and without the bar. Stops are in cqw (1% of the page's width; HomePage is the
-     container) so they stay at the same place on the page whatever the bar's length. */
+     fitted against Canva's exports with and without the bar. Stops are in cqw (1% of the page's width) so they stay at
+     the same place on the page whatever the bar's length; any page using this component must set an inline-size query
+     container. */
   .stars-scrollbar {
     /* The bar's width as a percentage of the page's width. */
     --width: 4.2;

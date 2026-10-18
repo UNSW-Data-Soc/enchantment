@@ -856,7 +856,7 @@ const portfolios = Array.from(
         border-radius: 0.18rem;
         background: #fffefa;
         box-shadow: 0 0.25rem 0.75rem rgb(52 57 75 / 0.075);
-        transform: translate3d(0, var(--parallax-y, 0px), 0);
+        translate: 0 var(--parallax-y, 0px);
         transition:
             transform 250ms ease,
             box-shadow 250ms ease;
@@ -864,7 +864,7 @@ const portfolios = Array.from(
 
     .member-card:hover,
     .member-card:focus-within {
-        transform: translate3d(0, calc(var(--parallax-y, 0px) - 0.12rem), 0) scale(1.035);
+        transform: scale(1.035);
         box-shadow: 0 0.6rem 1.25rem rgb(52 57 75 / 0.11);
     }
 
@@ -875,7 +875,7 @@ const portfolios = Array.from(
 
         .member-card:hover,
         .member-card:focus-within {
-            transform: translate3d(0, var(--parallax-y, 0px), 0);
+            transform: none;
         }
     }
 
