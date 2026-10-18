@@ -7,7 +7,7 @@ import V2Layout from '../../../layouts/V2Layout.astro';
 import type { ImageMetadata } from 'astro';
 
 const LEADERSHIP_SIZES = '(min-width: 1440px) 250px, (min-width: 768px) 22vw, (min-width: 640px) 150px, 42vw';
-const PORTFOLIO_SIZES = LEADERSHIP_SIZES;
+const PORTFOLIO_SIZES = '(min-width: 1390px) 250px, (min-width: 834px) 18vw, (min-width: 640px) 150px, 34vw';
 const PORTFOLIO_VARIANTS = 4;
 const MATRIX_COLUMNS = 12;
 const MATRIX_ROWS = 10;
@@ -155,7 +155,7 @@ const portfolios = Array.from(
                             <p class="hero-index">BOARD {currentYear} <span>✳</span> UNSW</p>
                         </div>
                         <div class="hero-art" aria-hidden="true">
-                            <div class="hero-matrix">
+                            <div class="hero-matrix" style={`--matrix-columns:${MATRIX_COLUMNS}; --matrix-rows:${MATRIX_ROWS}`}>
                                 {matrixCells.map(({ hue, opacity }) => (
                                     <span
                                         class="matrix-cell"
@@ -189,11 +189,11 @@ const portfolios = Array.from(
                             </section>
                         ))}
 
-                        <section class="team-section directors-section space-y-12" data-trail-section data-section="Directors" data-team-stop="Directors" tabindex="-1">
+                        <section class="team-section directors-section space-y-12" data-trail-section data-trail-side="center" data-section="Directors" data-team-stop="Directors" tabindex="-1">
                             <h2>Directors</h2>
                             <div class="portfolio-grid">
                                 {portfolios.map((section, index) => (
-                                    <section class:list={['portfolio-section', `portfolio-${index % PORTFOLIO_VARIANTS}`]} data-trail-section>
+                                    <section class:list={['portfolio-section', `portfolio-${index % PORTFOLIO_VARIANTS}`]} data-trail-section data-trail-side={index % 2 === 0 ? 'left' : 'right'}>
                                         <h3>{section.title}</h3>
                                         <div class="portfolio-members">
                                             {section.members.map((member, memberIndex) => {
@@ -222,8 +222,8 @@ const portfolios = Array.from(
 
 <script>
     const TRAIL_CENTER_X = 0.5;
-    const TRAIL_RIGHT_X = 0.86;
-    const TRAIL_LEFT_X = 0.14;
+    const TRAIL_RIGHT_X = 0.72;
+    const TRAIL_LEFT_X = 0.28;
     const TRAIL_READING_LINE = 0.58;
     // Eighteen bisection steps locate the trail position to well under a pixel.
     const TRAIL_SEARCH_ITERATIONS = 18;
@@ -292,8 +292,18 @@ const portfolios = Array.from(
             const points = anchors.map((anchor, index) => {
                 const heading = anchor.querySelector<HTMLElement>('h1, h2, h3') ?? anchor;
                 const rect = heading.getBoundingClientRect();
+                const trailSide = anchor.dataset.trailSide;
+                const x = trailSide === 'left'
+                    ? TRAIL_LEFT_X
+                    : trailSide === 'right'
+                      ? TRAIL_RIGHT_X
+                      : trailSide === 'center' || index === 0
+                        ? TRAIL_CENTER_X
+                        : index % 2
+                          ? TRAIL_RIGHT_X
+                          : TRAIL_LEFT_X;
                 return {
-                    x: width * (index === 0 ? TRAIL_CENTER_X : index % 2 ? TRAIL_RIGHT_X : TRAIL_LEFT_X),
+                    x: width * x,
                     y: anchor.hasAttribute('data-trail-end') ? height - 8 : rect.top - bounds.top + rect.height / 2,
                 };
             });
@@ -596,7 +606,7 @@ const portfolios = Array.from(
         inset: 0 0 0 auto;
         width: 47%;
         overflow: hidden;
-        pointer-events: auto;
+        pointer-events: none;
     }
 
     .hero-matrix {
@@ -604,8 +614,8 @@ const portfolios = Array.from(
         inset: 0 0 0 auto;
         display: grid;
         width: 100%;
-        grid-template-columns: repeat(12, minmax(0, 1fr));
-        grid-template-rows: repeat(10, minmax(0, 1fr));
+        grid-template-columns: repeat(var(--matrix-columns), minmax(0, 1fr));
+        grid-template-rows: repeat(var(--matrix-rows), minmax(0, 1fr));
         gap: clamp(2px, 0.35vw, 6px);
         padding: 1.25rem 0;
         background:
@@ -618,6 +628,7 @@ const portfolios = Array.from(
     .matrix-cell {
         min-width: 0;
         min-height: 0;
+        pointer-events: auto;
         border: 1px solid hsl(var(--cell-hue) 72% 76% / 0.5);
         background:
             linear-gradient(135deg, hsl(var(--cell-hue) 80% 72% / 0.88), hsl(calc(var(--cell-hue) + 34) 70% 62% / 0.8));
