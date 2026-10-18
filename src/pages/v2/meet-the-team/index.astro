@@ -19,6 +19,17 @@ const MATRIX_ACCENTS = new Map([
     [8 * MATRIX_COLUMNS + 9, 38],
 ]);
 const CARD_PARALLAX_DEPTHS = [0.04, -0.045, 0.028, -0.035, 0.05, -0.025];
+const PORTFOLIO_SUMMARIES: Record<string, string> = {
+    'Human Resources': 'Creating a welcoming, supportive culture where every member can feel connected and thrive.',
+    Social: 'Bringing our community together through the events, traditions and moments we share.',
+    Education: 'Making data science approachable through hands-on learning, workshops and useful resources.',
+    'Philanthropy & Projects': 'Turning curiosity into impact through collaborative projects and community initiatives.',
+    Careers: 'Connecting students with industry, career pathways and opportunities to grow.',
+    Sponsorships: 'Building meaningful partnerships that help our community and programs flourish.',
+    Technology: 'Creating and maintaining the digital tools that power the DataSoc experience.',
+    Marketing: 'Sharing the DataSoc story through thoughtful campaigns, design and communication.',
+    Media: 'Capturing the people, ideas and moments that make our community memorable.',
+};
 const photos = import.meta.glob<{ default: ImageMetadata }>(
     '../../../assets/meet-the-team/datasoc-board-photos/*.jpg',
     { eager: true },
@@ -105,6 +116,7 @@ const portfolios = Array.from(
     }, new Map<string, Member[]>()),
     ([title, members]) => ({
         title,
+        summary: PORTFOLIO_SUMMARIES[title],
         sizes: PORTFOLIO_SIZES,
         members,
     }),
@@ -194,19 +206,22 @@ const portfolios = Array.from(
                             <h2>Directors</h2>
                             <div class="portfolio-grid">
                                 {portfolios.map((section, index) => (
-                                    <section class:list={['portfolio-section', `portfolio-${index % PORTFOLIO_VARIANTS}`]} data-trail-section data-trail-side={index % 2 === 0 ? 'left' : 'right'}>
-                                        <h3>{section.title}</h3>
-                                        <div class="portfolio-members">
-                                            {section.members.map((member, memberIndex) => {
-                                                const image = photo(member.file);
-                                                return (
-                                                    <div class="member-card text-center" data-depth={cardDepth(memberIndex + index + 2)}>
-                                                        <TeamMemberDetails member={member} image={image} sizes={section.sizes} />
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </section>
+                                    <div class="portfolio-row" data-panel-side={index % 2 === 0 ? 'left' : 'right'}>
+                                        <section class:list={['portfolio-section', `portfolio-${index % PORTFOLIO_VARIANTS}`]} data-trail-section data-trail-side={index % 2 === 0 ? 'left' : 'right'}>
+                                            <h3>{section.title}</h3>
+                                            <div class="portfolio-members">
+                                                {section.members.map((member, memberIndex) => {
+                                                    const image = photo(member.file);
+                                                    return (
+                                                        <div class="member-card text-center" data-depth={cardDepth(memberIndex + index + 2)}>
+                                                            <TeamMemberDetails member={member} image={image} sizes={section.sizes} />
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </section>
+                                        <p class="portfolio-caption">{section.summary}</p>
+                                    </div>
                                 ))}
                             </div>
                         </section>
@@ -799,18 +814,48 @@ const portfolios = Array.from(
         gap: clamp(1.1rem, 2vw, 2rem);
     }
 
+    .portfolio-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        align-items: center;
+        gap: clamp(1.5rem, 4vw, 4rem);
+    }
+
     .portfolio-section {
-        width: 50%;
+        width: 100%;
         min-width: 0;
         padding: clamp(0.75rem, 1.4vw, 1.25rem);
-        margin-left: 0;
         border: 1px solid rgb(52 57 75 / 0.11);
         border-radius: 0.45rem;
         background: rgb(255 252 243 / 0.62);
     }
 
     .portfolio-section[data-trail-side="right"] {
-        margin-left: auto;
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .portfolio-section[data-trail-side="left"] {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .portfolio-caption {
+        grid-column: 2;
+        grid-row: 1;
+        max-width: 24rem;
+        margin: 0;
+        color: var(--team-blue);
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: clamp(1.25rem, 2.1vw, 2rem);
+        line-height: 1.4;
+        text-wrap: balance;
+    }
+
+    .portfolio-row[data-panel-side="right"] .portfolio-caption {
+        grid-column: 1;
+        justify-self: end;
+        text-align: right;
     }
 
     .portfolio-1 {
@@ -929,10 +974,27 @@ const portfolios = Array.from(
             gap: 0.75rem;
         }
 
+        .portfolio-row {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 1rem;
+        }
+
         .portfolio-section,
-        .portfolio-section[data-trail-side="right"] {
+        .portfolio-section[data-trail-side="right"],
+        .portfolio-section[data-trail-side="left"] {
             width: 100%;
-            margin-left: 0;
+            grid-column: 1;
+            grid-row: auto;
+        }
+
+        .portfolio-caption,
+        .portfolio-row[data-panel-side="right"] .portfolio-caption {
+            grid-column: 1;
+            grid-row: auto;
+            justify-self: center;
+            max-width: 34rem;
+            font-size: 1.2rem;
+            text-align: center;
         }
 
         .portfolio-section h3 {
