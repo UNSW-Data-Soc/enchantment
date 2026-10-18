@@ -25,6 +25,8 @@ const widths = [240, 380, 540, 700];
 ) : (
     <div
         class="member-photo photo-placeholder w-full flex items-center justify-center"
+        role="img"
+        aria-label={`Photo unavailable for ${member.name}`}
     >
         <span>Photo unavailable</span>
     </div>

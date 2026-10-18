@@ -238,6 +238,7 @@ const portfolios = Array.from(
         const originalStyles = layers.map((layer) => ({
             layer,
             transform: layer.style.transform,
+            translate: layer.style.translate,
             transition: layer.style.transition,
         }));
         const centres: [HTMLElement, number][] = [];
@@ -245,14 +246,16 @@ const portfolios = Array.from(
             originalStyles.forEach(({ layer }) => {
                 layer.style.transition = 'none';
                 layer.style.transform = 'none';
+                layer.style.translate = 'none';
             });
             layers.forEach((layer) => {
                 const rect = layer.getBoundingClientRect();
                 centres.push([layer, rect.top + scrollY + rect.height / 2]);
             });
         } finally {
-            originalStyles.forEach(({ layer, transform, transition }) => {
+            originalStyles.forEach(({ layer, transform, translate, transition }) => {
                 layer.style.transform = transform;
+                layer.style.translate = translate;
                 layer.style.transition = transition;
             });
         }
@@ -287,10 +290,19 @@ const portfolios = Array.from(
         refreshLayerCentres();
         scheduleScrollUpdates();
     };
+    let layerRefreshFrame = 0;
+    const scheduleLayerRefresh = () => {
+        if (layerRefreshFrame) return;
+        layerRefreshFrame = requestAnimationFrame(() => {
+            layerRefreshFrame = 0;
+            refreshLayerCentres();
+            updateParallax();
+        });
+    };
     refreshAndUpdatePositions();
     updateParallax();
-    addEventListener('load', refreshAndUpdatePositions);
-    document.fonts.ready.then(refreshAndUpdatePositions);
+    addEventListener('load', scheduleLayerRefresh);
+    document.fonts.ready.then(scheduleLayerRefresh);
 
     if (page && trail && trailBase && trailProgress && trailDot) {
         let pathLength = 0;
@@ -393,7 +405,7 @@ const portfolios = Array.from(
         reducedMotion.addEventListener('change', scheduleDraw);
     }
 
-    addEventListener('resize', refreshAndUpdatePositions);
+    addEventListener('resize', scheduleLayerRefresh);
     addEventListener('scroll', scheduleScrollUpdates, { passive: true });
     addEventListener('v2-lenis-scroll', scheduleScrollUpdates);
 </script>
