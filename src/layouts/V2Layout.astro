@@ -15,6 +15,7 @@ const { title = 'UNSW DataSoc' } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <Font cssVariable="--font-syne" preload />
+    <slot name="head" />
   </head>
   <body
     class:list={[{ 'pt-16': Astro.url.pathname.replace(/\/$/, '') !== '/v2' }]}
