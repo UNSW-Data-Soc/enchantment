@@ -17,6 +17,7 @@ const { title, titleAccent, eyebrow = 'UNSW DataSoc', eyebrowDetail, caption, in
 ---
 
 <V2Layout title={`${title} - UNSW DataSoc`}>
+  <link slot="head" rel="preload" as="image" href="/backgrounds/homepage-bg-v2-p00-no-sidebar.png" fetchpriority="high" />
   <div class="content-page">
     <StarsScrollbar
       length="100%"
