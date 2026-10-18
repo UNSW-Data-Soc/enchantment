@@ -11,7 +11,13 @@ const PORTFOLIO_SIZES = LEADERSHIP_SIZES;
 const PORTFOLIO_VARIANTS = 4;
 const MATRIX_COLUMNS = 12;
 const MATRIX_ROWS = 10;
-const MATRIX_HUES = [205, 218, 232, 250, 270, 292, 315, 340, 5, 25, 43, 55];
+const MATRIX_HUES = [264, 276, 288, 300, 312, 324, 336, 348];
+const MATRIX_ACCENTS = new Map([
+    [2 * MATRIX_COLUMNS + 10, 42],
+    [4 * MATRIX_COLUMNS + 8, 34],
+    [6 * MATRIX_COLUMNS + 11, 50],
+    [8 * MATRIX_COLUMNS + 9, 38],
+]);
 const CARD_PARALLAX_DEPTHS = [0.04, -0.045, 0.028, -0.035, 0.05, -0.025];
 const photos = import.meta.glob<{ default: ImageMetadata }>(
     '../../../assets/meet-the-team/datasoc-board-photos/*.jpg',
@@ -32,8 +38,8 @@ function cardDepth(index: number): number {
 const matrixCells = Array.from({ length: MATRIX_COLUMNS * MATRIX_ROWS }, (_, index) => {
     const x = index % MATRIX_COLUMNS;
     const y = Math.floor(index / MATRIX_COLUMNS);
-    const hue = MATRIX_HUES[x];
-    const opacity = Number((0.16 + (x / (MATRIX_COLUMNS - 1)) * 0.26 + ((x + y) % 4) * 0.045).toFixed(2));
+    const hue = MATRIX_ACCENTS.get(index) ?? MATRIX_HUES[(x + y * 2) % MATRIX_HUES.length];
+    const opacity = Number((0.52 + ((x + y) % 4) * 0.1).toFixed(2));
     return { x, y, hue, opacity };
 });
 
@@ -130,7 +136,7 @@ const portfolios = Array.from(
             <circle class="trail-dot" r="8" />
         </svg>
 
-        <StarsScrollbar length="100%" />
+        <StarsScrollbar length="100%" underlay="/backgrounds/meet-the-team-scrollbar-underlay.png" />
 
         <div class="team-panel">
             <div class="team-body">
@@ -150,11 +156,9 @@ const portfolios = Array.from(
                         </div>
                         <div class="hero-art" aria-hidden="true">
                             <div class="hero-matrix">
-                                {matrixCells.map(({ x, y, hue, opacity }) => (
+                                {matrixCells.map(({ hue, opacity }) => (
                                     <span
                                         class="matrix-cell"
-                                        data-x={x}
-                                        data-y={y}
                                         data-opacity={opacity}
                                         style={`--cell-hue:${hue}; --cell-opacity:${opacity}`}
                                     ></span>
@@ -166,7 +170,7 @@ const portfolios = Array.from(
                     <Container class="team-roster max-w-[1440px]">
                         {leadership.map((section, index) => (
                             <section
-                                class:list={['team-section space-y-12', `leadership-section leadership-${index}`]}
+                                class:list={['team-section space-y-16', `leadership-section leadership-${index}`]}
                                 data-trail-section={index === 1 ? '' : undefined}
                                 data-section={index === 1 ? 'Executives' : undefined}
                                 data-team-stop={index === 1 ? 'Executives' : undefined}
@@ -222,8 +226,6 @@ const portfolios = Array.from(
     const TRAIL_RIGHT_X = 0.86;
     const TRAIL_LEFT_X = 0.14;
     const TRAIL_READING_LINE = 0.58;
-    const MATRIX_COLUMN_COUNT = 12;
-    const MATRIX_ROW_COUNT = 10;
     // Eighteen bisection steps locate the trail position to well under a pixel.
     const TRAIL_SEARCH_ITERATIONS = 18;
     const page = document.querySelector<HTMLElement>('.team-page');
@@ -231,8 +233,6 @@ const portfolios = Array.from(
     const trailBase = trail?.querySelector<SVGPathElement>('.trail-base');
     const trailProgress = trail?.querySelector<SVGPathElement>('.trail-progress');
     const trailDot = trail?.querySelector<SVGCircleElement>('.trail-dot');
-    const matrix = page?.querySelector<HTMLElement>('.hero-matrix');
-    const matrixCells = Array.from(matrix?.querySelectorAll<HTMLElement>('.matrix-cell') ?? []);
     const layers = Array.from(page?.querySelectorAll<HTMLElement>('[data-depth]') ?? []);
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const layerDocumentCentres = new Map<HTMLElement, number>();
@@ -274,42 +274,6 @@ const portfolios = Array.from(
     updateParallax();
     addEventListener('load', refreshAndUpdatePositions);
     document.fonts.ready.then(refreshAndUpdatePositions);
-
-    if (matrix && matrixCells.length) {
-        const resetMatrix = () => {
-            matrixCells.forEach((cell) => {
-                cell.style.opacity = cell.dataset.opacity ?? '';
-                cell.style.removeProperty('--cell-turn');
-                cell.style.removeProperty('--cell-scale');
-                cell.style.transitionDelay = '';
-            });
-        };
-
-        matrix.addEventListener('pointermove', (event) => {
-            if (reducedMotion.matches) return;
-            const bounds = matrix.getBoundingClientRect();
-            const pointerX = ((event.clientX - bounds.left) / bounds.width) * MATRIX_COLUMN_COUNT;
-            const pointerY = ((event.clientY - bounds.top) / bounds.height) * MATRIX_ROW_COUNT;
-            const radius = 4.25;
-
-            matrixCells.forEach((cell) => {
-                const x = Number(cell.dataset.x);
-                const y = Number(cell.dataset.y);
-                const distance = Math.hypot(x + 0.5 - pointerX, y + 0.5 - pointerY);
-                const intensity = Math.max(0, 1 - distance / radius);
-                const baseOpacity = Number(cell.dataset.opacity) || 0;
-                cell.style.opacity = String(Math.min(1, baseOpacity + intensity * 0.72));
-                cell.style.setProperty('--cell-turn', `${intensity > 0.12 && (x + y) % 2 ? 180 : 0}deg`);
-                cell.style.setProperty('--cell-scale', String(1 + intensity * 0.12));
-                cell.style.transitionDelay = `${Math.max(0, distance - 0.5) * 14}ms`;
-            });
-        });
-
-        matrix.addEventListener('pointerleave', resetMatrix);
-        reducedMotion.addEventListener('change', () => {
-            if (reducedMotion.matches) resetMatrix();
-        });
-    }
 
     if (page && trail && trailBase && trailProgress && trailDot) {
         let pathLength = 0;
@@ -531,7 +495,7 @@ const portfolios = Array.from(
     .team-panel {
         position: relative;
         width: auto;
-        margin: 0 clamp(10px, 2.4vw, 38px) 0 calc(4.13vw + clamp(10px, 1.4vw, 22px));
+        margin: 0 calc(4.2vw + clamp(10px, 1.4vw, 22px));
         overflow: clip;
         border-right: 1px solid rgb(72 75 112 / 0.12);
         border-left: 1px solid rgb(72 75 112 / 0.12);
@@ -660,18 +624,28 @@ const portfolios = Array.from(
             linear-gradient(135deg, hsl(var(--cell-hue) 80% 72% / 0.88), hsl(calc(var(--cell-hue) + 34) 70% 62% / 0.8));
         box-shadow: 0 0 1rem hsl(var(--cell-hue) 80% 68% / 0.22);
         opacity: var(--cell-opacity);
-        transform: perspective(320px) rotateY(var(--cell-turn, 0deg)) scale(var(--cell-scale, 1));
+        transform: translateY(0) scale(1);
         transition:
-            transform 420ms cubic-bezier(0.2, 0.8, 0.2, 1),
-            opacity 220ms ease,
-            filter 220ms ease;
+            transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1),
+            filter 280ms ease,
+            box-shadow 280ms ease;
     }
 
     .matrix-cell:hover {
         z-index: 1;
-        filter: brightness(1.35) saturate(1.2);
-        transform: perspective(320px) rotateY(180deg) scale(1.16);
-        transition-duration: 320ms;
+        filter: brightness(1.16) saturate(1.1);
+        transform: translateY(-2px) scale(1.1);
+        box-shadow: 0 0 1.15rem hsl(var(--cell-hue) 90% 76% / 0.5);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .matrix-cell {
+            transition: none;
+        }
+
+        .matrix-cell:hover {
+            transform: none;
+        }
     }
 
     .team-eyebrow {
@@ -788,7 +762,7 @@ const portfolios = Array.from(
     }
 
     .portfolio-section {
-        width: 88%;
+        width: 50%;
         min-width: 0;
         padding: clamp(0.75rem, 1.4vw, 1.25rem);
         margin-left: 0;
@@ -798,7 +772,7 @@ const portfolios = Array.from(
     }
 
     .portfolio-section:nth-child(even) {
-        width: 92%;
+        width: 50%;
         margin-left: auto;
     }
 
@@ -876,7 +850,7 @@ const portfolios = Array.from(
         }
 
         .team-panel {
-            margin: 0 0 0 calc(4.13vw + 8px);
+            margin: 0 calc(4.2vw + 8px);
             border: 0;
         }
 
@@ -921,8 +895,6 @@ const portfolios = Array.from(
         .portfolio-section,
         .portfolio-section:nth-child(even) {
             width: 100%;
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
             margin-left: 0;
         }
 
@@ -939,6 +911,10 @@ const portfolios = Array.from(
 
         .team-section.space-y-12 > :not(:first-child) {
             margin-top: 3rem;
+        }
+
+        .team-section.space-y-16 > :not(:first-child) {
+            margin-top: 3.5rem;
         }
 
         .leadership-members .member-card,

@@ -4,12 +4,17 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 interface Props {
   /** How far down the page the bar runs, as a CSS length or percentage of the page's height. */
   length?: string;
+  /** Optional artwork layered beneath the CSS bar, sized to its first half. */
+  underlay?: string;
 }
-const { length = '98%' } = Astro.props;
+const { length = '98%', underlay } = Astro.props;
 ---
 
 <!-- One star per [data-section] on the page; the section crossing the middle of the screen is highlighted, and clicking a star scrolls to its section. -->
-<div class="stars-scrollbar" style={`--star: url("${star}"); --length: ${length}`}>
+<div
+  class="stars-scrollbar"
+  style={`--star: url("${star}"); --length: ${length}; --underlay: ${underlay ? `url("${underlay}")` : 'none'}`}
+>
   <div class="track">
     <div class="stars"></div>
   </div>
@@ -40,7 +45,10 @@ const { length = '98%' } = Astro.props;
       #636478 103.19cqw,
       #636478 198.3cqw,
       #384151 227.81cqw
-    );
+    ), var(--underlay, none);
+    background-size: auto, 100% auto;
+    background-position: 0 0, 0 0;
+    background-repeat: no-repeat;
   }
 
   /* Without container query units the rules above are dropped, so the same stops are given as percentages of the bar,
@@ -56,7 +64,10 @@ const { length = '98%' } = Astro.props;
         #636478 36.05%,
         #636478 69.27%,
         #384151 79.58%
-      );
+      ), var(--underlay, none);
+      background-size: auto, 100% auto;
+      background-position: 0 0, 0 0;
+      background-repeat: no-repeat;
     }
   }
 
