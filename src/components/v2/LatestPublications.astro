@@ -148,10 +148,10 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
     filter: drop-shadow(0.15vw 0.3vw 0.5vw rgb(0 0 0 / 0.3));
   }
 
-  /* Cards scroll continuously across the band at a steady speed and pass behind the dark bar (StarsScrollbar repaints
+  /* Cards scroll continuously across the band at a steady speed and pass behind the dark bar (StarsScrollbar draws
      it on top); hovering or focusing a card pauses the strip, and hovering lifts the card. */
   /* A scroll container (scrollbar hidden) so the strip can be swiped; the script below scrolls it continuously. Cards
-     pass behind the dark bar, which StarsScrollbar repaints on top. */
+     pass behind the dark bar, which StarsScrollbar draws on top. */
   .ticker {
     margin-top: -0.1vw;
     /* Room for the hover lift, which the scroll container would otherwise clip. */
