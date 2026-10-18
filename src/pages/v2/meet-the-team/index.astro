@@ -38,8 +38,8 @@ function cardDepth(index: number): number {
 const matrixCells = Array.from({ length: MATRIX_COLUMNS * MATRIX_ROWS }, (_, index) => {
     const x = index % MATRIX_COLUMNS;
     const y = Math.floor(index / MATRIX_COLUMNS);
-    const hue = MATRIX_ACCENTS.get(index) ?? MATRIX_HUES[(x + y * 2) % MATRIX_HUES.length];
-    const opacity = Number((0.68 + ((x + y) % 4) * 0.07).toFixed(2));
+    const hue = MATRIX_ACCENTS.get(index) ?? MATRIX_HUES[Math.round((x / (MATRIX_COLUMNS - 1)) * (MATRIX_HUES.length - 1))];
+    const opacity = Number((0.78 + ((x + y) % 4) * 0.05).toFixed(2));
     return { x, y, hue, opacity };
 });
 
@@ -112,6 +112,7 @@ const portfolios = Array.from(
 ---
 
 <V2Layout title="Meet the team - UNSW DataSoc">
+    <link rel="preload" as="image" href="/backgrounds/meet-the-team-scrollbar-underlay.png" fetchpriority="high" />
     <div class="team-page">
         <div class="ambient-background" aria-hidden="true">
             <span class="ambient-cloud cloud-one" data-depth="0.06"></span>
@@ -200,7 +201,7 @@ const portfolios = Array.from(
                                             {section.members.map((member, memberIndex) => {
                                                 const image = photo(member.file);
                                                 return (
-                                                    <div class="member-card text-center" data-depth={cardDepth(memberIndex + index + 2)}>
+                                                    <div class="member-card text-center">
                                                         <TeamMemberDetails member={member} image={image} sizes={section.sizes} />
                                                     </div>
                                                 );
@@ -652,18 +653,18 @@ const portfolios = Array.from(
         overflow: hidden;
         border: 1px solid hsl(var(--cell-hue) 48% 74% / 0.55);
         background:
-            linear-gradient(135deg, hsl(var(--cell-hue) 54% 86%), hsl(calc(var(--cell-hue) + 24) 58% 79%) 52%, hsl(calc(var(--cell-hue) + 48) 52% 85%));
+            linear-gradient(90deg, hsl(var(--cell-hue) 60% 84%), hsl(calc(var(--cell-hue) + 18) 62% 79%) 52%, hsl(calc(var(--cell-hue) + 36) 58% 84%));
         opacity: var(--cell-opacity);
         transform-style: preserve-3d;
         backface-visibility: hidden;
-        transition: transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        transition: transform 480ms cubic-bezier(0.22, 0.72, 0.24, 1);
     }
 
     .matrix-cell::after {
         position: absolute;
         inset: 0;
         border: 1px solid hsl(calc(var(--cell-hue) + 42) 52% 82% / 0.75);
-        background: linear-gradient(135deg, hsl(calc(var(--cell-hue) + 52) 56% 82%), hsl(calc(var(--cell-hue) + 92) 58% 74%) 54%, hsl(calc(var(--cell-hue) + 132) 52% 84%));
+        background: linear-gradient(90deg, hsl(calc(var(--cell-hue) + 42) 62% 82%), hsl(calc(var(--cell-hue) + 72) 64% 75%) 54%, hsl(calc(var(--cell-hue) + 102) 58% 83%));
         content: '';
         transform: rotateY(180deg);
         backface-visibility: hidden;
@@ -672,7 +673,7 @@ const portfolios = Array.from(
     @media (hover: hover) and (pointer: fine) {
         .matrix-cell:hover {
             z-index: 1;
-            transform: rotateY(180deg) scale(1.04);
+            transform: rotateY(180deg);
         }
     }
 
