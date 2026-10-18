@@ -135,24 +135,11 @@ const portfolios = Array.from(
                         <div class="hero-copy">
                             <p class="team-eyebrow"><span>UNSW DataSoc</span><span>—</span><span>People &amp; portfolios</span></p>
                             <h1>Meet the <em>team</em></h1>
-                            <p class="team-intro sr-only">The people shaping our year, our community, and what comes next.</p>
+                            <p class="team-intro">The people shaping our year, our community, and what comes next.</p>
                             <p class="hero-index">BOARD {currentYear} <span>✳</span> UNSW</p>
                         </div>
                         <div class="hero-art" aria-hidden="true">
                             <div class="hero-orb"></div>
-                            <svg class="orb-caption" viewBox="0 0 600 600" aria-hidden="true">
-                                <defs>
-                                    <path id="orb-caption-path" d="M 300 24 A 276 276 0 0 0 300 576" />
-                                </defs>
-                                <text>
-                                    <textPath href="#orb-caption-path" startOffset="40" textLength="370" lengthAdjust="spacingAndGlyphs">
-                                        The people shaping our year, our community, and what comes next.
-                                    </textPath>
-                                    <textPath href="#orb-caption-path" startOffset="457" textLength="370" lengthAdjust="spacingAndGlyphs">
-                                        The people shaping our year, our community, and what comes next.
-                                    </textPath>
-                                </text>
-                            </svg>
                         </div>
                     </header>
 
@@ -651,31 +638,6 @@ const portfolios = Array.from(
         transform: rotate(-28deg) scaleX(0.82);
     }
 
-    .orb-caption {
-        position: absolute;
-        top: 50%;
-        right: -50%;
-        width: clamp(20rem, 40vw, 34rem);
-        overflow: visible;
-        color: var(--team-ink);
-        fill: currentColor;
-        font-family: var(--font-syne), sans-serif;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 1.4px;
-        text-transform: uppercase;
-        animation: orb-caption-rotation 36s linear infinite;
-        transform: translateY(-50%);
-        transform-origin: 50% 50%;
-        pointer-events: none;
-    }
-
-    @keyframes orb-caption-rotation {
-        to {
-            rotate: 360deg;
-        }
-    }
-
     .team-eyebrow {
         display: flex;
         flex-wrap: wrap;
@@ -860,10 +822,6 @@ const portfolios = Array.from(
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .orb-caption {
-            animation: none;
-        }
-
         .member-card {
             transition: none;
         }
@@ -915,10 +873,6 @@ const portfolios = Array.from(
         }
 
         .hero-orb {
-            width: clamp(18rem, 70vw, 25rem);
-        }
-
-        .orb-caption {
             width: clamp(18rem, 70vw, 25rem);
         }
 
