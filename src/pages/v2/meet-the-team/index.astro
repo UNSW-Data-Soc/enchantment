@@ -9,6 +9,8 @@ import type { ImageMetadata } from 'astro';
 const LEADERSHIP_SIZES = '(min-width: 1440px) 250px, (min-width: 768px) 22vw, (min-width: 640px) 150px, 42vw';
 const PORTFOLIO_SIZES = '(min-width: 1440px) 265px, (min-width: 768px) 18vw, (min-width: 640px) 20vw, 42vw';
 const PORTFOLIO_VARIANTS = 4;
+const MATRIX_COLUMNS = 12;
+const MATRIX_ROWS = 10;
 const CARD_PARALLAX_DEPTHS = [0.04, -0.045, 0.028, -0.035, 0.05, -0.025];
 const photos = import.meta.glob<{ default: ImageMetadata }>(
     '../../../assets/meet-the-team/datasoc-board-photos/*.jpg',
@@ -25,6 +27,16 @@ function photo(file?: string): ImageMetadata | undefined {
 function cardDepth(index: number): number {
     return CARD_PARALLAX_DEPTHS[index % CARD_PARALLAX_DEPTHS.length];
 }
+
+const matrixCells = Array.from({ length: MATRIX_COLUMNS * MATRIX_ROWS }, (_, index) => {
+    const x = index % MATRIX_COLUMNS;
+    const y = Math.floor(index / MATRIX_COLUMNS);
+    const hue = Math.round(205 + (x / (MATRIX_COLUMNS - 1)) * 105 + ((x * y) % 3) * 10);
+    const opacity = Number((0.16 + (x / (MATRIX_COLUMNS - 1)) * 0.26 + ((x + y) % 4) * 0.045).toFixed(2));
+    return { x, y, hue, opacity };
+});
+
+const currentYear = new Date().getFullYear();
 
 type Member = { name: string; role: string; file?: string };
 type Section = {
@@ -136,18 +148,19 @@ const portfolios = Array.from(
                             <p class="team-eyebrow"><span>UNSW DataSoc</span><span>—</span><span>People &amp; portfolios</span></p>
                             <h1>Meet the <em>team</em></h1>
                             <p class="team-intro">The people shaping our year, our community, and what comes next.</p>
-                            <p class="hero-index">BOARD 2026 <span>✳</span> UNSW</p>
+                            <p class="hero-index">BOARD {currentYear} <span>✳</span> UNSW</p>
                         </div>
                         <div class="hero-art" aria-hidden="true">
-                            <span class="hero-disc" data-depth="0.08"></span>
-                            <span class="hero-orbit orbit-one" data-depth="0.04"></span>
-                            <span class="hero-orbit orbit-two" data-depth="0.06"></span>
-                            <span class="hero-cross"></span>
-                            <span class="hero-pixels"></span>
-                            <div class="hero-art-wordmark">
-                                <span class="wordmark-kicker">The people behind</span>
-                                <span class="wordmark-main">Data<span>Soc</span></span>
-                                <span class="wordmark-foot">Curiosity in good company</span>
+                            <div class="hero-matrix">
+                                {matrixCells.map(({ x, y, hue, opacity }) => (
+                                    <span
+                                        class="matrix-cell"
+                                        data-x={x}
+                                        data-y={y}
+                                        data-opacity={opacity}
+                                        style={`--cell-hue:${hue}; --cell-opacity:${opacity}`}
+                                    ></span>
+                                ))}
                             </div>
                         </div>
                     </header>
@@ -155,7 +168,7 @@ const portfolios = Array.from(
                     <Container class="team-roster max-w-[1440px]">
                         {leadership.map((section, index) => (
                             <section
-                                class:list={['team-section space-y-6', `leadership-section leadership-${index}`]}
+                                class:list={['team-section space-y-10', `leadership-section leadership-${index}`]}
                                 data-trail-section={index === 1 ? '' : undefined}
                                 data-team-stop={index === 1 ? 'Executives' : undefined}
                                 tabindex={index === 1 ? -1 : undefined}
@@ -174,11 +187,11 @@ const portfolios = Array.from(
                             </section>
                         ))}
 
-                        <section class="team-section directors-section space-y-6" data-trail-section data-team-stop="Directors" tabindex="-1">
+                        <section class="team-section directors-section space-y-10" data-trail-section data-team-stop="Directors" tabindex="-1">
                             <h2>Directors</h2>
                             <div class="portfolio-grid">
                                 {portfolios.map((section, index) => (
-                                    <section class:list={['portfolio-section', `portfolio-${index % PORTFOLIO_VARIANTS}`]}>
+                                    <section class:list={['portfolio-section', `portfolio-${index % PORTFOLIO_VARIANTS}`]} data-trail-section>
                                         <h3>{section.title}</h3>
                                         <div class="portfolio-members">
                                             {section.members.map((member, memberIndex) => {
@@ -198,8 +211,11 @@ const portfolios = Array.from(
                 </main>
             </div>
         </div>
+        <div class="rail-tail-space" aria-hidden="true"></div>
     </div>
-    <Footer />
+    <div class="team-footer">
+        <Footer />
+    </div>
 </V2Layout>
 
 <script>
@@ -214,6 +230,8 @@ const portfolios = Array.from(
     const trailBase = trail?.querySelector<SVGPathElement>('.trail-base');
     const trailProgress = trail?.querySelector<SVGPathElement>('.trail-progress');
     const trailDot = trail?.querySelector<SVGCircleElement>('.trail-dot');
+    const matrix = page?.querySelector<HTMLElement>('.hero-matrix');
+    const matrixCells = Array.from(matrix?.querySelectorAll<HTMLElement>('.matrix-cell') ?? []);
     const layers = Array.from(page?.querySelectorAll<HTMLElement>('[data-depth]') ?? []);
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const stopElements = Array.from(page?.querySelectorAll<HTMLElement>('[data-team-stop]') ?? []);
@@ -254,7 +272,7 @@ const portfolios = Array.from(
     scrollUpdates.add(updateParallax);
     reducedMotion.addEventListener('change', updateParallax);
     const refreshAndUpdatePositions = () => {
-        if (page && railStars) railStars.closest<HTMLElement>('.team-progress-rail')!.style.height = `${page.scrollHeight * 0.98}px`;
+        if (page && railStars) railStars.closest<HTMLElement>('.team-progress-rail')!.style.height = `${page.scrollHeight}px`;
         refreshStopOffsets();
         refreshLayerCentres();
         scheduleScrollUpdates();
@@ -263,6 +281,42 @@ const portfolios = Array.from(
     updateParallax();
     addEventListener('load', refreshAndUpdatePositions);
     document.fonts.ready.then(refreshAndUpdatePositions);
+
+    if (matrix && matrixCells.length) {
+        const resetMatrix = () => {
+            matrixCells.forEach((cell) => {
+                cell.style.opacity = cell.dataset.opacity ?? '';
+                cell.style.removeProperty('--cell-turn');
+                cell.style.removeProperty('--cell-scale');
+                cell.style.transitionDelay = '';
+            });
+        };
+
+        matrix.addEventListener('pointermove', (event) => {
+            if (reducedMotion.matches) return;
+            const bounds = matrix.getBoundingClientRect();
+            const pointerX = ((event.clientX - bounds.left) / bounds.width) * MATRIX_COLUMNS;
+            const pointerY = ((event.clientY - bounds.top) / bounds.height) * MATRIX_ROWS;
+            const radius = 4.25;
+
+            matrixCells.forEach((cell) => {
+                const x = Number(cell.dataset.x);
+                const y = Number(cell.dataset.y);
+                const distance = Math.hypot(x + 0.5 - pointerX, y + 0.5 - pointerY);
+                const intensity = Math.max(0, 1 - distance / radius);
+                const baseOpacity = Number(cell.dataset.opacity) || 0;
+                cell.style.opacity = String(Math.min(1, baseOpacity + intensity * 0.72));
+                cell.style.setProperty('--cell-turn', `${intensity > 0.12 && (x + y) % 2 ? 180 : 0}deg`);
+                cell.style.setProperty('--cell-scale', String(1 + intensity * 0.12));
+                cell.style.transitionDelay = `${Math.max(0, distance - 0.5) * 14}ms`;
+            });
+        });
+
+        matrix.addEventListener('pointerleave', resetMatrix);
+        reducedMotion.addEventListener('change', () => {
+            if (reducedMotion.matches) resetMatrix();
+        });
+    }
 
     if (page && railStars && stopElements.length) {
         const names = stopElements.map((element) => element.dataset.teamStop ?? 'Section');
@@ -331,7 +385,7 @@ const portfolios = Array.from(
 
             const anchors = Array.from(page.querySelectorAll<HTMLElement>('[data-trail-section]'));
             const points = anchors.map((anchor, index) => {
-                const heading = anchor.querySelector<HTMLElement>('h1, h2') ?? anchor;
+                const heading = anchor.querySelector<HTMLElement>('h1, h2, h3') ?? anchor;
                 const rect = heading.getBoundingClientRect();
                 return {
                     x: width * (index === 0 ? TRAIL_CENTER_X : index % 2 ? TRAIL_RIGHT_X : TRAIL_LEFT_X),
@@ -542,6 +596,19 @@ const portfolios = Array.from(
         box-shadow: 0 0 3rem rgb(52 57 75 / 0.08);
     }
 
+    .rail-tail-space {
+        height: clamp(2.5rem, 5vw, 4rem);
+        background: var(--team-cream);
+    }
+
+    .team-footer {
+        margin-top: 0;
+    }
+
+    .team-footer :global(.v2-footer) {
+        aspect-ratio: 40 / 16;
+    }
+
     .team-body {
         position: relative;
     }
@@ -593,7 +660,7 @@ const portfolios = Array.from(
         width: 4.13vw;
         height: 98%;
         overflow: clip;
-        border-radius: 0 0 50% 50% / 0 0 0.72% 0.72%;
+        border-radius: 0 0 50% 50% / 0 0 2rem 2rem;
         background:
             url('/backgrounds/homepage-bg-v2-p00.png') 0 0 / calc(100% / 0.0413) auto no-repeat,
             #484b70;
@@ -711,97 +778,38 @@ const portfolios = Array.from(
         inset: 0 0 0 auto;
         width: 47%;
         overflow: hidden;
-        pointer-events: none;
+        pointer-events: auto;
     }
 
-    .hero-disc {
+    .hero-matrix {
         position: absolute;
-        top: 50%;
-        left: 47%;
-        width: clamp(10rem, 21vw, 20rem);
-        aspect-ratio: 1;
-        border-radius: 50%;
-        background:
-            radial-gradient(circle at 35% 33%, rgb(255 252 243 / 0.82), transparent 18%),
-            radial-gradient(circle at 40% 38%, #e6c0b5, #cbb9cf 48%, #9ab8c1 76%, #547d8a);
-        box-shadow: 1.1rem 1.2rem 0 rgb(52 57 75 / 0.09), 0 1.2rem 3rem rgb(52 57 75 / 0.16);
-        transform: translate3d(0, calc(-50% + var(--parallax-y, 0px)), 0);
-    }
-
-    .hero-orbit {
-        position: absolute;
-        top: 50%;
-        left: 47%;
-        width: clamp(13rem, 27vw, 26rem);
-        aspect-ratio: 1;
-        border: 1px solid rgb(52 57 75 / 0.35);
-        border-radius: 50%;
-        transform: translate3d(0, calc(-50% + var(--parallax-y, 0px)), 0);
-    }
-
-    .orbit-two {
-        width: clamp(11rem, 23vw, 22rem);
-        border-color: rgb(217 74 101 / 0.48);
-        border-style: dashed;
-        transform: translate3d(0, calc(-50% + var(--parallax-y, 0px)), 0) rotate(24deg);
-    }
-
-    .hero-cross {
-        position: absolute;
-        top: 19%;
-        right: 17%;
-        width: 1.5rem;
-        height: 1.5rem;
-        background:
-            linear-gradient(var(--team-ink), var(--team-ink)) center / 1px 100% no-repeat,
-            linear-gradient(90deg, var(--team-ink), var(--team-ink)) center / 100% 1px no-repeat;
-        opacity: 0.7;
-    }
-
-    .hero-pixels {
-        position: absolute;
-        right: 9%;
-        bottom: 17%;
-        width: 2.4rem;
-        height: 2.4rem;
-        background: radial-gradient(circle, var(--team-accent-blue) 1.5px, transparent 2px) 0 0 / 8px 8px;
-        mask-image: linear-gradient(135deg, #000, transparent);
-    }
-
-    .hero-art-wordmark {
-        position: absolute;
-        top: 50%;
-        left: 0;
-        z-index: 2;
-        display: flex;
+        inset: 0 0 0 auto;
+        display: grid;
         width: 100%;
-        flex-direction: column;
-        align-items: center;
-        transform: translateY(-50%);
-        color: var(--team-ink);
-        text-align: center;
-        text-shadow: 0 1px 10px rgb(255 252 243 / 0.8);
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        grid-template-rows: repeat(10, minmax(0, 1fr));
+        gap: clamp(2px, 0.35vw, 6px);
+        padding: 1.25rem 0;
+        background:
+            radial-gradient(ellipse at 88% 50%, rgb(17 155 214 / 0.25), transparent 62%),
+            linear-gradient(115deg, transparent 2%, rgb(140 120 152 / 0.12) 49%, rgb(217 74 101 / 0.2));
+        clip-path: polygon(100% 0, 100% 100%, 17% 100%, 21% 91%, 11% 83%, 18% 74%, 8% 65%, 15% 55%, 4% 45%, 13% 35%, 6% 25%, 17% 16%, 10% 8%, 22% 0);
+        mask-image: linear-gradient(90deg, transparent 0%, #000 36%, #000 100%);
     }
 
-    .wordmark-kicker,
-    .wordmark-foot {
-        font-size: clamp(0.55rem, 0.8vw, 0.75rem);
-        font-weight: 700;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-    }
-
-    .wordmark-main {
-        font-family: Georgia, 'Times New Roman', serif;
-        font-size: clamp(2.5rem, 6vw, 6rem);
-        font-weight: 500;
-        letter-spacing: -0.09em;
-        line-height: 0.95;
-    }
-
-    .wordmark-main span {
-        color: transparent;
-        -webkit-text-stroke: 1px var(--team-accent-pink);
+    .matrix-cell {
+        min-width: 0;
+        min-height: 0;
+        border: 1px solid hsl(var(--cell-hue) 72% 76% / 0.5);
+        background:
+            linear-gradient(135deg, hsl(var(--cell-hue) 80% 72% / 0.88), hsl(calc(var(--cell-hue) + 34) 70% 62% / 0.8));
+        box-shadow: 0 0 1rem hsl(var(--cell-hue) 80% 68% / 0.22);
+        opacity: var(--cell-opacity);
+        transform: perspective(320px) rotateY(var(--cell-turn, 0deg)) scale(var(--cell-scale, 1));
+        transition:
+            transform 420ms cubic-bezier(0.2, 0.8, 0.2, 1),
+            opacity 220ms ease,
+            filter 220ms ease;
     }
 
     .team-eyebrow {
@@ -912,17 +920,27 @@ const portfolios = Array.from(
     }
 
     .portfolio-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: clamp(0.75rem, 1.5vw, 1.5rem);
+        display: flex;
+        flex-direction: column;
+        gap: clamp(0.8rem, 1.35vw, 1.35rem);
     }
 
     .portfolio-section {
+        display: grid;
+        width: 88%;
+        grid-template-columns: minmax(10rem, 0.7fr) minmax(0, 2fr);
+        align-items: center;
         min-width: 0;
         padding: clamp(0.75rem, 1.4vw, 1.25rem);
+        margin-left: 0;
         border: 1px solid rgb(52 57 75 / 0.11);
         border-radius: 0.45rem;
         background: rgb(255 252 243 / 0.62);
+    }
+
+    .portfolio-section:nth-child(even) {
+        width: 92%;
+        margin-left: auto;
     }
 
     .portfolio-1 {
@@ -939,13 +957,13 @@ const portfolios = Array.from(
 
     .portfolio-section h3 {
         width: fit-content;
-        margin: 0 auto 0.9rem;
-        padding: 0 0.25rem 0.35rem;
+        margin: 0;
+        padding: 0.2rem 0.8rem 0.2rem 0;
         border-bottom: 1px solid var(--team-accent-purple);
         color: var(--team-ink);
         font-size: clamp(0.95rem, 1.5vw, 1.2rem);
         font-weight: 700;
-        text-align: center;
+        text-align: left;
     }
 
     .portfolio-members {
@@ -956,10 +974,11 @@ const portfolios = Array.from(
     }
 
     .portfolio-members .member-card {
-        flex-basis: calc(50% - 0.5rem);
+        flex: 1 1 calc(50% - 0.5rem);
     }
 
     .member-card {
+        position: relative;
         flex: 0 1 42%;
         min-width: 0;
         overflow: hidden;
@@ -969,22 +988,33 @@ const portfolios = Array.from(
         background: rgb(255 254 250 / 0.82);
         box-shadow: 0 0.25rem 0.75rem rgb(52 57 75 / 0.075);
         transform: translate3d(0, var(--parallax-y, 0px), 0);
-        transition:
-            transform 250ms ease,
-            box-shadow 250ms ease;
+        transition: box-shadow 250ms ease;
     }
 
-    .member-card:hover {
-        transform: translate3d(0, calc(var(--parallax-y, 0px) - 0.12rem), 0);
+    .member-card::after {
+        position: absolute;
+        inset: -65% auto -65% -55%;
+        width: 38%;
+        background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.72), transparent);
+        content: '';
+        pointer-events: none;
+        transform: translateX(-180%) rotate(20deg);
+    }
+
+    .member-card:hover,
+    .member-card:focus-within {
         box-shadow: 0 0.6rem 1.25rem rgb(52 57 75 / 0.11);
     }
 
-    @media (prefers-reduced-motion: reduce) {
-        .member-card {
-            transition: none;
-        }
+    .member-card:hover::after,
+    .member-card:focus-within::after {
+        transition: transform 750ms ease;
+        transform: translateX(550%) rotate(20deg);
+    }
 
-        .member-card:hover {
+    @media (prefers-reduced-motion: reduce) {
+        .member-card::after {
+            transition: none;
             transform: none;
         }
     }
@@ -1006,6 +1036,10 @@ const portfolios = Array.from(
             padding: 1.5rem 1.25rem;
         }
 
+        .hero-art {
+            width: 60%;
+        }
+
         .hero-copy {
             left: 1.25rem;
             width: 68%;
@@ -1025,53 +1059,27 @@ const portfolios = Array.from(
             font-size: 0.9rem;
         }
 
-        .hero-disc {
-            left: 40%;
-            width: clamp(8rem, 38vw, 12rem);
-        }
-
-        .hero-orbit {
-            left: 40%;
-            width: clamp(10rem, 46vw, 15rem);
-        }
-
-        .orbit-two {
-            width: clamp(8.5rem, 41vw, 13rem);
-        }
-
-        .hero-art-wordmark {
-            top: auto;
-            bottom: 7%;
-            left: 40%;
-            width: 60%;
-        }
-
-        .wordmark-main {
-            font-size: clamp(1.35rem, 5.8vw, 2.1rem);
-            white-space: nowrap;
-        }
-
-        .wordmark-kicker,
-        .wordmark-foot {
-            font-size: 0.42rem;
-            letter-spacing: 0.1em;
-        }
-
-        .hero-pixels {
-            right: 3%;
-            bottom: 35%;
-            width: 1.5rem;
-            height: 1.5rem;
-            background-size: 6px 6px;
-        }
-
-        .hero-cross {
-            right: 9%;
-            top: 18%;
+        .hero-matrix {
+            padding: 3rem 0 1.5rem;
+            clip-path: polygon(100% 0, 100% 100%, 16% 100%, 22% 89%, 10% 78%, 18% 66%, 7% 54%, 15% 43%, 6% 31%, 18% 20%, 9% 10%, 23% 0);
         }
 
         .portfolio-grid {
+            gap: 0.75rem;
+        }
+
+        .portfolio-section,
+        .portfolio-section:nth-child(even) {
+            width: 100%;
             grid-template-columns: 1fr;
+            gap: 0.75rem;
+            margin-left: 0;
+        }
+
+        .portfolio-section h3 {
+            margin: 0 auto;
+            padding: 0 0.25rem 0.3rem;
+            text-align: center;
         }
 
         .team-section {
@@ -1081,6 +1089,10 @@ const portfolios = Array.from(
         .leadership-members .member-card,
         .portfolio-members .member-card {
             flex-basis: 44%;
+        }
+
+        .team-footer :global(.v2-footer) {
+            aspect-ratio: 40 / 16;
         }
 
     }
