@@ -1,6 +1,4 @@
 ---
-import star from '../../assets/ui/shapes/one-star.svg?url';
-
 interface Props {
   title: string;
   titleAccent?: string;
@@ -30,7 +28,7 @@ const {
     <h1>{title}{titleAccent && <> <em>{titleAccent}</em></>}</h1>
     {caption && <p class="header-caption">{caption}</p>}
   </div>
-  {showFlourish && <div class="header-star" aria-hidden="true" style={`--header-star: url("${star}")`}></div>}
+  {showFlourish && <div class="header-star" aria-hidden="true"></div>}
   {showOrb && (
     <div class="header-art" aria-hidden="true">
       <div class="header-orb"></div>
@@ -149,12 +147,12 @@ const {
     position: absolute;
     z-index: 1;
     top: 50%;
-    left: clamp(19rem, 43vw, 38rem);
-    width: clamp(24rem, 68vw, 72rem);
+    left: 30%;
+    width: max(70vw, 32rem);
     aspect-ratio: 1;
-    background: linear-gradient(135deg, rgb(217 74 101 / 0.18), rgb(119 107 135 / 0.2) 56%, rgb(58 113 139 / 0.17));
-    mask: var(--header-star) center / contain no-repeat;
-    transform: translateY(-50%) rotate(12deg);
+    background: linear-gradient(135deg, rgb(255 174 56 / 0.3), rgb(238 112 24 / 0.22) 56%, rgb(255 196 91 / 0.26));
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 94%, 50% 72%, 21% 94%, 32% 57%, 2% 35%, 39% 35%);
+    transform: translateY(-50%) rotate(10deg);
     pointer-events: none;
   }
 
@@ -241,8 +239,8 @@ const {
     }
 
     .header-star {
-      left: 30%;
-      width: clamp(19rem, 95vw, 34rem);
+      left: 22%;
+      width: max(100vw, 24rem);
       opacity: 0.72;
     }
 
