@@ -208,8 +208,11 @@ const { length = '98%', underlay, colorScheme } = Astro.props;
     if (reached === target) target = -1;
     const current = target === -1 ? reached : target;
     marks.forEach((mark, i) => (mark.ariaCurrent = i === current ? 'location' : null));
-    // Set on the active star only, so the others don't restyle on every scroll.
-    marks[current].style.setProperty('--star-colour', colourAt(middle, centresOf(rects)));
+    // Keep each team's active star on its own palette color instead of blending by scroll distance.
+    const colour = teamColourScheme
+      ? marks[current].style.getPropertyValue('--own-colour')
+      : colourAt(middle, centresOf(rects));
+    marks[current].style.setProperty('--star-colour', colour);
   };
 
   // Each star's own colour is the one at its section's centre. Sections are fixed fractions of the page, so this only

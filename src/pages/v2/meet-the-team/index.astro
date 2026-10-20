@@ -100,6 +100,8 @@ const portfolios = Array.from(
             <span class="ambient-cloud cloud-one" data-depth="0.06"></span>
             <span class="ambient-cloud cloud-two" data-depth="0.1"></span>
             <span class="ambient-sun" data-depth="0.035"></span>
+            <span class="ambient-starburst" data-depth="0.045"></span>
+            <span class="ambient-halftone" data-depth="0.03"></span>
             <span class="side-geometry geometry-left-one" data-depth="0.025"></span>
             <span class="side-geometry geometry-right-one" data-depth="0.04"></span>
             <span class="side-geometry geometry-left-two" data-depth="0.035"></span>
@@ -456,6 +458,28 @@ const portfolios = Array.from(
         aspect-ratio: 1;
         border-radius: 50%;
         background: radial-gradient(circle, rgb(217 74 101 / 0.2), rgb(244 176 0 / 0.16), transparent 70%);
+        transform: translate3d(0, var(--parallax-y, 0), 0);
+    }
+
+    .ambient-starburst {
+        position: absolute;
+        top: 54%;
+        left: 0.5%;
+        width: clamp(5rem, 10vw, 9rem);
+        aspect-ratio: 1;
+        background: linear-gradient(135deg, rgb(244 176 0 / 0.3), rgb(217 74 101 / 0.2));
+        clip-path: polygon(50% 0%, 60% 34%, 88% 12%, 70% 42%, 100% 50%, 70% 58%, 88% 88%, 60% 66%, 50% 100%, 40% 66%, 12% 88%, 30% 58%, 0% 50%, 30% 42%, 12% 12%, 40% 34%);
+        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(-12deg);
+    }
+
+    .ambient-halftone {
+        position: absolute;
+        top: 72%;
+        right: 0.5%;
+        width: clamp(5rem, 9vw, 8rem);
+        aspect-ratio: 1;
+        background: radial-gradient(circle, rgb(58 113 139 / 0.3) 1.5px, transparent 2px) 0 0 / 11px 11px;
+        mask-image: radial-gradient(circle, #000 12%, transparent 72%);
         transform: translate3d(0, var(--parallax-y, 0), 0);
     }
 
