@@ -6,6 +6,7 @@ interface Props {
   sectionName?: string;
   sectionAnchor?: boolean;
   showOrb?: boolean;
+  singleLine?: boolean;
 }
 
 const {
@@ -15,10 +16,11 @@ const {
   sectionName = titleAccent ? `${title} ${titleAccent}` : title,
   sectionAnchor = true,
   showOrb = false,
+  singleLine = false,
 } = Astro.props;
 ---
 
-<header class:list={['page-header', { 'with-orb': showOrb }]} data-section={sectionAnchor ? sectionName : undefined}>
+<header class:list={['page-header', { 'with-orb': showOrb, 'single-line': singleLine }]} data-section={sectionAnchor ? sectionName : undefined}>
   <div class="header-copy">
     <h1>{title}{titleAccent && <> <em>{titleAccent}</em></>}</h1>
     {caption && <p class="header-caption">{caption}</p>}
@@ -97,6 +99,18 @@ const {
     font-weight: 800;
   }
 
+  .single-line h1 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(2.8rem, 5.6vw, 5.25rem);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .single-line.with-orb .header-copy {
+    width: min(68%, 42rem);
+  }
+
   .header-caption {
     max-width: 31rem;
     margin: 0.75rem 0 0;
@@ -161,9 +175,18 @@ const {
       transform: translateY(-50%);
     }
 
+    .single-line.with-orb .header-copy {
+      width: calc(100% - 2.5rem);
+    }
+
     .page-header h1 {
       font-size: clamp(2.15rem, 8vw, 3.5rem);
       line-height: 0.9;
+    }
+
+    .single-line h1 {
+      font-size: clamp(1.4rem, 7.2vw, 2.8rem);
+      line-height: 1;
     }
 
     .header-caption {

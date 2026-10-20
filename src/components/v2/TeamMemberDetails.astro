@@ -10,7 +10,7 @@ type Props = {
 };
 
 const { member, image, sizes, eager = false } = Astro.props;
-const widths = [240, 380, 540, 700];
+const widths = [240, 380, 540];
 ---
 
 {image ? (
@@ -19,7 +19,9 @@ const widths = [240, 380, 540, 700];
         alt={`Portrait of ${member.name}`}
         widths={widths}
         sizes={sizes}
+        quality={75}
         loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
         class="member-photo w-full object-cover"
     />
 ) : (
