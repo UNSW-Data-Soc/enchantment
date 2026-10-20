@@ -1,4 +1,6 @@
 ---
+import star from '../../assets/ui/shapes/one-star.svg?url';
+
 interface Props {
   title: string;
   titleAccent?: string;
@@ -28,6 +30,7 @@ const {
     <h1>{title}{titleAccent && <> <em>{titleAccent}</em></>}</h1>
     {caption && <p class="header-caption">{caption}</p>}
   </div>
+  {showFlourish && <div class="header-star" aria-hidden="true" style={`--header-star: url("${star}")`}></div>}
   {showOrb && (
     <div class="header-art" aria-hidden="true">
       <div class="header-orb"></div>
@@ -125,7 +128,6 @@ const {
     gap: 0.3rem;
     width: fit-content;
     margin-bottom: 0.65rem;
-    transform: rotate(-2deg);
   }
 
   .header-flourish span {
@@ -141,6 +143,19 @@ const {
 
   .header-flourish span:last-child {
     width: clamp(4.5rem, 9vw, 8rem);
+  }
+
+  .header-star {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: clamp(19rem, 43vw, 38rem);
+    width: clamp(24rem, 68vw, 72rem);
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, rgb(217 74 101 / 0.18), rgb(119 107 135 / 0.2) 56%, rgb(58 113 139 / 0.17));
+    mask: var(--header-star) center / contain no-repeat;
+    transform: translateY(-50%) rotate(12deg);
+    pointer-events: none;
   }
 
   .header-caption {
@@ -223,6 +238,12 @@ const {
 
     .header-flourish {
       margin-bottom: 0.45rem;
+    }
+
+    .header-star {
+      left: 30%;
+      width: clamp(19rem, 95vw, 34rem);
+      opacity: 0.72;
     }
 
     .header-caption {
