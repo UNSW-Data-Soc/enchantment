@@ -100,19 +100,6 @@ const portfolios = Array.from(
             <span class="ambient-cloud cloud-one" data-depth="0.06"></span>
             <span class="ambient-cloud cloud-two" data-depth="0.1"></span>
             <span class="ambient-sun" data-depth="0.035"></span>
-            <span class="ambient-starburst" data-depth="0.045"></span>
-            <span class="ambient-halftone" data-depth="0.03"></span>
-            <span class="ambient-orbit" data-depth="0.025"></span>
-            <span class="ambient-rays" data-depth="0.04"></span>
-            <span class="ambient-sparkles" data-depth="0.035"></span>
-            <span class="ambient-sticker sticker-board" data-depth="0.03">THE<br />BOARD</span>
-            <span class="ambient-sticker sticker-crew" data-depth="0.045">GOOD<br />PEOPLE</span>
-            <span class="ambient-sticker sticker-data" data-depth="0.025">DATA<br />SOCIETY</span>
-            <span class="ambient-checker" data-depth="0.04"></span>
-            <span class="ambient-flower" data-depth="0.035"></span>
-            <span class="ambient-squiggle" data-depth="0.03"></span>
-            <span class="ambient-target" data-depth="0.045"></span>
-            <span class="ambient-diamonds" data-depth="0.025"></span>
             <span class="side-geometry geometry-left-one" data-depth="0.025"></span>
             <span class="side-geometry geometry-right-one" data-depth="0.04"></span>
             <span class="side-geometry geometry-left-two" data-depth="0.035"></span>
@@ -427,8 +414,6 @@ const portfolios = Array.from(
 
     .team-page::after {
         background:
-            radial-gradient(circle at center, transparent 42%, rgb(119 107 135 / 0.3) 43% 44%, transparent 45%) 1vw 12rem / 5rem 5rem no-repeat,
-            radial-gradient(circle at center, transparent 42%, rgb(58 113 139 / 0.34) 43% 44%, transparent 45%) calc(100% - 1vw) 42rem / 6rem 6rem no-repeat,
             radial-gradient(circle, rgb(217 74 101 / 0.18) 0 1.6px, transparent 2px) 0 0 / 28px 28px,
             radial-gradient(circle, rgb(58 113 139 / 0.16) 0 1.3px, transparent 1.8px) 14px 14px / 28px 28px,
             repeating-linear-gradient(135deg, transparent 0 34px, rgb(119 107 135 / 0.045) 35px 36px, transparent 37px 70px);
@@ -473,176 +458,6 @@ const portfolios = Array.from(
         border-radius: 50%;
         background: radial-gradient(circle, rgb(217 74 101 / 0.2), rgb(244 176 0 / 0.16), transparent 70%);
         transform: translate3d(0, var(--parallax-y, 0), 0);
-    }
-
-    .ambient-starburst {
-        position: absolute;
-        top: 54%;
-        left: 0.5%;
-        width: clamp(5rem, 10vw, 9rem);
-        aspect-ratio: 1;
-        background: linear-gradient(135deg, rgb(244 176 0 / 0.3), rgb(217 74 101 / 0.2));
-        clip-path: polygon(50% 0%, 60% 34%, 88% 12%, 70% 42%, 100% 50%, 70% 58%, 88% 88%, 60% 66%, 50% 100%, 40% 66%, 12% 88%, 30% 58%, 0% 50%, 30% 42%, 12% 12%, 40% 34%);
-        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(-12deg);
-    }
-
-    .ambient-halftone {
-        position: absolute;
-        top: 72%;
-        right: 0.5%;
-        width: clamp(5rem, 9vw, 8rem);
-        aspect-ratio: 1;
-        background: radial-gradient(circle, rgb(58 113 139 / 0.3) 1.5px, transparent 2px) 0 0 / 11px 11px;
-        mask-image: radial-gradient(circle, #000 12%, transparent 72%);
-        transform: translate3d(0, var(--parallax-y, 0), 0);
-    }
-
-    .ambient-orbit {
-        position: absolute;
-        top: 26%;
-        right: 2%;
-        width: clamp(7rem, 14vw, 13rem);
-        aspect-ratio: 1;
-        border: clamp(0.65rem, 1.2vw, 1.1rem) solid rgb(244 176 0 / 0.2);
-        border-radius: 50%;
-        box-shadow:
-            inset 0 0 0 clamp(0.45rem, 0.8vw, 0.75rem) rgb(217 74 101 / 0.12),
-            0 0 0 clamp(0.3rem, 0.5vw, 0.5rem) rgb(58 113 139 / 0.12);
-        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(18deg);
-    }
-
-    .ambient-rays {
-        position: absolute;
-        top: 48%;
-        right: 0;
-        width: clamp(7rem, 13vw, 12rem);
-        aspect-ratio: 1;
-        border-radius: 50%;
-        background: repeating-conic-gradient(from -8deg, rgb(217 74 101 / 0.15) 0deg 8deg, transparent 8deg 20deg);
-        mask-image: radial-gradient(circle, #000 0 14%, transparent 72%);
-        transform: translate3d(0, var(--parallax-y, 0), 0);
-    }
-
-    .ambient-sparkles {
-        position: absolute;
-        top: 88%;
-        left: 8%;
-        width: clamp(6rem, 11vw, 10rem);
-        aspect-ratio: 1;
-        background:
-            radial-gradient(circle, rgb(255 252 243 / 0.8) 0 1px, transparent 2px) 0 0 / 16px 16px,
-            radial-gradient(circle, rgb(217 74 101 / 0.42) 0 2px, transparent 3px) 8px 8px / 32px 32px;
-        mask-image: radial-gradient(ellipse, #000 12%, transparent 72%);
-        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(-8deg);
-    }
-
-    .ambient-sticker {
-        position: absolute;
-        display: grid;
-        place-content: center;
-        width: clamp(3.5rem, 6vw, 5.5rem);
-        aspect-ratio: 1;
-        border: 2px solid rgb(52 57 75 / 0.72);
-        color: var(--team-ink);
-        font-size: clamp(0.55rem, 0.8vw, 0.75rem);
-        font-weight: 900;
-        line-height: 0.95;
-        letter-spacing: 0.05em;
-        text-align: center;
-        text-shadow: 0 1px rgb(255 252 243 / 0.5);
-        filter: drop-shadow(3px 4px 0 rgb(52 57 75 / 0.16));
-    }
-
-    .sticker-board {
-        top: 9%;
-        right: 18%;
-        background: #f4b000;
-        clip-path: polygon(50% 0, 61% 13%, 78% 5%, 82% 23%, 100% 31%, 89% 48%, 100% 65%, 80% 73%, 77% 93%, 59% 86%, 46% 100%, 35% 83%, 15% 88%, 17% 68%, 0 57%, 12% 41%, 5% 22%, 27% 20%, 34% 3%);
-        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(12deg);
-    }
-
-    .sticker-crew {
-        top: 61%;
-        left: 12%;
-        border-radius: 50%;
-        background: #f2cbd0;
-        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(-11deg);
-    }
-
-    .sticker-data {
-        top: 91%;
-        right: 23%;
-        width: clamp(4rem, 7vw, 6rem);
-        aspect-ratio: 1.35;
-        border-radius: 0.35rem;
-        background: #c8dce3;
-        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(7deg);
-    }
-
-    .ambient-checker {
-        position: absolute;
-        top: 17%;
-        left: 8%;
-        width: clamp(3.5rem, 6vw, 5.5rem);
-        aspect-ratio: 1;
-        background:
-            conic-gradient(#d94a65 25%, #fffcf3 0 50%, #d94a65 0 75%, #fffcf3 0) 0 0 / 18px 18px;
-        border: 3px solid rgb(255 252 243 / 0.72);
-        box-shadow: 3px 4px 0 rgb(52 57 75 / 0.18);
-        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(-8deg);
-    }
-
-    .ambient-flower {
-        position: absolute;
-        top: 39%;
-        left: 13%;
-        width: clamp(4rem, 7vw, 6.5rem);
-        aspect-ratio: 1;
-        border-radius: 50%;
-        background: repeating-conic-gradient(#f4b000 0deg 24deg, #d94a65 24deg 48deg);
-        mask: radial-gradient(circle, transparent 0 13%, #000 15% 68%, transparent 70%);
-        filter: drop-shadow(2px 3px 0 rgb(52 57 75 / 0.14));
-        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(13deg);
-    }
-
-    .ambient-squiggle {
-        position: absolute;
-        top: 78%;
-        right: 9%;
-        width: clamp(5rem, 10vw, 9rem);
-        height: clamp(2rem, 4vw, 3.5rem);
-        border-top: 5px solid rgb(58 113 139 / 0.65);
-        border-radius: 50%;
-        box-shadow: 0 -8px 0 -3px rgb(217 74 101 / 0.72), 0 -16px 0 -7px rgb(244 176 0 / 0.8);
-        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(-17deg);
-    }
-
-    .ambient-target {
-        position: absolute;
-        top: 52%;
-        right: 16%;
-        width: clamp(3.5rem, 6vw, 5.5rem);
-        aspect-ratio: 1;
-        border: 7px solid rgb(217 74 101 / 0.76);
-        border-radius: 50%;
-        box-shadow:
-            inset 0 0 0 6px rgb(255 252 243 / 0.8),
-            inset 0 0 0 12px rgb(58 113 139 / 0.62),
-            2px 4px 0 rgb(52 57 75 / 0.15);
-        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(8deg);
-    }
-
-    .ambient-diamonds {
-        position: absolute;
-        top: 31%;
-        right: 10%;
-        width: clamp(4rem, 7vw, 6rem);
-        aspect-ratio: 1.4;
-        background:
-            linear-gradient(45deg, transparent 40%, rgb(119 107 135 / 0.72) 41% 47%, transparent 48%) 0 0 / 50% 100%,
-            linear-gradient(-45deg, transparent 40%, rgb(244 176 0 / 0.9) 41% 47%, transparent 48%) 100% 0 / 50% 100%;
-        background-repeat: no-repeat;
-        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(-12deg);
     }
 
     .side-geometry {
