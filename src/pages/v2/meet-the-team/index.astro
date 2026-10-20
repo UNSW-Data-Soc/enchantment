@@ -100,11 +100,6 @@ const portfolios = Array.from(
             <span class="ambient-cloud cloud-one" data-depth="0.06"></span>
             <span class="ambient-cloud cloud-two" data-depth="0.1"></span>
             <span class="ambient-sun" data-depth="0.035"></span>
-            <span class="ambient-starburst" data-depth="0.045"></span>
-            <span class="ambient-halftone" data-depth="0.03"></span>
-            <span class="ambient-orbit" data-depth="0.025"></span>
-            <span class="ambient-rays" data-depth="0.04"></span>
-            <span class="ambient-sparkles" data-depth="0.035"></span>
             <span class="side-geometry geometry-left-one" data-depth="0.025"></span>
             <span class="side-geometry geometry-right-one" data-depth="0.04"></span>
             <span class="side-geometry geometry-left-two" data-depth="0.035"></span>
@@ -419,9 +414,10 @@ const portfolios = Array.from(
 
     .team-page::after {
         background:
-            radial-gradient(circle at center, transparent 42%, rgb(119 107 135 / 0.3) 43% 44%, transparent 45%) 1vw 12rem / 5rem 5rem no-repeat,
-            radial-gradient(circle at center, transparent 42%, rgb(58 113 139 / 0.34) 43% 44%, transparent 45%) calc(100% - 1vw) 42rem / 6rem 6rem no-repeat;
-        opacity: 0.65;
+            radial-gradient(circle, rgb(217 74 101 / 0.18) 0 1.6px, transparent 2px) 0 0 / 28px 28px,
+            radial-gradient(circle, rgb(58 113 139 / 0.16) 0 1.3px, transparent 1.8px) 14px 14px / 28px 28px,
+            repeating-linear-gradient(135deg, transparent 0 34px, rgb(119 107 135 / 0.045) 35px 36px, transparent 37px 70px);
+        opacity: 0.8;
     }
 
     .ambient-background {
@@ -462,67 +458,6 @@ const portfolios = Array.from(
         border-radius: 50%;
         background: radial-gradient(circle, rgb(217 74 101 / 0.2), rgb(244 176 0 / 0.16), transparent 70%);
         transform: translate3d(0, var(--parallax-y, 0), 0);
-    }
-
-    .ambient-starburst {
-        position: absolute;
-        top: 54%;
-        left: 0.5%;
-        width: clamp(5rem, 10vw, 9rem);
-        aspect-ratio: 1;
-        background: linear-gradient(135deg, rgb(244 176 0 / 0.3), rgb(217 74 101 / 0.2));
-        clip-path: polygon(50% 0%, 60% 34%, 88% 12%, 70% 42%, 100% 50%, 70% 58%, 88% 88%, 60% 66%, 50% 100%, 40% 66%, 12% 88%, 30% 58%, 0% 50%, 30% 42%, 12% 12%, 40% 34%);
-        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(-12deg);
-    }
-
-    .ambient-halftone {
-        position: absolute;
-        top: 72%;
-        right: 0.5%;
-        width: clamp(5rem, 9vw, 8rem);
-        aspect-ratio: 1;
-        background: radial-gradient(circle, rgb(58 113 139 / 0.3) 1.5px, transparent 2px) 0 0 / 11px 11px;
-        mask-image: radial-gradient(circle, #000 12%, transparent 72%);
-        transform: translate3d(0, var(--parallax-y, 0), 0);
-    }
-
-    .ambient-orbit {
-        position: absolute;
-        top: 26%;
-        right: 2%;
-        width: clamp(7rem, 14vw, 13rem);
-        aspect-ratio: 1;
-        border: clamp(0.65rem, 1.2vw, 1.1rem) solid rgb(244 176 0 / 0.2);
-        border-radius: 50%;
-        box-shadow:
-            inset 0 0 0 clamp(0.45rem, 0.8vw, 0.75rem) rgb(217 74 101 / 0.12),
-            0 0 0 clamp(0.3rem, 0.5vw, 0.5rem) rgb(58 113 139 / 0.12);
-        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(18deg);
-    }
-
-    .ambient-rays {
-        position: absolute;
-        top: 48%;
-        right: 0;
-        width: clamp(7rem, 13vw, 12rem);
-        aspect-ratio: 1;
-        border-radius: 50%;
-        background: repeating-conic-gradient(from -8deg, rgb(217 74 101 / 0.15) 0deg 8deg, transparent 8deg 20deg);
-        mask-image: radial-gradient(circle, #000 0 14%, transparent 72%);
-        transform: translate3d(0, var(--parallax-y, 0), 0);
-    }
-
-    .ambient-sparkles {
-        position: absolute;
-        top: 88%;
-        left: 8%;
-        width: clamp(6rem, 11vw, 10rem);
-        aspect-ratio: 1;
-        background:
-            radial-gradient(circle, rgb(255 252 243 / 0.8) 0 1px, transparent 2px) 0 0 / 16px 16px,
-            radial-gradient(circle, rgb(217 74 101 / 0.42) 0 2px, transparent 3px) 8px 8px / 32px 32px;
-        mask-image: radial-gradient(ellipse, #000 12%, transparent 72%);
-        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(-8deg);
     }
 
     .side-geometry {
