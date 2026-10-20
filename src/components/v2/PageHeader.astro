@@ -7,6 +7,7 @@ interface Props {
   sectionAnchor?: boolean;
   showOrb?: boolean;
   singleLine?: boolean;
+  showFlourish?: boolean;
 }
 
 const {
@@ -17,11 +18,13 @@ const {
   sectionAnchor = true,
   showOrb = false,
   singleLine = false,
+  showFlourish = false,
 } = Astro.props;
 ---
 
-<header class:list={['page-header', { 'with-orb': showOrb, 'single-line': singleLine }]} data-section={sectionAnchor ? sectionName : undefined}>
+<header class:list={['page-header', { 'with-orb': showOrb, 'single-line': singleLine, 'with-flourish': showFlourish }]} data-section={sectionAnchor ? sectionName : undefined}>
   <div class="header-copy">
+    {showFlourish && <div class="header-flourish" aria-hidden="true"><span></span><span></span></div>}
     <h1>{title}{titleAccent && <> <em>{titleAccent}</em></>}</h1>
     {caption && <p class="header-caption">{caption}</p>}
   </div>
@@ -102,13 +105,42 @@ const {
   .single-line h1 {
     font-family: var(--font-syne), sans-serif;
     font-size: clamp(2.8rem, 5.6vw, 5.25rem);
+    font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1;
     white-space: nowrap;
   }
 
+  .single-line h1 em {
+    font-weight: 700;
+  }
+
   .single-line.with-orb .header-copy {
     width: min(68%, 42rem);
+  }
+
+  .header-flourish {
+    display: grid;
+    justify-items: start;
+    gap: 0.3rem;
+    width: fit-content;
+    margin-bottom: 0.65rem;
+    transform: rotate(-2deg);
+  }
+
+  .header-flourish span {
+    display: block;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--header-pink), var(--header-purple), var(--header-blue));
+  }
+
+  .header-flourish span:first-child {
+    width: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .header-flourish span:last-child {
+    width: clamp(4.5rem, 9vw, 8rem);
   }
 
   .header-caption {
@@ -187,6 +219,10 @@ const {
     .single-line h1 {
       font-size: clamp(1.4rem, 7.2vw, 2.8rem);
       line-height: 1;
+    }
+
+    .header-flourish {
+      margin-bottom: 0.45rem;
     }
 
     .header-caption {
