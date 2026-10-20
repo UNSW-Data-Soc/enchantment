@@ -221,7 +221,7 @@ const isCurrent = (href: string) =>
   }
 
   @media (hover: hover) {
-    .nav-link:hover > span {
+    .nav-link:not([aria-current='page']):hover > span {
       transform: scale(1.05);
     }
 
@@ -413,7 +413,7 @@ const isCurrent = (href: string) =>
 
         links.forEach((link) => {
           link.addEventListener('pointerenter', (event) => {
-            if (event.pointerType === 'touch') return;
+            if (event.pointerType === 'touch' || link === current) return;
             hovered = link;
             updateHighlight();
           });
