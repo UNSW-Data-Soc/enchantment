@@ -142,17 +142,21 @@ const isCurrent = (href: string) =>
     isolation: isolate;
   }
 
-  /* One gradient window follows the links, horizontally on desktop and vertically on mobile. */
+  /* One underline follows the hovered or focused link, horizontally on desktop and
+     vertically on mobile. It sits above the current page's fill, which never moves. */
   .nav-link-group::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
-    z-index: -1;
+    z-index: 1;
     width: var(--highlight-width, 0px);
-    height: var(--highlight-height, 0px);
-    transform: translate(var(--highlight-x, 0px), var(--highlight-y, 0px));
-    background: var(--link-gradient);
+    height: 3px;
+    transform: translate(
+      var(--highlight-x, 0px),
+      calc(var(--highlight-y, 0px) + var(--highlight-height, 0px) - 3px)
+    );
+    background: #484b70;
     opacity: 0;
     pointer-events: none;
   }
@@ -161,7 +165,6 @@ const isCurrent = (href: string) =>
     transition:
       transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
       width 450ms cubic-bezier(0.22, 1, 0.36, 1),
-      height 450ms cubic-bezier(0.22, 1, 0.36, 1),
       opacity 250ms ease;
   }
 
@@ -186,14 +189,8 @@ const isCurrent = (href: string) =>
     color: #484b70;
   }
 
-  /* Keep the same highlight available before JavaScript loads or when it is disabled. */
-  nav:not([data-highlight-ready])
-    > ul
-    .nav-link:is(:hover, :focus-visible, [aria-current='page']),
-  nav:not([data-highlight-ready])
-    > .nav-link:is(:hover, :focus-visible, [aria-current='page']),
-  .mobile-links:not([data-highlight-ready])
-    .nav-link:is(:hover, :focus-visible, [aria-current='page']) {
+  /* The current page keeps its fill whatever is hovered or focused. */
+  .nav-link[aria-current='page'] {
     background: var(--link-gradient);
   }
 
@@ -380,8 +377,8 @@ const isCurrent = (href: string) =>
 
         const updateHighlight = () => {
           const focused = links.find((link) => link.matches(':focus-visible'));
-          const target = hovered ?? focused ?? current;
-          const position = target ?? links[0];
+          const target = hovered ?? focused;
+          const position = target ?? current ?? links[0];
           if (!position || !position.getClientRects().length) {
             group.removeAttribute('data-highlight-ready');
             group.dataset.highlightVisible = 'false';
