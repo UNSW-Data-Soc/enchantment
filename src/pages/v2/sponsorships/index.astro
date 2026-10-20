@@ -6,7 +6,40 @@ import Sponsorships from '../../../components/Sponsorships.astro';
 <ContentPage
   title="Our"
   titleAccent="sponsorships"
+  caption="Our industry partners help us equip members to thrive in a data-driven world."
   teamBackground
 >
+  <div class="sponsorship-intro">
+    <p>
+      DataSoc wouldn't be DataSoc without the amazing companies we've worked with throughout our journey as a society.
+      As more data-oriented decisions and predictions are made every day, demand for talented Data Science graduates continues to grow.
+    </p>
+    <p>
+      It's our long-term goal to help our members become as capable as they can be, and it wouldn't be possible without
+      the continued support from industry.
+    </p>
+    <p>
+      Interested in sponsoring? Reach out to <a href="mailto:external@unswdata.com">external@unswdata.com</a>.
+    </p>
+  </div>
   <Sponsorships />
 </ContentPage>
+
+<style>
+  .sponsorship-intro {
+    max-width: 68rem;
+    margin: 0 auto 2.5rem;
+    line-height: 1.5;
+  }
+
+  .sponsorship-intro p {
+    margin: 0 0 1rem;
+  }
+
+  .sponsorship-intro a {
+    color: #d94a65;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+</style>

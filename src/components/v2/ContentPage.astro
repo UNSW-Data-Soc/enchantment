@@ -7,10 +7,11 @@ import V2Layout from '../../layouts/V2Layout.astro';
 interface Props {
   title: string;
   titleAccent?: string;
+  caption?: string;
   teamBackground?: boolean;
 }
 
-const { title, titleAccent, teamBackground = false } = Astro.props;
+const { title, titleAccent, caption, teamBackground = false } = Astro.props;
 const pageTitle = titleAccent ? `${title} ${titleAccent}` : title;
 ---
 
@@ -25,6 +26,7 @@ const pageTitle = titleAccent ? `${title} ${titleAccent}` : title;
       <PageHeader
         title={title}
         titleAccent={titleAccent}
+        caption={caption}
       />
       <div class="content-body">
         <slot />
