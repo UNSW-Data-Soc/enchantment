@@ -27,8 +27,6 @@ function cardDepth(index: number): number {
     return CARD_PARALLAX_DEPTHS[index % CARD_PARALLAX_DEPTHS.length];
 }
 
-const currentYear = new Date().getFullYear();
-
 type Member = { name: string; role: string; file?: string };
 type Section = {
     title: string;
