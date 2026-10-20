@@ -95,7 +95,7 @@ const portfolios = Array.from(
 );
 ---
 
-<V2Layout title="Meet the team - UNSW DataSoc">
+<V2Layout title="Meet the team">
     <link slot="head" rel="preload" as="image" href="/backgrounds/meet-the-team-scrollbar-underlay.png" fetchpriority="high" />
     <div class="team-page">
         <div class="ambient-background" aria-hidden="true">
@@ -124,6 +124,7 @@ const portfolios = Array.from(
         <StarsScrollbar
             length="100%"
             underlay="/backgrounds/meet-the-team-scrollbar-underlay.png"
+            colorScheme="team"
         />
 
         <div class="team-panel">
@@ -138,10 +139,7 @@ const portfolios = Array.from(
                     <PageHeader
                         title="Meet the"
                         titleAccent="team"
-                        eyebrow="UNSW DataSoc"
-                        eyebrowDetail={'People & portfolios'}
-                        caption="The people shaping our year, our community, and what comes next."
-                        index={`BOARD ${currentYear} ✳ UNSW`}
+                        caption="Meet the people behind UNSW DataSoc."
                         sectionAnchor={false}
                         showOrb
                     />
@@ -419,9 +417,7 @@ const portfolios = Array.from(
     .team-page::after {
         background:
             radial-gradient(circle at center, transparent 42%, rgb(119 107 135 / 0.3) 43% 44%, transparent 45%) 1vw 12rem / 5rem 5rem no-repeat,
-            radial-gradient(circle at center, transparent 42%, rgb(58 113 139 / 0.34) 43% 44%, transparent 45%) calc(100% - 1vw) 42rem / 6rem 6rem no-repeat,
-            conic-gradient(from 45deg, var(--team-accent-pink) 0 25%, var(--team-accent-purple) 0 50%, var(--team-accent-blue) 0 75%, var(--team-accent-gold) 0) 1.8vw 33rem / 0.7rem 0.7rem no-repeat,
-            conic-gradient(from 45deg, var(--team-accent-pink) 0 25%, var(--team-accent-purple) 0 50%, var(--team-accent-blue) 0 75%, var(--team-accent-gold) 0) calc(100% - 2vw) 67rem / 0.9rem 0.9rem no-repeat;
+            radial-gradient(circle at center, transparent 42%, rgb(58 113 139 / 0.34) 43% 44%, transparent 45%) calc(100% - 1vw) 42rem / 6rem 6rem no-repeat;
         opacity: 0.65;
     }
 

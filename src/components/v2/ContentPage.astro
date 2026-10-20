@@ -7,17 +7,14 @@ import V2Layout from '../../layouts/V2Layout.astro';
 interface Props {
   title: string;
   titleAccent?: string;
-  eyebrow?: string;
-  eyebrowDetail?: string;
-  caption?: string;
-  index?: string;
   teamBackground?: boolean;
 }
 
-const { title, titleAccent, eyebrow = 'UNSW DataSoc', eyebrowDetail, caption, index, teamBackground = false } = Astro.props;
+const { title, titleAccent, teamBackground = false } = Astro.props;
+const pageTitle = titleAccent ? `${title} ${titleAccent}` : title;
 ---
 
-<V2Layout title={`${title} - UNSW DataSoc`}>
+<V2Layout title={pageTitle}>
   <link slot="head" rel="preload" as="image" href="/backgrounds/meet-the-team-scrollbar-underlay.png" fetchpriority="high" />
   <div class:list={['content-page', { 'team-background': teamBackground }]}>
     <StarsScrollbar
@@ -28,10 +25,6 @@ const { title, titleAccent, eyebrow = 'UNSW DataSoc', eyebrowDetail, caption, in
       <PageHeader
         title={title}
         titleAccent={titleAccent}
-        eyebrow={eyebrow}
-        eyebrowDetail={eyebrowDetail}
-        caption={caption}
-        index={index}
       />
       <div class="content-body">
         <slot />
