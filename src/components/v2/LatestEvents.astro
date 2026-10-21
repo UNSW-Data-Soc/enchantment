@@ -17,10 +17,10 @@ const start = events.length ? 0 : 1;
 <section class="latest-events" aria-labelledby="latest-events-heading">
   <!-- Parallax speed rises towards the foreground. -->
   <div class="bg">
-    <ParallaxContainer speed={0.06}><img src={clusterBg} alt="" loading="lazy" /></ParallaxContainer>
+    <ParallaxContainer speed={0.06}><img src={clusterBg} alt="" loading="lazy" draggable="false" /></ParallaxContainer>
   </div>
   <h2 id="latest-events-heading">
-    <ParallaxContainer speed={0.12}><img src="/text-headers/latest-events.png" alt="Latest Events" /></ParallaxContainer>
+    <ParallaxContainer speed={0.12}><img src="/text-headers/latest-events.png" alt="Latest Events" draggable="false" /></ParallaxContainer>
   </h2>
 
   <div class="tagline">
@@ -44,10 +44,10 @@ const start = events.length ? 0 : 1;
 
     <div class="controls">
       <button type="button" data-dir="-1" aria-label="Previous event">
-        <img src={arrowLeft} alt="" />
+        <img src={arrowLeft} alt="" draggable="false" />
       </button>
       <button type="button" data-dir="1" aria-label="Next event">
-        <img src={arrowRight} alt="" />
+        <img src={arrowRight} alt="" draggable="false" />
       </button>
     </div>
   </ParallaxContainer>

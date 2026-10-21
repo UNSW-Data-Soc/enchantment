@@ -1,62 +1,67 @@
 ---
 import { Font } from 'astro:assets';
+import Navbar from '../components/v2/Navbar.astro';
+import '../styles/v2/global.css';
 
 const { title = 'UNSW DataSoc' } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="/favicon.png" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-		<Font cssVariable="--font-syne" preload />
-	</head>
-	<body>
-		<slot />
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <Font cssVariable="--font-syne" preload />
+  </head>
+  <body
+    class:list={[{ 'pt-16': Astro.url.pathname.replace(/\/$/, '') !== '/v2' }]}
+  >
+    <Navbar />
+    <slot />
+  </body>
 </html>
 
 <style>
-	:global(html),
-	:global(body) {
-		margin: 0;
-	}
+  :global(html),
+  :global(body) {
+    margin: 0;
+  }
 
-	:global(html.lenis),
-	:global(html.lenis body) {
-		height: auto;
-	}
+  :global(html.lenis),
+  :global(html.lenis body) {
+    height: auto;
+  }
 
-	:global(.lenis.lenis-smooth) {
-		scroll-behavior: auto !important;
-	}
+  :global(.lenis.lenis-smooth) {
+    scroll-behavior: auto !important;
+  }
 
-	:global(.lenis.lenis-smooth iframe) {
-		pointer-events: none;
-	}
+  :global(.lenis.lenis-smooth iframe) {
+    pointer-events: none;
+  }
 </style>
 
 <script>
-	import Lenis from 'lenis';
+  import Lenis from 'lenis';
 
-	const lenis = new Lenis({
-		autoRaf: false,
-		lerp: 0.1,
-		smoothWheel: true,
-		syncTouch: false,
-	});
+  const lenis = new Lenis({
+    autoRaf: false,
+    lerp: 0.1,
+    smoothWheel: true,
+    syncTouch: false,
+  });
 
-	lenis.on('scroll', () => {
-		window.dispatchEvent(new Event('v2-lenis-scroll'));
-	});
+  lenis.on('scroll', () => {
+    window.dispatchEvent(new Event('v2-lenis-scroll'));
+  });
 
-	const raf = (time: number) => {
-		lenis.raf(time);
-		requestAnimationFrame(raf);
-	};
+  const raf = (time: number) => {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  };
 
-	requestAnimationFrame(raf);
+  requestAnimationFrame(raf);
 </script>

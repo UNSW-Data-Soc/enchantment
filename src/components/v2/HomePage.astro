@@ -1,18 +1,25 @@
 ---
 import LatestEvents from './LatestEvents.astro';
+import LatestPublications from './LatestPublications.astro';
 import StarsScrollbar from './StarsScrollbar.astro';
 ---
 
+<link rel="preload" as="image" href="/backgrounds/homepage-bg-v2-p00-no-sidebar.png" fetchpriority="high" />
+
 <main class="v2-home" aria-label="Homepage">
-  <img src="/backgrounds/homepage-bg-v2-p00.png" alt="" width="1708" height="4989" fetchpriority="high" />
   <div class="latest-events-slot">
     <LatestEvents />
   </div>
-  <!-- Section bands of the background image (Landing V3): hero, latest events, about us, latest publications. -->
-  <div class="section-band" data-section style="top: 0; height: 25.7%"></div>
-  <div class="section-band" data-section style="top: 25.7%; height: 23.9%"></div>
-  <div class="section-band" data-section style="top: 49.6%; height: 28.2%"></div>
-  <div class="section-band" data-section style="top: 77.8%; height: 22.2%"></div>
+  <div class="latest-publications-slot">
+    <LatestPublications />
+  </div>
+  <!-- Section bands of the background image (Landing V3); data-section names each star's button. A star scrolls its band's
+       top to the top of the screen, so Latest Events starts 28% down: a little past centring the whole component, so its
+       arrows stay on screen on shorter windows too. -->
+  <div class="section-band" data-section="Top" style="top: 0; height: 28%"></div>
+  <div class="section-band" data-section="Latest Events" style="top: 28%; height: 21.6%"></div>
+  <div class="section-band" data-section="About Us" style="top: 49.6%; height: 28.2%"></div>
+  <div class="section-band" data-section="Latest Publications" style="top: 77.8%; height: 22.2%"></div>
   <StarsScrollbar />
 </main>
 
@@ -20,18 +27,26 @@ import StarsScrollbar from './StarsScrollbar.astro';
   .v2-home {
     position: relative;
     width: 100%;
-  }
-
-  .v2-home img {
-    display: block;
-    width: 100%;
-    height: auto;
+    aspect-ratio: 1708 / 4989;
+    background-image: url('/backgrounds/homepage-bg-v2-p00-no-sidebar.png');
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    /* StarsScrollbar positions its bar's colours in cqw (1% of this width). */
+    container-type: inline-size;
   }
 
   .latest-events-slot {
     position: absolute;
     top: 31.8%;
     left: 2.6%;
+    right: 0;
+  }
+
+  /* The top of the background's gradient band. */
+  .latest-publications-slot {
+    position: absolute;
+    top: 83%;
+    left: 0;
     right: 0;
   }
 
