@@ -38,11 +38,11 @@ const tiers = [
       {tiers.map((tier) => (
         <section
           class:list={['sponsor-tier', `tier-${tier.name.toLowerCase()}`]}
-          aria-labelledby={`tier-${tier.name.toLowerCase()}`}
+          aria-labelledby={`sponsor-tier-${tier.name.toLowerCase()}-heading`}
           data-section={tier.name}
           data-parallax-speed="0.035"
         >
-          <h3 id={`tier-${tier.name.toLowerCase()}`}>{tier.name}</h3>
+          <h3 id={`sponsor-tier-${tier.name.toLowerCase()}-heading`}>{tier.name}</h3>
           <div class="sponsor-logos">
             {tier.sponsors.map((sponsor) => (
               <a
@@ -189,12 +189,16 @@ const tiers = [
     box-shadow: 0 0.35rem 0.8rem rgb(52 57 75 / 0.12);
     transition: transform 180ms ease, box-shadow 180ms ease;
     translate: 0 var(--parallax-y, 0px);
-    will-change: transform, translate;
   }
 
   .sponsor-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 0.6rem 1.5rem rgb(52 57 75 / 0.12);
+    will-change: transform;
+  }
+
+  .sponsor-card:focus-visible {
+    will-change: transform;
   }
 
   .sponsor-card img {

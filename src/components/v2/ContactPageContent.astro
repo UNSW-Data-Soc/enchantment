@@ -3,7 +3,7 @@
     <p class="eyebrow">Let’s talk</p>
     <h2 id="contact-form-heading">Get in touch</h2>
     <p class="form-intro">Have a question or an idea? Send us a message and we’ll be happy to hear from you.</p>
-    <form class="contact-form">
+    <form class="contact-form" data-v2-contact-form>
       <p class="form-note">Submitting opens your email app with your message ready to send.</p>
       <label>
         <span>Full name</span>
@@ -219,7 +219,7 @@
 </style>
 
 <script>
-  const form = document.querySelector<HTMLFormElement>('.contact-form');
+  const form = document.querySelector<HTMLFormElement>('[data-v2-contact-form]');
   form?.addEventListener('submit', (event) => {
     event.preventDefault();
     const values = new FormData(form);
@@ -234,7 +234,8 @@
       '',
       message,
     ].join('\n');
-    const params = new URLSearchParams({ subject: `Website enquiry from ${name}`, body });
-    window.location.href = `mailto:hello@unswdata.com?${params.toString()}`;
+    const subject = encodeURIComponent(`Website enquiry from ${name}`);
+    const encodedBody = encodeURIComponent(body);
+    window.location.href = `mailto:hello@unswdata.com?subject=${subject}&body=${encodedBody}`;
   });
 </script>

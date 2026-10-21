@@ -211,10 +211,11 @@ const { length = '98%', underlay, colorScheme } = Astro.props;
     if (reached === target) target = -1;
     const current = target === -1 ? reached : target;
     marks.forEach((mark, i) => (mark.ariaCurrent = i === current ? 'location' : null));
+    const centres = centresOf(rects);
     // Keep each team's active star on its own palette color instead of blending by scroll distance.
     const colour = teamColorScheme
-      ? marks[current].style.getPropertyValue('--own-colour')
-      : colourAt(middle, centresOf(rects));
+      ? colourAt(centres[current], centres)
+      : colourAt(middle, centres);
     marks[current].style.setProperty('--star-colour', colour);
   };
 
