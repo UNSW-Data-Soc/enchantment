@@ -72,11 +72,11 @@ const categories: Category[] = [
       { title: 'How Data Science is Quietly Shaping Your Daily Life', label: 'Data science blog', href: DATA_SCI_BLOG, accent: '#8c7898', external: true },
       ...(vibeCoding
         ? [{
-            title: 'Vibe Coding Wont Save You',
+            title: 'Vibe Coding Won’t Save You',
             label: 'DataSoc blog',
             href: `/blog/${vibeCoding.id}`,
             accent: '#f4b000',
-            date: vibeCoding.data.pubDate.valueOf(),
+            date: vibeCoding.data.pubDate.getFullYear(),
             image: vibeCoding.data.heroImage,
           }]
         : []),
@@ -219,8 +219,6 @@ const categories: Category[] = [
     min-height: 4rem;
     padding: 0.9rem clamp(1rem, 2vw, 1.5rem);
     color: #34394b;
-    font-size: clamp(1.1rem, 2vw, 1.4rem);
-    font-weight: 700;
     cursor: pointer;
     text-align: left;
     width: 100%;
@@ -391,6 +389,8 @@ const categories: Category[] = [
   const search = document.querySelector<HTMLInputElement>('[data-publication-search]');
   const categories = Array.from(document.querySelectorAll<HTMLElement>('[data-publication-category]'));
   const emptyState = document.querySelector<HTMLElement>('[data-search-empty]');
+  const openBeforeSearch = new Map<HTMLElement, boolean>();
+  let searchWasActive = false;
 
   const setOpen = (category: HTMLElement, open: boolean) => {
     const toggle = category.querySelector<HTMLButtonElement>('[data-category-toggle]');
@@ -406,12 +406,23 @@ const categories: Category[] = [
     const panel = category.querySelector<HTMLElement>('[data-category-panel]');
     if (panel) panel.inert = true;
     toggle?.addEventListener('click', () => {
-      setOpen(category, toggle.getAttribute('aria-expanded') !== 'true');
+      const open = toggle.getAttribute('aria-expanded') !== 'true';
+      setOpen(category, open);
+      if (searchWasActive) openBeforeSearch.set(category, open);
     });
   });
 
   search?.addEventListener('input', () => {
     const query = search.value.trim().toLocaleLowerCase();
+    if (query && !searchWasActive) {
+      categories.forEach((category) => {
+        openBeforeSearch.set(
+          category,
+          category.querySelector('[data-category-toggle]')?.getAttribute('aria-expanded') === 'true',
+        );
+      });
+      searchWasActive = true;
+    }
     let visibleCategories = 0;
 
     categories.forEach((category) => {
@@ -427,9 +438,17 @@ const categories: Category[] = [
       });
 
       if (hasResults) visibleCategories += 1;
-      setOpen(category, Boolean(query) && matches.length > 0);
+      if (query) {
+        setOpen(category, matches.length > 0);
+      } else if (searchWasActive) {
+        setOpen(category, openBeforeSearch.get(category) ?? false);
+      }
     });
 
     if (emptyState) emptyState.hidden = !query || visibleCategories > 0;
+    if (!query && searchWasActive) {
+      openBeforeSearch.clear();
+      searchWasActive = false;
+    }
   });
 </script>
