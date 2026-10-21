@@ -7,11 +7,11 @@
     <form class="contact-form" data-v2-contact-form>
       <p class="form-note">Submitting opens your email app with your message ready to send.</p>
       <label>
-        <span>Full name</span>
+        <span>Full name <b aria-hidden="true">*</b><span class="sr-only"> required</span></span>
         <input type="text" name="fullName" autocomplete="name" placeholder="Your name" required />
       </label>
       <label>
-        <span>Email address</span>
+        <span>Email address <b aria-hidden="true">*</b><span class="sr-only"> required</span></span>
         <input type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
       </label>
       <label>
@@ -19,7 +19,7 @@
         <input type="tel" name="phone" autocomplete="tel" placeholder="Your phone number" />
       </label>
       <label>
-        <span>What do you have in mind?</span>
+        <span>What do you have in mind? <b aria-hidden="true">*</b><span class="sr-only"> required</span></span>
         <textarea name="message" rows="4" placeholder="Tell us a little about your enquiry" required></textarea>
       </label>
       <button type="submit">Send message</button>

@@ -53,7 +53,7 @@ const tiers = [
                 data-parallax-speed="0.045"
               >
                 <img src={sponsor.logo} alt={sponsor.name} style={`--logo-width: ${sponsor.width}`} loading="lazy" decoding="async" />
-                <span class="visually-hidden"> (opens in new tab)</span>
+                <span class="sr-only"> (opens in a new tab)</span>
               </a>
             ))}
           </div>
@@ -206,22 +206,6 @@ const tiers = [
     width: min(100%, var(--logo-width));
     max-height: 4.5rem;
     object-fit: contain;
-  }
-
-  .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  .sponsorship-showcase :global([data-parallax-speed]) {
-    --parallax-y: 0px;
   }
 
   @media (prefers-reduced-motion: reduce) {
