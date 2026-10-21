@@ -128,11 +128,11 @@ const categories: Category[] = [
                       aria-label={`${card.title}${card.label ? `, ${card.label}` : ''}${card.external ? ', opens in a new tab' : ''}`}
                       {...(card.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                     >
-                      <div class="article-cover" style={`--cover-accent: ${card.accent}`}>
+                      <div class:list={['article-cover', { 'has-cover-image': card.image }]} style={`--cover-accent: ${card.accent}`}>
                         {card.image && <img class="cover-photo" src={card.image} alt="" loading="lazy" decoding="async" />}
-                        <span class="cover-rule" aria-hidden="true"></span>
+                        {!card.image && <span class="cover-rule" aria-hidden="true"></span>}
                         {card.label && <span class="cover-category">{card.label}</span>}
-                        <span class="cover-title">{card.title}</span>
+                        {!card.image && <span class="cover-title">{card.title}</span>}
                       </div>
                       <h3>{card.title}</h3>
                     </a>
