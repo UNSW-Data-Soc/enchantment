@@ -120,27 +120,22 @@ const categories: Category[] = [
               <div class="category-panel-inner">
                 <div class="article-grid">
                   {category.cards.map((card) => (
-                    <ParallaxContainer
-                      speed={0.024}
-                      class="article-card-layer"
+                    <a
+                      class="article-card"
+                      href={card.href}
+                      data-publication-card
+                      data-search={`${category.title} ${card.title} ${card.label}`}
+                      aria-label={`${card.title}${card.label ? `, ${card.label}` : ''}${card.external ? ', opens in a new tab' : ''}`}
+                      {...(card.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                     >
-                      <a
-                        class="article-card"
-                        href={card.href}
-                        data-publication-card
-                        data-search={`${category.title} ${card.title} ${card.label}`}
-                        aria-label={`${card.title}${card.label ? `, ${card.label}` : ''}${card.external ? ', opens in a new tab' : ''}`}
-                        {...(card.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                      >
-                        <div class="article-cover" style={`--cover-accent: ${card.accent}`}>
-                          {card.image && <img class="cover-photo" src={card.image} alt="" loading="lazy" decoding="async" />}
-                          <span class="cover-rule" aria-hidden="true"></span>
-                          {card.label && <span class="cover-category">{card.label}</span>}
-                          <span class="cover-title">{card.title}</span>
-                        </div>
-                        <h3>{card.title}</h3>
-                      </a>
-                    </ParallaxContainer>
+                      <div class="article-cover" style={`--cover-accent: ${card.accent}`}>
+                        {card.image && <img class="cover-photo" src={card.image} alt="" loading="lazy" decoding="async" />}
+                        <span class="cover-rule" aria-hidden="true"></span>
+                        {card.label && <span class="cover-category">{card.label}</span>}
+                        <span class="cover-title">{card.title}</span>
+                      </div>
+                      <h3>{card.title}</h3>
+                    </a>
                   ))}
                 </div>
               </div>
@@ -195,8 +190,7 @@ const categories: Category[] = [
     text-align: center;
   }
 
-  .publication-categories :global(.publication-category-layer),
-  .article-grid :global(.article-card-layer) {
+  .publication-categories :global(.publication-category-layer) {
     min-width: 0;
   }
 
@@ -435,8 +429,7 @@ const categories: Category[] = [
       if (categoryLayer) categoryLayer.hidden = !hasResults;
 
       cards.forEach((card) => {
-        const cardLayer = card.closest<HTMLElement>('.article-card-layer');
-        if (cardLayer) cardLayer.hidden = Boolean(query) && !matches.includes(card);
+        card.hidden = Boolean(query) && !matches.includes(card);
       });
 
       if (hasResults) visibleCategories += 1;
