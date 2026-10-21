@@ -3,7 +3,7 @@
     <p class="eyebrow">Let’s talk</p>
     <h2 id="contact-form-heading">Get in touch</h2>
     <p class="form-intro">Have a question or an idea? Send us a message and we’ll be happy to hear from you.</p>
-    <form class="contact-form" action="mailto:hello@unswdata.com" method="post" enctype="text/plain">
+    <form class="contact-form">
       <p class="form-note">Submitting opens your email app with your message ready to send.</p>
       <label>
         <span>Full name</span>
@@ -217,3 +217,24 @@
     }
   }
 </style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('.contact-form');
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const values = new FormData(form);
+    const name = String(values.get('fullName') || '');
+    const email = String(values.get('email') || '');
+    const phone = String(values.get('phone') || '');
+    const message = String(values.get('message') || '');
+    const body = [
+      `Name: ${name}`,
+      `Email: ${email}`,
+      ...(phone ? [`Phone: ${phone}`] : []),
+      '',
+      message,
+    ].join('\n');
+    const params = new URLSearchParams({ subject: `Website enquiry from ${name}`, body });
+    window.location.href = `mailto:hello@unswdata.com?${params.toString()}`;
+  });
+</script>

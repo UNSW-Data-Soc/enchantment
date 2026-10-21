@@ -19,7 +19,6 @@ const pageTitle = titleAccent ? `${title} ${titleAccent}` : title;
 ---
 
 <V2Layout title={pageTitle}>
-  <link slot="head" rel="preload" as="image" href="/backgrounds/meet-the-team-scrollbar-underlay.png" fetchpriority="high" />
   <div class:list={['content-page', { 'team-background': teamBackground }]}>
     <StarsScrollbar
       length="100%"
