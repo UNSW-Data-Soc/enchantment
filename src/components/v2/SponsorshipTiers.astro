@@ -245,7 +245,20 @@ const tiers = [
   const showcase = document.querySelector<HTMLElement>('.sponsorship-showcase');
   const parallaxItems = Array.from(showcase?.querySelectorAll<HTMLElement>('[data-parallax-speed]') ?? []);
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const documentCentres = new Map<HTMLElement, number>();
   let frame = 0;
+
+  const refreshParallaxCentres = () => {
+    parallaxItems.forEach((item) => {
+      let documentTop = 0;
+      let ancestor: HTMLElement | null = item;
+      while (ancestor) {
+        documentTop += ancestor.offsetTop;
+        ancestor = ancestor.offsetParent as HTMLElement | null;
+      }
+      documentCentres.set(item, documentTop + item.offsetHeight / 2);
+    });
+  };
 
   const updateParallax = () => {
     frame = 0;
@@ -254,28 +267,41 @@ const tiers = [
       return;
     }
     const viewportCenter = innerHeight / 2;
-    const updates = parallaxItems.map((item) => {
-      let documentTop = 0;
-      let ancestor: HTMLElement | null = item;
-      while (ancestor) {
-        documentTop += ancestor.offsetTop;
-        ancestor = ancestor.offsetParent as HTMLElement | null;
-      }
+    const offsets = new Map<HTMLElement, number>();
+    parallaxItems.forEach((item) => {
       const speed = Number(item.dataset.parallaxSpeed) || 0;
-      const centerY = documentTop + item.offsetHeight / 2 - scrollY;
+      const centerY = (documentCentres.get(item) ?? scrollY) - scrollY;
       const offset = Math.max(-14, Math.min(14, (viewportCenter - centerY) * speed));
-      return [item, offset] as const;
+      offsets.set(item, offset);
     });
-    updates.forEach(([item, offset]) => item.style.setProperty('--parallax-y', `${offset}px`));
+    parallaxItems.forEach((item) => {
+      const parentOffset = item.matches('.sponsor-card')
+        ? offsets.get(item.closest<HTMLElement>('.sponsor-tier')!) ?? 0
+        : 0;
+      const offset = (offsets.get(item) ?? 0) - parentOffset;
+      item.style.setProperty('--parallax-y', `${offset}px`);
+    });
   };
 
   const scheduleParallax = () => {
     if (!frame) frame = requestAnimationFrame(updateParallax);
   };
 
+  refreshParallaxCentres();
   updateParallax();
+  addEventListener('load', () => {
+    refreshParallaxCentres();
+    scheduleParallax();
+  });
   addEventListener('scroll', scheduleParallax, { passive: true });
   addEventListener('v2-lenis-scroll', scheduleParallax);
-  addEventListener('resize', scheduleParallax);
+  addEventListener('resize', () => {
+    refreshParallaxCentres();
+    scheduleParallax();
+  });
+  document.fonts.ready.then(() => {
+    refreshParallaxCentres();
+    scheduleParallax();
+  });
   reducedMotion.addEventListener('change', scheduleParallax);
 </script>

@@ -9,22 +9,13 @@ interface Props {
   titleAccent?: string;
   caption?: string;
   teamBackground?: boolean;
-  bodyClass?: string;
+  flushBody?: boolean;
   scrollToTop?: boolean;
   sectionName?: string;
   scrollbarUnderlay?: string;
 }
 
-const {
-  title,
-  titleAccent,
-  caption,
-  teamBackground = false,
-  bodyClass,
-  scrollToTop = false,
-  sectionName,
-  scrollbarUnderlay = '/backgrounds/meet-the-team-scrollbar-underlay.png',
-} = Astro.props;
+const { title, titleAccent, caption, teamBackground = false, flushBody = false, scrollToTop = false, sectionName, scrollbarUnderlay } = Astro.props;
 const pageTitle = titleAccent ? `${title} ${titleAccent}` : title;
 ---
 
@@ -42,7 +33,7 @@ const pageTitle = titleAccent ? `${title} ${titleAccent}` : title;
         sectionName={sectionName}
         scrollToTop={scrollToTop}
       />
-      <div class:list={['content-body', bodyClass]}>
+      <div class:list={['content-body', { 'flush-body': flushBody }]}>
         <slot />
       </div>
     </main>
@@ -121,7 +112,7 @@ const pageTitle = titleAccent ? `${title} ${titleAccent}` : title;
     background: #fffcf3;
   }
 
-  .content-body.sponsorship-body {
+  .content-body.flush-body {
     padding: 0;
     background: transparent;
   }

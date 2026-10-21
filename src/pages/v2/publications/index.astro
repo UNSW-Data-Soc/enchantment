@@ -1,10 +1,11 @@
 ---
 import ContentPage from '../../../components/v2/ContentPage.astro';
 
-const categories = Array.from({ length: 4 }, (_, categoryIndex) => ({
+const placeholderCategories = Array.from({ length: 4 }, (_, categoryIndex) => ({
   title: `Category ${categoryIndex + 1}`,
   articles: Array.from({ length: 4 }, (_, articleIndex) => `Article ${articleIndex + 1}`),
 }));
+const categories = import.meta.env.DEV ? placeholderCategories : [];
 ---
 
 <ContentPage
@@ -29,6 +30,7 @@ const categories = Array.from({ length: 4 }, (_, categoryIndex) => ({
         </div>
       </details>
     ))}
+    {!categories.length && <p class="publication-coming-soon">Publications are coming soon.</p>}
   </div>
 </ContentPage>
 
@@ -38,6 +40,16 @@ const categories = Array.from({ length: 4 }, (_, categoryIndex) => ({
     gap: 1rem;
     max-width: 90rem;
     margin: 0 auto;
+  }
+
+  .publication-coming-soon {
+    margin: 0;
+    padding: 2rem;
+    border: 1px solid rgb(52 57 75 / 0.12);
+    border-radius: 0.55rem;
+    background: rgb(255 252 243 / 0.82);
+    color: #596073;
+    text-align: center;
   }
 
   .publication-category {
