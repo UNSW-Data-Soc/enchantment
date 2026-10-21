@@ -203,7 +203,16 @@ const { length = '98%', underlay, colorScheme } = Astro.props;
     });
     return mark;
   });
-  window.addEventListener('v2-lenis-ready', () => marks.forEach((mark) => (mark.disabled = false)), { once: true });
+  const enableMarks = () => marks.forEach((mark) => (mark.disabled = false));
+  const readinessTimeout = window.setTimeout(enableMarks, 1500);
+  window.addEventListener(
+    'v2-lenis-ready',
+    () => {
+      window.clearTimeout(readinessTimeout);
+      enableMarks();
+    },
+    { once: true },
+  );
 
   const paint = () => {
     const middle = innerHeight / 2;
