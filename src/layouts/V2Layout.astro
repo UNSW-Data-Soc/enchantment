@@ -74,4 +74,6 @@ const { title = 'UNSW DataSoc' } = Astro.props;
   };
 
   requestAnimationFrame(raf);
+  document.documentElement.dataset.v2LenisReady = 'true';
+  window.dispatchEvent(new Event('v2-lenis-ready'));
 </script>

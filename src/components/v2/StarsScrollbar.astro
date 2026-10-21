@@ -180,6 +180,7 @@ const { length = '98%', underlay, colorScheme } = Astro.props;
   const marks = sections.map((section, i) => {
     const mark = stars.appendChild(document.createElement('button'));
     mark.type = 'button';
+    mark.disabled = document.documentElement.dataset.v2LenisReady !== 'true';
     mark.ariaLabel = `Go to ${(section as HTMLElement).dataset.section || `section ${i + 1}`}`;
     mark.append(document.createElement('i'));
     mark.addEventListener('click', () => {
@@ -202,6 +203,7 @@ const { length = '98%', underlay, colorScheme } = Astro.props;
     });
     return mark;
   });
+  window.addEventListener('v2-lenis-ready', () => marks.forEach((mark) => (mark.disabled = false)), { once: true });
 
   const paint = () => {
     const middle = innerHeight / 2;
