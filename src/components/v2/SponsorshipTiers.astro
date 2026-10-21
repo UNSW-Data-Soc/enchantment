@@ -299,9 +299,20 @@ const tiers = [
     refreshParallaxCentres();
     scheduleParallax();
   });
+  if (showcase && 'ResizeObserver' in window) {
+    const observer = new ResizeObserver(() => {
+      refreshParallaxCentres();
+      scheduleParallax();
+    });
+    observer.observe(showcase);
+    parallaxItems.forEach((item) => observer.observe(item));
+  }
   document.fonts.ready.then(() => {
     refreshParallaxCentres();
     scheduleParallax();
   });
-  reducedMotion.addEventListener('change', scheduleParallax);
+  reducedMotion.addEventListener('change', () => {
+    refreshParallaxCentres();
+    scheduleParallax();
+  });
 </script>

@@ -24,6 +24,9 @@
       </label>
       <button type="submit">Send message</button>
     </form>
+    <p class="form-status" data-v2-contact-fallback role="status" aria-live="polite" hidden>
+      If your email app didn’t open, email <a href="mailto:hello@unswdata.com">hello@unswdata.com</a>.
+    </p>
   </section>
 
   <aside class="contact-card contact-details">
@@ -98,6 +101,21 @@
     margin: 0;
     color: #596073;
     font-size: 0.85rem;
+  }
+
+  .form-status {
+    margin: 1rem 0 0;
+    padding: 0.75rem;
+    border-radius: 0.35rem;
+    background: rgb(58 113 139 / 0.1);
+    color: #34394b;
+    font-size: 0.9rem;
+  }
+
+  .form-status a {
+    color: #3a718b;
+    font-weight: 700;
+    text-underline-offset: 0.15em;
   }
 
   .contact-form {
@@ -248,6 +266,7 @@
     ].join('\n');
     const subject = encodeURIComponent(`Website enquiry from ${name}`);
     const encodedBody = encodeURIComponent(body);
+    document.querySelector<HTMLElement>('[data-v2-contact-fallback]')?.removeAttribute('hidden');
     window.location.href = `mailto:hello@unswdata.com?subject=${subject}&body=${encodedBody}`;
   });
 </script>
