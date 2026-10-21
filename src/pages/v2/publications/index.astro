@@ -1,5 +1,10 @@
 ---
 import ContentPage from '../../../components/v2/ContentPage.astro';
+
+const categories = Array.from({ length: 4 }, (_, categoryIndex) => ({
+  title: `Category ${categoryIndex + 1}`,
+  articles: Array.from({ length: 4 }, (_, articleIndex) => `Article ${articleIndex + 1}`),
+}));
 ---
 
 <ContentPage
@@ -7,5 +12,144 @@ import ContentPage from '../../../components/v2/ContentPage.astro';
   titleAccent="publications"
   caption="This is our publication hub!"
 >
-  <p>This page is coming soon.</p>
+  <div class="publication-categories">
+    {categories.map((category, index) => (
+      <details class="publication-category" open={index === 0}>
+        <summary>
+          <span>{category.title}</span>
+          <span class="accordion-icon" aria-hidden="true"></span>
+        </summary>
+        <div class="article-grid">
+          {category.articles.map((article) => (
+            <article class="article-card">
+              <div class="article-art" aria-hidden="true"><span>{article}</span></div>
+              <h3>{article}</h3>
+            </article>
+          ))}
+        </div>
+      </details>
+    ))}
+  </div>
 </ContentPage>
+
+<style>
+  .publication-categories {
+    display: grid;
+    gap: 1rem;
+    max-width: 90rem;
+    margin: 0 auto;
+  }
+
+  .publication-category {
+    overflow: hidden;
+    border: 1px solid rgb(52 57 75 / 0.14);
+    border-radius: 0.55rem;
+    background: rgb(255 252 243 / 0.82);
+    box-shadow: 0 0.5rem 1.5rem rgb(52 57 75 / 0.06);
+  }
+
+  .publication-category summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 4rem;
+    padding: 0.9rem clamp(1rem, 2vw, 1.5rem);
+    color: #34394b;
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .publication-category summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .publication-category summary:focus-visible {
+    outline: 3px solid #119bd6;
+    outline-offset: -3px;
+  }
+
+  .accordion-icon {
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .accordion-icon::before,
+  .accordion-icon::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.9rem;
+    height: 2px;
+    border-radius: 2px;
+    background: #d94a65;
+    content: '';
+    transform: translate(-50%, -50%);
+  }
+
+  .accordion-icon::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+    transition: transform 160ms ease;
+  }
+
+  details[open] .accordion-icon::after {
+    transform: translate(-50%, -50%);
+  }
+
+  .article-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+    padding: 0 clamp(1rem, 2vw, 1.5rem) clamp(1.25rem, 2.5vw, 2rem);
+  }
+
+  .article-card {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgb(52 57 75 / 0.1);
+    border-radius: 0.4rem;
+    background: #fffcf3;
+    box-shadow: 0 0.3rem 0.9rem rgb(52 57 75 / 0.08);
+  }
+
+  .article-art {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3;
+    padding: 1rem;
+    background:
+      radial-gradient(circle, rgb(52 57 75 / 0.1) 1px, transparent 1.5px) 0 0 / 14px 14px,
+      linear-gradient(135deg, #e7c5c1, #e0d5e7 45%, #c8dce3);
+    color: #34394b;
+    font-size: clamp(0.85rem, 1.2vw, 1rem);
+    font-weight: 700;
+  }
+
+  .article-art span {
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    background: rgb(255 252 243 / 0.8);
+  }
+
+  .article-card h3 {
+    margin: 0;
+    padding: 0.75rem;
+    color: #34394b;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  @media (min-width: 900px) {
+    .article-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .accordion-icon::after {
+      transition: none;
+    }
+  }
+</style>

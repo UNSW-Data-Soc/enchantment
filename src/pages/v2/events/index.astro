@@ -37,9 +37,9 @@ const sampleEvents = ['Sample event — preview', 'Another sample event', 'Sampl
   scrollToTop
 >
   <div class="events-listing">
-    <section class="event-section" aria-labelledby="upcoming-events-heading" data-section="Upcoming events">
+    <section class="event-section" aria-labelledby="upcoming-events-heading">
       <h2 id="upcoming-events-heading">Upcoming events</h2>
-      <div class="event-grid">
+      <div class="event-grid" data-section="Upcoming events">
         {upcomingEvents.map((event) => (
           <a class="event-card" href={`https://www.facebook.com/events/${event.id}`} target="_blank" rel="noopener noreferrer">
             <div class="event-image">
@@ -65,9 +65,9 @@ const sampleEvents = ['Sample event — preview', 'Another sample event', 'Sampl
       </div>
     </section>
 
-    <section class="event-section" aria-labelledby="past-events-heading" data-section="Past events">
+    <section class="event-section" aria-labelledby="past-events-heading">
       <h2 id="past-events-heading">Past events</h2>
-      <div class="event-grid">
+      <div class="event-grid" data-section={pastEvents.length ? 'Past events' : undefined}>
         {pastEvents.length ? pastEvents.map((event) => (
           <a class="event-card" href={`https://www.facebook.com/events/${event.id}`} target="_blank" rel="noopener noreferrer">
             <div class="event-image">
@@ -79,7 +79,7 @@ const sampleEvents = ['Sample event — preview', 'Another sample event', 'Sampl
             </div>
             <h3>{event.name}</h3>
           </a>
-        )) : <p class="empty-events">No past events to show.</p>}
+        )) : <p class="empty-events" data-section="Past events" data-scroll-position="0.34">No past events to show.</p>}
       </div>
     </section>
   </div>
@@ -89,9 +89,9 @@ const sampleEvents = ['Sample event — preview', 'Another sample event', 'Sampl
   .events-listing {
     display: grid;
     gap: clamp(3rem, 7vw, 5.5rem);
-    max-width: 90rem;
+    max-width: 78rem;
     margin: 0 auto;
-    padding-inline: clamp(0.5rem, 2vw, 1.75rem);
+    padding-inline: clamp(0.75rem, 2vw, 1.75rem);
   }
 
   .event-section h2 {
@@ -165,7 +165,10 @@ const sampleEvents = ['Sample event — preview', 'Another sample event', 'Sampl
     grid-column: 1 / -1;
     margin: 0;
     color: #596073;
-    font-size: 0.9rem;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border-radius: 0.45rem;
+    background: rgb(231 237 238 / 0.72);
+    font-size: 1.1rem;
     text-align: center;
   }
 

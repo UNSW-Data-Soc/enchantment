@@ -36,7 +36,12 @@ const tiers = [
     <h2 id="sponsors-heading">Proudly sponsored by</h2>
     <div class="sponsor-tiers">
       {tiers.map((tier) => (
-        <section class:list={['sponsor-tier', `tier-${tier.name.toLowerCase()}`]} aria-labelledby={`tier-${tier.name.toLowerCase()}`}>
+        <section
+          class:list={['sponsor-tier', `tier-${tier.name.toLowerCase()}`]}
+          aria-labelledby={`tier-${tier.name.toLowerCase()}`}
+          data-section={tier.name}
+          data-parallax-speed="0.035"
+        >
           <h3 id={`tier-${tier.name.toLowerCase()}`}>{tier.name}</h3>
           <div class="sponsor-logos">
             {tier.sponsors.map((sponsor) => (
@@ -46,6 +51,7 @@ const tiers = [
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={sponsor.name}
+                data-parallax-speed="0.045"
               >
                 <img src={sponsor.logo} alt={sponsor.name} style={`--logo-width: ${sponsor.width}`} loading="lazy" decoding="async" />
               </a>
@@ -62,6 +68,8 @@ const tiers = [
     position: relative;
     isolation: isolate;
     overflow: hidden;
+    border-top: 3px solid transparent;
+    border-image: linear-gradient(90deg, #d94a65, #f4b000 35%, #8c7898 68%, #119bd6) 1;
     padding: clamp(2.5rem, 6vw, 5rem) clamp(1rem, 5vw, 5rem);
     background:
       radial-gradient(circle, rgb(52 57 75 / 0.11) 1px, transparent 1.5px) 0 0 / 18px 18px,
@@ -112,12 +120,29 @@ const tiers = [
   }
 
   .sponsor-tier {
-    padding: clamp(1.5rem, 3vw, 2.5rem);
+    padding: clamp(1.75rem, 3.5vw, 2.75rem) clamp(1.5rem, 3vw, 2.5rem) clamp(2.5rem, 5vw, 3.75rem);
     border: 1px solid rgb(52 57 75 / 0.14);
     border-radius: 0.75rem;
-    background: rgb(255 252 243 / 0.64);
+    background: linear-gradient(135deg, rgb(255 252 243 / 0.74), rgb(255 252 243 / 0.52));
     box-shadow: 0 1rem 2.5rem rgb(52 57 75 / 0.08);
     backdrop-filter: blur(8px);
+    translate: 0 var(--parallax-y, 0px);
+    will-change: translate;
+  }
+
+  .tier-gold {
+    border-color: rgb(196 133 24 / 0.32);
+    background: linear-gradient(135deg, rgb(255 220 130 / 0.78), rgb(255 247 218 / 0.62) 55%, rgb(255 252 243 / 0.68));
+  }
+
+  .tier-silver {
+    border-color: rgb(113 133 149 / 0.34);
+    background: linear-gradient(135deg, rgb(214 225 232 / 0.84), rgb(247 249 249 / 0.66) 55%, rgb(228 235 237 / 0.72));
+  }
+
+  .tier-bronze {
+    border-color: rgb(156 99 65 / 0.34);
+    background: linear-gradient(135deg, rgb(235 197 165 / 0.76), rgb(250 231 211 / 0.64) 55%, rgb(255 244 228 / 0.7));
   }
 
   .sponsor-tier h3 {
@@ -156,12 +181,15 @@ const tiers = [
     display: grid;
     place-items: center;
     width: clamp(9rem, 22vw, 15rem);
-    min-height: 7rem;
+    min-height: 8rem;
     padding: 1rem;
-    border: 1px solid rgb(52 57 75 / 0.08);
+    border: 1px solid rgb(52 57 75 / 0.12);
     border-radius: 0.5rem;
-    background: rgb(255 255 255 / 0.72);
+    background: #fffcf3;
+    box-shadow: 0 0.35rem 0.8rem rgb(52 57 75 / 0.12);
     transition: transform 180ms ease, box-shadow 180ms ease;
+    translate: 0 var(--parallax-y, 0px);
+    will-change: translate;
   }
 
   .sponsor-card:hover {
@@ -176,6 +204,10 @@ const tiers = [
     object-fit: contain;
   }
 
+  .sponsorship-showcase :global([data-parallax-speed]) {
+    --parallax-y: 0px;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .sponsor-card {
       transition: none;
@@ -184,5 +216,40 @@ const tiers = [
     .sponsor-card:hover {
       transform: none;
     }
+
+    .sponsor-tier,
+    .sponsor-card {
+      translate: none;
+      will-change: auto;
+    }
   }
 </style>
+
+<script>
+  const showcase = document.querySelector<HTMLElement>('.sponsorship-showcase');
+  const parallaxItems = Array.from(showcase?.querySelectorAll<HTMLElement>('[data-parallax-speed]') ?? []);
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  let frame = 0;
+
+  const updateParallax = () => {
+    frame = 0;
+    if (reducedMotion.matches) return;
+    const viewportCenter = innerHeight / 2;
+    const updates = parallaxItems.map((item) => {
+      const bounds = item.getBoundingClientRect();
+      const speed = Number(item.dataset.parallaxSpeed) || 0;
+      const offset = Math.max(-14, Math.min(14, (viewportCenter - (bounds.top + bounds.height / 2)) * speed));
+      return [item, offset] as const;
+    });
+    updates.forEach(([item, offset]) => item.style.setProperty('--parallax-y', `${offset}px`));
+  };
+
+  const scheduleParallax = () => {
+    if (!frame) frame = requestAnimationFrame(updateParallax);
+  };
+
+  updateParallax();
+  addEventListener('scroll', scheduleParallax, { passive: true });
+  addEventListener('resize', scheduleParallax);
+  reducedMotion.addEventListener('change', scheduleParallax);
+</script>

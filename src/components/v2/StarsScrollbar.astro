@@ -185,9 +185,10 @@ const { length = '98%', underlay, colorScheme } = Astro.props;
     mark.addEventListener('click', () => {
       target = i;
       const offset = Number((section as HTMLElement).dataset.scrollOffset) || 0;
+      const scrollPosition = Math.min(Math.max(Number((section as HTMLElement).dataset.scrollPosition) || 0, 0), 1);
       const top = (section as HTMLElement).hasAttribute('data-scroll-top')
         ? 0
-        : Math.max(0, section.getBoundingClientRect().top + scrollY - offset);
+        : Math.max(0, section.getBoundingClientRect().top + scrollY - innerHeight * scrollPosition - offset);
       const request = new CustomEvent('v2-lenis-scroll-to', {
         cancelable: true,
         detail: { top, immediate: behavior === 'instant' },
