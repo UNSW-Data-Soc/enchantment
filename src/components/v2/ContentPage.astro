@@ -17,13 +17,14 @@ interface Props {
 
 const { title, titleAccent, caption, teamBackground = false, flushBody = false, scrollToTop = false, sectionName, scrollbarUnderlay } = Astro.props;
 const pageTitle = titleAccent ? `${title} ${titleAccent}` : title;
+const defaultScrollbarUnderlay = '/backgrounds/meet-the-team-scrollbar-underlay.png';
 ---
 
 <V2Layout title={pageTitle}>
   <div class:list={['content-page', { 'team-background': teamBackground }]}>
     <StarsScrollbar
       length="100%"
-      underlay={scrollbarUnderlay}
+      underlay={scrollbarUnderlay ?? defaultScrollbarUnderlay}
     />
     <main class="content-panel">
       <PageHeader
@@ -32,6 +33,8 @@ const pageTitle = titleAccent ? `${title} ${titleAccent}` : title;
         caption={caption}
         sectionName={sectionName}
         scrollToTop={scrollToTop}
+        showFlourish
+        showOrb
       />
       <div class:list={['content-body', { 'flush-body': flushBody }]}>
         <slot />

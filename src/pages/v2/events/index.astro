@@ -28,7 +28,7 @@ const pastEvents = events.pastEvents.toSorted(
   (a, b) => Date.parse(b.start_time) - Date.parse(a.start_time),
 );
 const sampleEvents = ['Sample event — preview', 'Another sample event', 'Sample workshop', 'Sample social event'];
-const showSampleEvents = import.meta.env.DEV && upcomingEvents.length === 0;
+const showSampleEvents = upcomingEvents.length === 0;
 ---
 
 <ContentPage

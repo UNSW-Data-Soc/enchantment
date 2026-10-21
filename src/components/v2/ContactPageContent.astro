@@ -3,7 +3,6 @@
     <p class="eyebrow">Let’s talk</p>
     <h2 id="contact-form-heading">Get in touch</h2>
     <p class="form-intro">Have a question or an idea? Send us a message and we’ll be happy to hear from you.</p>
-    <p class="required-note">All fields are required except phone number.</p>
     <form class="contact-form" data-v2-contact-form>
       <p class="form-note">Submitting opens your email app with your message ready to send.</p>
       <label>
@@ -121,11 +120,13 @@
   .contact-form {
     display: grid;
     gap: 1rem;
+    padding-bottom: 1rem;
   }
 
   .contact-form label {
     display: grid;
     gap: 0.4rem;
+    padding-top: 0.5rem;
     color: #34394b;
     font-size: 0.92rem;
     font-weight: 700;
@@ -160,12 +161,13 @@
 
   .contact-form button {
     justify-self: start;
-    padding: 0.75rem 1.4rem;
+    padding: 0.6rem 1.1rem;
     border: 0;
     border-radius: 999px;
     background: #d94a65;
     color: #fffefa;
     font: inherit;
+    font-size: 0.92rem;
     font-weight: 700;
     cursor: pointer;
     transition: background 160ms ease, transform 160ms ease;
@@ -188,8 +190,9 @@
   .team-photo {
     display: block;
     width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
+    height: auto;
+    aspect-ratio: auto;
+    object-fit: contain;
   }
 
   .contact-copy {
