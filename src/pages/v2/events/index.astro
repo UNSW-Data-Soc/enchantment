@@ -27,6 +27,7 @@ const pastEvents = events.pastEvents.toSorted(
   (a, b) => Date.parse(b.start_time) - Date.parse(a.start_time),
 );
 const sampleEvents = ['Sample event — preview', 'Another sample event', 'Sample workshop', 'Sample social event'];
+const showSampleEvents = import.meta.env.DEV && upcomingEvents.length === 0;
 ---
 
 <ContentPage
@@ -54,7 +55,7 @@ const sampleEvents = ['Sample event — preview', 'Another sample event', 'Sampl
           </a>
         ))}
 
-        {sampleEvents.map((name) => (
+        {showSampleEvents && sampleEvents.map((name) => (
           <article class="event-card sample-event">
             <div class="event-image sample-image">
               <span>Event image</span>
@@ -62,7 +63,7 @@ const sampleEvents = ['Sample event — preview', 'Another sample event', 'Sampl
             <h3>{name}</h3>
           </article>
         ))}
-        {!upcomingEvents.length && <p class="empty-events">No upcoming events right now.</p>}
+        {!upcomingEvents.length && !showSampleEvents && <p class="empty-events">No upcoming events right now.</p>}
       </div>
     </section>
 

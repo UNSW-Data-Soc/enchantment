@@ -3,7 +3,8 @@
     <p class="eyebrow">Let’s talk</p>
     <h2 id="contact-form-heading">Get in touch</h2>
     <p class="form-intro">Have a question or an idea? Send us a message and we’ll be happy to hear from you.</p>
-    <form class="contact-form">
+    <form class="contact-form" action="mailto:hello@unswdata.com" method="post" enctype="text/plain">
+      <p class="form-note">Submitting opens your email app with your message ready to send.</p>
       <label>
         <span>Full name</span>
         <input type="text" name="fullName" autocomplete="name" placeholder="Your name" required />
@@ -32,12 +33,12 @@
         UNSW Sydney, NSW, Australia
       </a>
       <a href="mailto:hello@unswdata.com">hello@unswdata.com</a>
-      <div class="social-links" aria-label="Social media">
+      <nav class="social-links" aria-label="Social media">
         <a href="https://www.facebook.com/DataSoc/" target="_blank" rel="noopener noreferrer">Facebook</a>
         <a href="https://www.instagram.com/unswdatasoc/" target="_blank" rel="noopener noreferrer">Instagram</a>
         <a href="https://www.youtube.com/@unswdatasoc" target="_blank" rel="noopener noreferrer">YouTube</a>
         <a href="https://linkedin.com/company/DataSoc" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-      </div>
+      </nav>
     </div>
   </aside>
 </div>
@@ -84,6 +85,12 @@
     margin: 0.75rem 0 1.5rem;
     color: #596073;
     line-height: 1.5;
+  }
+
+  .form-note {
+    margin: 0;
+    color: #596073;
+    font-size: 0.85rem;
   }
 
   .contact-form {

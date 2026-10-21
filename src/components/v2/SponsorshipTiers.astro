@@ -21,7 +21,7 @@ const tiers = [
       { name: 'IMC', href: 'https://www.imc.com/', logo: '/icons/imc.svg', width: '11rem' },
       { name: 'Vivcourt Trading', href: 'https://www.vivcourt.com/', logo: '/icons/viv.png', width: '10rem' },
       { name: 'BCG', href: 'https://www.bcg.com/', logo: '/icons/BGG-Logo.png', width: '11rem' },
-      { name: 'Data Army', href: 'https://dataarmy.io/', logo: '/icons/data army .png', width: '10rem' },
+      { name: 'Data Army', href: 'https://dataarmy.io/', logo: '/icons/data-army.png', width: '10rem' },
       { name: 'Accenture', href: 'https://www.accenture.com/', logo: '/icons/accenture.svg', width: '11rem' },
       { name: 'DataCamp', href: 'https://www.datacamp.com/donates', logo: '/icons/DC_Donates_logo.png', width: '10rem' },
     ],
@@ -50,10 +50,10 @@ const tiers = [
                 href={sponsor.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={sponsor.name}
                 data-parallax-speed="0.045"
               >
                 <img src={sponsor.logo} alt={sponsor.name} style={`--logo-width: ${sponsor.width}`} loading="lazy" decoding="async" />
+                <span class="visually-hidden"> (opens in new tab)</span>
               </a>
             ))}
           </div>
@@ -204,6 +204,18 @@ const tiers = [
     object-fit: contain;
   }
 
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
   .sponsorship-showcase :global([data-parallax-speed]) {
     --parallax-y: 0px;
   }
@@ -233,7 +245,10 @@ const tiers = [
 
   const updateParallax = () => {
     frame = 0;
-    if (reducedMotion.matches) return;
+    if (reducedMotion.matches) {
+      parallaxItems.forEach((item) => item.style.removeProperty('--parallax-y'));
+      return;
+    }
     const viewportCenter = innerHeight / 2;
     const updates = parallaxItems.map((item) => {
       const bounds = item.getBoundingClientRect();
@@ -250,6 +265,7 @@ const tiers = [
 
   updateParallax();
   addEventListener('scroll', scheduleParallax, { passive: true });
+  addEventListener('v2-lenis-scroll', scheduleParallax);
   addEventListener('resize', scheduleParallax);
   reducedMotion.addEventListener('change', scheduleParallax);
 </script>
