@@ -72,10 +72,11 @@ const positionStyle = hasCenter
 		measure(state);
 		return state;
 	});
+	const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 	const updateParallax = (state: ParallaxState) => {
 		const speed = Number(state.container.dataset.parallaxSpeed) || 0;
-		const offset = (state.restScroll - getScrollPosition(state.scrollSource)) * speed;
+		const offset = motionPreference.matches ? 0 : (state.restScroll - getScrollPosition(state.scrollSource)) * speed;
 		state.container.style.setProperty('--parallax-offset', `${offset}px`);
 	};
 
@@ -108,4 +109,6 @@ const positionStyle = hasCenter
 		window.addEventListener('load', remeasure);
 		window.addEventListener('resize', remeasure);
 	});
+
+	motionPreference.addEventListener('change', () => states.forEach(updateParallax));
 </script>

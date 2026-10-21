@@ -1,36 +1,110 @@
 ---
+import { getCollection } from 'astro:content';
 import ContentPage from '../../../components/v2/ContentPage.astro';
+import ParallaxContainer from '../../../components/v2/ParallaxContainer.astro';
+import {
+  CAREERS_GUIDE,
+  CAREERS_GUIDE_2021,
+  DATA_SCI_BLOG,
+  DATA_VISUALIZATION,
+  ETHICS_DATA_SCIENCE,
+  EXPLAINABILITY,
+  FYG_2021_LINK,
+  FYG_2022_LINK,
+  FYG_2024_LINK,
+  FYG_2025_LINK,
+  MACHINE_LEARNING,
+  ORLANDO,
+  SENTIMENTAL_ANALYSIS,
+} from '../../../utils/utils';
 
-const placeholderCategories = Array.from({ length: 4 }, (_, categoryIndex) => ({
-  title: `Category ${categoryIndex + 1}`,
-  articles: Array.from({ length: 4 }, (_, articleIndex) => `Article ${articleIndex + 1}`),
-}));
-const categories = import.meta.env.DEV ? placeholderCategories : [];
+type PublicationCard = { title: string; label: string; href: string; accent: string; external?: boolean };
+type Category = { title: string; cards: PublicationCard[] };
+
+const blogEntries = await getCollection('blog');
+const vibeCoding = blogEntries.find(({ data }) => data.title.toLowerCase().includes('vibe coding'));
+
+const categories: Category[] = [
+  {
+    title: 'Careers guides',
+    cards: [
+      { title: 'Careers Guide', label: '2021 edition', href: CAREERS_GUIDE_2021, accent: '#d94a65', external: true },
+      { title: 'Careers Guide', label: '2024 edition', href: CAREERS_GUIDE, accent: '#f4b000', external: true },
+    ],
+  },
+  {
+    title: 'First year guides',
+    cards: [
+      { title: 'First Year Guide', label: '2021 edition', href: FYG_2021_LINK, accent: '#8c7898', external: true },
+      { title: 'First Year Guide', label: '2022 edition', href: FYG_2022_LINK, accent: '#3a718b', external: true },
+      { title: 'First Year Guide', label: '2024 edition', href: FYG_2024_LINK, accent: '#d94a65', external: true },
+      { title: 'First Year Guide', label: '2025 edition', href: FYG_2025_LINK, accent: '#f4b000', external: true },
+    ],
+  },
+  {
+    title: 'Python resources',
+    cards: [
+      { title: 'Pandas for Python', label: 'Python resource', href: '/resources/pandas', accent: '#3a718b' },
+      { title: 'Matplotlib for Python', label: 'Python resource', href: '/resources/matplotlib', accent: '#776b87' },
+    ],
+  },
+  {
+    title: 'Blogs',
+    cards: [
+      { title: 'Data Visualization', label: 'Data science blog', href: DATA_VISUALIZATION, accent: '#3a718b', external: true },
+      { title: 'Ethics in Data Science', label: 'Data science blog', href: ETHICS_DATA_SCIENCE, accent: '#d94a65', external: true },
+      { title: 'Explainability in Data Science', label: 'Data science blog', href: EXPLAINABILITY, accent: '#8c7898', external: true },
+      { title: 'Machine Learning', label: 'Data science blog', href: MACHINE_LEARNING, accent: '#f4b000', external: true },
+      { title: 'Orlando Data Science Conference', label: 'Data science blog', href: ORLANDO, accent: '#3a718b', external: true },
+      { title: 'Sentimental Analysis', label: 'Data science blog', href: SENTIMENTAL_ANALYSIS, accent: '#d94a65', external: true },
+      { title: 'How Data Science is Quietly Shaping Your Daily Life', label: 'Data science blog', href: DATA_SCI_BLOG, accent: '#8c7898', external: true },
+      ...(vibeCoding
+        ? [{
+            title: 'Vibe Coding Wont Save You',
+            label: 'DataSoc blog',
+            href: `/blog/${vibeCoding.id}`,
+            accent: '#f4b000',
+          }]
+        : []),
+    ],
+  },
+];
 ---
 
 <ContentPage
   title="Our"
   titleAccent="publications"
-  caption="This is our publication hub!"
+  caption="Guides, resources, and ideas from the DataSoc community."
 >
   <div class="publication-categories">
     {categories.map((category, index) => (
-      <details class="publication-category" open={index === 0}>
-        <summary>
-          <span>{category.title}</span>
-          <span class="accordion-icon" aria-hidden="true"></span>
-        </summary>
-        <div class="article-grid">
-          {category.articles.map((article) => (
-            <article class="article-card">
-              <div class="article-art" aria-hidden="true"><span>{article}</span></div>
-              <h3>{article}</h3>
-            </article>
-          ))}
-        </div>
-      </details>
+      <ParallaxContainer speed={0.025 + index * 0.004} class="publication-category-layer">
+        <details class="publication-category" open={index === 0}>
+          <summary>
+            <span>{category.title}</span>
+            <span class="accordion-icon" aria-hidden="true"></span>
+          </summary>
+          <div class="article-grid">
+            {category.cards.map((card, cardIndex) => (
+              <ParallaxContainer speed={0.018 + (cardIndex % 3) * 0.006} class="article-card-layer">
+                <a
+                  class="article-card"
+                  href={card.href}
+                  {...(card.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
+                  <div class="article-cover" style={`--cover-accent: ${card.accent}`}>
+                    <span class="cover-rule" aria-hidden="true"></span>
+                    <span class="cover-category">{card.label}</span>
+                    <span class="cover-title">{card.title}</span>
+                  </div>
+                  <h3>{card.title}</h3>
+                </a>
+              </ParallaxContainer>
+            ))}
+          </div>
+        </details>
+      </ParallaxContainer>
     ))}
-    {!categories.length && <p class="publication-coming-soon">Publications are coming soon.</p>}
   </div>
 </ContentPage>
 
@@ -42,14 +116,9 @@ const categories = import.meta.env.DEV ? placeholderCategories : [];
     margin: 0 auto;
   }
 
-  .publication-coming-soon {
-    margin: 0;
-    padding: 2rem;
-    border: 1px solid rgb(52 57 75 / 0.12);
-    border-radius: 0.55rem;
-    background: rgb(255 252 243 / 0.82);
-    color: #596073;
-    text-align: center;
+  .publication-categories :global(.publication-category-layer),
+  .article-grid :global(.article-card-layer) {
+    min-width: 0;
   }
 
   .publication-category {
@@ -118,37 +187,67 @@ const categories = import.meta.env.DEV ? placeholderCategories : [];
   }
 
   .article-card {
-    min-width: 0;
+    display: block;
+    height: 100%;
     overflow: hidden;
     border: 1px solid rgb(52 57 75 / 0.1);
     border-radius: 0.4rem;
     background: #fffcf3;
     box-shadow: 0 0.3rem 0.9rem rgb(52 57 75 / 0.08);
-  }
-
-  .article-art {
-    display: grid;
-    place-items: center;
-    aspect-ratio: 4 / 3;
-    padding: 1rem;
-    background:
-      radial-gradient(circle, rgb(52 57 75 / 0.1) 1px, transparent 1.5px) 0 0 / 14px 14px,
-      linear-gradient(135deg, #e7c5c1, #e0d5e7 45%, #c8dce3);
     color: #34394b;
-    font-size: clamp(0.85rem, 1.2vw, 1rem);
-    font-weight: 700;
+    text-decoration: none;
+    transition: box-shadow 160ms ease, transform 160ms ease;
   }
 
-  .article-art span {
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.25rem;
-    background: rgb(255 252 243 / 0.8);
+  .article-card:hover {
+    box-shadow: 0 0.6rem 1.25rem rgb(52 57 75 / 0.16);
+    transform: translateY(-2px);
+  }
+
+  .article-card:focus-visible {
+    outline: 3px solid #119bd6;
+    outline-offset: 3px;
+  }
+
+  .article-cover {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: clamp(8rem, 15vw, 13rem);
+    overflow: hidden;
+    padding: clamp(0.85rem, 1.5vw, 1.25rem);
+    background:
+      radial-gradient(circle at 88% 15%, rgb(255 255 255 / 0.62) 0 2px, transparent 2.5px) 0 0 / 14px 14px,
+      linear-gradient(140deg, color-mix(in srgb, var(--cover-accent) 78%, white), color-mix(in srgb, var(--cover-accent) 28%, #fffcf3));
+    color: #34394b;
+  }
+
+  .cover-rule {
+    width: 2.75rem;
+    height: 3px;
+    border-radius: 3px;
+    background: currentColor;
+    opacity: 0.7;
+  }
+
+  .cover-category {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .cover-title {
+    max-width: 15ch;
+    font-size: clamp(1rem, 1.6vw, 1.4rem);
+    font-weight: 800;
+    line-height: 1.05;
   }
 
   .article-card h3 {
     margin: 0;
     padding: 0.75rem;
-    color: #34394b;
     font-size: 0.95rem;
     font-weight: 700;
   }
@@ -160,8 +259,13 @@ const categories = import.meta.env.DEV ? placeholderCategories : [];
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .accordion-icon::after {
+    .accordion-icon::after,
+    .article-card {
       transition: none;
+    }
+
+    .article-card:hover {
+      transform: none;
     }
   }
 </style>

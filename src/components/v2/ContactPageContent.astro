@@ -1,4 +1,9 @@
+---
+import ParallaxContainer from './ParallaxContainer.astro';
+---
+
 <div class="contact-layout">
+  <ParallaxContainer speed={0.035} class="contact-card-layer">
   <section class="contact-card contact-form-card" aria-labelledby="contact-form-heading">
     <p class="eyebrow">Let’s talk</p>
     <h2 id="contact-form-heading">Get in touch</h2>
@@ -27,7 +32,9 @@
       If your email app didn’t open, email <a href="mailto:hello@unswdata.com">hello@unswdata.com</a>.
     </p>
   </section>
+  </ParallaxContainer>
 
+  <ParallaxContainer speed={0.045} class="contact-card-layer">
   <aside class="contact-card contact-details">
     <img class="team-photo" src="/team2026.png" alt="UNSW DataSoc team" loading="lazy" decoding="async" />
     <div class="contact-copy">
@@ -44,6 +51,7 @@
       </nav>
     </div>
   </aside>
+  </ParallaxContainer>
 </div>
 
 <style>
@@ -61,6 +69,10 @@
     border-radius: 0.65rem;
     background: linear-gradient(145deg, rgb(255 252 243 / 0.96), rgb(246 239 232 / 0.88));
     box-shadow: 0 1rem 2.5rem rgb(52 57 75 / 0.09);
+  }
+
+  .contact-layout :global(.contact-card-layer) {
+    min-width: 0;
   }
 
   .contact-form-card {
