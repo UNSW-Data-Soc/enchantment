@@ -63,13 +63,13 @@ const categories: Category[] = [
     accent: '#8c7898',
     title: 'Blogs',
     cards: [
-      { title: 'Data Visualization', label: 'Data science blog', href: DATA_VISUALIZATION, accent: '#3a718b', external: true },
-      { title: 'Ethics in Data Science', label: 'Data science blog', href: ETHICS_DATA_SCIENCE, accent: '#d94a65', external: true },
-      { title: 'Explainability in Data Science', label: 'Data science blog', href: EXPLAINABILITY, accent: '#8c7898', external: true },
-      { title: 'Machine Learning', label: 'Data science blog', href: MACHINE_LEARNING, accent: '#f4b000', external: true },
-      { title: 'Orlando Data Science Conference', label: 'Data science blog', href: ORLANDO, accent: '#3a718b', external: true },
-      { title: 'Sentimental Analysis', label: 'Data science blog', href: SENTIMENTAL_ANALYSIS, accent: '#d94a65', external: true },
-      { title: 'How Data Science is Quietly Shaping Your Daily Life', label: 'Data science blog', href: DATA_SCI_BLOG, accent: '#8c7898', external: true },
+      { title: 'Data Visualization', label: '', href: DATA_VISUALIZATION, accent: '#3a718b', external: true },
+      { title: 'Ethics in Data Science', label: '', href: ETHICS_DATA_SCIENCE, accent: '#d94a65', external: true },
+      { title: 'Explainability in Data Science', label: '', href: EXPLAINABILITY, accent: '#8c7898', external: true },
+      { title: 'Machine Learning', label: '', href: MACHINE_LEARNING, accent: '#f4b000', external: true },
+      { title: 'Orlando Data Science Conference', label: '', href: ORLANDO, accent: '#3a718b', external: true },
+      { title: 'Sentimental Analysis', label: '', href: SENTIMENTAL_ANALYSIS, accent: '#d94a65', external: true },
+      { title: 'How Data Science is Quietly Shaping Your Daily Life', label: '', href: DATA_SCI_BLOG, accent: '#8c7898', external: true },
       ...(vibeCoding
         ? [{
             title: 'Vibe Coding Won’t Save You',
@@ -119,9 +119,9 @@ const categories: Category[] = [
             <div class="category-panel" id={panelId} inert data-category-panel>
               <div class="category-panel-inner">
                 <div class="article-grid">
-                  {category.cards.map((card, cardIndex) => (
+                  {category.cards.map((card) => (
                     <ParallaxContainer
-                      speed={0.018 + (cardIndex % 3) * 0.006}
+                      speed={0.024}
                       class="article-card-layer"
                     >
                       <a
@@ -129,13 +129,13 @@ const categories: Category[] = [
                         href={card.href}
                         data-publication-card
                         data-search={`${category.title} ${card.title} ${card.label}`}
-                        aria-label={`${card.title}, ${card.label}${card.external ? ', opens in a new tab' : ''}`}
+                        aria-label={`${card.title}${card.label ? `, ${card.label}` : ''}${card.external ? ', opens in a new tab' : ''}`}
                         {...(card.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                       >
                         <div class="article-cover" style={`--cover-accent: ${card.accent}`}>
                           {card.image && <img class="cover-photo" src={card.image} alt="" loading="lazy" decoding="async" />}
                           <span class="cover-rule" aria-hidden="true"></span>
-                          <span class="cover-category">{card.label}</span>
+                          {card.label && <span class="cover-category">{card.label}</span>}
                           <span class="cover-title">{card.title}</span>
                         </div>
                         <h3>{card.title}</h3>
@@ -318,6 +318,7 @@ const categories: Category[] = [
     overflow: hidden;
     padding: clamp(0.85rem, 1.5vw, 1.25rem);
     background:
+      linear-gradient(180deg, rgb(255 252 243 / 0.74), rgb(255 252 243 / 0.3) 55%, transparent),
       radial-gradient(circle at 88% 15%, rgb(255 255 255 / 0.62) 0 2px, transparent 2.5px) 0 0 / 14px 14px,
       linear-gradient(140deg, color-mix(in srgb, var(--cover-accent) 78%, white), color-mix(in srgb, var(--cover-accent) 28%, #fffcf3));
     color: #34394b;
