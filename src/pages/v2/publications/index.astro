@@ -312,10 +312,13 @@ const categories: Category[] = [
     overflow: hidden;
     padding: clamp(0.85rem, 1.5vw, 1.25rem);
     background:
-      linear-gradient(180deg, rgb(255 252 243 / 0.74), rgb(255 252 243 / 0.3) 55%, transparent),
       radial-gradient(circle at 88% 15%, rgb(255 255 255 / 0.62) 0 2px, transparent 2.5px) 0 0 / 14px 14px,
       linear-gradient(140deg, color-mix(in srgb, var(--cover-accent) 78%, white), color-mix(in srgb, var(--cover-accent) 28%, #fffcf3));
     color: #34394b;
+  }
+
+  .article-cover.has-cover-image {
+    background: transparent;
   }
 
   .cover-photo {
