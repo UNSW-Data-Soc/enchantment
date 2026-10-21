@@ -255,9 +255,15 @@ const tiers = [
     }
     const viewportCenter = innerHeight / 2;
     const updates = parallaxItems.map((item) => {
-      const bounds = item.getBoundingClientRect();
+      let documentTop = 0;
+      let ancestor: HTMLElement | null = item;
+      while (ancestor) {
+        documentTop += ancestor.offsetTop;
+        ancestor = ancestor.offsetParent as HTMLElement | null;
+      }
       const speed = Number(item.dataset.parallaxSpeed) || 0;
-      const offset = Math.max(-14, Math.min(14, (viewportCenter - (bounds.top + bounds.height / 2)) * speed));
+      const centerY = documentTop + item.offsetHeight / 2 - scrollY;
+      const offset = Math.max(-14, Math.min(14, (viewportCenter - centerY) * speed));
       return [item, offset] as const;
     });
     updates.forEach(([item, offset]) => item.style.setProperty('--parallax-y', `${offset}px`));

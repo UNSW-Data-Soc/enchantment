@@ -12,9 +12,19 @@ interface Props {
   bodyClass?: string;
   scrollToTop?: boolean;
   sectionName?: string;
+  scrollbarUnderlay?: string;
 }
 
-const { title, titleAccent, caption, teamBackground = false, bodyClass, scrollToTop = false, sectionName } = Astro.props;
+const {
+  title,
+  titleAccent,
+  caption,
+  teamBackground = false,
+  bodyClass,
+  scrollToTop = false,
+  sectionName,
+  scrollbarUnderlay = '/backgrounds/meet-the-team-scrollbar-underlay.png',
+} = Astro.props;
 const pageTitle = titleAccent ? `${title} ${titleAccent}` : title;
 ---
 
@@ -22,7 +32,7 @@ const pageTitle = titleAccent ? `${title} ${titleAccent}` : title;
   <div class:list={['content-page', { 'team-background': teamBackground }]}>
     <StarsScrollbar
       length="100%"
-      underlay="/backgrounds/meet-the-team-scrollbar-underlay.png"
+      underlay={scrollbarUnderlay}
     />
     <main class="content-panel">
       <PageHeader

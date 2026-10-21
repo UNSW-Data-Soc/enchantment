@@ -19,7 +19,7 @@
       </label>
       <label>
         <span>What do you have in mind?</span>
-        <textarea name="message" rows="4" placeholder="Tell us a little about your enquiry"></textarea>
+        <textarea name="message" rows="4" placeholder="Tell us a little about your enquiry" required></textarea>
       </label>
       <button type="submit">Send message</button>
     </form>
@@ -149,6 +149,11 @@
   .contact-form button:hover {
     background: #b93652;
     transform: translateY(-2px);
+  }
+
+  .contact-form button:focus-visible {
+    outline: 2px solid #119bd6;
+    outline-offset: 3px;
   }
 
   .contact-details {
