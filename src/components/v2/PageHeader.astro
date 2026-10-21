@@ -5,6 +5,7 @@ interface Props {
   caption?: string;
   sectionName?: string;
   sectionAnchor?: boolean;
+  scrollToTop?: boolean;
   showOrb?: boolean;
   singleLine?: boolean;
   showFlourish?: boolean;
@@ -16,13 +17,14 @@ const {
   caption,
   sectionName = titleAccent ? `${title} ${titleAccent}` : title,
   sectionAnchor = true,
+  scrollToTop = false,
   showOrb = false,
   singleLine = false,
   showFlourish = false,
 } = Astro.props;
 ---
 
-<header class:list={['page-header', { 'with-orb': showOrb, 'single-line': singleLine, 'with-flourish': showFlourish }]} data-section={sectionAnchor ? sectionName : undefined}>
+<header class:list={['page-header', { 'with-orb': showOrb, 'single-line': singleLine, 'with-flourish': showFlourish }]} data-section={sectionAnchor ? sectionName : undefined} data-scroll-top={scrollToTop || undefined}>
   <div class="header-copy">
     {showFlourish && <div class="header-flourish" aria-hidden="true"><span></span><span></span></div>}
     <h1>{title}{titleAccent && <> <em>{titleAccent}</em></>}</h1>

@@ -1,0 +1,188 @@
+---
+const tiers = [
+  {
+    name: 'Gold',
+    sponsors: [
+      { name: 'Atlassian', href: 'https://www.atlassian.com/', logo: '/icons/atlassian.png', width: '15rem' },
+    ],
+  },
+  {
+    name: 'Silver',
+    sponsors: [
+      { name: 'Jane Street', href: 'https://www.janestreet.com/', logo: '/icons/janest.png', width: '12rem' },
+      { name: 'Quantium', href: 'https://www.quantium.com/', logo: '/icons/quantium.svg', width: '12rem' },
+      { name: 'Allianz', href: 'https://www.allianz.com/', logo: '/icons/allianz.png', width: '11rem' },
+    ],
+  },
+  {
+    name: 'Bronze',
+    sponsors: [
+      { name: 'Susquehanna', href: 'https://www.sig.com/', logo: '/icons/susquehanna.png', width: '11rem' },
+      { name: 'IMC', href: 'https://www.imc.com/', logo: '/icons/imc.svg', width: '11rem' },
+      { name: 'Vivcourt Trading', href: 'https://www.vivcourt.com/', logo: '/icons/viv.png', width: '10rem' },
+      { name: 'BCG', href: 'https://www.bcg.com/', logo: '/icons/BGG-Logo.png', width: '11rem' },
+      { name: 'Data Army', href: 'https://dataarmy.io/', logo: '/icons/data army .png', width: '10rem' },
+      { name: 'Accenture', href: 'https://www.accenture.com/', logo: '/icons/accenture.svg', width: '11rem' },
+      { name: 'DataCamp', href: 'https://www.datacamp.com/donates', logo: '/icons/DC_Donates_logo.png', width: '10rem' },
+    ],
+  },
+];
+---
+
+<section class="sponsorship-showcase" aria-labelledby="sponsors-heading">
+  <div class="showcase-glow glow-one" aria-hidden="true"></div>
+  <div class="showcase-glow glow-two" aria-hidden="true"></div>
+  <div class="showcase-inner">
+    <h2 id="sponsors-heading">Proudly sponsored by</h2>
+    <div class="sponsor-tiers">
+      {tiers.map((tier) => (
+        <section class:list={['sponsor-tier', `tier-${tier.name.toLowerCase()}`]} aria-labelledby={`tier-${tier.name.toLowerCase()}`}>
+          <h3 id={`tier-${tier.name.toLowerCase()}`}>{tier.name}</h3>
+          <div class="sponsor-logos">
+            {tier.sponsors.map((sponsor) => (
+              <a
+                class="sponsor-card"
+                href={sponsor.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={sponsor.name}
+              >
+                <img src={sponsor.logo} alt={sponsor.name} style={`--logo-width: ${sponsor.width}`} loading="lazy" decoding="async" />
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .sponsorship-showcase {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: clamp(2.5rem, 6vw, 5rem) clamp(1rem, 5vw, 5rem);
+    background:
+      radial-gradient(circle, rgb(52 57 75 / 0.11) 1px, transparent 1.5px) 0 0 / 18px 18px,
+      linear-gradient(135deg, #e7c5c1, #e0d5e7 36%, #c8dce3 70%, #e9d3bd);
+  }
+
+  .showcase-glow {
+    position: absolute;
+    z-index: -1;
+    width: clamp(16rem, 38vw, 34rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .glow-one {
+    top: 3%;
+    left: -12%;
+    background: rgb(217 74 101 / 0.35);
+  }
+
+  .glow-two {
+    right: -12%;
+    bottom: 0;
+    background: rgb(58 113 139 / 0.32);
+  }
+
+  .showcase-inner {
+    position: relative;
+    max-width: 78rem;
+    margin-inline: auto;
+  }
+
+  h2 {
+    margin: 0;
+    color: #34394b;
+    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .sponsor-tiers {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 5rem);
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  .sponsor-tier {
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    border: 1px solid rgb(52 57 75 / 0.14);
+    border-radius: 0.75rem;
+    background: rgb(255 252 243 / 0.64);
+    box-shadow: 0 1rem 2.5rem rgb(52 57 75 / 0.08);
+    backdrop-filter: blur(8px);
+  }
+
+  .sponsor-tier h3 {
+    width: fit-content;
+    margin: 0 auto;
+    padding: 0 1.25rem 0.45rem;
+    border-bottom: 2px solid #d94a65;
+    color: #34394b;
+    font-size: clamp(1.35rem, 2.5vw, 1.8rem);
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .tier-gold h3 {
+    border-color: #d99a15;
+  }
+
+  .tier-silver h3 {
+    border-color: #7f92a2;
+  }
+
+  .tier-bronze h3 {
+    border-color: #ad7655;
+  }
+
+  .sponsor-logos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+    margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .sponsor-card {
+    display: grid;
+    place-items: center;
+    width: clamp(9rem, 22vw, 15rem);
+    min-height: 7rem;
+    padding: 1rem;
+    border: 1px solid rgb(52 57 75 / 0.08);
+    border-radius: 0.5rem;
+    background: rgb(255 255 255 / 0.72);
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+
+  .sponsor-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.6rem 1.5rem rgb(52 57 75 / 0.12);
+  }
+
+  .sponsor-card img {
+    display: block;
+    width: min(100%, var(--logo-width));
+    max-height: 4.5rem;
+    object-fit: contain;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sponsor-card {
+      transition: none;
+    }
+
+    .sponsor-card:hover {
+      transform: none;
+    }
+  }
+</style>

@@ -1,6 +1,6 @@
 ---
 import ContentPage from '../../../components/v2/ContentPage.astro';
-import Sponsorships from '../../../components/Sponsorships.astro';
+import SponsorshipTiers from '../../../components/v2/SponsorshipTiers.astro';
 ---
 
 <ContentPage
@@ -8,6 +8,7 @@ import Sponsorships from '../../../components/Sponsorships.astro';
   titleAccent="sponsorships"
   caption="Our industry partners help us equip members to thrive in a data-driven world."
   teamBackground
+  bodyClass="sponsorship-body"
 >
   <div class="sponsorship-intro">
     <p>
@@ -22,18 +23,21 @@ import Sponsorships from '../../../components/Sponsorships.astro';
       Interested in sponsoring? Reach out to <a href="mailto:external@unswdata.com">external@unswdata.com</a>.
     </p>
   </div>
-  <Sponsorships />
+  <SponsorshipTiers />
 </ContentPage>
 
 <style>
   .sponsorship-intro {
     max-width: 68rem;
-    margin: 0 auto 2.5rem;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 5vw, 5rem) 1.5rem;
+    color: #34394b;
+    font-size: clamp(0.9rem, 1.15vw, 1rem);
     line-height: 1.5;
   }
 
   .sponsorship-intro p {
-    margin: 0 0 1rem;
+    margin: 0 0 0.8rem;
   }
 
   .sponsorship-intro a {

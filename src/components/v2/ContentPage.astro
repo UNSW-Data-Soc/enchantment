@@ -9,9 +9,11 @@ interface Props {
   titleAccent?: string;
   caption?: string;
   teamBackground?: boolean;
+  bodyClass?: string;
+  scrollToTop?: boolean;
 }
 
-const { title, titleAccent, caption, teamBackground = false } = Astro.props;
+const { title, titleAccent, caption, teamBackground = false, bodyClass, scrollToTop = false } = Astro.props;
 const pageTitle = titleAccent ? `${title} ${titleAccent}` : title;
 ---
 
@@ -27,8 +29,9 @@ const pageTitle = titleAccent ? `${title} ${titleAccent}` : title;
         title={title}
         titleAccent={titleAccent}
         caption={caption}
+        scrollToTop={scrollToTop}
       />
-      <div class="content-body">
+      <div class:list={['content-body', bodyClass]}>
         <slot />
       </div>
     </main>
@@ -107,6 +110,11 @@ const pageTitle = titleAccent ? `${title} ${titleAccent}` : title;
     padding: clamp(1.5rem, 3.5vw, 3rem) clamp(1.25rem, 2vw, 1.75rem) clamp(2rem, 4vw, 3.5rem);
     font-size: clamp(1rem, 1.4vw, 1.2rem);
     background: #fffcf3;
+  }
+
+  .content-body.sponsorship-body {
+    padding: 0;
+    background: transparent;
   }
 
   .rail-tail-space {
