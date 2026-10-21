@@ -1,72 +1,70 @@
 ---
-import { quicklinks } from "./constants.js";
+import { quicklinks } from './constants.js';
 ---
 
 <footer class="v2-footer">
-<div class="footer-art" aria-hidden="true"></div>
+  <div class="footer-art" aria-hidden="true"></div>
 
-<img
-  class="quicklinks-header"
-  src="/text-headers/quicklinks-header.png"
-  alt="Quick links"
-  draggable="false"
-/>
+  <img
+    class="quicklinks-header"
+    src="/text-headers/quicklinks-header.png"
+    alt="Quick links"
+    draggable="false"
+  />
 
-<div class="quick-links">
-  {quicklinks.map((item) => (
-    <a href={`/${item.linkto}`}>{item.text}</a>
-  ))}
-</div>
+  <div class="quick-links">
+    {quicklinks.map((item) => <a href={`/${item.linkto}`}>{item.text}</a>)}
+  </div>
 </footer>
 
 <style>
-	@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-	.v2-footer {
-		position: relative;
-		width: 100%;
-		aspect-ratio: 40 / 18;
-		background-color: #fffcf3;
-		overflow: hidden;
-	}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+  .v2-footer {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 40 / 18;
+    background-color: #fffcf3;
+    overflow: hidden;
+  }
 
-	.footer-art {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		display: block;
-		width: 100%;
-		aspect-ratio: 1708 / 581;
-		background-image: url('/backgrounds/footer-bg.png');
-		background-size: 100% auto;
-		background-repeat: no-repeat;
-		pointer-events: none;
-		z-index: 1;
-	}
+  .footer-art {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1708 / 581;
+    background-image: url('/backgrounds/footer-bg.png');
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 1;
+  }
 
-	.quicklinks-header {
-		position: absolute;
-		top: 26.5%;
-		left: 66%;
-		width: clamp(72px, 15vw, 210px);
-		height: auto;
-		transform: translateX(-50%);
-		z-index: 2;
-	}
-	.quick-links {
-		position: absolute;
-		top: 45%;
-		left: 53.5%;s
-		display: flex;
-		flex-direction: column;
-		gap: 23px;
-		z-index: 2;
-	}
+  .quicklinks-header {
+    position: absolute;
+    top: 26.5%;
+    left: 66%;
+    width: clamp(72px, 15vw, 210px);
+    height: auto;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+  .quick-links {
+    position: absolute;
+    top: 45%;
+    left: 53.5%;
+    display: flex;
+    flex-direction: column;
+    gap: 23px;
+    z-index: 2;
+  }
 
-	.quick-links a {
-		color: white;
-		text-decoration: underline;
-		font-family: "Inter", sans-serif;
-		font-size: 15px;
-		cursor: pointer;
-	}
+  .quick-links a {
+    color: white;
+    text-decoration: underline;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+  }
 </style>
