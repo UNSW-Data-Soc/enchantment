@@ -18,30 +18,41 @@ import {
   SENTIMENTAL_ANALYSIS,
 } from '../../../utils/utils';
 
-type PublicationCard = { title: string; label: string; href: string; accent: string; external?: boolean };
-type Category = { title: string; cards: PublicationCard[] };
+type PublicationCard = {
+  title: string;
+  label: string;
+  href: string;
+  accent: string;
+  date?: number;
+  image?: string;
+  external?: boolean;
+};
+type Category = { title: string; accent: string; cards: PublicationCard[] };
 
 const blogEntries = await getCollection('blog');
 const vibeCoding = blogEntries.find(({ data }) => data.title.toLowerCase().includes('vibe coding'));
 
 const categories: Category[] = [
   {
+    accent: '#d94a65',
     title: 'Careers guides',
     cards: [
-      { title: 'Careers Guide', label: '2021 edition', href: CAREERS_GUIDE_2021, accent: '#d94a65', external: true },
-      { title: 'Careers Guide', label: '2024 edition', href: CAREERS_GUIDE, accent: '#f4b000', external: true },
+      { title: 'Careers Guide', label: '2021 edition', href: CAREERS_GUIDE_2021, accent: '#d94a65', date: 2021, external: true },
+      { title: 'Careers Guide', label: '2024 edition', href: CAREERS_GUIDE, accent: '#f4b000', date: 2024, external: true },
     ],
   },
   {
+    accent: '#f4b000',
     title: 'First year guides',
     cards: [
-      { title: 'First Year Guide', label: '2021 edition', href: FYG_2021_LINK, accent: '#8c7898', external: true },
-      { title: 'First Year Guide', label: '2022 edition', href: FYG_2022_LINK, accent: '#3a718b', external: true },
-      { title: 'First Year Guide', label: '2024 edition', href: FYG_2024_LINK, accent: '#d94a65', external: true },
-      { title: 'First Year Guide', label: '2025 edition', href: FYG_2025_LINK, accent: '#f4b000', external: true },
+      { title: 'First Year Guide', label: '2021 edition', href: FYG_2021_LINK, accent: '#8c7898', date: 2021, external: true },
+      { title: 'First Year Guide', label: '2022 edition', href: FYG_2022_LINK, accent: '#3a718b', date: 2022, external: true },
+      { title: 'First Year Guide', label: '2024 edition', href: FYG_2024_LINK, accent: '#d94a65', date: 2024, external: true },
+      { title: 'First Year Guide', label: '2025 edition', href: FYG_2025_LINK, accent: '#f4b000', date: 2025, external: true },
     ],
   },
   {
+    accent: '#3a718b',
     title: 'Python resources',
     cards: [
       { title: 'Pandas for Python', label: 'Python resource', href: '/resources/pandas', accent: '#3a718b' },
@@ -49,6 +60,7 @@ const categories: Category[] = [
     ],
   },
   {
+    accent: '#8c7898',
     title: 'Blogs',
     cards: [
       { title: 'Data Visualization', label: 'Data science blog', href: DATA_VISUALIZATION, accent: '#3a718b', external: true },
@@ -64,11 +76,16 @@ const categories: Category[] = [
             label: 'DataSoc blog',
             href: `/blog/${vibeCoding.id}`,
             accent: '#f4b000',
+            date: vibeCoding.data.pubDate.valueOf(),
+            image: vibeCoding.data.heroImage,
           }]
         : []),
     ],
   },
-];
+].toSorted((a, b) => a.title.localeCompare(b.title)).map((category) => ({
+  ...category,
+  cards: category.cards.toSorted((a, b) => (b.date ?? 0) - (a.date ?? 0)),
+}));
 ---
 
 <ContentPage
@@ -77,34 +94,61 @@ const categories: Category[] = [
   caption="Guides, resources, and ideas from the DataSoc community."
 >
   <div class="publication-categories">
-    {categories.map((category, index) => (
-      <ParallaxContainer speed={0.025 + index * 0.004} class="publication-category-layer">
-        <details class="publication-category" open={index === 0}>
-          <summary>
-            <span>{category.title}</span>
-            <span class="accordion-icon" aria-hidden="true"></span>
-          </summary>
-          <div class="article-grid">
-            {category.cards.map((card, cardIndex) => (
-              <ParallaxContainer speed={0.018 + (cardIndex % 3) * 0.006} class="article-card-layer">
-                <a
-                  class="article-card"
-                  href={card.href}
-                  {...(card.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                >
-                  <div class="article-cover" style={`--cover-accent: ${card.accent}`}>
-                    <span class="cover-rule" aria-hidden="true"></span>
-                    <span class="cover-category">{card.label}</span>
-                    <span class="cover-title">{card.title}</span>
-                  </div>
-                  <h3>{card.title}</h3>
-                </a>
-              </ParallaxContainer>
-            ))}
-          </div>
-        </details>
-      </ParallaxContainer>
-    ))}
+    <label class="publication-search">
+      <span>Search publications</span>
+      <input type="search" placeholder="Search guides, resources, and blogs" autocomplete="off" data-publication-search />
+    </label>
+    <p class="search-empty" data-search-empty role="status" aria-live="polite" hidden>No publications match your search.</p>
+    {categories.map((category, index) => {
+      const panelId = `publication-panel-${index}`;
+      return (
+        <ParallaxContainer speed={0.025 + index * 0.004} class="publication-category-layer">
+          <section class="publication-category" style={`--category-accent: ${category.accent}`} data-publication-category>
+            <h2>
+              <button
+                class="category-toggle"
+                type="button"
+                aria-expanded="false"
+                aria-controls={panelId}
+                data-category-toggle
+              >
+                <span>{category.title}</span>
+                <span class="accordion-icon" aria-hidden="true"></span>
+              </button>
+            </h2>
+            <div class="category-panel" id={panelId} inert data-category-panel>
+              <div class="category-panel-inner">
+                <div class="article-grid">
+                  {category.cards.map((card, cardIndex) => (
+                    <ParallaxContainer
+                      speed={0.018 + (cardIndex % 3) * 0.006}
+                      class="article-card-layer"
+                    >
+                      <a
+                        class="article-card"
+                        href={card.href}
+                        data-publication-card
+                        data-search={`${category.title} ${card.title} ${card.label}`}
+                        aria-label={`${card.title}, ${card.label}${card.external ? ', opens in a new tab' : ''}`}
+                        {...(card.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                      >
+                        <div class="article-cover" style={`--cover-accent: ${card.accent}`}>
+                          {card.image && <img class="cover-photo" src={card.image} alt="" loading="lazy" decoding="async" />}
+                          <span class="cover-rule" aria-hidden="true"></span>
+                          <span class="cover-category">{card.label}</span>
+                          <span class="cover-title">{card.title}</span>
+                        </div>
+                        <h3>{card.title}</h3>
+                      </a>
+                    </ParallaxContainer>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        </ParallaxContainer>
+      );
+    })}
   </div>
 </ContentPage>
 
@@ -116,6 +160,40 @@ const categories: Category[] = [
     margin: 0 auto;
   }
 
+  .publication-search {
+    display: grid;
+    gap: 0.45rem;
+    color: #34394b;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .publication-search input {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid rgb(52 57 75 / 0.22);
+    border-radius: 0.4rem;
+    background: #fffcf3;
+    color: #34394b;
+    font: inherit;
+    font-weight: 400;
+  }
+
+  .publication-search input:focus-visible {
+    outline: 3px solid #119bd6;
+    outline-offset: 2px;
+  }
+
+  .search-empty {
+    margin: 0;
+    padding: 1.25rem;
+    border-radius: 0.45rem;
+    background: rgb(231 237 238 / 0.72);
+    color: #596073;
+    text-align: center;
+  }
+
   .publication-categories :global(.publication-category-layer),
   .article-grid :global(.article-card-layer) {
     min-width: 0;
@@ -123,13 +201,18 @@ const categories: Category[] = [
 
   .publication-category {
     overflow: hidden;
-    border: 1px solid rgb(52 57 75 / 0.14);
+    border: 1px solid color-mix(in srgb, var(--category-accent) 34%, transparent);
+    border-top: 4px solid var(--category-accent);
     border-radius: 0.55rem;
     background: rgb(255 252 243 / 0.82);
     box-shadow: 0 0.5rem 1.5rem rgb(52 57 75 / 0.06);
   }
 
-  .publication-category summary {
+  .publication-category h2 {
+    margin: 0;
+  }
+
+  .category-toggle {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -139,14 +222,17 @@ const categories: Category[] = [
     font-size: clamp(1.1rem, 2vw, 1.4rem);
     font-weight: 700;
     cursor: pointer;
-    list-style: none;
+    text-align: left;
+    width: 100%;
+    border: 0;
+    border-radius: 0;
+    background: linear-gradient(100deg, color-mix(in srgb, var(--category-accent) 12%, #fffcf3), #fffcf3 70%);
+    font: inherit;
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    font-weight: 700;
   }
 
-  .publication-category summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .publication-category summary:focus-visible {
+  .category-toggle:focus-visible {
     outline: 3px solid #119bd6;
     outline-offset: -3px;
   }
@@ -165,7 +251,7 @@ const categories: Category[] = [
     width: 0.9rem;
     height: 2px;
     border-radius: 2px;
-    background: #d94a65;
+    background: var(--category-accent);
     content: '';
     transform: translate(-50%, -50%);
   }
@@ -175,8 +261,23 @@ const categories: Category[] = [
     transition: transform 160ms ease;
   }
 
-  details[open] .accordion-icon::after {
+  .category-toggle[aria-expanded='true'] .accordion-icon::after {
     transform: translate(-50%, -50%);
+  }
+
+  .category-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 280ms ease;
+  }
+
+  .category-panel.is-open {
+    grid-template-rows: 1fr;
+  }
+
+  .category-panel-inner {
+    min-height: 0;
+    overflow: hidden;
   }
 
   .article-grid {
@@ -223,7 +324,18 @@ const categories: Category[] = [
     color: #34394b;
   }
 
+  .cover-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.28;
+  }
+
   .cover-rule {
+    position: relative;
+    z-index: 1;
     width: 2.75rem;
     height: 3px;
     border-radius: 3px;
@@ -232,6 +344,8 @@ const categories: Category[] = [
   }
 
   .cover-category {
+    position: relative;
+    z-index: 1;
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -239,6 +353,8 @@ const categories: Category[] = [
   }
 
   .cover-title {
+    position: relative;
+    z-index: 1;
     max-width: 15ch;
     font-size: clamp(1rem, 1.6vw, 1.4rem);
     font-weight: 800;
@@ -260,6 +376,7 @@ const categories: Category[] = [
 
   @media (prefers-reduced-motion: reduce) {
     .accordion-icon::after,
+    .category-panel,
     .article-card {
       transition: none;
     }
@@ -269,3 +386,50 @@ const categories: Category[] = [
     }
   }
 </style>
+
+<script>
+  const search = document.querySelector<HTMLInputElement>('[data-publication-search]');
+  const categories = Array.from(document.querySelectorAll<HTMLElement>('[data-publication-category]'));
+  const emptyState = document.querySelector<HTMLElement>('[data-search-empty]');
+
+  const setOpen = (category: HTMLElement, open: boolean) => {
+    const toggle = category.querySelector<HTMLButtonElement>('[data-category-toggle]');
+    const panel = category.querySelector<HTMLElement>('[data-category-panel]');
+    if (!toggle || !panel) return;
+    toggle.setAttribute('aria-expanded', String(open));
+    panel.classList.toggle('is-open', open);
+    panel.inert = !open;
+  };
+
+  categories.forEach((category) => {
+    const toggle = category.querySelector<HTMLButtonElement>('[data-category-toggle]');
+    const panel = category.querySelector<HTMLElement>('[data-category-panel]');
+    if (panel) panel.inert = true;
+    toggle?.addEventListener('click', () => {
+      setOpen(category, toggle.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+
+  search?.addEventListener('input', () => {
+    const query = search.value.trim().toLocaleLowerCase();
+    let visibleCategories = 0;
+
+    categories.forEach((category) => {
+      const cards = Array.from(category.querySelectorAll<HTMLElement>('[data-publication-card]'));
+      const matches = cards.filter((card) => (card.dataset.search ?? '').toLocaleLowerCase().includes(query));
+      const hasResults = !query || matches.length > 0;
+      const categoryLayer = category.closest<HTMLElement>('.publication-category-layer');
+      if (categoryLayer) categoryLayer.hidden = !hasResults;
+
+      cards.forEach((card) => {
+        const cardLayer = card.closest<HTMLElement>('.article-card-layer');
+        if (cardLayer) cardLayer.hidden = Boolean(query) && !matches.includes(card);
+      });
+
+      if (hasResults) visibleCategories += 1;
+      setOpen(category, Boolean(query) && matches.length > 0);
+    });
+
+    if (emptyState) emptyState.hidden = !query || visibleCategories > 0;
+  });
+</script>
