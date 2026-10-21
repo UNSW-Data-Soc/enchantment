@@ -26,6 +26,7 @@ const upcomingEvents = events.upcomingEvents.toSorted(
 const pastEvents = events.pastEvents.toSorted(
   (a, b) => Date.parse(b.start_time) - Date.parse(a.start_time),
 );
+const sampleEvents = ['Sample event — preview', 'Another sample event', 'Sample workshop', 'Sample social event'];
 ---
 
 <ContentPage
@@ -50,12 +51,14 @@ const pastEvents = events.pastEvents.toSorted(
           </a>
         ))}
 
-        <article class="event-card sample-event" aria-label="Sample event preview">
-          <div class="event-image sample-image">
-            <span>Event image</span>
-          </div>
-          <h3>Sample event — preview</h3>
-        </article>
+        {sampleEvents.map((name) => (
+          <article class="event-card sample-event">
+            <div class="event-image sample-image">
+              <span>Event image</span>
+            </div>
+            <h3>{name}</h3>
+          </article>
+        ))}
         {!upcomingEvents.length && <p class="empty-events">No upcoming events right now.</p>}
       </div>
     </section>
@@ -86,6 +89,7 @@ const pastEvents = events.pastEvents.toSorted(
     gap: clamp(3rem, 7vw, 5.5rem);
     max-width: 90rem;
     margin: 0 auto;
+    padding-inline: clamp(0.5rem, 2vw, 1.75rem);
   }
 
   .event-section h2 {
@@ -99,8 +103,8 @@ const pastEvents = events.pastEvents.toSorted(
 
   .event-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
-    gap: clamp(1rem, 2.5vw, 2rem);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
   }
 
   .event-card {
@@ -138,7 +142,7 @@ const pastEvents = events.pastEvents.toSorted(
 
   .event-card h3 {
     margin: 0.75rem 0 0;
-    font-size: clamp(1rem, 1.4vw, 1.2rem);
+    font-size: clamp(0.9rem, 1.2vw, 1.05rem);
     font-weight: 700;
     line-height: 1.3;
   }
@@ -159,7 +163,26 @@ const pastEvents = events.pastEvents.toSorted(
     grid-column: 1 / -1;
     margin: 0;
     color: #596073;
+    font-size: 0.9rem;
     text-align: center;
+  }
+
+  @media (min-width: 900px) {
+    .event-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 600px) and (max-width: 899px) {
+    .event-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 599px) {
+    .event-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
