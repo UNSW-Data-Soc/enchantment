@@ -1,11 +1,745 @@
 ---
-import V2Layout from "../../../layouts/V2Layout.astro";
-import Footer from "../../../components/v2/Footer.astro";
+import Container from '../../../components/Container.astro';
+import Footer from '../../../components/v2/Footer.astro';
+import PageHeader from '../../../components/v2/PageHeader.astro';
+import StarsScrollbar from '../../../components/v2/StarsScrollbar.astro';
+import TeamMemberDetails from '../../../components/v2/TeamMemberDetails.astro';
+import V2Layout from '../../../layouts/V2Layout.astro';
+import type { ImageMetadata } from 'astro';
+
+const LEADERSHIP_SIZES = '(min-width: 1440px) 250px, (min-width: 768px) 22vw, (min-width: 640px) 150px, 42vw';
+const PORTFOLIO_SIZES = '(min-width: 1390px) 250px, (min-width: 834px) 18vw, (min-width: 640px) 150px, 44vw';
+const PORTFOLIO_VARIANTS = 4;
+const CARD_PARALLAX_DEPTHS = [0.04, -0.045, 0.028, -0.035, 0.05, -0.025];
+const photos = import.meta.glob<{ default: ImageMetadata }>(
+    '../../../assets/meet-the-team/datasoc-board-photos/*.jpg',
+    { eager: true },
+);
+
+function photo(file?: string): ImageMetadata | undefined {
+    if (!file) return undefined;
+    const entry = photos[`../../../assets/meet-the-team/datasoc-board-photos/${file}`];
+    if (!entry) throw new Error(`Board photo not found: ${file}`);
+    return entry.default;
+}
+
+function cardDepth(index: number): number {
+    return CARD_PARALLAX_DEPTHS[index % CARD_PARALLAX_DEPTHS.length];
+}
+
+type Member = { name: string; role: string; file?: string };
+type Section = {
+    title: string;
+    sizes: string;
+    eager?: boolean;
+    members: Member[];
+};
+
+const leadership: Section[] = [
+    {
+        title: 'President',
+        sizes: LEADERSHIP_SIZES,
+        eager: true,
+        members: [{ name: 'Qingyuan He', role: 'President', file: 'qingyuan_h.jpg' }],
+    },
+    {
+        title: 'Executives',
+        sizes: LEADERSHIP_SIZES,
+        members: [
+            { name: 'Ethan Pham', role: 'Vice President (Activities)', file: 'ethan_p.jpg' },
+            { name: 'Stella Lin', role: 'Vice President (Development)', file: 'stella_l.jpg' },
+            { name: 'Naisha Kulshreshtha', role: 'Vice President (External)' },
+            { name: 'Andre Baruah', role: 'Vice President (Operations)', file: 'andre_b.jpg' },
+            { name: 'Akhil Panwar', role: 'Secretary', file: 'akhil_p.jpg' },
+            { name: 'Aaron Chen', role: 'Treasurer' },
+        ],
+    },
+];
+
+const directors: Member[] = [
+    { name: 'Aaron Wong', role: 'Human Resources Director' },
+    { name: 'Yatha Shah', role: 'Human Resources Director', file: 'yatha_s.jpg' },
+    { name: 'Linh Pham', role: 'Social Director', file: 'linh_p.jpg' },
+    { name: 'Jason Nguyen', role: 'Social Director' },
+    { name: 'Lily Tang', role: 'Education Director', file: 'lily_t.jpg' },
+    { name: 'Minjun Kim', role: 'Education Director', file: 'minjun_k.jpg' },
+    { name: 'Anoushka Pandey', role: 'Philanthropy & Projects Director', file: 'anoushka_p.jpg' },
+    { name: 'Isabella Fan', role: 'Philanthropy & Projects Director', file: 'isabella_f.jpg' },
+    { name: 'Liam Lightfoot', role: 'Careers Director' },
+    { name: 'Vidisha Trivedi', role: 'Careers Director', file: 'vidisha_t.jpg' },
+    { name: 'Cathy Dinh', role: 'Sponsorships Director', file: 'cathy_d.jpg' },
+    { name: 'Simon Shen', role: 'Sponsorships Director' },
+    { name: 'Kai Lu', role: 'Technology Director', file: 'kai_l.jpg' },
+    { name: 'Shafquat Tabeeb', role: 'Technology Director', file: 'shafquat_t.jpg' },
+    { name: 'Jennifer Lee', role: 'Marketing Director', file: 'jennifer_l.jpg' },
+    { name: 'Shashwat Manish', role: 'Marketing Director' },
+    { name: 'Shreya Verma', role: 'Media Director', file: 'shreya_v.jpg' },
+    { name: 'Vedant Tyagi', role: 'Media Director', file: 'vedant_t.jpg' },
+];
+
+const portfolios = Array.from(
+    directors.reduce((groups, member) => {
+        const title = member.role.replace(/ Director$/, '');
+        const members = groups.get(title) ?? [];
+        members.push(member);
+        groups.set(title, members);
+        return groups;
+    }, new Map<string, Member[]>()),
+    ([title, members]) => ({
+        title,
+        sizes: PORTFOLIO_SIZES,
+        members,
+    }),
+);
 ---
 
-<V2Layout>
-	<h1>Meet the Team</h1>
-	<p>This page is coming soon.</p>
+<V2Layout title="Meet the team">
+    <div class="team-page">
+        <div class="ambient-background" aria-hidden="true">
+            <span class="ambient-cloud cloud-one" data-depth="0.06"></span>
+            <span class="ambient-cloud cloud-two" data-depth="0.1"></span>
+            <span class="ambient-sun" data-depth="0.035"></span>
+            <span class="side-geometry geometry-left-one" data-depth="0.025"></span>
+            <span class="side-geometry geometry-right-one" data-depth="0.04"></span>
+            <span class="side-geometry geometry-left-two" data-depth="0.035"></span>
+            <span class="side-geometry geometry-right-two" data-depth="0.025"></span>
+        </div>
 
-	<Footer />
+        <svg class="scroll-trail" aria-hidden="true" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="trail-gradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="var(--team-accent-pink)" />
+                    <stop offset="48%" stop-color="var(--team-accent-purple)" />
+                    <stop offset="100%" stop-color="var(--team-accent-blue)" />
+                </linearGradient>
+            </defs>
+            <path class="trail-base" />
+            <path class="trail-progress" />
+            <circle class="trail-dot" r="8" />
+        </svg>
+
+        <StarsScrollbar
+            length="100%"
+            underlay="/backgrounds/meet-the-team-scrollbar-underlay.png"
+            colorScheme="team"
+        />
+
+        <div class="team-panel">
+            <div class="team-body">
+                <main
+                    class="team-content"
+                    data-trail-section
+                    data-section="Meet the team & President"
+                    data-scroll-top
+                    data-team-stop="Meet the team & President"
+                    tabindex="-1"
+                >
+                    <PageHeader
+                        title="Meet the"
+                        titleAccent="team"
+                        caption="caption caption this blah blah."
+                        singleLine
+                        showFlourish
+                        sectionAnchor={false}
+                        showOrb
+                    />
+
+                    <Container class="team-roster max-w-[1440px]">
+                        {leadership.map((section, index) => (
+                            <section
+                                class:list={['team-section space-y-16', `leadership-section leadership-${index}`]}
+                                data-trail-section={index === 1 ? '' : undefined}
+                                data-section={index === 1 ? 'Executives' : undefined}
+                                data-scroll-offset={index === 1 ? '48' : undefined}
+                                data-team-stop={index === 1 ? 'Executives' : undefined}
+                                tabindex={index === 1 ? -1 : undefined}
+                            >
+                                <h2>{section.title}</h2>
+                                <div class="leadership-members">
+                                    {section.members.map((member, memberIndex) => {
+                                        const image = photo(member.file);
+                                        return (
+                                            <div class="member-card text-center" data-depth={cardDepth(memberIndex + index)}>
+                                                <TeamMemberDetails member={member} image={image} sizes={section.sizes} eager={section.eager} />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </section>
+                        ))}
+
+                        <section class="team-section directors-section space-y-12" data-trail-section data-trail-side="center" data-section="Directors" data-team-stop="Directors" tabindex="-1">
+                            <h2>Directors</h2>
+                            <div class="portfolio-grid">
+                                {portfolios.map((section, index) => (
+                                    <section class:list={['portfolio-section', `portfolio-${index % PORTFOLIO_VARIANTS}`]} data-trail-section data-trail-side={index % 2 === 0 ? 'left' : 'right'}>
+                                        <h3>{section.title}</h3>
+                                        <div class="portfolio-members">
+                                            {section.members.map((member, memberIndex) => {
+                                                const image = photo(member.file);
+                                                return (
+                                                    <div class="member-card text-center" data-depth={cardDepth(memberIndex + index)}>
+                                                        <TeamMemberDetails member={member} image={image} sizes={section.sizes} />
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </section>
+                                ))}
+                            </div>
+                        </section>
+                    </Container>
+                </main>
+            </div>
+        </div>
+        <div class="rail-tail-space" aria-hidden="true"></div>
+    </div>
+    <div class="team-footer">
+        <Footer />
+    </div>
 </V2Layout>
+
+<script>
+    const TRAIL_CENTER_X = 0.5;
+    const TRAIL_RIGHT_X = 0.72;
+    const TRAIL_LEFT_X = 0.28;
+    const TRAIL_READING_LINE = 0.58;
+    const TRAIL_SAMPLE_SPACING = 12;
+    const page = document.querySelector<HTMLElement>('.team-page');
+    const trail = page?.querySelector<SVGSVGElement>('.scroll-trail');
+    const trailBase = trail?.querySelector<SVGPathElement>('.trail-base');
+    const trailProgress = trail?.querySelector<SVGPathElement>('.trail-progress');
+    const trailDot = trail?.querySelector<SVGCircleElement>('.trail-dot');
+    const layers = Array.from(page?.querySelectorAll<HTMLElement>('[data-depth]') ?? []);
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const layerDocumentCentres = new Map<HTMLElement, number>();
+    const refreshLayerCentres = () => {
+        layers.forEach((layer) => {
+            let top = 0;
+            let ancestor: HTMLElement | null = layer;
+            while (ancestor) {
+                top += ancestor.offsetTop;
+                ancestor = ancestor.offsetParent as HTMLElement | null;
+            }
+            layerDocumentCentres.set(layer, top + layer.offsetHeight / 2);
+        });
+    };
+    const scrollUpdates = new Set<() => void>();
+    let scrollFrame = 0;
+    const scheduleScrollUpdates = () => {
+        if (scrollFrame) return;
+        scrollFrame = requestAnimationFrame(() => {
+            scrollFrame = 0;
+            scrollUpdates.forEach((update) => update());
+        });
+    };
+    const updateParallax = () => {
+        if (reducedMotion.matches) {
+            layers.forEach((layer) => layer.style.removeProperty('--parallax-y'));
+            return;
+        }
+        layers.forEach((layer) => {
+            const speed = Number(layer.dataset.depth) || 0;
+            const centre = layerDocumentCentres.get(layer) ?? scrollY;
+            const offset = (innerHeight / 2 - centre + scrollY) * speed;
+            layer.style.setProperty('--parallax-y', `${offset}px`);
+        });
+    };
+    scrollUpdates.add(updateParallax);
+    reducedMotion.addEventListener('change', updateParallax);
+    let layerRefreshFrame = 0;
+    const scheduleLayerRefresh = () => {
+        if (layerRefreshFrame) return;
+        layerRefreshFrame = requestAnimationFrame(() => {
+            layerRefreshFrame = 0;
+            refreshLayerCentres();
+            updateParallax();
+        });
+    };
+    refreshLayerCentres();
+    updateParallax();
+    addEventListener('load', scheduleLayerRefresh);
+    document.fonts.ready.then(scheduleLayerRefresh);
+
+    if (page && trail && trailBase && trailProgress && trailDot) {
+        let pathLength = 0;
+        let firstY = 0;
+        let lastY = 0;
+        let trailSamples: { length: number; x: number; y: number }[] = [];
+        let drawFrame = 0;
+
+        const drawTrail = () => {
+            const bounds = page.getBoundingClientRect();
+            const width = page.clientWidth;
+            const height = page.scrollHeight;
+            trail.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            trail.setAttribute('width', String(width));
+            trail.setAttribute('height', String(height));
+
+            const anchors = Array.from(page.querySelectorAll<HTMLElement>('[data-trail-section]'));
+            const points = anchors.map((anchor, index) => {
+                const heading = anchor.querySelector<HTMLElement>(':scope > header h1, :scope > h1, :scope > h2, :scope > h3') ?? anchor;
+                const rect = heading.getBoundingClientRect();
+                const trailSide = anchor.dataset.trailSide;
+                const x = trailSide === 'left'
+                    ? TRAIL_LEFT_X
+                    : trailSide === 'right'
+                      ? TRAIL_RIGHT_X
+                      : trailSide === 'center' || index === 0
+                        ? TRAIL_CENTER_X
+                        : index % 2
+                          ? TRAIL_RIGHT_X
+                          : TRAIL_LEFT_X;
+                return {
+                    x: width * x,
+                    y: anchor.hasAttribute('data-trail-end') ? height - 8 : rect.top - bounds.top + rect.height / 2,
+                };
+            });
+            firstY = points[0]?.y ?? 0;
+            lastY = points.at(-1)?.y ?? firstY;
+
+            const path = points.reduce((data, point, index) => {
+                if (index === 0) return `M ${point.x} ${point.y}`;
+                const previous = points[index - 1];
+                const middleY = (previous.y + point.y) / 2;
+                return `${data} C ${previous.x} ${middleY}, ${point.x} ${middleY}, ${point.x} ${point.y}`;
+            }, '');
+
+            trailBase.setAttribute('d', path);
+            trailProgress.setAttribute('d', path);
+            pathLength = trailProgress.getTotalLength();
+            trailProgress.style.strokeDasharray = `${pathLength} ${pathLength}`;
+            const sampleCount = Math.max(1, Math.ceil(pathLength / TRAIL_SAMPLE_SPACING));
+            trailSamples = Array.from({ length: sampleCount + 1 }, (_, index) => {
+                const length = (pathLength * index) / sampleCount;
+                const point = trailProgress.getPointAtLength(length);
+                return { length, x: point.x, y: point.y };
+            });
+            update();
+        };
+
+        const update = () => {
+            const bounds = page.getBoundingClientRect();
+            if (reducedMotion.matches) {
+                trailProgress.style.strokeDashoffset = '0';
+                trailDot.setAttribute('visibility', 'hidden');
+                return;
+            }
+
+            trailDot.removeAttribute('visibility');
+            const targetY = Math.min(Math.max(innerHeight * TRAIL_READING_LINE - bounds.top, firstY), lastY);
+            let low = 0;
+            let high = trailSamples.length - 1;
+            while (high - low > 1) {
+                const middle = Math.floor((low + high) / 2);
+                if (trailSamples[middle].y < targetY) low = middle;
+                else high = middle;
+            }
+            const start = trailSamples[low];
+            const end = trailSamples[high];
+            const progress = Math.min(Math.max((targetY - start.y) / (end.y - start.y || 1), 0), 1);
+            const length = start.length + (end.length - start.length) * progress;
+            trailProgress.style.strokeDashoffset = String(pathLength - length);
+            trailDot.setAttribute('cx', String(start.x + (end.x - start.x) * progress));
+            trailDot.setAttribute('cy', String(start.y + (end.y - start.y) * progress));
+        };
+
+        const scheduleDraw = () => {
+            if (drawFrame) return;
+            drawFrame = requestAnimationFrame(() => {
+                drawFrame = 0;
+                drawTrail();
+            });
+        };
+
+        scrollUpdates.add(update);
+        drawTrail();
+        addEventListener('resize', scheduleDraw);
+        addEventListener('load', scheduleDraw);
+        document.fonts.ready.then(scheduleDraw);
+        const resizeObserver = new ResizeObserver(() => {
+            scheduleDraw();
+            scheduleLayerRefresh();
+        });
+        resizeObserver.observe(page);
+        reducedMotion.addEventListener('change', scheduleDraw);
+    }
+
+    addEventListener('resize', scheduleLayerRefresh);
+    addEventListener('scroll', scheduleScrollUpdates, { passive: true });
+    addEventListener('v2-lenis-scroll', scheduleScrollUpdates);
+</script>
+
+<style>
+    .team-page {
+        --stars-scrollbar-width: 4.2;
+        --team-ink: #34394b;
+        --team-cream: #fffcf3;
+        --team-blue: #3a718b;
+        --team-purple: #776b87;
+        --team-accent-pink: #d94a65;
+        --team-accent-purple: #8c7898;
+        --team-accent-blue: #119bd6;
+        --team-accent-gold: #f4b000;
+        position: relative;
+        isolation: isolate;
+        container-type: inline-size;
+        overflow: clip;
+        min-height: 100vh;
+        padding: 0;
+        background:
+            radial-gradient(circle, rgb(52 57 75 / 0.18) 1px, transparent 1.5px) 0 0 / 18px 18px,
+            radial-gradient(circle, rgb(255 252 243 / 0.48) 1px, transparent 1.7px) 88% 12rem / 11px 11px,
+            linear-gradient(90deg, rgb(217 74 101 / 0.18), transparent 18%, transparent 78%, rgb(58 113 139 / 0.22)),
+            linear-gradient(135deg, #e7c5c1 0%, #e0d5e7 33%, #c8dce3 62%, #e9d3bd 100%);
+        color: var(--team-ink);
+        font-family: var(--font-syne), sans-serif;
+    }
+
+    .team-page::before,
+    .team-page::after {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        content: '';
+    }
+
+    .team-page::before {
+        background:
+            repeating-linear-gradient(135deg, transparent 0 18px, rgb(52 57 75 / 0.12) 19px 20px, transparent 21px 38px) left top / 7vw 100%,
+            repeating-linear-gradient(45deg, transparent 0 18px, rgb(52 57 75 / 0.12) 19px 20px, transparent 21px 38px) right top / 7vw 100%,
+            radial-gradient(circle, rgb(52 57 75 / 0.2) 1px, transparent 1.5px) left top / 7vw 14px,
+            radial-gradient(circle, rgb(52 57 75 / 0.2) 1px, transparent 1.5px) right top / 7vw 14px;
+        background-repeat: repeat-y;
+    }
+
+    .team-page::after {
+        background:
+            radial-gradient(circle, rgb(217 74 101 / 0.18) 0 1.6px, transparent 2px) 0 0 / 28px 28px,
+            radial-gradient(circle, rgb(58 113 139 / 0.16) 0 1.3px, transparent 1.8px) 14px 14px / 28px 28px,
+            repeating-linear-gradient(135deg, transparent 0 34px, rgb(119 107 135 / 0.045) 35px 36px, transparent 37px 70px);
+        opacity: 0.75;
+    }
+
+    .ambient-background {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .ambient-cloud {
+        position: absolute;
+        width: clamp(12rem, 25vw, 27rem);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        filter: blur(8px);
+        transform: translate3d(0, var(--parallax-y, 0), 0);
+    }
+
+    .cloud-one {
+        top: 8%;
+        left: -12%;
+        background: radial-gradient(circle, rgb(140 120 152 / 0.34), rgb(217 74 101 / 0.18) 52%, transparent 72%);
+    }
+
+    .cloud-two {
+        top: 45%;
+        right: -12%;
+        background: radial-gradient(circle, rgb(58 113 139 / 0.34), rgb(217 188 176 / 0.3) 52%, transparent 72%);
+    }
+
+    .ambient-sun {
+        position: absolute;
+        top: 75%;
+        left: 0;
+        width: 22rem;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgb(217 74 101 / 0.2), rgb(244 176 0 / 0.16), transparent 70%);
+        transform: translate3d(0, var(--parallax-y, 0), 0);
+    }
+
+    .side-geometry {
+        position: absolute;
+        width: clamp(3rem, 6vw, 6rem);
+        aspect-ratio: 1;
+        border: 1px solid rgb(52 57 75 / 0.28);
+        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(45deg);
+    }
+
+    .geometry-left-one {
+        top: 19%;
+        left: 1.5%;
+        border-radius: 50%;
+        box-shadow: inset 0 0 0 0.5rem rgb(255 252 243 / 0.12), 0 0 0 0.5rem rgb(217 74 101 / 0.12);
+    }
+
+    .geometry-right-one {
+        top: 35%;
+        right: 1.2%;
+        width: clamp(2rem, 4vw, 4rem);
+        background: repeating-linear-gradient(0deg, transparent 0 5px, rgb(52 57 75 / 0.2) 6px 7px);
+    }
+
+    .geometry-left-two {
+        top: 64%;
+        left: 2%;
+        width: clamp(2rem, 3.8vw, 4rem);
+        border-color: rgb(58 113 139 / 0.5);
+        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(45deg) scale(0.82);
+    }
+
+    .geometry-right-two {
+        top: 82%;
+        right: 1.6%;
+        border-radius: 50%;
+        border-style: dashed;
+        box-shadow: inset 0 0 0 0.6rem rgb(140 120 152 / 0.12);
+    }
+
+    .team-panel {
+        position: relative;
+        width: auto;
+        margin: 0 calc(var(--stars-scrollbar-width) * 1vw + clamp(10px, 1.4vw, 22px));
+        overflow: clip;
+        border-right: 1px solid rgb(72 75 112 / 0.12);
+        border-left: 1px solid rgb(72 75 112 / 0.12);
+        background: transparent;
+        box-shadow: 0 0 3rem rgb(52 57 75 / 0.08);
+    }
+
+    .rail-tail-space {
+        height: clamp(2.5rem, 5vw, 4rem);
+        background: var(--team-cream);
+    }
+
+    .team-body {
+        position: relative;
+    }
+
+    .team-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .scroll-trail {
+        position: absolute;
+        inset: 0 auto auto 0;
+        z-index: 1;
+        overflow: visible;
+        pointer-events: none;
+    }
+
+    .trail-base,
+    .trail-progress {
+        fill: none;
+        stroke: url(#trail-gradient);
+        stroke-linecap: round;
+    }
+
+    .trail-base {
+        stroke-width: 4;
+        stroke-dasharray: 3 10;
+        opacity: 0.5;
+    }
+
+    .trail-progress {
+        stroke-width: 5;
+        filter: drop-shadow(0 0 6px rgb(119 107 135 / 0.52));
+    }
+
+    .trail-dot {
+        fill: #fffcf3;
+        stroke: var(--team-accent-purple);
+        stroke-width: 4;
+        filter: drop-shadow(0 0 5px rgb(119 107 135 / 0.4));
+    }
+
+    .team-roster {
+        padding-top: clamp(1.5rem, 3.5vw, 3rem);
+        padding-bottom: clamp(2rem, 4vw, 3.5rem);
+    }
+
+    .team-section h2 {
+        width: fit-content;
+        margin: 0 auto 1.25rem;
+        padding-bottom: 0.16rem;
+        border-bottom: 1px solid rgb(119 107 135 / 0.62);
+        color: var(--team-ink);
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: clamp(1.5rem, 2.8vw, 1.9rem);
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .team-section {
+        scroll-margin-top: 6rem;
+        position: relative;
+        padding: clamp(1.5rem, 2.5vw, 2.25rem) clamp(1.25rem, 2vw, 1.75rem) clamp(2rem, 3vw, 2.75rem);
+        border: 1px solid rgb(52 57 75 / 0.1);
+        border-radius: 0.45rem;
+        background: rgb(255 252 243 / 0.58);
+        box-shadow: 0 0.5rem 1.5rem rgb(52 57 75 / 0.045);
+    }
+
+    .leadership-0 {
+        background: linear-gradient(125deg, rgb(208 226 231 / 0.58), rgb(255 252 243 / 0.68) 55%, rgb(230 220 230 / 0.58));
+    }
+
+    .leadership-1 {
+        background: linear-gradient(125deg, rgb(239 222 222 / 0.62), rgb(255 252 243 / 0.68) 52%, rgb(211 227 232 / 0.62));
+    }
+
+    .leadership-members {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: clamp(0.75rem, 2vw, 1.5rem);
+    }
+
+    .leadership-members .member-card {
+        flex-basis: clamp(150px, 22%, 250px);
+    }
+
+    .directors-section {
+        padding: clamp(1.5rem, 2.5vw, 2.25rem) clamp(1.25rem, 2vw, 1.75rem) clamp(2rem, 3vw, 2.75rem);
+        background:
+            radial-gradient(circle, rgb(119 107 135 / 0.08) 1px, transparent 1.7px) 0 0 / 20px 20px,
+            linear-gradient(135deg, rgb(243 231 226 / 0.62), rgb(228 235 234 / 0.62) 52%, rgb(244 235 218 / 0.64));
+    }
+
+    .portfolio-grid {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(1.1rem, 2vw, 2rem);
+    }
+
+    .portfolio-section {
+        width: 50%;
+        min-width: 0;
+        padding: clamp(1.5rem, 2.5vw, 2.25rem) clamp(0.75rem, 1.4vw, 1.25rem) clamp(2rem, 3vw, 2.75rem);
+        margin-left: 0;
+        border: 1px solid rgb(52 57 75 / 0.11);
+        border-radius: 0.45rem;
+        background: rgb(255 252 243 / 0.62);
+    }
+
+    .portfolio-section[data-trail-side="right"] {
+        margin-left: auto;
+    }
+
+    .portfolio-1 {
+        background: rgb(232 225 233 / 0.64);
+    }
+
+    .portfolio-2 {
+        background: rgb(220 233 235 / 0.64);
+    }
+
+    .portfolio-3 {
+        background: rgb(244 229 219 / 0.66);
+    }
+
+    .portfolio-section h3 {
+        width: fit-content;
+        margin: 0 auto 1.5rem;
+        padding: 0 0.25rem 0.35rem;
+        border-bottom: 1px solid var(--team-accent-purple);
+        color: var(--team-ink);
+        font-size: clamp(0.95rem, 1.5vw, 1.2rem);
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .portfolio-members {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: clamp(0.5rem, 1vw, 0.9rem);
+    }
+
+    .portfolio-members .member-card {
+        flex: 0 1 clamp(150px, 18vw, 250px);
+    }
+
+    .member-card {
+        position: relative;
+        flex: 0 1 42%;
+        min-width: 0;
+        overflow: hidden;
+        padding: 0.55rem 0.55rem 1.25rem;
+        border: 1px solid rgb(52 57 75 / 0.1);
+        border-radius: 0.18rem;
+        background: #fffefa;
+        box-shadow: 0 0.25rem 0.75rem rgb(52 57 75 / 0.075);
+        translate: 0 var(--parallax-y, 0px);
+        transition:
+            transform 250ms ease,
+            box-shadow 250ms ease;
+    }
+
+    .member-card:hover,
+    .member-card:focus-within {
+        transform: scale(1.035);
+        box-shadow: 0 0.6rem 1.25rem rgb(52 57 75 / 0.11);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .member-card {
+            transition: none;
+            translate: none;
+        }
+
+        .member-card:hover,
+        .member-card:focus-within {
+            transform: none;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .team-page {
+            padding: 0;
+            background-size: 17px 17px, 11px 11px, auto, auto;
+        }
+
+        .team-panel {
+            margin: 0 calc(var(--stars-scrollbar-width) * 1vw + 8px);
+            border: 0;
+        }
+
+        .portfolio-grid {
+            gap: 0.75rem;
+        }
+
+        .portfolio-section,
+        .portfolio-section[data-trail-side="right"] {
+            width: 100%;
+            margin-left: 0;
+        }
+
+        .portfolio-section h3 {
+            margin: 0 auto;
+            margin-bottom: 1.25rem;
+            padding: 0 0.25rem 0.3rem;
+            text-align: center;
+        }
+
+        .team-section,
+        .directors-section {
+            padding: 1.5rem 1rem 2rem;
+        }
+
+        .team-section.space-y-16 > :not(:first-child) {
+            margin-top: 3.5rem;
+        }
+
+        .leadership-members .member-card,
+        .portfolio-members .member-card {
+            flex-basis: 44%;
+        }
+
+    }
+</style>

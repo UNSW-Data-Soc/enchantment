@@ -1,11 +1,12 @@
 ---
-import V2Layout from "../../../layouts/V2Layout.astro";
-import Footer from "../../../components/v2/Footer.astro";
+import ContentPage from '../../../components/v2/ContentPage.astro';
+import ContactPageContent from '../../../components/v2/ContactPageContent.astro';
 ---
 
-<V2Layout>
-	<h1>Contact us</h1>
-	<p>This page is coming soon.</p>
-
-	<Footer />
-</V2Layout>
+<ContentPage
+  title="Contact"
+  titleAccent="us"
+  caption="Questions, ideas, or just want to say hello? We'd love to hear from you."
+>
+  <ContactPageContent />
+</ContentPage>

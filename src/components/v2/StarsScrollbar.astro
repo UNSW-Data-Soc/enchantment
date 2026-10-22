@@ -4,12 +4,20 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 interface Props {
   /** How far down the page the bar runs, as a CSS length or percentage of the page's height. */
   length?: string;
+  /** Optional artwork layered beneath the CSS bar, sized to its first half. */
+  underlay?: string;
+  /** Use the Meet the Team page's yellow-to-red-to-purple color progression. */
+  colorScheme?: 'team';
 }
-const { length = '98%' } = Astro.props;
+const { length = '98%', underlay, colorScheme } = Astro.props;
 ---
 
 <!-- One star per [data-section] on the page; the section crossing the middle of the screen is highlighted, and clicking a star scrolls to its section. -->
-<div class="stars-scrollbar" style={`--star: url("${star}"); --length: ${length}`}>
+<div
+  class="stars-scrollbar"
+  style={`--star: url("${star}"); --length: ${length}; --underlay: ${underlay ? `url("${underlay}")` : 'none'}`}
+  data-color-scheme={colorScheme}
+>
   <div class="track">
     <div class="stars"></div>
   </div>
@@ -18,11 +26,12 @@ const { length = '98%' } = Astro.props;
 <style>
   /* The dark bar down the page's left edge, which clips the stars to it. Its colours are Landing V3's (Canva: a
      #d9c1ad to #636478 gradient, fading to #384151 lower down); the opacity ramp where it emerges from the hero was
-     fitted against Canva's exports with and without the bar. Stops are in cqw (1% of the page's width; HomePage is the
-     container) so they stay at the same place on the page whatever the bar's length. */
+     fitted against Canva's exports with and without the bar. Stops are in cqw (1% of the page's width) so they stay at
+     the same place on the page whatever the bar's length; any page using this component must set an inline-size query
+     container. */
   .stars-scrollbar {
     /* The bar's width as a percentage of the page's width. */
-    --width: 4.2;
+    --width: var(--stars-scrollbar-width, 4.2);
     position: absolute;
     top: 0;
     left: 0;
@@ -40,7 +49,10 @@ const { length = '98%' } = Astro.props;
       #636478 103.19cqw,
       #636478 198.3cqw,
       #384151 227.81cqw
-    );
+    ), var(--underlay, none);
+    background-size: auto, 100% auto;
+    background-position: 0 0, 0 0;
+    background-repeat: no-repeat;
   }
 
   /* Without container query units the rules above are dropped, so the same stops are given as percentages of the bar,
@@ -56,7 +68,10 @@ const { length = '98%' } = Astro.props;
         #636478 36.05%,
         #636478 69.27%,
         #384151 79.58%
-      );
+      ), var(--underlay, none);
+      background-size: auto, 100% auto;
+      background-position: 0 0, 0 0;
+      background-repeat: no-repeat;
     }
   }
 
@@ -136,11 +151,11 @@ const { length = '98%' } = Astro.props;
   // the hero (where the bar is see-through), through orange to the logo's yellow at Latest Events,
   // then the long way round the colour wheel (coral, pink, lavender) to the logo's blue at Latest Publications,
   // rather than through green, which the site doesn't use. Done in JS so it works without CSS scroll-driven animations.
-  const stops: [number, string][] = [
-    [0, '#d94a65'],
-    [1, '#f4b000'],
-    [3, '#119bd6'],
-  ];
+  const teamColorScheme = stars.closest<HTMLElement>('[data-color-scheme]')?.dataset.colorScheme === 'team';
+  const lastSection = Math.max(sections.length - 1, 1);
+  const stops: [number, string][] = teamColorScheme
+    ? [[0, '#f4b000'], [lastSection / 2, '#d94a65'], [lastSection, '#aa52cc']]
+    : [[0, '#d94a65'], [1, '#f4b000'], [3, '#119bd6']];
   const blends = ['oklch', 'oklch longer hue'];
   const centresOf = (rects: DOMRect[]) => rects.map((rect) => rect.top + rect.height / 2);
   // The colour at height y on the screen, given where the section centres are.
@@ -165,11 +180,21 @@ const { length = '98%' } = Astro.props;
   const marks = sections.map((section, i) => {
     const mark = stars.appendChild(document.createElement('button'));
     mark.type = 'button';
+    mark.disabled = document.documentElement.dataset.v2LenisReady !== 'true';
     mark.ariaLabel = `Go to ${(section as HTMLElement).dataset.section || `section ${i + 1}`}`;
     mark.append(document.createElement('i'));
     mark.addEventListener('click', () => {
       target = i;
-      scrollTo({ top: section.getBoundingClientRect().top + scrollY, behavior });
+      const offset = Number((section as HTMLElement).dataset.scrollOffset) || 0;
+      const scrollPosition = Math.min(Math.max(Number((section as HTMLElement).dataset.scrollPosition) || 0, 0), 1);
+      const top = (section as HTMLElement).hasAttribute('data-scroll-top')
+        ? 0
+        : Math.max(0, section.getBoundingClientRect().top + scrollY - innerHeight * scrollPosition - offset);
+      const request = new CustomEvent('v2-lenis-scroll-to', {
+        cancelable: true,
+        detail: { top, immediate: behavior === 'instant' },
+      });
+      if (dispatchEvent(request)) scrollTo({ top, behavior });
       schedule();
     });
     // Once faded out, a star drops its live colour so hovering it previews its own.
@@ -178,6 +203,16 @@ const { length = '98%' } = Astro.props;
     });
     return mark;
   });
+  const enableMarks = () => marks.forEach((mark) => (mark.disabled = false));
+  const readinessTimeout = window.setTimeout(enableMarks, 1500);
+  window.addEventListener(
+    'v2-lenis-ready',
+    () => {
+      window.clearTimeout(readinessTimeout);
+      enableMarks();
+    },
+    { once: true },
+  );
 
   const paint = () => {
     const middle = innerHeight / 2;
@@ -187,8 +222,12 @@ const { length = '98%' } = Astro.props;
     if (reached === target) target = -1;
     const current = target === -1 ? reached : target;
     marks.forEach((mark, i) => (mark.ariaCurrent = i === current ? 'location' : null));
-    // Set on the active star only, so the others don't restyle on every scroll.
-    marks[current].style.setProperty('--star-colour', colourAt(middle, centresOf(rects)));
+    const centres = centresOf(rects);
+    // Keep each team's active star on its own palette color instead of blending by scroll distance.
+    const colour = teamColorScheme
+      ? colourAt(centres[current], centres)
+      : colourAt(middle, centres);
+    marks[current].style.setProperty('--star-colour', colour);
   };
 
   // Each star's own colour is the one at its section's centre. Sections are fixed fractions of the page, so this only
