@@ -1,0 +1,75 @@
+---
+import ParallaxContainer from './ParallaxContainer.astro';
+import graphic from '../../assets/ui/shapes/orange-blurs.svg?url';
+---
+
+<section class="about-us" aria-labelledby="about-us-heading">
+  <div class="intro">
+      <h2 id="about-us-heading">More About Us</h2>
+      <p>
+      Founded in 2017, UNSW DataSoc is Australia’s first and largest student data science society. We bring together mathematicians, econometricians, computer scientists and anyone curious about data. 
+      </p>
+      
+      <p>
+      Each year, we run events that support students in their studies and careers and also host social events open to everyone at UNSW.
+      </p>
+  </div>
+
+    <div class="graphic-layer" aria-hidden="true">
+            <img src={graphic} alt="" draggable="false" />
+    </div>
+
+</section>
+
+
+<style>
+  .about-us {
+    position: relative;
+    isolation: isolate;
+    min-height: 55vw;
+    overflow-x: clip;
+  }
+
+  .intro {
+    position: relative;
+    z-index: 1;
+    width: 41%;
+    padding: 3rem 1.5rem;
+    box-sizing: border-box;
+  }
+
+  h2 {
+    font-family: var(--font-syne), sans-serif;
+    font-size: 30px;
+    line-height: 1.3;
+    color: #ed4669;
+    margin: 0 0 1.5rem;
+  }
+
+  p {
+    font-family: var(--font-inter), sans-serif;
+    position: relative;
+    font-size: 18px;
+    line-height: 2.5;
+    letter-spacing: 0.22em;
+    text-align: left;
+    color: #ed4669;
+  }
+
+  .graphic-layer {
+    position: absolute;
+    top: 5;
+    right: -1;
+    width: 58%;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .graphic-layer img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+</style>
+
