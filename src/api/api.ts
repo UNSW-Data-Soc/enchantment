@@ -18,10 +18,11 @@ interface FacebookResponse {
 
 export async function fetchEvents() {
     try {
+        if (!FACEBOOK_ACCESS_TOKEN) {
+            throw new Error('Missing ACCESS_TOKEN environment variable');
+        }
         const response = await fetch(
             `https://graph.facebook.com/v22.0/${FACEBOOK_PAGE_ID}/events?access_token=${FACEBOOK_ACCESS_TOKEN}&fields=id,name,cover,place,start_time`);
-
-            const ACCESS_TOKEN = import.meta.env.ACCESS_TOKEN;
 
         const data: FacebookResponse = await response.json();
 
