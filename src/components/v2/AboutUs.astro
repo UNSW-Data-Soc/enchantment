@@ -1,28 +1,64 @@
 ---
-import ParallaxContainer from './ParallaxContainer.astro';
 import graphic from '../../assets/ui/shapes/orange-blurs.svg?url';
 ---
 
 <section class="about-us" aria-labelledby="about-us-heading">
-  <div class="intro">
-      <h2 id="about-us-heading">More About Us</h2>
-      <p>
-      Founded in 2017, UNSW DataSoc is Australia’s first and largest student data science society. We bring together mathematicians, econometricians, computer scientists and anyone curious about data. 
-      </p>
-      
-      <p>
-      Each year, we run events that support students in their studies and careers and also host social events open to everyone at UNSW.
-      </p>
+  <div class="text-column">
+  <h2 id="about-us-heading">More About Us</h2>
+
+  <div class="triangle-text top-left">
+    <div class="spacer" aria-hidden="true"></div>
+    <p>
+      Founded in 2017, UNSW DataSoc is Australia’s first and largest
+      student data science society. We bring together mathematicians,
+      econometricians, computer scientists and anyone curious about data.
+      Each year, we run events that support students in their studies and 
+      careers and also host social events open to everyone at UNSW.
+    </p>
   </div>
 
-    <div class="graphic-layer" aria-hidden="true">
-            <img src={graphic} alt="" draggable="false" />
+  <h3 id="our-values-heading">Our Goals</h3>
+  <div class="triangle-text bottom-right" aria-labelledby="our-values-heading">
+    <div class="value-row">
+    <img src="/who-we-are/lightbulb-idea.png" alt="" class="value-icon" />
+    <p>
+      <span class="goal-line">We aim to be Australia’s leading student-run society,</span>
+      <span class="goal-line">helping students achieve their data science career goals.</span>
+    </p>
     </div>
+    <div class="value-row">
+    <img src="/who-we-are/bulletin-board.png" alt="" class="value-icon" />
+    <p>
+      We create opportunities
+      through information sessions, networking evenings and career-focused events.
+    </p>
+    </div>
+    <div class="value-row">
+    <img src="/who-we-are/graphic-design.png" alt="" class="value-icon" />
+    <p>
+      We build community through BBQs, competitions and social activities that
+      welcome everyone at UNSW.
+    </p>
+    </div>
+    <div class="value-row">
+    <img src="/who-we-are/zoom.png" alt="" class="value-icon" />
+    <p>
+      We also support students in their studies through
+      help sessions, workshops and peer support.
+    </p>
+    </div>
+  </div>
+  </div>
 
+  <div class="graphic-layer" aria-hidden="true">
+    <img src={graphic} alt="" />
+  </div>
 </section>
 
 
 <style>
+  /* Scale with the homepage background, as LatestEvents does.
+     Sizes preserve the design's proportions at a 1440px viewport. */
   .about-us {
     position: relative;
     isolation: isolate;
@@ -30,36 +66,120 @@ import graphic from '../../assets/ui/shapes/orange-blurs.svg?url';
     overflow-x: clip;
   }
 
-  .intro {
+  .triangle-text {
+    display: flow-root;
+  }
+
+  .text-column {
     position: relative;
+    top: 1vw;
     z-index: 1;
-    width: 41%;
-    padding: 3rem 1.5rem;
+    width: 44%;
+    padding: 3.3333vw 1.6667vw;
     box-sizing: border-box;
   }
 
-  h2 {
-    font-family: var(--font-syne), sans-serif;
-    font-size: 30px;
+  .triangle-text p {
+    margin: 0;
+    font-family: var(--font-inter), sans-serif;
+    font-size: 1.1111vw;
+    line-height: 1.65;
+    letter-spacing: normal;
+  }
+
+  .spacer {
+    width: 100%;
+    height: 16.6667vw;
+    shape-margin: 0.4167vw;
+  }
+
+  /* Text starts wide and gets narrower downward. */
+  .top-left .spacer {
+    float: right;
+    shape-outside: polygon(100% 0, 100% 100%, 45% 100%);
+  }
+
+  /* Step each goal right while keeping its text beside the icon. */
+  .bottom-right {
+    position: relative;
+    left: 1vw;
+    display: grid;
+    gap: 1.3889vw;
+  }
+
+  .bottom-right p {
+    text-align: right;
+  }
+
+  .value-row {
+    width: 100%;
+    margin-left: auto;
+    padding-left: 0.5vw;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1.1111vw;
+  }
+
+  .value-icon {
+    flex: 0 0 3.3333vw;
+    width: 3.3333vw;
+    height: 3.3333vw;
+    object-fit: contain;
+  }
+
+  .value-row > p {
+    flex: 1;
+    min-width: 0;
+    text-align: right;
+  }
+
+  .goal-line {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .value-row:nth-child(2) {
+    width: 96%;
+  }
+
+  .value-row:nth-child(3) {
+    width: 92%;
+  }
+
+  .value-row:nth-child(4) {
+    width: 88%;
+  }
+
+  h2, h3 {
+    font-family: var(--font-inter), sans-serif;
+    font-size: 2.2917vw;
     line-height: 1.3;
     color: #ed4669;
-    margin: 0 0 1.5rem;
+    margin: 0 0 1.6667vw;
+  }
+
+  h3 {
+    position: relative;
+    left: 1vw;
+    margin-top: 0;
+    margin-bottom: 0.4167vw;
+    text-align: right;
+    font-size: 1.8056vw;
   }
 
   p {
     font-family: var(--font-inter), sans-serif;
     position: relative;
-    font-size: 18px;
-    line-height: 2.5;
-    letter-spacing: 0.22em;
     text-align: left;
     color: #ed4669;
   }
 
   .graphic-layer {
     position: absolute;
-    top: 5;
-    right: -1;
+    top: 5.5556vw;
+    right: 0;
     width: 58%;
     z-index: -1;
     pointer-events: none;
@@ -70,6 +190,7 @@ import graphic from '../../assets/ui/shapes/orange-blurs.svg?url';
     width: 100%;
     height: auto;
   }
+
 
 </style>
 
