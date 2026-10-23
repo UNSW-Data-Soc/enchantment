@@ -1,0 +1,134 @@
+---
+import Footer from './Footer.astro';
+import PageHeader from './PageHeader.astro';
+import StarsScrollbar from './StarsScrollbar.astro';
+import V2Layout from '../../layouts/V2Layout.astro';
+
+interface Props {
+  title: string;
+  titleAccent?: string;
+  caption?: string;
+  teamBackground?: boolean;
+  flushBody?: boolean;
+  scrollToTop?: boolean;
+  sectionName?: string;
+  scrollbarUnderlay?: string;
+}
+
+const { title, titleAccent, caption, teamBackground = false, flushBody = false, scrollToTop = false, sectionName, scrollbarUnderlay } = Astro.props;
+const pageTitle = titleAccent ? `${title} ${titleAccent}` : title;
+const defaultScrollbarUnderlay = '/backgrounds/meet-the-team-scrollbar-underlay.png';
+---
+
+<V2Layout title={pageTitle}>
+  <div class:list={['content-page', { 'team-background': teamBackground }]}>
+    <StarsScrollbar
+      length="100%"
+      underlay={scrollbarUnderlay ?? defaultScrollbarUnderlay}
+    />
+    <main class="content-panel">
+      <PageHeader
+        title={title}
+        titleAccent={titleAccent}
+        caption={caption}
+        sectionName={sectionName}
+        scrollToTop={scrollToTop}
+        showFlourish
+        showOrb
+      />
+      <div class:list={['content-body', { 'flush-body': flushBody }]}>
+        <slot />
+      </div>
+    </main>
+    <div class="rail-tail-space" aria-hidden="true"></div>
+  </div>
+  <Footer />
+</V2Layout>
+
+<style>
+  .content-page {
+    --stars-scrollbar-width: 4.2;
+    --team-accent-pink: #d94a65;
+    --team-accent-purple: #8c7898;
+    --team-accent-blue: #119bd6;
+    --team-accent-gold: #f4b000;
+    position: relative;
+    isolation: isolate;
+    min-height: 100vh;
+    container-type: inline-size;
+    overflow: clip;
+    color: #34394b;
+    background:
+      radial-gradient(circle, rgb(52 57 75 / 0.16) 1px, transparent 1.5px) 0 0 / 18px 18px,
+      linear-gradient(135deg, #e7c5c1, #e0d5e7 36%, #c8dce3 70%, #e9d3bd);
+    font-family: var(--font-syne), sans-serif;
+  }
+
+  .team-background {
+    background:
+      radial-gradient(circle, rgb(52 57 75 / 0.18) 1px, transparent 1.5px) 0 0 / 18px 18px,
+      radial-gradient(circle, rgb(255 252 243 / 0.48) 1px, transparent 1.7px) 88% 12rem / 11px 11px,
+      linear-gradient(90deg, rgb(217 74 101 / 0.18), transparent 18%, transparent 78%, rgb(58 113 139 / 0.22)),
+      linear-gradient(135deg, #e7c5c1 0%, #e0d5e7 33%, #c8dce3 62%, #e9d3bd 100%);
+  }
+
+  .team-background::before,
+  .team-background::after {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    content: '';
+  }
+
+  .team-background::before {
+    background:
+      repeating-linear-gradient(135deg, transparent 0 18px, rgb(52 57 75 / 0.12) 19px 20px, transparent 21px 38px) left top / 7vw 100%,
+      repeating-linear-gradient(45deg, transparent 0 18px, rgb(52 57 75 / 0.12) 19px 20px, transparent 21px 38px) right top / 7vw 100%,
+      radial-gradient(circle, rgb(52 57 75 / 0.2) 1px, transparent 1.5px) left top / 7vw 14px,
+      radial-gradient(circle, rgb(52 57 75 / 0.2) 1px, transparent 1.5px) right top / 7vw 14px;
+    background-repeat: repeat-y;
+  }
+
+  .team-background::after {
+    background:
+      radial-gradient(circle at center, transparent 42%, rgb(119 107 135 / 0.3) 43% 44%, transparent 45%) 1vw 12rem / 5rem 5rem no-repeat,
+      radial-gradient(circle at center, transparent 42%, rgb(58 113 139 / 0.34) 43% 44%, transparent 45%) calc(100% - 1vw) 42rem / 6rem 6rem no-repeat;
+    opacity: 0.65;
+  }
+
+  .content-panel {
+    position: relative;
+    width: auto;
+    margin: 0 calc(var(--stars-scrollbar-width) * 1vw + clamp(10px, 1.4vw, 22px));
+    overflow: clip;
+    border-right: 1px solid rgb(72 75 112 / 0.12);
+    border-left: 1px solid rgb(72 75 112 / 0.12);
+    background: transparent;
+    box-shadow: 0 0 3rem rgb(52 57 75 / 0.08);
+  }
+
+  .content-body {
+    min-height: 12rem;
+    padding: clamp(1.5rem, 3.5vw, 3rem) clamp(1.25rem, 2vw, 1.75rem) clamp(2rem, 4vw, 3.5rem);
+    font-size: clamp(1rem, 1.4vw, 1.2rem);
+    background: #fffcf3;
+  }
+
+  .content-body.flush-body {
+    padding: 0;
+    background: transparent;
+  }
+
+  .rail-tail-space {
+    height: clamp(2.5rem, 5vw, 4rem);
+    background: #fffcf3;
+  }
+
+  @media (max-width: 640px) {
+    .content-panel {
+      margin: 0 calc(var(--stars-scrollbar-width) * 1vw + 8px);
+      border: 0;
+    }
+  }
+</style>
