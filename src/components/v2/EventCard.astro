@@ -1,0 +1,21 @@
+---
+import type { FacebookEvent } from '../../api/api.ts';
+
+interface Props {
+  event: FacebookEvent;
+}
+
+const { event } = Astro.props;
+---
+
+<a class="event-card" href={`https://www.facebook.com/events/${event.id}`} target="_blank" rel="noopener noreferrer">
+  <div class="event-image">
+    {event.cover?.source ? (
+      <img src={event.cover.source} alt="" loading="lazy" decoding="async" />
+    ) : (
+      <span class="image-placeholder">Event image unavailable</span>
+    )}
+  </div>
+  <h3>{event.name}</h3>
+  <span class="sr-only"> (opens in a new tab)</span>
+</a>

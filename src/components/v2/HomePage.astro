@@ -5,12 +5,7 @@ import LatestPublications from './LatestPublications.astro';
 import StarsScrollbar from './StarsScrollbar.astro';
 ---
 
-<link
-  rel="preload"
-  as="image"
-  href="/backgrounds/homepage-bg-v2-p00.png"
-  fetchpriority="high"
-/>
+<link rel="preload" as="image" href="/backgrounds/homepage-bg-v2-p00-no-sidebar.png" fetchpriority="high" />
 
 <main class="v2-home" aria-label="Homepage">
   <div class="hero-slot">
@@ -38,9 +33,11 @@ import StarsScrollbar from './StarsScrollbar.astro';
     position: relative;
     width: 100%;
     aspect-ratio: 1708 / 4989;
-    background-image: url('/backgrounds/homepage-bg-v2-p00.png');
+    background-image: url('/backgrounds/homepage-bg-v2-p00-no-sidebar.png');
     background-size: 100% auto;
     background-repeat: no-repeat;
+    /* StarsScrollbar positions its bar's colours in cqw (1% of this width). */
+    container-type: inline-size;
   }
 
   .hero-slot {

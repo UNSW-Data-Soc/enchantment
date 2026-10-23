@@ -3,19 +3,21 @@ import { quicklinks } from "./constants.js";
 ---
 
 <footer class="v2-footer">
-<div class="footer-art" aria-hidden="true"></div>
+<div class="footer-content">
+  <div class="footer-art" aria-hidden="true"></div>
 
-<img
-  class="quicklinks-header"
-  src="/text-headers/quicklinks-header.png"
-  alt="Quick links"
-  draggable="false"
-/>
+  <img
+    class="quicklinks-header"
+    src="/text-headers/quicklinks-header.png"
+    alt="Quick links"
+    draggable="false"
+  />
 
-<div class="quick-links">
-  {quicklinks.map((item) => (
-    <a href={`/${item.linkto}`}>{item.text}</a>
-  ))}
+  <div class="quick-links">
+    {quicklinks.map((item) => (
+      <a href={`/${item.linkto}`}>{item.text}</a>
+    ))}
+  </div>
 </div>
 </footer>
 
@@ -24,9 +26,18 @@ import { quicklinks } from "./constants.js";
 	.v2-footer {
 		position: relative;
 		width: 100%;
-		aspect-ratio: 40 / 18;
+		aspect-ratio: 40 / 16;
 		background-color: #fffcf3;
 		overflow: hidden;
+		container-type: inline-size;
+	}
+
+	.footer-content {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 40cqw;
 	}
 
 	.footer-art {
@@ -45,7 +56,8 @@ import { quicklinks } from "./constants.js";
 
 	.quicklinks-header {
 		position: absolute;
-		top: 26.5%;
+		/* Preserve the old bottom-relative positions from the 45cqw overlay without overflowing the footer. */
+		top: 17.3125%;
 		left: 66%;
 		width: clamp(72px, 15vw, 210px);
 		height: auto;
@@ -55,7 +67,7 @@ import { quicklinks } from "./constants.js";
 
 	.quick-links {
 		position: absolute;
-		top: 45%;
+		top: 38.125%;
 		left: 53.5%;
 		display: flex;
 		flex-direction: column;

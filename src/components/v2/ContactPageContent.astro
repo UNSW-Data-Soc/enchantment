@@ -1,0 +1,290 @@
+---
+import ParallaxContainer from './ParallaxContainer.astro';
+---
+
+<div class="contact-layout">
+  <ParallaxContainer speed={0.035} class="contact-card-layer">
+  <section class="contact-card contact-form-card" aria-labelledby="contact-form-heading">
+    <p class="eyebrow">Let’s talk</p>
+    <h2 id="contact-form-heading">Get in touch</h2>
+    <p class="form-intro">Have a question or an idea? Send us a message and we’ll be happy to hear from you.</p>
+    <form class="contact-form" data-v2-contact-form>
+      <p class="form-note">Submitting opens your email app with your message ready to send.</p>
+      <label>
+        <span>Full name <b aria-hidden="true">*</b><span class="sr-only"> required</span></span>
+        <input type="text" name="fullName" autocomplete="name" placeholder="Your name" required />
+      </label>
+      <label>
+        <span>Email address <b aria-hidden="true">*</b><span class="sr-only"> required</span></span>
+        <input type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
+      </label>
+      <label>
+        <span>Phone number <small>(optional)</small></span>
+        <input type="tel" name="phone" autocomplete="tel" placeholder="Your phone number" />
+      </label>
+      <label>
+        <span>What do you have in mind? <b aria-hidden="true">*</b><span class="sr-only"> required</span></span>
+        <textarea name="message" rows="4" placeholder="Tell us a little about your enquiry" required></textarea>
+      </label>
+      <button type="submit">Send message</button>
+    </form>
+    <p class="form-status" data-v2-contact-fallback role="status" aria-live="polite" hidden>
+      If your email app didn’t open, email <a href="mailto:hello@unswdata.com">hello@unswdata.com</a>.
+    </p>
+  </section>
+  </ParallaxContainer>
+
+  <ParallaxContainer speed={0.045} class="contact-card-layer">
+  <aside class="contact-card contact-details">
+    <img
+      class="team-photo"
+      src="/team2026.webp"
+      alt="UNSW DataSoc team"
+      width="1200"
+      height="684"
+      fetchpriority="high"
+      loading="eager"
+      decoding="async"
+    />
+    <div class="contact-copy">
+      <h2>Find us around campus</h2>
+      <a href="https://www.google.com/maps/place/UNSW+Sydney/@-33.9173425,151.2286926,17z/" target="_blank" rel="noopener noreferrer">
+        UNSW Sydney, NSW, Australia<span class="sr-only"> (opens in a new tab)</span>
+      </a>
+      <a href="mailto:hello@unswdata.com">hello@unswdata.com</a>
+      <nav class="social-links" aria-label="Social media">
+        <a href="https://www.facebook.com/DataSoc/" target="_blank" rel="noopener noreferrer">Facebook<span class="sr-only"> (opens in a new tab)</span></a>
+        <a href="https://www.instagram.com/unswdatasoc/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr-only"> (opens in a new tab)</span></a>
+        <a href="https://www.youtube.com/@unswdatasoc" target="_blank" rel="noopener noreferrer">YouTube<span class="sr-only"> (opens in a new tab)</span></a>
+        <a href="https://linkedin.com/company/DataSoc" target="_blank" rel="noopener noreferrer">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
+      </nav>
+    </div>
+  </aside>
+  </ParallaxContainer>
+</div>
+
+<style>
+  .contact-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+    max-width: 76rem;
+    margin: 0 auto;
+  }
+
+  .contact-card {
+    overflow: hidden;
+    border: 1px solid rgb(52 57 75 / 0.12);
+    border-radius: 0.65rem;
+    background: linear-gradient(145deg, rgb(255 252 243 / 0.96), rgb(246 239 232 / 0.88));
+    box-shadow: 0 1rem 2.5rem rgb(52 57 75 / 0.09);
+  }
+
+  .contact-layout :global(.contact-card-layer) {
+    min-width: 0;
+  }
+
+  .contact-form-card {
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .eyebrow {
+    margin: 0 0 0.4rem;
+    color: #d94a65;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    margin: 0;
+    color: #34394b;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .form-intro {
+    margin: 0.75rem 0 1.5rem;
+    color: #596073;
+    line-height: 1.5;
+  }
+
+  .form-note {
+    margin: 0;
+    color: #596073;
+    font-size: 0.85rem;
+  }
+
+  .form-status {
+    margin: 1rem 0 0;
+    padding: 0.75rem;
+    border-radius: 0.35rem;
+    background: rgb(58 113 139 / 0.1);
+    color: #34394b;
+    font-size: 0.9rem;
+  }
+
+  .form-status a {
+    color: #3a718b;
+    font-weight: 700;
+    text-underline-offset: 0.15em;
+  }
+
+  .contact-form {
+    display: grid;
+    gap: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .contact-form label {
+    display: grid;
+    gap: 0.4rem;
+    padding-top: 0.5rem;
+    color: #34394b;
+    font-size: 0.92rem;
+    font-weight: 700;
+  }
+
+  .contact-form small {
+    color: #73798a;
+    font-weight: 400;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    padding: 0.75rem 0.85rem;
+    border: 1px solid rgb(52 57 75 / 0.2);
+    border-radius: 0.35rem;
+    background: #fffefa;
+    color: #34394b;
+    font: inherit;
+    font-weight: 400;
+  }
+
+  .contact-form input:focus,
+  .contact-form textarea:focus {
+    outline: 2px solid #119bd6;
+    outline-offset: 2px;
+  }
+
+  .contact-form textarea {
+    resize: vertical;
+  }
+
+  .contact-form button {
+    justify-self: start;
+    padding: 0.6rem 1.1rem;
+    border: 0;
+    border-radius: 999px;
+    background: #d94a65;
+    color: #fffefa;
+    font: inherit;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 160ms ease, transform 160ms ease;
+  }
+
+  .contact-form button:hover {
+    background: #b93652;
+    transform: translateY(-2px);
+  }
+
+  .contact-form button:focus-visible {
+    outline: 2px solid #119bd6;
+    outline-offset: 3px;
+  }
+
+  .contact-details {
+    align-self: start;
+  }
+
+  .team-photo {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: auto;
+    object-fit: contain;
+  }
+
+  .contact-copy {
+    display: grid;
+    justify-items: start;
+    gap: 0.85rem;
+    padding: clamp(1.25rem, 2.5vw, 2rem);
+  }
+
+  .contact-copy h2 {
+    margin-bottom: 0.25rem;
+    font-size: clamp(1.25rem, 2vw, 1.6rem);
+  }
+
+  .contact-copy > a {
+    color: #3a718b;
+    text-underline-offset: 0.18em;
+  }
+
+  .social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: 0.5rem;
+  }
+
+  .social-links a {
+    padding: 0.45rem 0.7rem;
+    border: 1px solid rgb(58 113 139 / 0.24);
+    border-radius: 999px;
+    color: #34394b;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: background 160ms ease;
+  }
+
+  .social-links a:hover {
+    background: rgb(58 113 139 / 0.1);
+  }
+
+  @media (max-width: 760px) {
+    .contact-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-form button,
+    .social-links a {
+      transition: none;
+    }
+
+    .contact-form button:hover {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-v2-contact-form]');
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const values = new FormData(form);
+    const name = String(values.get('fullName') || '');
+    const email = String(values.get('email') || '');
+    const phone = String(values.get('phone') || '');
+    const message = String(values.get('message') || '');
+    const body = [
+      `Name: ${name}`,
+      `Email: ${email}`,
+      ...(phone ? [`Phone: ${phone}`] : []),
+      '',
+      message,
+    ].join('\n');
+    const subject = encodeURIComponent(`Website enquiry from ${name}`);
+    const encodedBody = encodeURIComponent(body);
+    document.querySelector<HTMLElement>('[data-v2-contact-fallback]')?.removeAttribute('hidden');
+    window.location.href = `mailto:hello@unswdata.com?subject=${subject}&body=${encodedBody}`;
+  });
+</script>
