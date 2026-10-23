@@ -1,25 +1,78 @@
 ---
 import star from '../../assets/ui/shapes/one-star.svg?url';
+
+interface Props {
+  /** How far down the page the bar runs, as a CSS length or percentage of the page's height. */
+  length?: string;
+  /** Optional artwork layered beneath the CSS bar, sized to its first half. */
+  underlay?: string;
+  /** Use the Meet the Team page's yellow-to-red-to-purple color progression. */
+  colorScheme?: 'team';
+}
+const { length = '98%', underlay, colorScheme } = Astro.props;
 ---
 
-<!-- One star per [data-section] on the page; the section crossing the middle of the screen is highlighted. -->
-<div class="stars-scrollbar" aria-hidden="true" style={`--star: url("${star}")`}>
+<!-- One star per [data-section] on the page; the section crossing the middle of the screen is highlighted, and clicking a star scrolls to its section. -->
+<div
+  class="stars-scrollbar"
+  style={`--star: url("${star}"); --length: ${length}; --underlay: ${underlay ? `url("${underlay}")` : 'none'}`}
+  data-color-scheme={colorScheme}
+>
   <div class="track">
     <div class="stars"></div>
   </div>
 </div>
 
 <style>
-  /* Covers the homepage background's dark bar (4.13% wide, rounded end at 98% of the image) and clips the stars to it. */
+  /* The dark bar down the page's left edge, which clips the stars to it. Its colours are Landing V3's (Canva: a
+     #d9c1ad to #636478 gradient, fading to #384151 lower down); the opacity ramp where it emerges from the hero was
+     fitted against Canva's exports with and without the bar. Stops are in cqw (1% of the page's width) so they stay at
+     the same place on the page whatever the bar's length; any page using this component must set an inline-size query
+     container. */
   .stars-scrollbar {
+    /* The bar's width as a percentage of the page's width. */
+    --width: var(--stars-scrollbar-width, 4.2);
     position: absolute;
     top: 0;
     left: 0;
-    width: 4.13%;
-    height: 98%;
+    width: calc(var(--width) * 1%);
+    height: var(--length);
     overflow: clip;
-    border-radius: 0 0 50% 50% / 0 0 0.72% 0.72%;
+    border-radius: 0 0 calc(var(--width) * 0.5cqw) calc(var(--width) * 0.5cqw);
     pointer-events: none;
+    /* Opaque below the hero, so content running under it (the Latest Publications cards) passes behind the bar. */
+    background: linear-gradient(
+      transparent 62.06cqw,
+      rgb(217 193 173 / 0.18) 0,
+      rgb(158 147 147 / 0.44) 74.94cqw,
+      rgb(99 100 120 / 0.69) 87.82cqw,
+      #636478 103.19cqw,
+      #636478 198.3cqw,
+      #384151 227.81cqw
+    ), var(--underlay, none);
+    background-size: auto, 100% auto;
+    background-position: 0 0, 0 0;
+    background-repeat: no-repeat;
+  }
+
+  /* Without container query units the rules above are dropped, so the same stops are given as percentages of the bar,
+     which only land in the right place at the default length. */
+  @supports not (width: 1cqw) {
+    .stars-scrollbar {
+      border-radius: 0 0 50% 50% / 0 0 0.72% 0.72%;
+      background: linear-gradient(
+        transparent 21.68%,
+        rgb(217 193 173 / 0.18) 0,
+        rgb(158 147 147 / 0.44) 26.18%,
+        rgb(99 100 120 / 0.69) 30.68%,
+        #636478 36.05%,
+        #636478 69.27%,
+        #384151 79.58%
+      ), var(--underlay, none);
+      background-size: auto, 100% auto;
+      background-position: 0 0, 0 0;
+      background-repeat: no-repeat;
+    }
   }
 
   /* Extends half a screen past both ends so the stars can stay at 50% until the bar's end has scrolled past them. */
@@ -35,7 +88,6 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.59vw;
   }
 
   /* How much of the active colour (and glow) a star has; transitions so the highlight eases between stars. */
@@ -45,17 +97,40 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
     initial-value: 0%;
   }
 
-  /* The glow lives on this wrapper because the star's mask would clip it. */
-  .stars :global(span) {
-    --colour: color-mix(in oklab, var(--star-colour, #d94a65) var(--on), #fffcf3);
-    filter: drop-shadow(0 0 0.25vw color-mix(in oklab, var(--star-colour, #d94a65) var(--on), transparent));
+  /* The glow lives on this button because the star's mask would clip it. Each button spans the bar's width, and
+     padding instead of a gap between stars enlarges the click target. min-height keeps targets 24px apart on narrow
+     screens without changing the star's size; the bar is narrower than 24px there, which WCAG's spacing exception
+     allows. */
+  .stars :global(button) {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    min-height: 24px;
+    padding: 0.295vw 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    pointer-events: auto;
+    /* The live scroll colour while active (kept while fading out), otherwise the star's own section colour. */
+    --tint: var(--star-colour, var(--own-colour));
+    --colour: color-mix(in oklab, var(--tint) var(--on), #fffcf3);
+    filter: drop-shadow(0 0 0.25vw color-mix(in oklab, var(--tint) var(--on), transparent));
     transition: --on 150ms ease;
   }
 
   /* Transitions use the destination state's timing: the incoming star eases in, the outgoing one leaves faster. */
-  .stars :global(span[data-active]) {
+  .stars :global(button[aria-current]) {
     --on: 100%;
     transition-duration: 250ms;
+  }
+
+  .stars :global(button:not([aria-current]):hover) {
+    --on: 50%;
+  }
+
+  .stars :global(button:focus-visible) {
+    outline: 2px solid #fffcf3;
+    outline-offset: -2px;
   }
 
   /* Sizes measured from Landing V3; the offsets crop the star out of one-star.svg's padded viewBox. */
@@ -71,31 +146,20 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
 <script>
   const stars = document.querySelector<HTMLElement>('.stars-scrollbar .stars')!;
   const sections = Array.from(document.querySelectorAll('[data-section]'));
-  const marks = sections.map(() => {
-    const mark = stars.appendChild(document.createElement('span'));
-    mark.append(document.createElement('i'));
-    return mark;
-  });
-
   // The active colour blends as the page scrolls, reaching each stop when that point crosses the middle of the
   // screen. Stops are section positions (1.5 = halfway between the centres of sections 1 and 2): Landing V3's red at
   // the hero (where the bar is see-through), through orange to the logo's yellow at Latest Events,
   // then the long way round the colour wheel (coral, pink, lavender) to the logo's blue at Latest Publications,
   // rather than through green, which the site doesn't use. Done in JS so it works without CSS scroll-driven animations.
-  const stops: [number, string][] = [
-    [0, '#d94a65'],
-    [1, '#f4b000'],
-    [3, '#119bd6'],
-  ];
+  const teamColorScheme = stars.closest<HTMLElement>('[data-color-scheme]')?.dataset.colorScheme === 'team';
+  const lastSection = Math.max(sections.length - 1, 1);
+  const stops: [number, string][] = teamColorScheme
+    ? [[0, '#f4b000'], [lastSection / 2, '#d94a65'], [lastSection, '#aa52cc']]
+    : [[0, '#d94a65'], [1, '#f4b000'], [3, '#119bd6']];
   const blends = ['oklch', 'oklch longer hue'];
-  const paint = () => {
-    const middle = innerHeight / 2;
-    const rects = sections.map((section) => section.getBoundingClientRect());
-    // The current section is the last one whose top has passed the middle of the screen.
-    const current = Math.max(rects.filter((rect) => rect.top <= middle).length - 1, 0);
-    marks.forEach((mark, i) => mark.toggleAttribute('data-active', i === current));
-
-    const centres = rects.map((rect) => rect.top + rect.height / 2);
+  const centresOf = (rects: DOMRect[]) => rects.map((rect) => rect.top + rect.height / 2);
+  // The colour at height y on the screen, given where the section centres are.
+  const colourAt = (y: number, centres: number[]) => {
     const at = ([stop]: [number, string]) => {
       // Clamped so a stop past the last section can't read a centre that doesn't exist.
       const position = Math.min(stop, centres.length - 1);
@@ -103,12 +167,74 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
       return centres[below] + (centres[Math.ceil(position)] - centres[below]) * (position - below);
     };
     const points = stops.map(at);
-    const next = points.findIndex((point) => point > middle);
+    const next = points.findIndex((point) => point > y);
     const i = Math.min(Math.max((next === -1 ? points.length : next) - 1, 0), stops.length - 2);
-    const t = Math.min(Math.max((middle - points[i]) / (points[i + 1] - points[i] || 1), 0), 1);
-    // Set on the active star only, so the others don't restyle on every scroll; the outgoing star keeps its
-    // last colour while it fades.
-    marks[current].style.setProperty('--star-colour', `color-mix(in ${blends[i]}, ${stops[i][1]}, ${stops[i + 1][1]} ${t * 100}%)`);
+    const t = Math.min(Math.max((y - points[i]) / (points[i + 1] - points[i] || 1), 0), 1);
+    return `color-mix(in ${blends[i]}, ${stops[i][1]}, ${stops[i + 1][1]} ${t * 100}%)`;
+  };
+
+  // A clicked star stays highlighted until the scroll reaches its section, so a long jump crossfades straight to it
+  // instead of flashing every star in between.
+  let target = -1;
+  const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth';
+  const marks = sections.map((section, i) => {
+    const mark = stars.appendChild(document.createElement('button'));
+    mark.type = 'button';
+    mark.disabled = document.documentElement.dataset.v2LenisReady !== 'true';
+    mark.ariaLabel = `Go to ${(section as HTMLElement).dataset.section || `section ${i + 1}`}`;
+    mark.append(document.createElement('i'));
+    mark.addEventListener('click', () => {
+      target = i;
+      const offset = Number((section as HTMLElement).dataset.scrollOffset) || 0;
+      const scrollPosition = Math.min(Math.max(Number((section as HTMLElement).dataset.scrollPosition) || 0, 0), 1);
+      const top = (section as HTMLElement).hasAttribute('data-scroll-top')
+        ? 0
+        : Math.max(0, section.getBoundingClientRect().top + scrollY - innerHeight * scrollPosition - offset);
+      const request = new CustomEvent('v2-lenis-scroll-to', {
+        cancelable: true,
+        detail: { top, immediate: behavior === 'instant' },
+      });
+      if (dispatchEvent(request)) scrollTo({ top, behavior });
+      schedule();
+    });
+    // Once faded out, a star drops its live colour so hovering it previews its own.
+    mark.addEventListener('transitionend', () => {
+      if (!mark.ariaCurrent) mark.style.removeProperty('--star-colour');
+    });
+    return mark;
+  });
+  const enableMarks = () => marks.forEach((mark) => (mark.disabled = false));
+  const readinessTimeout = window.setTimeout(enableMarks, 1500);
+  window.addEventListener(
+    'v2-lenis-ready',
+    () => {
+      window.clearTimeout(readinessTimeout);
+      enableMarks();
+    },
+    { once: true },
+  );
+
+  const paint = () => {
+    const middle = innerHeight / 2;
+    const rects = sections.map((section) => section.getBoundingClientRect());
+    // The scrolled-to section is the last one whose top has passed the middle of the screen.
+    const reached = Math.max(rects.filter((rect) => rect.top <= middle).length - 1, 0);
+    if (reached === target) target = -1;
+    const current = target === -1 ? reached : target;
+    marks.forEach((mark, i) => (mark.ariaCurrent = i === current ? 'location' : null));
+    const centres = centresOf(rects);
+    // Keep each team's active star on its own palette color instead of blending by scroll distance.
+    const colour = teamColorScheme
+      ? colourAt(centres[current], centres)
+      : colourAt(middle, centres);
+    marks[current].style.setProperty('--star-colour', colour);
+  };
+
+  // Each star's own colour is the one at its section's centre. Sections are fixed fractions of the page, so this only
+  // needs redoing if the page had no size when first measured.
+  const tint = () => {
+    const centres = centresOf(sections.map((section) => section.getBoundingClientRect()));
+    marks.forEach((mark, i) => mark.style.setProperty('--own-colour', colourAt(centres[i], centres)));
   };
 
   let frame = 0;
@@ -119,7 +245,18 @@ import star from '../../assets/ui/shapes/one-star.svg?url';
       paint();
     });
   };
+  tint();
   paint();
   addEventListener('scroll', schedule, { passive: true });
-  addEventListener('resize', schedule);
+  addEventListener('resize', () => {
+    tint();
+    schedule();
+  });
+  // Scrolling by hand, or the scroll ending short of the clicked section, hands the highlight back to the scroll.
+  for (const type of ['wheel', 'touchstart', 'scrollend']) {
+    addEventListener(type, () => {
+      target = -1;
+      schedule();
+    }, { passive: true });
+  }
 </script>

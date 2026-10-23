@@ -1,0 +1,339 @@
+---
+import { getCollection } from 'astro:content';
+import ParallaxContainer from './ParallaxContainer.astro';
+import outboundArrow from '../../assets/ui/buttons/white-outbound-arrow.svg?url';
+import { CAREERS_GUIDE, CAREERS_GUIDE_2021, FYG_2021_LINK, FYG_2022_LINK, FYG_2024_LINK, FYG_2025_LINK } from '../../utils/utils';
+
+type Publication = { date: string; title: string; href: string; caption?: string; image?: string };
+
+const posts: Publication[] = (await getCollection('blog'))
+  .toSorted((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .map(({ id, data }) => ({
+    date: data.pubDate.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }),
+    title: data.title,
+    caption: data.description,
+    image: data.heroImage,
+    href: `/blog/${id}`,
+  }));
+// The guides' PDFs, newest first. FYG_2023_LINK is left out: it still points at the 2021 guide.
+const guides: Publication[] = [
+  { date: '2025', title: 'First Year Guide', href: FYG_2025_LINK },
+  { date: '2024', title: 'Careers Guide', href: CAREERS_GUIDE },
+  { date: '2024', title: 'First Year Guide', href: FYG_2024_LINK },
+  { date: '2022', title: 'First Year Guide', href: FYG_2022_LINK },
+  { date: '2021', title: 'Careers Guide', href: CAREERS_GUIDE_2021 },
+  { date: '2021', title: 'First Year Guide', href: FYG_2021_LINK },
+];
+const publications = [...posts, ...guides];
+
+// A halftone mask for the strip (in vw before the zoom): solid cards right of the left edge of the background's purple
+// dot wave, then a band of dots on a fixed staggered grid, shrinking to nothing towards the dark bar. The edge is
+// [down, across] points from the strip's top, measured from the background image as where the wave's violet dots
+// run out. The mask reaches `reach` beyond the strip both ways, since it shifts against the strip's parallax to stay
+// lined up with the background.
+const reach = 12;
+const edge = [
+  [-reach, 9], [-4.3, 9], [-2.7, 9.9], [-1, 12.1], [0.6, 14.3], [2.3, 16.5], [4, 18.7], [5.6, 19.6], [7.3, 16.7],
+  [8.9, 14.4], [10.6, 12.7], [12.2, 11.4], [13.9, 10.7], [15.5, 10.5], [17.2, 10.5], [18.8, 10.6], [20.5, 11],
+  [22.1, 11.5], [23.8, 12.1], [25.4, 12.4], [27.1, 12.7], [22.53 + reach, 13.6],
+];
+const edgeAt = (down: number) => {
+  // Past the last point, the last segment carries on.
+  const i = edge.findIndex(([y]) => y > down) + 1 || edge.length;
+  const [[y0, x0], [y1, x1]] = [edge[i - 2], edge[i - 1]];
+  return x0 + ((x1 - x0) * (down - y0)) / (y1 - y0);
+};
+const step = 0.6;
+const columns = 8;
+// A card's height plus the strip's vertical padding.
+const height = 22.53;
+const rows = Array.from({ length: Math.ceil((height + 2 * reach) / step) }, (_, k) => {
+  const y = k * step - reach + step / 2;
+  const boundary = edgeAt(y);
+  const firstColumn = Math.floor(boundary / step) - columns;
+  return Array.from({ length: columns + 1 }, (_, column) => {
+    const x = (firstColumn + column + (k % 2 ? 1 : 0.5)) * step;
+    const progress = Math.min(1, (x - boundary + columns * step) / (columns * step));
+    if (progress <= 0) return '';
+    const r = step * 0.75 * progress * progress * (3 - 2 * progress);
+    if (r < step * 0.18) return '';
+    return `<circle cx='${x.toFixed(3)}' cy='${y.toFixed(3)}' r='${r.toFixed(3)}'/>`;
+  }).join('');
+}).join('');
+// One shape for the solid part, so rows don't leave seams across the cards.
+const solid = `<path d='M${edge.map(([y, x]) => `${x} ${y}`).join('L')}L120 ${height + reach}L120 ${-reach}Z'/>`;
+const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 ${-reach} 120 ${height + 2 * reach}'>${rows}${solid}</svg>`;
+const halftone = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fade-offset)) calc(${y}vw - var(--parallax-offset, 0px))`).join(', ')}, 0 100%)`;
+---
+
+<section class="latest-publications" aria-labelledby="latest-publications-heading" style="--fade-offset: 5vw">
+  <!-- Parallax speed rises towards the foreground, as in Latest Events. -->
+  <ParallaxContainer speed={0.12}>
+    <div class="title">
+      <h2 id="latest-publications-heading">
+        <img src="/text-headers/latest-publications.png" alt="Latest Publications" />
+      </h2>
+      <a class="more" href="/v2/publications" aria-label="All publications">
+        <img src={outboundArrow} alt="" />
+      </a>
+    </div>
+  </ParallaxContainer>
+
+  <ParallaxContainer speed={0.2} class="publication-strip">
+    <div class="ticker" style={`--halftone: ${halftone}`}>
+      <!-- Three copies so the strip can loop in both directions; the middle one is read out and reached by Tab, the others
+           are still clickable. -->
+      <ul class="cards">
+        {[0, 1, 2].map((copy) =>
+          publications.map(({ date, title, href, caption, image }) => (
+            <li aria-hidden={copy === 1 ? undefined : 'true'}>
+              <a
+                href={href}
+                tabindex={copy === 1 ? undefined : -1}
+                draggable="false"
+                {...(href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              >
+                <span class="date">{date}</span>
+                {image && <img src={image} alt="" loading="lazy" draggable="false" />}
+                <span class="name">{title}</span>
+                {caption && <span class="caption">{caption}</span>}
+              </a>
+            </li>
+          )),
+        )}
+      </ul>
+    </div>
+    <div class="fade-barrier" style={`clip-path: ${fadeBarrier}`} aria-hidden="true"></div>
+  </ParallaxContainer>
+</section>
+
+<style>
+  /* Sizes are vw so the section scales with the full-width homepage background; values measured from Landing V3. */
+  .latest-publications {
+    /* Scaled down like Latest Events; the margin keeps the scaled cards centred in the background's gradient band. */
+    zoom: 0.85;
+    margin-top: -11vw;
+  }
+
+  .title {
+    position: relative;
+  }
+
+  h2 {
+    margin: 0 0 0 5.5vw;
+  }
+
+  h2 img {
+    display: block;
+    width: 35.3vw;
+  }
+
+  .more {
+    position: absolute;
+    top: 7.59vw;
+    left: 39.35vw;
+    transition: transform 0.3s;
+  }
+
+  .more:hover {
+    transform: scale(1.1);
+  }
+
+  /* The button's cream square matches the page, so the shadow is what shows its edge; a little larger and darker than
+     Landing V3 so it stands out. */
+  .more img {
+    display: block;
+    width: 3.2vw;
+    filter: drop-shadow(0.15vw 0.3vw 0.5vw rgb(0 0 0 / 0.3));
+  }
+
+  /* Cards scroll continuously across the band at a steady speed and pass behind the dark bar (StarsScrollbar draws
+     it on top); hovering or focusing a card pauses the strip, and hovering lifts the card. */
+  /* A scroll container (scrollbar hidden) so the strip can be swiped; the script below scrolls it continuously. Cards
+     pass behind the dark bar, which StarsScrollbar draws on top. */
+  .ticker {
+    margin-top: -0.1vw;
+    /* Room for the hover lift, which the scroll container would otherwise clip. */
+    padding: 1.5vw 0;
+    margin-bottom: -1.5vw;
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* Clears the dark bar (4.13vw before the zoom) plus one gap when focus scrolls a card into view. */
+    scroll-padding-left: 8.21vw;
+    /* Cards dissolve into shrinking dots once they pass the left edge of the background's dot wave. The mask moves
+       against the parallax offset (inherited from ParallaxContainer) so the edge stays on the wave, and sits
+       --fade-offset right of the measured edge so the fade starts a little inside the wave. */
+    mask: var(--halftone) var(--fade-offset) calc(-12vw - var(--parallax-offset, 0px)) / 120vw 46.53vw no-repeat;
+    user-select: none;
+  }
+
+  .latest-publications :global(.publication-strip) {
+    position: relative;
+  }
+
+  /* Covers the faded part of the strip, so cards there can't be hovered or clicked. */
+  .fade-barrier {
+    position: absolute;
+    inset: 0;
+  }
+
+  .cards {
+    display: flex;
+    gap: 3.35vw;
+    width: max-content;
+    margin: 0;
+    /* Trailing space equal to the gap, so a third of the strip is exactly one copy of the cards. */
+    padding: 0 3.35vw 0 0;
+    list-style: none;
+  }
+
+  .cards li {
+    width: 14.84vw;
+    aspect-ratio: 304 / 400;
+    border-radius: 0.6vw;
+    overflow: hidden;
+    background: #3a4150;
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.12);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .cards a {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-radius: inherit;
+    color: #fff;
+    font-family: var(--font-syne);
+    text-decoration: none;
+  }
+
+  .date {
+    padding: 0.6vw 0.98vw;
+    font-size: 0.98vw;
+  }
+
+  .cards img {
+    width: 100%;
+    height: 8.06vw;
+    object-fit: cover;
+  }
+
+  .name {
+    padding: 0.75vw 0.98vw 0;
+    font-size: 1.37vw;
+    font-weight: 700;
+    line-height: 1.15;
+    color: #d6dbe6;
+  }
+
+  /* Margins, not padding: the clamp only hides overflow past the content box, so bottom padding would show a 4th line. */
+  .caption {
+    display: -webkit-box;
+    margin: auto 0.98vw 0.98vw;
+    overflow: hidden;
+    font-size: 0.98vw;
+    line-height: 1.2;
+    text-align: right;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  /* Inset, because the card's overflow: hidden would clip an outline drawn outside it. */
+  .cards a:focus-visible {
+    outline: 2px solid #fffcf3;
+    outline-offset: -4px;
+  }
+
+  .cards li:hover {
+    transform: translateY(-1vw) scale(1.05);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cards li:hover {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  // Scrolls the strip one copy of the cards every 10s per card, so the speed doesn't depend on how many there are. It
+  // stops while hovered or focused, for a second after a swipe, and entirely with reduced motion. The position wraps by
+  // one copy to stay on the middle one, so the loop never runs out in either direction.
+  const ticker = document.querySelector<HTMLElement>('.latest-publications .ticker')!;
+  const count = ticker.querySelectorAll('li').length / 3;
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+  let hovered = false;
+  let focused = false;
+  let resumeAt = 0;
+  let last = 0;
+  let position = ticker.scrollWidth / 3;
+
+  const tick = (now: number) => {
+    const copy = ticker.scrollWidth / 3;
+    // scrollLeft may round, so the script keeps its own position unless something else (a swipe, focus) moved it.
+    if (Math.abs(ticker.scrollLeft - position) > 1) position = ticker.scrollLeft;
+    if (!hovered && !focused && !drag && now > resumeAt && !still.matches && last) position += ((now - last) * copy) / (count * 10000);
+    // Not while focused: the browser scrolls the focused card into view, and wrapping would move it away again.
+    if (!focused) {
+      if (position < copy) position += copy;
+      else if (position >= 2 * copy) position -= copy;
+    }
+    ticker.scrollLeft = position;
+    last = now;
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+
+  // The card a drag ends on doesn't count as hovered, so the strip carries on until the mouse reaches another card.
+  let releasedOn: Element | null = null;
+  ticker.addEventListener('pointerover', (event) => {
+    const card = event.target instanceof Element ? event.target.closest('.cards li') : null;
+    if (card !== releasedOn) releasedOn = null;
+    hovered = event.pointerType === 'mouse' && !!card && !releasedOn;
+  });
+  ticker.addEventListener('pointerout', () => (hovered = false));
+  // Keyboard focus only: clicking a card focuses it too, which would otherwise keep the strip stopped until the next
+  // click. The explicit scroll is because Chrome's own focus scrolling misjudges what's visible inside the zoomed
+  // section and can leave a card half off-screen.
+  ticker.addEventListener('focusin', (event) => {
+    const card = event.target as HTMLElement;
+    if (!card.matches('.cards a:focus-visible')) return;
+    focused = true;
+    card.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  });
+  ticker.addEventListener('focusout', () => (focused = false));
+  ticker.addEventListener('touchstart', () => (resumeAt = Infinity), { passive: true });
+  ticker.addEventListener('touchend', () => (resumeAt = performance.now() + 1000));
+
+  // Dragging with a mouse scrolls the strip like a swipe; a drag of more than a few pixels doesn't open the card.
+  let drag: { x: number; scroll: number } | null = null;
+  let dragged = false;
+  ticker.addEventListener('pointerdown', (event) => {
+    if (event.pointerType !== 'mouse' || event.button !== 0) return;
+    drag = { x: event.clientX, scroll: ticker.scrollLeft };
+    dragged = false;
+  });
+  addEventListener('pointermove', (event) => {
+    if (!drag) return;
+    // clientX is in screen pixels; scrollLeft is in the zoomed section's own pixels.
+    const moved = ((event.clientX - drag.x) * ticker.clientWidth) / ticker.getBoundingClientRect().width;
+    dragged ||= Math.abs(moved) > 5;
+    const copy = ticker.scrollWidth / 3;
+    let target = drag.scroll - moved;
+    // Wrap here rather than in tick, keeping the drag's starting point in step.
+    if (target < copy) drag.scroll += copy;
+    else if (target >= 2 * copy) drag.scroll -= copy;
+    target = drag.scroll - moved;
+    ticker.scrollLeft = target;
+  });
+  addEventListener('pointerup', (event) => {
+    if (drag && dragged) {
+      resumeAt = performance.now() + 300;
+      releasedOn = event.target instanceof Element ? event.target.closest('.cards li') : null;
+      hovered = false;
+    }
+    drag = null;
+  });
+  ticker.addEventListener('click', (event) => dragged && event.preventDefault(), true);
+</script>

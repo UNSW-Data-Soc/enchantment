@@ -1,97 +1,117 @@
 ---
 import Parallax from "./ParallaxContainer.astro";
 import { quicklinks } from "./constants.js";
-import buttonImage from "../../assets/ui/buttons/rouge-up-arrow-button.svg"
+import buttonImage from "../../assets/ui/buttons/rouge-up-arrow-button.svg";
 ---
 
 <footer class="v2-footer">
-	<img class="footer-art" src="/backgrounds/footer-bg.png" alt="" />
-	<img class="quicklinks-header" src="/text-headers/quicklinks-header.png" alt="Quick links" />
+  <div class="footer-content">
+    <div class="footer-art" aria-hidden="true"></div>
 
-	<Parallax>
-	<div class="scroll-btn-wrapper">
-		<div
-			class="scroll-btn"
-			onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
-		>
-			<img src={buttonImage.src} alt="Scroll to top" />
-		</div>
-	</div>
-</Parallax>
-	<div class="quick-links">
-		{quicklinks.map((item) => (
-			<a href={`/${item.linkto}`}>{item.text}</a>
-		))}
-	</div>
+    <img
+      class="quicklinks-header"
+      src="/text-headers/quicklinks-header.png"
+      alt="Quick links"
+      draggable="false"
+    />
+
+    <Parallax>
+      <div class="scroll-btn-wrapper">
+        <div
+          class="scroll-btn"
+          onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        >
+          <img src={buttonImage.src} alt="Scroll to top" />
+        </div>
+      </div>
+    </Parallax>
+    <div class="quick-links">
+      {quicklinks.map((item) => <a href={`/${item.linkto}`}>{item.text}</a>)}
+    </div>
+  </div>
 </footer>
 
 <style>
-	@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-	.v2-footer {
-		position: relative;
-		width: 100%;
-		aspect-ratio: 40 / 18;
-		background-color: #fffcf3;
-		overflow: hidden;
-	}
+  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+  .v2-footer {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 40 / 16;
+    background-color: #fffcf3;
+    overflow: hidden;
+    container-type: inline-size;
+  }
 
-	.footer-art {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		display: block;
-		width: 100%;
-		height: auto;
-		z-index: 1;
-	}
+  .footer-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40cqw;
+  }
 
-	.quicklinks-header {
-		position: absolute;
-		top: 26.5%;
-		left: 66%;
-		width: clamp(72px, 15vw, 210px);
-		height: auto;
-		transform: translateX(-50%);
-		z-index: 2;
-	}
+  .footer-art {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1708 / 581;
+    background-image: url("/backgrounds/footer-bg.png");
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 1;
+  }
 
-	.scroll-btn-wrapper {
-	position: relative;
-	height: 200px;
-}
+  .quicklinks-header {
+    position: absolute;
+    /* Preserve the old bottom-relative positions from the 45cqw overlay without overflowing the footer. */
+    top: 17.3125%;
+    left: 66%;
+    width: clamp(72px, 15vw, 210px);
+    height: auto;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
 
-.scroll-btn {
-	width: 80px;
-	height: 80px;
-	position: sticky;
-	top: 80px;
-	margin-left: 90%;
-	border-radius: 12px;
-	cursor: pointer;
-	box-shadow: 10px 10px 20px 5px rgba(0, 0, 0, 0.3);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
+  .scroll-btn-wrapper {
+    position: relative;
+    height: 200px;
+  }
 
-.scroll-btn:hover {
-	transform: translateY(-5px);
-}
-	.quick-links {
-		position: absolute;
-		top: 45%;
-		left: 53.5%;
-		display: flex;
-		flex-direction: column;
-		gap: 23px;
-		z-index: 2;
-	}
+  .scroll-btn {
+    width: 80px;
+    height: 80px;
+    position: sticky;
+    top: 80px;
+    margin-left: 90%;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 10px 10px 20px 5px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-	.quick-links a {
-		color: white;
-		text-decoration: underline;
-		font-family: "Inter", sans-serif;
-		font-size: 15px;
-		cursor: pointer;
-	}
+  .scroll-btn:hover {
+    transform: translateY(-5px);
+  }
+  .quick-links {
+    position: absolute;
+    top: 38.125%;
+    left: 53.5%;
+    display: flex;
+    flex-direction: column;
+    gap: 23px;
+    z-index: 2;
+  }
+
+  .quick-links a {
+    color: white;
+    text-decoration: underline;
+    font-family: "Inter", sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+  }
 </style>
