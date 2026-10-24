@@ -1,5 +1,4 @@
 ---
-import Parallax from "./ParallaxContainer.astro";
 import { quicklinks } from "./constants.js";
 import buttonImage from "../../assets/ui/buttons/rouge-up-arrow-button.svg";
 ---
@@ -15,21 +14,40 @@ import buttonImage from "../../assets/ui/buttons/rouge-up-arrow-button.svg";
       draggable="false"
     />
 
-    <Parallax>
-      <div class="scroll-btn-wrapper">
-        <div
-          class="scroll-btn"
-          onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
-        >
-          <img src={buttonImage.src} alt="Scroll to top" />
-        </div>
-      </div>
-    </Parallax>
     <div class="quick-links">
       {quicklinks.map((item) => <a href={`/${item.linkto}`}>{item.text}</a>)}
     </div>
   </div>
+  <div class="scroll-btn-wrapper">
+    <button type="button" class="scroll-btn" aria-label="Scroll to top" disabled>
+      <img src={buttonImage.src} alt="" />
+    </button>
+  </div>
 </footer>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>(".v2-footer .scroll-btn").forEach((button) => {
+    const footer = button.closest<HTMLElement>(".v2-footer")!;
+    const wrapper = button.parentElement!;
+    const observer = new IntersectionObserver(([entry]) => {
+      wrapper.classList.toggle("is-visible", entry.isIntersecting);
+      button.disabled = !entry.isIntersecting;
+    }, { threshold: 0 });
+    observer.observe(footer);
+
+    button.addEventListener("click", () => {
+      const immediate = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const request = new CustomEvent("v2-lenis-scroll-to", {
+        cancelable: true,
+        detail: { top: 0, immediate },
+      });
+
+      if (window.dispatchEvent(request)) {
+        window.scrollTo({ top: 0, behavior: immediate ? "instant" : "smooth" });
+      }
+    });
+  });
+</script>
 
 <style>
   @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
@@ -38,7 +56,6 @@ import buttonImage from "../../assets/ui/buttons/rouge-up-arrow-button.svg";
     width: 100%;
     aspect-ratio: 40 / 16;
     background-color: #fffcf3;
-    overflow: hidden;
     container-type: inline-size;
   }
 
@@ -48,6 +65,7 @@ import buttonImage from "../../assets/ui/buttons/rouge-up-arrow-button.svg";
     left: 0;
     width: 100%;
     height: 40cqw;
+    overflow: hidden;
   }
 
   .footer-art {
@@ -66,7 +84,6 @@ import buttonImage from "../../assets/ui/buttons/rouge-up-arrow-button.svg";
 
   .quicklinks-header {
     position: absolute;
-    /* Preserve the old bottom-relative positions from the 45cqw overlay without overflowing the footer. */
     top: 17.3125%;
     left: 66%;
     width: clamp(72px, 15vw, 210px);
@@ -76,26 +93,54 @@ import buttonImage from "../../assets/ui/buttons/rouge-up-arrow-button.svg";
   }
 
   .scroll-btn-wrapper {
-    position: relative;
-    height: 200px;
+    position: absolute;
+    /* Reveal the button upward through the top edge of the footer artwork. */
+    top: calc(40cqw - 100cqw * 581 / 1708);
+    right: 5%;
+    padding-bottom: 8px;
+    transform: translateY(-100%);
+    clip-path: inset(-30px -30px 0 -30px);
+    pointer-events: none;
+    z-index: 0;
   }
 
   .scroll-btn {
-    width: 80px;
-    height: 80px;
-    position: sticky;
-    top: 80px;
-    margin-left: 90%;
-    border-radius: 12px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    width: clamp(48px, 5.5cqw, 80px);
+    aspect-ratio: 76 / 74;
     cursor: pointer;
-    box-shadow: 10px 10px 20px 5px rgba(0, 0, 0, 0.3);
+    filter: drop-shadow(6px 6px 10px rgba(0, 0, 0, 0.3));
     display: flex;
     justify-content: center;
     align-items: center;
+    transform: translateY(calc(100% + 16px));
+    transition: transform 0.45s ease-out;
   }
 
-  .scroll-btn:hover {
-    transform: translateY(-5px);
+  .scroll-btn-wrapper.is-visible {
+    pointer-events: auto;
+  }
+
+  .scroll-btn-wrapper.is-visible .scroll-btn {
+    transform: translateY(0);
+  }
+
+  .scroll-btn img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .scroll-btn-wrapper.is-visible .scroll-btn:hover {
+    transform: scale(1.05);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-btn {
+      transition: none;
+    }
   }
   .quick-links {
     position: absolute;
