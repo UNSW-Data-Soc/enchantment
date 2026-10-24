@@ -1,85 +1,162 @@
 ---
 import { quicklinks } from "./constants.js";
+import buttonImage from "../../assets/ui/buttons/rouge-up-arrow-button.svg";
 ---
 
 <footer class="v2-footer">
-<div class="footer-content">
-  <div class="footer-art" aria-hidden="true"></div>
+  <div class="footer-content">
+    <div class="footer-art" aria-hidden="true"></div>
 
-  <img
-    class="quicklinks-header"
-    src="/text-headers/quicklinks-header.png"
-    alt="Quick links"
-    draggable="false"
-  />
+    <img
+      class="quicklinks-header"
+      src="/text-headers/quicklinks-header.png"
+      alt="Quick links"
+      draggable="false"
+    />
 
-  <div class="quick-links">
-    {quicklinks.map((item) => (
-      <a href={`/${item.linkto}`}>{item.text}</a>
-    ))}
+    <div class="quick-links">
+      {quicklinks.map((item) => <a href={`/${item.linkto}`}>{item.text}</a>)}
+    </div>
   </div>
-</div>
+  <div class="scroll-btn-wrapper">
+    <button type="button" class="scroll-btn" aria-label="Scroll to top" disabled>
+      <img src={buttonImage.src} alt="" />
+    </button>
+  </div>
 </footer>
 
+<script>
+  document.querySelectorAll<HTMLButtonElement>(".v2-footer .scroll-btn").forEach((button) => {
+    const footer = button.closest<HTMLElement>(".v2-footer")!;
+    const wrapper = button.parentElement!;
+    const observer = new IntersectionObserver(([entry]) => {
+      wrapper.classList.toggle("is-visible", entry.isIntersecting);
+      button.disabled = !entry.isIntersecting;
+    }, { threshold: 0 });
+    observer.observe(footer);
+
+    button.addEventListener("click", () => {
+      const immediate = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const request = new CustomEvent("v2-lenis-scroll-to", {
+        cancelable: true,
+        detail: { top: 0, immediate },
+      });
+
+      if (window.dispatchEvent(request)) {
+        window.scrollTo({ top: 0, behavior: immediate ? "instant" : "smooth" });
+      }
+    });
+  });
+</script>
+
 <style>
-	@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-	.v2-footer {
-		position: relative;
-		width: 100%;
-		aspect-ratio: 40 / 16;
-		background-color: #fffcf3;
-		overflow: hidden;
-		container-type: inline-size;
-	}
+  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+  .v2-footer {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 40 / 16;
+    background-color: #fffcf3;
+    container-type: inline-size;
+  }
 
-	.footer-content {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		width: 100%;
-		height: 40cqw;
-	}
+  .footer-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40cqw;
+    overflow: hidden;
+  }
 
-	.footer-art {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		display: block;
-		width: 100%;
-		aspect-ratio: 1708 / 581;
-		background-image: url('/backgrounds/footer-bg.png');
-		background-size: 100% auto;
-		background-repeat: no-repeat;
-		pointer-events: none;
-		z-index: 1;
-	}
+  .footer-art {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1708 / 581;
+    background-image: url("/backgrounds/footer-bg.png");
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 1;
+  }
 
-	.quicklinks-header {
-		position: absolute;
-		/* Preserve the old bottom-relative positions from the 45cqw overlay without overflowing the footer. */
-		top: 17.3125%;
-		left: 66%;
-		width: clamp(72px, 15vw, 210px);
-		height: auto;
-		transform: translateX(-50%);
-		z-index: 2;
-	}
+  .quicklinks-header {
+    position: absolute;
+    top: 17.3125%;
+    left: 66%;
+    width: clamp(72px, 15vw, 210px);
+    height: auto;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
 
-	.quick-links {
-		position: absolute;
-		top: 38.125%;
-		left: 53.5%;
-		display: flex;
-		flex-direction: column;
-		gap: 23px;
-		z-index: 2;
-	}
+  .scroll-btn-wrapper {
+    position: absolute;
+    /* Reveal the button upward through the top edge of the footer artwork. */
+    top: calc(40cqw - 100cqw * 581 / 1708);
+    right: 5%;
+    padding-bottom: 8px;
+    transform: translateY(-100%);
+    clip-path: inset(-30px -30px 0 -30px);
+    pointer-events: none;
+    z-index: 0;
+  }
 
-	.quick-links a {
-		color: white;
-		text-decoration: underline;
-		font-family: "Inter", sans-serif;
-		font-size: 15px;
-		cursor: pointer;
-	}
+  .scroll-btn {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    width: clamp(48px, 5.5cqw, 80px);
+    aspect-ratio: 76 / 74;
+    cursor: pointer;
+    filter: drop-shadow(6px 6px 10px rgba(0, 0, 0, 0.3));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(calc(100% + 16px));
+    transition: transform 0.45s ease-out;
+  }
+
+  .scroll-btn-wrapper.is-visible {
+    pointer-events: auto;
+  }
+
+  .scroll-btn-wrapper.is-visible .scroll-btn {
+    transform: translateY(0);
+  }
+
+  .scroll-btn img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .scroll-btn-wrapper.is-visible .scroll-btn:hover {
+    transform: scale(1.05);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-btn {
+      transition: none;
+    }
+  }
+  .quick-links {
+    position: absolute;
+    top: 38.125%;
+    left: 53.5%;
+    display: flex;
+    flex-direction: column;
+    gap: 23px;
+    z-index: 2;
+  }
+
+  .quick-links a {
+    color: white;
+    text-decoration: underline;
+    font-family: "Inter", sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+  }
 </style>
