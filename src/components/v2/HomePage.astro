@@ -4,7 +4,7 @@ import LatestPublications from './LatestPublications.astro';
 import StarsScrollbar from './StarsScrollbar.astro';
 ---
 
-<link rel="preload" as="image" href="/backgrounds/homepage-bg-v2-p00.png" fetchpriority="high" />
+<link rel="preload" as="image" href="/backgrounds/homepage-bg-v2-p00-no-sidebar.png" fetchpriority="high" />
 
 <main class="v2-home" aria-label="Homepage">
   <div class="latest-events-slot">
@@ -28,9 +28,11 @@ import StarsScrollbar from './StarsScrollbar.astro';
     position: relative;
     width: 100%;
     aspect-ratio: 1708 / 4989;
-    background-image: url('/backgrounds/homepage-bg-v2-p00.png');
+    background-image: url('/backgrounds/homepage-bg-v2-p00-no-sidebar.png');
     background-size: 100% auto;
     background-repeat: no-repeat;
+    /* StarsScrollbar positions its bar's colours in cqw (1% of this width). */
+    container-type: inline-size;
   }
 
   .latest-events-slot {
@@ -54,5 +56,17 @@ import StarsScrollbar from './StarsScrollbar.astro';
     left: 0;
     right: 0;
     pointer-events: none;
+  }
+
+  /* Mobile Overrides: expand slot to full width and center without breaking desktop */
+  @media (max-width: 768px) {
+    .latest-events-slot {
+      left: 0;
+      right: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      top: 30.5%;
+    }
   }
 </style>
