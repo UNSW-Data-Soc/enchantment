@@ -57,4 +57,16 @@ import StarsScrollbar from './StarsScrollbar.astro';
     right: 0;
     pointer-events: none;
   }
+
+  /* Mobile Overrides: expand slot to full width and center without breaking desktop */
+  @media (max-width: 768px) {
+    .latest-events-slot {
+      left: 0;
+      right: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      top: 30.5%;
+    }
+  }
 </style>
