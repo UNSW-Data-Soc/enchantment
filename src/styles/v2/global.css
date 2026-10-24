@@ -1,6 +1,4 @@
 @import "tailwindcss";
-<<<<<<< HEAD
-=======
 
 body {
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 20 20' shape-rendering='crispEdges'%3E%3Cpath d='M9 1h2v5h2v2h5v2h-5v2h-2v5H9v-5H7v-2H2V8h5V6h2z' fill='%23ffd84f' stroke='%23514368' stroke-width='1'/%3E%3Cpath d='M9 8h2v2H9z' fill='%23fff7cc'/%3E%3C/svg%3E") 14 14, auto;
@@ -20,4 +18,3 @@ body :is(input, textarea, [contenteditable]:not([contenteditable="false"]), [rol
     cursor: auto;
   }
 }
->>>>>>> d75287d6f5ef9d32e550c9ecd6a3e24d4de4e5f2
