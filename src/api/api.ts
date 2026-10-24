@@ -1,9 +1,7 @@
 const FACEBOOK_PAGE_ID = '1653268794976040';
 // below is long lived access tocken for data soc page - generated following link
-// https://graph.facebook.com/v19.0/oauth/access_token?grant_type=fb_exchange_token&client_id=1384483765886092&client_secret=c5385c4f51d4ff7030bc7131c0b60a42&fb_exchange_token=EAATrLj8QHIwBO6GwMfrwYGI4174fkD58apfqITIxBZAItzZBiHe32IM2F6zdQCdisLqQJ2qUJ9LbzLoJhqZAbWfyY8fJ045jKZCaV5F5h2GwDjrgSoSyNquRZCSIK4G1QxPPgxNQFZA04zVnaWzJxvdRhULh3tEgZBDAMaZB55n20opHRtBrRLPRNxGGp3N9yCSK0dnZBsPUG8imJ38wLO6zzcJA2xmYZD
 
-const ACCESS_TOKEN = 'EAAPDObP5bJMBSGmSCczT3wbdgYV6QADyAwN9qXaZC7kcKM9NXXGtdkXaCWgTa4a0ZBeisMfk2ZB5LIJ2MmqGCgurJwYxAlCLf0JQonWyWHHWwS14t8T9XNFcSZCSmCbcZAAB3Y3Uv2BiGGjZBe7Xdy4KZCg6aJcxfShP09AYWyvdR1bLHJaGMrSLQjgwEhyUxkz8QxT1qcE';
-
+const FACEBOOK_ACCESS_TOKEN = import.meta.env.ACCESS_TOKEN;
 // manageView = {10}
 
 export interface FacebookEvent {
@@ -15,18 +13,45 @@ export interface FacebookEvent {
 }
 
 interface FacebookResponse {
-    data: FacebookEvent[];
+    data?: FacebookEvent[];
+    error?: {
+        message: string;
+        type?: string;
+        code?: number;
+    };
+}
+
+function eventsError(status: number, details: string, code?: number) {
+    const safeDetails = FACEBOOK_ACCESS_TOKEN
+        ? details.replaceAll(FACEBOOK_ACCESS_TOKEN, '[REDACTED]')
+        : details;
+
+    return new Response(JSON.stringify({ error: 'Error fetching events', details: safeDetails, code }), {
+        status,
+        headers: { 'Content-Type': 'application/json' }
+    });
 }
 
 export async function fetchEvents() {
     try {
+        if (!FACEBOOK_ACCESS_TOKEN) {
+            throw new Error('Missing ACCESS_TOKEN environment variable');
+        }
         const response = await fetch(
-            `https://graph.facebook.com/v22.0/${FACEBOOK_PAGE_ID}/events?access_token=${ACCESS_TOKEN}&fields=id,name,cover,place,start_time`);
+            `https://graph.facebook.com/v22.0/${FACEBOOK_PAGE_ID}/events?access_token=${FACEBOOK_ACCESS_TOKEN}&fields=id,name,cover,place,start_time`);
 
         const data: FacebookResponse = await response.json();
 
-        if (!data || !data.data) {
-            return new Response(JSON.stringify({ error: 'No events found' }), { status: 404 });
+        if (!response.ok || data?.error) {
+            return eventsError(
+                response.ok ? 502 : response.status,
+                data?.error?.message ?? `Facebook API returned HTTP ${response.status}`,
+                data?.error?.code
+            );
+        }
+
+        if (!Array.isArray(data?.data)) {
+            return eventsError(502, 'Facebook API returned an invalid events response');
         }
 
         const now = new Date();
@@ -38,6 +63,6 @@ export async function fetchEvents() {
         });
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-        return new Response(JSON.stringify({ error: errorMessage }), { status: 500 });
+        return eventsError(500, errorMessage);
     }
 }
