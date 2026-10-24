@@ -1,15 +1,43 @@
+---
+import { quicklinks } from "./constants.js";
+---
+
 <footer class="v2-footer">
-	<img class="footer-art" src="/backgrounds/footer-bg.png" alt="" />
-	<img class="quicklinks-header" src="/text-headers/quicklinks-header.png" alt="Quick links" />
+<div class="footer-content">
+  <div class="footer-art" aria-hidden="true"></div>
+
+  <img
+    class="quicklinks-header"
+    src="/text-headers/quicklinks-header.png"
+    alt="Quick links"
+    draggable="false"
+  />
+
+  <div class="quick-links">
+    {quicklinks.map((item) => (
+      <a href={`/${item.linkto}`}>{item.text}</a>
+    ))}
+  </div>
+</div>
 </footer>
 
 <style>
+	@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 	.v2-footer {
 		position: relative;
 		width: 100%;
-		aspect-ratio: 40 / 18;
+		aspect-ratio: 40 / 16;
 		background-color: #fffcf3;
 		overflow: hidden;
+		container-type: inline-size;
+	}
+
+	.footer-content {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 40cqw;
 	}
 
 	.footer-art {
@@ -18,17 +46,40 @@
 		left: 0;
 		display: block;
 		width: 100%;
-		height: auto;
+		aspect-ratio: 1708 / 581;
+		background-image: url('/backgrounds/footer-bg.png');
+		background-size: 100% auto;
+		background-repeat: no-repeat;
+		pointer-events: none;
 		z-index: 1;
 	}
 
 	.quicklinks-header {
 		position: absolute;
-		top: 26.5%;
+		/* Preserve the old bottom-relative positions from the 45cqw overlay without overflowing the footer. */
+		top: 17.3125%;
 		left: 66%;
 		width: clamp(72px, 15vw, 210px);
 		height: auto;
 		transform: translateX(-50%);
 		z-index: 2;
+	}
+
+	.quick-links {
+		position: absolute;
+		top: 38.125%;
+		left: 53.5%;
+		display: flex;
+		flex-direction: column;
+		gap: 23px;
+		z-index: 2;
+	}
+
+	.quick-links a {
+		color: white;
+		text-decoration: underline;
+		font-family: "Inter", sans-serif;
+		font-size: 15px;
+		cursor: pointer;
 	}
 </style>

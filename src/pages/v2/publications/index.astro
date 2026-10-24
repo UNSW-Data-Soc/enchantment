@@ -1,0 +1,452 @@
+---
+import { getCollection } from 'astro:content';
+import ContentPage from '../../../components/v2/ContentPage.astro';
+import ParallaxContainer from '../../../components/v2/ParallaxContainer.astro';
+import {
+  CAREERS_GUIDE,
+  CAREERS_GUIDE_2021,
+  DATA_SCI_BLOG,
+  DATA_VISUALIZATION,
+  ETHICS_DATA_SCIENCE,
+  EXPLAINABILITY,
+  FYG_2021_LINK,
+  FYG_2022_LINK,
+  FYG_2024_LINK,
+  FYG_2025_LINK,
+  MACHINE_LEARNING,
+  ORLANDO,
+  SENTIMENTAL_ANALYSIS,
+} from '../../../utils/utils';
+
+type PublicationCard = {
+  title: string;
+  label: string;
+  href: string;
+  accent: string;
+  date?: number;
+  image?: string;
+  external?: boolean;
+};
+type Category = { title: string; accent: string; cards: PublicationCard[] };
+
+const blogEntries = await getCollection('blog');
+const vibeCoding = blogEntries.find(({ data }) => data.title.toLowerCase().includes('vibe coding'));
+
+const categories: Category[] = [
+  {
+    accent: '#d94a65',
+    title: 'Careers guides',
+    cards: [
+      { title: 'Careers Guide', label: '2021 edition', href: CAREERS_GUIDE_2021, accent: '#d94a65', date: 2021, external: true },
+      { title: 'Careers Guide', label: '2024 edition', href: CAREERS_GUIDE, accent: '#f4b000', date: 2024, external: true },
+    ],
+  },
+  {
+    accent: '#f4b000',
+    title: 'First year guides',
+    cards: [
+      { title: 'First Year Guide', label: '2021 edition', href: FYG_2021_LINK, accent: '#8c7898', date: 2021, external: true },
+      { title: 'First Year Guide', label: '2022 edition', href: FYG_2022_LINK, accent: '#3a718b', date: 2022, external: true },
+      { title: 'First Year Guide', label: '2024 edition', href: FYG_2024_LINK, accent: '#d94a65', date: 2024, external: true },
+      { title: 'First Year Guide', label: '2025 edition', href: FYG_2025_LINK, accent: '#f4b000', date: 2025, external: true },
+    ],
+  },
+  {
+    accent: '#3a718b',
+    title: 'Python resources',
+    cards: [
+      { title: 'Pandas for Python', label: 'Python resource', href: '/resources/pandas', accent: '#3a718b' },
+      { title: 'Matplotlib for Python', label: 'Python resource', href: '/resources/matplotlib', accent: '#776b87' },
+    ],
+  },
+  {
+    accent: '#8c7898',
+    title: 'Blogs',
+    cards: [
+      { title: 'Data Visualization', label: '', href: DATA_VISUALIZATION, accent: '#3a718b', external: true },
+      { title: 'Ethics in Data Science', label: '', href: ETHICS_DATA_SCIENCE, accent: '#d94a65', external: true },
+      { title: 'Explainability in Data Science', label: '', href: EXPLAINABILITY, accent: '#8c7898', external: true },
+      { title: 'Machine Learning', label: '', href: MACHINE_LEARNING, accent: '#f4b000', external: true },
+      { title: 'Orlando Data Science Conference', label: '', href: ORLANDO, accent: '#3a718b', external: true },
+      { title: 'Sentimental Analysis', label: '', href: SENTIMENTAL_ANALYSIS, accent: '#d94a65', external: true },
+      { title: 'How Data Science is Quietly Shaping Your Daily Life', label: '', href: DATA_SCI_BLOG, accent: '#8c7898', external: true },
+      ...(vibeCoding
+        ? [{
+            title: 'Vibe Coding Won’t Save You',
+            label: '',
+            href: `/blog/${vibeCoding.id}`,
+            accent: '#f4b000',
+            date: vibeCoding.data.pubDate.getFullYear(),
+            image: vibeCoding.data.heroImage,
+          }]
+        : []),
+    ],
+  },
+].toSorted((a, b) => a.title.localeCompare(b.title)).map((category) => ({
+  ...category,
+  cards: category.cards.toSorted((a, b) => (b.date ?? 0) - (a.date ?? 0)),
+}));
+---
+
+<ContentPage
+  title="Our"
+  titleAccent="publications"
+  caption="Guides, resources, and ideas from the DataSoc community."
+>
+  <div class="publication-categories">
+    <label class="publication-search">
+      <span>Search publications</span>
+      <input type="search" placeholder="Search guides, resources, and blogs" autocomplete="off" data-publication-search />
+    </label>
+    <p class="search-empty" data-search-empty role="status" aria-live="polite" hidden>No publications match your search.</p>
+    {categories.map((category, index) => {
+      const panelId = `publication-panel-${index}`;
+      return (
+        <ParallaxContainer speed={0.025 + index * 0.004} class="publication-category-layer">
+          <section class="publication-category" style={`--category-accent: ${category.accent}`} data-publication-category>
+            <h2>
+              <button
+                class="category-toggle"
+                type="button"
+                aria-expanded="false"
+                aria-controls={panelId}
+                data-category-toggle
+              >
+                <span>{category.title}</span>
+                <span class="accordion-icon" aria-hidden="true"></span>
+              </button>
+            </h2>
+            <div class="category-panel" id={panelId} inert data-category-panel>
+              <div class="category-panel-inner">
+                <div class="article-grid">
+                  {category.cards.map((card) => (
+                    <a
+                      class="article-card"
+                      href={card.href}
+                      data-publication-card
+                      data-search={`${category.title} ${card.title} ${card.label}`}
+                      aria-label={`${card.title}${card.label ? `, ${card.label}` : ''}${card.external ? ', opens in a new tab' : ''}`}
+                      {...(card.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    >
+                      <div class:list={['article-cover', { 'has-cover-image': card.image }]} style={`--cover-accent: ${card.accent}`}>
+                        {card.image && <img class="cover-photo" src={card.image} alt="" loading="lazy" decoding="async" />}
+                        {!card.image && <span class="cover-rule" aria-hidden="true"></span>}
+                        {card.label && <span class="cover-category">{card.label}</span>}
+                        {!card.image && <span class="cover-title">{card.title}</span>}
+                      </div>
+                      <h3>{card.title}</h3>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        </ParallaxContainer>
+      );
+    })}
+  </div>
+</ContentPage>
+
+<style>
+  .publication-categories {
+    display: grid;
+    gap: 1.4rem;
+    max-width: 90rem;
+    margin: 0 auto;
+  }
+
+  .publication-search {
+    display: grid;
+    gap: 0.45rem;
+    margin-bottom: 0.8rem;
+    color: #34394b;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .publication-search input {
+    width: 100%;
+    min-height: 2.8rem;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid rgb(52 57 75 / 0.22);
+    border-radius: 0.4rem;
+    background: #fffcf3;
+    color: #34394b;
+    font: inherit;
+    font-weight: 400;
+  }
+
+  .publication-search input:focus-visible {
+    outline: 3px solid #119bd6;
+    outline-offset: 2px;
+  }
+
+  .search-empty {
+    margin: 0;
+    padding: 1.25rem;
+    border-radius: 0.45rem;
+    background: rgb(231 237 238 / 0.72);
+    color: #596073;
+    text-align: center;
+  }
+
+  .publication-categories :global(.publication-category-layer) {
+    min-width: 0;
+  }
+
+  .publication-category {
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--category-accent) 34%, transparent);
+    border-top: 4px solid var(--category-accent);
+    border-radius: 0.55rem;
+    background: rgb(255 252 243 / 0.82);
+    box-shadow: 0 0.5rem 1.5rem rgb(52 57 75 / 0.06);
+  }
+
+  .publication-category h2 {
+    margin: 0;
+  }
+
+  .category-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 4rem;
+    padding: 0.9rem clamp(1rem, 2vw, 1.5rem);
+    color: #34394b;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    border: 0;
+    border-radius: 0;
+    background: linear-gradient(100deg, color-mix(in srgb, var(--category-accent) 12%, #fffcf3), #fffcf3 70%);
+    font: inherit;
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    font-weight: 700;
+  }
+
+  .category-toggle:focus-visible {
+    outline: 3px solid #119bd6;
+    outline-offset: -3px;
+  }
+
+  .accordion-icon {
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .accordion-icon::before,
+  .accordion-icon::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.9rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--category-accent);
+    content: '';
+    transform: translate(-50%, -50%);
+  }
+
+  .accordion-icon::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+    transition: transform 160ms ease;
+  }
+
+  .category-toggle[aria-expanded='true'] .accordion-icon::after {
+    transform: translate(-50%, -50%);
+  }
+
+  .category-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 280ms ease;
+  }
+
+  .category-panel.is-open {
+    grid-template-rows: 1fr;
+  }
+
+  .category-panel-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .article-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+    padding: 0.75rem clamp(1rem, 2vw, 1.5rem) clamp(1.25rem, 2.5vw, 2rem);
+  }
+
+  .article-card {
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid rgb(52 57 75 / 0.1);
+    border-radius: 0.4rem;
+    background: #fffcf3;
+    box-shadow: 0 0.3rem 0.9rem rgb(52 57 75 / 0.08);
+    color: #34394b;
+    text-decoration: none;
+    transition: box-shadow 160ms ease, transform 160ms ease;
+  }
+
+  .article-card:hover {
+    box-shadow: 0 0.6rem 1.25rem rgb(52 57 75 / 0.16);
+    transform: translateY(-2px);
+  }
+
+  .article-card:focus-visible {
+    outline: 3px solid #119bd6;
+    outline-offset: 3px;
+  }
+
+  .article-cover {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: clamp(8rem, 15vw, 13rem);
+    overflow: hidden;
+    padding: clamp(0.85rem, 1.5vw, 1.25rem);
+    background:
+      radial-gradient(circle at 88% 15%, rgb(255 255 255 / 0.62) 0 2px, transparent 2.5px) 0 0 / 14px 14px,
+      linear-gradient(140deg, color-mix(in srgb, var(--cover-accent) 78%, white), color-mix(in srgb, var(--cover-accent) 28%, #fffcf3));
+    color: #34394b;
+  }
+
+  .article-cover.has-cover-image {
+    background: transparent;
+  }
+
+  .cover-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 1;
+  }
+
+  .cover-rule {
+    position: relative;
+    z-index: 1;
+    width: 2.75rem;
+    height: 3px;
+    border-radius: 3px;
+    background: currentColor;
+    opacity: 0.7;
+  }
+
+  .cover-category {
+    position: relative;
+    z-index: 1;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .cover-title {
+    position: relative;
+    z-index: 1;
+    max-width: 15ch;
+    font-size: clamp(1rem, 1.6vw, 1.4rem);
+    font-weight: 800;
+    line-height: 1.05;
+  }
+
+  .article-card h3 {
+    margin: 0;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  @media (min-width: 900px) {
+    .article-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .accordion-icon::after,
+    .category-panel,
+    .article-card {
+      transition: none;
+    }
+
+    .article-card:hover {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const search = document.querySelector<HTMLInputElement>('[data-publication-search]');
+  const categories = Array.from(document.querySelectorAll<HTMLElement>('[data-publication-category]'));
+  const emptyState = document.querySelector<HTMLElement>('[data-search-empty]');
+  const openBeforeSearch = new Map<HTMLElement, boolean>();
+  let searchWasActive = false;
+
+  const setOpen = (category: HTMLElement, open: boolean) => {
+    const toggle = category.querySelector<HTMLButtonElement>('[data-category-toggle]');
+    const panel = category.querySelector<HTMLElement>('[data-category-panel]');
+    if (!toggle || !panel) return;
+    toggle.setAttribute('aria-expanded', String(open));
+    panel.classList.toggle('is-open', open);
+    panel.inert = !open;
+  };
+
+  categories.forEach((category) => {
+    const toggle = category.querySelector<HTMLButtonElement>('[data-category-toggle]');
+    const panel = category.querySelector<HTMLElement>('[data-category-panel]');
+    if (panel) panel.inert = true;
+    toggle?.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') !== 'true';
+      setOpen(category, open);
+      if (searchWasActive) openBeforeSearch.set(category, open);
+    });
+  });
+
+  search?.addEventListener('input', () => {
+    const query = search.value.trim().toLocaleLowerCase();
+    if (query && !searchWasActive) {
+      categories.forEach((category) => {
+        openBeforeSearch.set(
+          category,
+          category.querySelector('[data-category-toggle]')?.getAttribute('aria-expanded') === 'true',
+        );
+      });
+      searchWasActive = true;
+    }
+    let visibleCategories = 0;
+
+    categories.forEach((category) => {
+      const cards = Array.from(category.querySelectorAll<HTMLElement>('[data-publication-card]'));
+      const matches = cards.filter((card) => (card.dataset.search ?? '').toLocaleLowerCase().includes(query));
+      const hasResults = !query || matches.length > 0;
+      const categoryLayer = category.closest<HTMLElement>('.publication-category-layer');
+      if (categoryLayer) categoryLayer.hidden = !hasResults;
+
+      cards.forEach((card) => {
+        card.hidden = Boolean(query) && !matches.includes(card);
+      });
+
+      if (hasResults) visibleCategories += 1;
+      if (query) {
+        setOpen(category, matches.length > 0);
+      } else if (searchWasActive) {
+        setOpen(category, openBeforeSearch.get(category) ?? false);
+      }
+    });
+
+    if (emptyState) emptyState.hidden = !query || visibleCategories > 0;
+    if (!query && searchWasActive) {
+      openBeforeSearch.clear();
+      searchWasActive = false;
+    }
+  });
+</script>

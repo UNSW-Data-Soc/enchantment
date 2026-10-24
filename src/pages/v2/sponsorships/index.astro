@@ -1,0 +1,51 @@
+---
+import ContentPage from '../../../components/v2/ContentPage.astro';
+import SponsorshipTiers from '../../../components/v2/SponsorshipTiers.astro';
+---
+
+<ContentPage
+  title="Our"
+  titleAccent="sponsorships"
+  caption="Our industry partners help us equip members to thrive in a data-driven world."
+  sectionName="Back to top"
+  scrollToTop
+  teamBackground
+  flushBody
+>
+  <div class="sponsorship-intro">
+    <p>
+      DataSoc wouldn't be DataSoc without the amazing companies we've worked with throughout our journey as a society.
+      As more data-oriented decisions and predictions are made every day, demand for talented Data Science graduates continues to grow.
+    </p>
+    <p>
+      It's our long-term goal to help our members become as capable as they can be, and it wouldn't be possible without
+      the continued support from industry.
+    </p>
+    <p>
+      Interested in sponsoring? Reach out to <a href="mailto:external@unswdata.com">external@unswdata.com</a>.
+    </p>
+  </div>
+  <SponsorshipTiers />
+</ContentPage>
+
+<style>
+  .sponsorship-intro {
+    margin: 0;
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 4vw, 4.5rem) 1.5rem;
+    background: #fffcf3;
+    color: #34394b;
+    font-size: clamp(0.9rem, 1.15vw, 1rem);
+    line-height: 1.5;
+  }
+
+  .sponsorship-intro p {
+    margin: 0 0 0.8rem;
+  }
+
+  .sponsorship-intro a {
+    color: #d94a65;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+</style>
