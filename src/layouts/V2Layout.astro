@@ -15,6 +15,7 @@ const { title = 'UNSW DataSoc' } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <Font cssVariable="--font-syne" preload />
+    <slot name="head" />
   </head>
   <body
     class:list={[{ 'pt-16': Astro.url.pathname.replace(/\/$/, '') !== '/v2' }]}
@@ -58,10 +59,21 @@ const { title = 'UNSW DataSoc' } = Astro.props;
     window.dispatchEvent(new Event('v2-lenis-scroll'));
   });
 
+  // Dispatch a cancelable CustomEvent<{ top: number; immediate: boolean }> to request a Lenis scroll.
+  // defaultPrevented tells callers Lenis handled it; otherwise they can fall back to native scrolling.
+  window.addEventListener('v2-lenis-scroll-to', (event) => {
+    const detail = (event as CustomEvent<{ top?: unknown; immediate?: unknown }>).detail;
+    if (!detail || typeof detail.top !== 'number' || !Number.isFinite(detail.top)) return;
+    lenis.scrollTo(detail.top, { immediate: detail.immediate === true });
+    event.preventDefault();
+  });
+
   const raf = (time: number) => {
     lenis.raf(time);
     requestAnimationFrame(raf);
   };
 
   requestAnimationFrame(raf);
+  document.documentElement.dataset.v2LenisReady = 'true';
+  window.dispatchEvent(new Event('v2-lenis-ready'));
 </script>
