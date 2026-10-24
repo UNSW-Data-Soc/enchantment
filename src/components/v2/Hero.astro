@@ -1,0 +1,229 @@
+---
+import { Image } from 'astro:assets';
+import heroLogo from '../../../public/icons/datasoc/unsw-datasoc-logo-v2.png';
+import ParallaxContainer from './ParallaxContainer.astro';
+
+interface Props {
+	joinHref?: string;
+	aboutHref?: string;
+}
+
+const {
+	joinHref = 'https://forms.gle/3s3r3BAKBuur8LeS9',
+	aboutHref = '/v2/meet-the-team/',
+} = Astro.props;
+---
+
+<section class="hero" aria-label="UNSW Data Science Society">
+	<ParallaxContainer speed={0.2}>
+		<div class="hero-content">
+			<h1 class="hero-logo">
+				<Image
+					src={heroLogo}
+					alt="UNSW Data Science Society"
+					width={1127}
+					sizes="(max-width: 600px) 55vw, 42.5vw"
+					class="logo-image"
+					loading="eager"
+					fetchpriority="high"
+				/>
+			</h1>
+
+			<p class="hero-description">
+				<span class="caption-first-line">
+					Uniting students with a passion for data science,
+				</span>
+				machine learning, and artificial intelligence.
+			</p>
+
+			<div class="hero-buttons">
+				<a href={aboutHref} class="hero-button team-button">
+					Meet the Team
+				</a>
+				<a href={joinHref} class="hero-button join-button">
+					Join Us
+				</a>
+			</div>
+		</div>
+	</ParallaxContainer>
+</section>
+
+<style>
+	.hero {
+		--logo-width: 42.5vw;
+		box-sizing: border-box;
+		height: 100%;
+		padding: 13.5vw 0 0 3.3vw;
+		color: #fffcf3;
+	}
+
+	.hero :global(.parallax-container) {
+		width: 100%;
+	}
+
+	.hero-content {
+		width: var(--logo-width);
+	}
+
+	.hero-logo {
+		margin: 0;
+		width: var(--logo-width);
+		/* Account for transparent space below the lettering. */
+		height: calc(var(--logo-width) * 0.56);
+		pointer-events: none;
+	}
+
+	.logo-image {
+		display: block;
+		width: 100%;
+		height: auto;
+		filter: drop-shadow(0 6px 5px rgb(36 45 60 / 0.35));
+	}
+
+	.hero-description {
+	width: calc(var(--logo-width) * 0.614);
+	margin: 0 0 0 calc(var(--logo-width) * 0.114);
+	padding-bottom: 0.2em;
+	font-family: Arial, sans-serif;
+	font-size: max(0.75rem, calc(var(--logo-width) * 0.024));
+	font-weight: 400;
+	line-height: 1;
+	text-align: left;
+	text-shadow: 0 2px 3px rgb(36 45 60 / 0.35);
+	}
+
+	.caption-first-line {
+		display: block;
+		padding-left: calc(var(--logo-width) * 0.046);
+		text-align: justify;
+		text-align-last: justify;
+	}
+
+	.hero-buttons {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		gap: 1.45vw;
+		width: max-content;
+		max-width: 100%;
+		margin: 1.9vw 0 0 5.7vw;
+	}
+
+	.hero-button {
+		box-sizing: border-box;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: max(8rem, 12.3vw);
+		min-height: max(44px, 2.65vw);
+		padding: 0.55vw 0.85vw;
+		border: 2px solid #fffcf3;
+		border-radius: 0.85vw;
+		color: #fffcf3;
+		font-family: var(--font-inter), Arial, sans-serif;
+		font-size: clamp(0.75rem, 1vw, 1.5rem);
+		font-weight: 700;
+		line-height: 1.2;
+		white-space: nowrap;
+		text-decoration: none;
+		box-shadow: 0 5px 10px rgb(36 45 60 / 0.3);
+	}
+
+	.team-button {
+		background: rgb(99 100 118 / 0.32);
+	}
+
+	.join-button {
+		background: linear-gradient(
+			105deg,
+			#9d7ec7 0%,
+			#7971be 42%,
+			#848bcb 66%,
+			#b97bb1 100%
+		);
+	}
+
+	.hero-button:focus-visible {
+		outline: 3px solid #243b53;
+		outline-offset: 4px;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.hero-content {
+			animation: hero-enter 0.7s ease-out both;
+		}
+
+		.hero-button {
+			transition: transform 0.2s, box-shadow 0.2s;
+		}
+
+		.hero-button:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 9px 16px rgb(36 45 60 / 0.35);
+		}
+
+		.hero-button:active {
+			transform: translateY(1px);
+		}
+	}
+
+	@keyframes hero-enter {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@media (max-width: 600px) {
+		.hero {
+			--logo-width: 55vw;
+			/* Leave room for the fixed navbar. */
+			padding: calc(4rem + 3vw) 2vw 3vw;
+		}
+
+		.hero-content {
+			width: 100%;
+		}
+
+		.hero-description {
+			width: 100%;
+			margin: 0;
+			font-size: 0.75rem;
+			line-height: 1.3;
+		}
+
+		.caption-first-line {
+			display: inline;
+			padding-left: 0;
+			text-align-last: auto;
+		}
+
+		.hero-buttons {
+			width: 100%;
+			gap: 2vw;
+			margin: 2vw 0 0;
+		}
+
+		.hero-button {
+			flex: 1 1 0;
+			min-width: 0;
+			width: auto;
+			padding: 0.5rem;
+			border-radius: 0.5rem;
+			font-size: 0.75rem;
+			white-space: normal;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero :global(.parallax-container) {
+			transform: none;
+			will-change: auto;
+		}
+	}
+</style>
