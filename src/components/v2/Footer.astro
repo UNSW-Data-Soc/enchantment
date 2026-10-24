@@ -1,15 +1,33 @@
 ---
 import { quicklinks } from "./constants.js";
+
+const socials = [
+  { name: 'Facebook', url: 'https://www.facebook.com/unswdatasoc/' },
+  { name: 'Instagram', url: 'https://www.instagram.com/unswdatasoc/' },
+  { name: 'LinkedIn', url: 'https://www.linkedin.com/company/unsw-datasoc/' },
+  { name: 'Discord', url: 'https://discord.gg/datasoc' },
+  { name: 'YouTube', url: 'https://www.youtube.com/@unswdatasoc' },
+  { name: 'TikTok', url: 'https://www.tiktok.com/@unswdatasoc' },
+];
 ---
 
 <footer class="v2-footer">
-<div class="footer-content">
   <div class="footer-art" aria-hidden="true"></div>
 
+  <!-- Left Column: Acknowledgements & Info -->
+  <div class="footer-info">
+    <p class="love-note">Made with love by <strong>UNSW Data Science Society</strong></p>
+    <p class="support-note">Proudly supported by <strong>Arc UNSW</strong></p>
+    <p class="acknowledgement">
+      UNSW DataSoc acknowledges the Aboriginal and Torres Strait Islander peoples as the first inhabitants of this nation and the Bedegal people as the Traditional Custodians of the Land where the UNSW Kensington campus is situated. We pay our respects to all Elders past, present, and future.
+    </p>
+  </div>
+
+  <!-- Center Quicklinks Section -->
   <img
     class="quicklinks-header"
     src="/text-headers/quicklinks-header.png"
-    alt="Quick links"
+    alt="DataSoc Quicklinks"
     draggable="false"
   />
 
@@ -18,68 +36,211 @@ import { quicklinks } from "./constants.js";
       <a href={`/${item.linkto}`}>{item.text}</a>
     ))}
   </div>
-</div>
+
+  <!-- Right Column: Get in Touch & Socials -->
+  <div class="footer-contact">
+    <h3>Get in Touch</h3>
+    <div class="social-grid">
+      {socials.map((social) => (
+        <a href={social.url} target="_blank" rel="noopener noreferrer" class="social-circle" aria-label={social.name}></a>
+      ))}
+    </div>
+    <a href="mailto:hello@unswdata.com" class="email-link">
+      <svg class="email-icon" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="1" y="1" width="22" height="14" rx="1.5" fill="#fffcf3" stroke="#1c1f2e" stroke-width="2" />
+        <path d="M1.5 1.5L12 9.5L22.5 1.5" stroke="#1c1f2e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M1.5 14.5L8.5 8" stroke="#1c1f2e" stroke-width="1.8" stroke-linecap="round" />
+        <path d="M22.5 14.5L15.5 8" stroke="#1c1f2e" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+      <span>hello@unswdata.com</span>
+    </a>
+  </div>
+
+  <!-- Bottom Copyright Row -->
+  <div class="footer-bottom">
+    <p>© 2026 UNSW Data Science Society. All Rights Reserved.</p>
+  </div>
 </footer>
 
 <style>
-	@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-	.v2-footer {
-		position: relative;
-		width: 100%;
-		aspect-ratio: 40 / 16;
-		background-color: #fffcf3;
-		overflow: hidden;
-		container-type: inline-size;
-	}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-	.footer-content {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		width: 100%;
-		height: 40cqw;
-	}
+  .v2-footer {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1708 / 581;
+    background-color: #272c3d;
+    overflow: hidden;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+  }
 
-	.footer-art {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		display: block;
-		width: 100%;
-		aspect-ratio: 1708 / 581;
-		background-image: url('/backgrounds/footer-bg.png');
-		background-size: 100% auto;
-		background-repeat: no-repeat;
-		pointer-events: none;
-		z-index: 1;
-	}
+  .footer-art {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-image: url('/backgrounds/footer-bg.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 1;
+  }
 
-	.quicklinks-header {
-		position: absolute;
-		/* Preserve the old bottom-relative positions from the 45cqw overlay without overflowing the footer. */
-		top: 17.3125%;
-		left: 66%;
-		width: clamp(72px, 15vw, 210px);
-		height: auto;
-		transform: translateX(-50%);
-		z-index: 2;
-	}
+  /* ---------------- Left Info Column ---------------- */
+  .footer-info {
+    position: absolute;
+    top: 25%;
+    left: 6.5%;
+    width: 38%;
+    max-width: 580px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85vw;
+  }
 
-	.quick-links {
-		position: absolute;
-		top: 38.125%;
-		left: 53.5%;
-		display: flex;
-		flex-direction: column;
-		gap: 23px;
-		z-index: 2;
-	}
+  .footer-info p {
+    margin: 0;
+    font-size: clamp(9px, 0.95vw, 15px);
+    line-height: 1.55;
+    color: #e5e7eb;
+  }
 
-	.quick-links a {
-		color: white;
-		text-decoration: underline;
-		font-family: "Inter", sans-serif;
-		font-size: 15px;
-		cursor: pointer;
-	}
+  .footer-info strong {
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  .acknowledgement {
+    margin-top: 0.8vw !important;
+    font-size: clamp(8px, 0.82vw, 13px) !important;
+    line-height: 1.6 !important;
+    color: #cbd5e1 !important;
+  }
+
+  /* ---------------- Quicklinks Column ---------------- */
+  .quicklinks-header {
+    position: absolute;
+    top: 10%;
+    left: 66%;
+    width: clamp(80px, 14vw, 215px);
+    height: auto;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+
+  .quick-links {
+    position: absolute;
+    top: 28%;
+    left: 53.5%;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(10px, 1.4vw, 24px);
+    z-index: 2;
+  }
+
+  .quick-links a {
+    color: #ffffff;
+    text-decoration: underline;
+    font-size: clamp(10px, 1vw, 15px);
+    line-height: 1.2;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .quick-links a:hover {
+    opacity: 0.8;
+  }
+
+  /* ---------------- Right Contact Column ---------------- */
+  .footer-contact {
+    position: absolute;
+    top: 15%;
+    right: 3.5%;
+    width: clamp(140px, 14vw, 220px);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-contact h3 {
+    margin: 0 0 clamp(14px, 1.6vw, 24px) 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: clamp(15px, 1.55vw, 24px);
+    font-weight: 600;
+    color: #ffffff;
+    white-space: nowrap;
+    letter-spacing: -0.02em;
+    text-align: center;
+    width: 100%;
+  }
+
+  .social-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(8px, 0.9vw, 14px);
+    width: 100%;
+    max-width: clamp(130px, 13vw, 190px);
+    margin: 0 auto clamp(14px, 1.6vw, 24px) auto;
+  }
+
+  .social-circle {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background-color: #fffcf3;
+    display: block;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, background-color 0.2s;
+  }
+
+  .social-circle:hover {
+    transform: scale(1.08);
+    background-color: #ffffff;
+  }
+
+  .email-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: clamp(8px, 0.8vw, 12px);
+    font-weight: 400;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+    width: 100%;
+  }
+
+  .email-link:hover {
+    text-decoration: underline;
+    opacity: 0.85;
+  }
+
+  .email-icon {
+    width: clamp(15px, 1.25vw, 20px);
+    height: auto;
+    flex-shrink: 0;
+    display: block;
+  }
+
+  /* ---------------- Bottom Row ---------------- */
+  .footer-bottom {
+    position: absolute;
+    bottom: 5.5%;
+    left: 6.5%;
+    z-index: 2;
+  }
+
+  .footer-bottom p {
+    margin: 0;
+    font-size: clamp(8px, 0.82vw, 13px);
+    color: #cbd5e1;
+    letter-spacing: 0.01em;
+  }
 </style>
