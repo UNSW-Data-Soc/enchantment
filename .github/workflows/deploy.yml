@@ -5,6 +5,10 @@ on:
   # Using a different branch name? Replace `main` with your branch’s name
   push:
     branches: [main]
+  # Refresh Facebook events every morning, even without code changes.
+  schedule:
+    - cron: '17 6 * * *'
+      timezone: 'Australia/Sydney'
   # Allows you to run this workflow manually from the Actions tab on GitHub.
   workflow_dispatch:
 
