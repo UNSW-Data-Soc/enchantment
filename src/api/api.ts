@@ -1,10 +1,5 @@
 const FACEBOOK_PAGE_ID = '1653268794976040';
-// below is long lived access tocken for data soc page - generated following link
-// https://graph.facebook.com/v19.0/oauth/access_token?grant_type=fb_exchange_token&client_id=1384483765886092&client_secret=c5385c4f51d4ff7030bc7131c0b60a42&fb_exchange_token=EAATrLj8QHIwBO6GwMfrwYGI4174fkD58apfqITIxBZAItzZBiHe32IM2F6zdQCdisLqQJ2qUJ9LbzLoJhqZAbWfyY8fJ045jKZCaV5F5h2GwDjrgSoSyNquRZCSIK4G1QxPPgxNQFZA04zVnaWzJxvdRhULh3tEgZBDAMaZB55n20opHRtBrRLPRNxGGp3N9yCSK0dnZBsPUG8imJ38wLO6zzcJA2xmYZD
-
-const ACCESS_TOKEN = 'EAAPDObP5bJMBSGmSCczT3wbdgYV6QADyAwN9qXaZC7kcKM9NXXGtdkXaCWgTa4a0ZBeisMfk2ZB5LIJ2MmqGCgurJwYxAlCLf0JQonWyWHHWwS14t8T9XNFcSZCSmCbcZAAB3Y3Uv2BiGGjZBe7Xdy4KZCg6aJcxfShP09AYWyvdR1bLHJaGMrSLQjgwEhyUxkz8QxT1qcE';
-
-// manageView = {10}
+const FACEBOOK_ACCESS_TOKEN = import.meta.env.ACCESS_TOKEN;
 
 export interface FacebookEvent {
     id: string;
@@ -14,30 +9,86 @@ export interface FacebookEvent {
     start_time: string;
 }
 
-interface FacebookResponse {
-    data: FacebookEvent[];
+function isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-export async function fetchEvents() {
-    try {
-        const response = await fetch(
-            `https://graph.facebook.com/v22.0/${FACEBOOK_PAGE_ID}/events?access_token=${ACCESS_TOKEN}&fields=id,name,cover,place,start_time`);
+function isFacebookEvent(value: unknown): value is FacebookEvent {
+    return isRecord(value)
+        && typeof value.id === 'string'
+        && typeof value.name === 'string'
+        && typeof value.start_time === 'string'
+        && Number.isFinite(Date.parse(value.start_time))
+        && (value.cover === undefined || (isRecord(value.cover) && typeof value.cover.source === 'string'))
+        && (value.place === undefined || (isRecord(value.place)
+            && (value.place.name === undefined || typeof value.place.name === 'string')));
+}
 
-        const data: FacebookResponse = await response.json();
+type EventsErrorReason = 'MISSING_TOKEN' | 'NETWORK_ERROR' | 'INVALID_JSON'
+    | 'FACEBOOK_ERROR' | 'INVALID_RESPONSE';
 
-        if (!data || !data.data) {
-            return new Response(JSON.stringify({ error: 'No events found' }), { status: 404 });
-        }
+function eventsError(status: number, reason: EventsErrorReason, details: string, code?: number) {
+    const safeDetails = FACEBOOK_ACCESS_TOKEN
+        ? details.replaceAll(FACEBOOK_ACCESS_TOKEN, '[REDACTED]')
+        : details;
 
-        const now = new Date();
-        const upcomingEvents = data.data.filter(event => new Date(event.start_time) >= now);
-        const pastEvents = data.data.filter(event => new Date(event.start_time) < now);
+    return new Response(JSON.stringify({ error: 'Error fetching events', reason, details: safeDetails, code }), {
+        status,
+        headers: { 'Content-Type': 'application/json' }
+    });
+}
 
-        return new Response(JSON.stringify({ upcomingEvents, pastEvents }), {
-            headers: { 'Content-Type': 'application/json' }
-        });
-    } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-        return new Response(JSON.stringify({ error: errorMessage }), { status: 500 });
+export async function fetchEvents(): Promise<Response> {
+    if (!FACEBOOK_ACCESS_TOKEN) {
+        return eventsError(500, 'MISSING_TOKEN', 'Missing ACCESS_TOKEN environment variable');
     }
+
+    let response: Response;
+    try {
+        response = await fetch(
+            `https://graph.facebook.com/v22.0/${FACEBOOK_PAGE_ID}/events?access_token=${FACEBOOK_ACCESS_TOKEN}&fields=id,name,cover,place,start_time`);
+    } catch {
+        // Avoid exposing request URLs, which contain the access token.
+        return eventsError(502, 'NETWORK_ERROR', 'Unable to connect to Facebook API');
+    }
+
+    let data: unknown;
+    try {
+        data = await response.json();
+    } catch {
+        // Preserve an HTTP failure even if its body is HTML, empty, or invalid JSON.
+        return eventsError(
+            response.ok ? 502 : response.status,
+            'INVALID_JSON',
+            `Facebook API returned HTTP ${response.status} with an unreadable JSON response`
+        );
+    }
+
+    const hasFacebookError = isRecord(data) && data.error !== undefined && data.error !== null;
+    const facebookError = isRecord(data) && isRecord(data.error) ? data.error : undefined;
+
+    if (!response.ok || hasFacebookError) {
+        return eventsError(
+            response.ok ? 502 : response.status,
+            'FACEBOOK_ERROR',
+            typeof facebookError?.message === 'string'
+                ? facebookError.message
+                : `Facebook API returned HTTP ${response.status} without a valid error message`,
+            typeof facebookError?.code === 'number' ? facebookError.code : undefined
+        );
+    }
+
+    if (!isRecord(data) || !Array.isArray(data.data) || !data.data.every(isFacebookEvent)) {
+        return eventsError(502, 'INVALID_RESPONSE', 'Facebook API returned invalid event data');
+    }
+
+    const now = Date.now();
+    const upcomingEvents = data.data.filter(event => Date.parse(event.start_time) >= now);
+    const pastEvents = data.data.filter(event => Date.parse(event.start_time) < now);
+
+    // An empty data array is a valid success, not a fetch failure.
+    return new Response(JSON.stringify({ upcomingEvents, pastEvents }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+    });
 }
