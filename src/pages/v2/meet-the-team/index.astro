@@ -233,19 +233,22 @@ const portfolios = Array.from(
             scrollUpdates.forEach((update) => update());
         });
     };
+    // Only layers within a screen of the viewport move; the rest catch up in the frame they come that close, before
+    // they're visible. The scroll position is read once, before any writes, so the loop doesn't force style recalcs.
     const updateParallax = () => {
         if (reducedMotion.matches) {
-            layers.forEach((layer) => layer.style.removeProperty('--parallax-y'));
+            layers.forEach((layer) => layer.style.removeProperty('translate'));
             return;
         }
+        const viewportCentre = scrollY + innerHeight / 2;
+        const range = innerHeight;
         layers.forEach((layer) => {
+            const centre = layerDocumentCentres.get(layer) ?? viewportCentre;
+            if (Math.abs(centre - viewportCentre) > range) return;
             const speed = Number(layer.dataset.depth) || 0;
-            const centre = layerDocumentCentres.get(layer) ?? scrollY;
-            const offset = (innerHeight / 2 - centre + scrollY) * speed;
-            layer.style.setProperty('--parallax-y', `${offset}px`);
+            layer.style.translate = `0 ${(viewportCentre - centre) * speed}px`;
         });
     };
-    scrollUpdates.add(updateParallax);
     reducedMotion.addEventListener('change', updateParallax);
     let layerRefreshFrame = 0;
     const scheduleLayerRefresh = () => {
@@ -365,6 +368,8 @@ const portfolios = Array.from(
         reducedMotion.addEventListener('change', scheduleDraw);
     }
 
+    // After the trail's update, which reads layout: reading it after these writes would force a style recalculation.
+    scrollUpdates.add(updateParallax);
     addEventListener('resize', scheduleLayerRefresh);
     addEventListener('scroll', scheduleScrollUpdates, { passive: true });
     addEventListener('v2-lenis-scroll', scheduleScrollUpdates);
@@ -436,7 +441,8 @@ const portfolios = Array.from(
         aspect-ratio: 1;
         border-radius: 50%;
         filter: blur(8px);
-        transform: translate3d(0, var(--parallax-y, 0), 0);
+        /* Moved by the parallax script; its own layer keeps the blur from being redrawn every frame. */
+        will-change: translate;
     }
 
     .cloud-one {
@@ -459,7 +465,7 @@ const portfolios = Array.from(
         aspect-ratio: 1;
         border-radius: 50%;
         background: radial-gradient(circle, rgb(217 74 101 / 0.2), rgb(244 176 0 / 0.16), transparent 70%);
-        transform: translate3d(0, var(--parallax-y, 0), 0);
+        will-change: translate;
     }
 
     .side-geometry {
@@ -467,7 +473,8 @@ const portfolios = Array.from(
         width: clamp(3rem, 6vw, 6rem);
         aspect-ratio: 1;
         border: 1px solid rgb(52 57 75 / 0.28);
-        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(45deg);
+        transform: rotate(45deg);
+        will-change: translate;
     }
 
     .geometry-left-one {
@@ -489,7 +496,7 @@ const portfolios = Array.from(
         left: 2%;
         width: clamp(2rem, 3.8vw, 4rem);
         border-color: rgb(58 113 139 / 0.5);
-        transform: translate3d(0, var(--parallax-y, 0), 0) rotate(45deg) scale(0.82);
+        transform: rotate(45deg) scale(0.82);
     }
 
     .geometry-right-two {
@@ -675,7 +682,6 @@ const portfolios = Array.from(
         border-radius: 0.18rem;
         background: #fffefa;
         box-shadow: 0 0.25rem 0.75rem rgb(52 57 75 / 0.075);
-        translate: 0 var(--parallax-y, 0px);
         transition:
             transform 250ms ease,
             box-shadow 250ms ease;
@@ -690,7 +696,6 @@ const portfolios = Array.from(
     @media (prefers-reduced-motion: reduce) {
         .member-card {
             transition: none;
-            translate: none;
         }
 
         .member-card:hover,
