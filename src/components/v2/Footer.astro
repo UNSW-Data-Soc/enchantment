@@ -9,15 +9,16 @@ import { quicklinks } from './constants.js';
   <img
     class="quicklinks-header"
     src="/text-headers/quicklinks-header.png"
-    alt="Quick links"
+    alt=""
     draggable="false"
   />
 
-  <div class="quick-links">
+  <!-- The header image is decorative: the nav's label carries its words, so they're read once. -->
+  <nav class="quick-links" aria-label="Quick links">
     {quicklinks.map((item) => (
       <a href={`/${item.linkto}`}>{item.text}</a>
     ))}
-  </div>
+  </nav>
 </div>
 </footer>
 
@@ -87,5 +88,11 @@ import { quicklinks } from './constants.js';
     font-family: 'Inter', sans-serif;
     font-size: clamp(12px, 1.04cqw, 15px);
     cursor: pointer;
+  }
+
+  /* The links sit on the artwork's dark band, where the default navy ring would vanish. */
+  .quick-links a:focus-visible {
+    outline: 2px solid #fffcf3;
+    outline-offset: 3px;
   }
 </style>

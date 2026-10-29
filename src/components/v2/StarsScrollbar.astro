@@ -134,6 +134,8 @@ const { length = '98%', underlay, colorScheme } = Astro.props;
   .stars :global(button:focus-visible) {
     outline: 2px solid #fffcf3;
     outline-offset: -2px;
+    /* Navy inside the cream, for where the bar is see-through over the hero's light art (its top 62cqw). */
+    box-shadow: inset 0 0 0 4px #243b53;
   }
 
   /* Landing V3's 1.17vw, but no smaller than 9px (or what fits in the bar with 3px either side) on narrow screens.
@@ -212,6 +214,18 @@ const { length = '98%', underlay, colorScheme } = Astro.props;
         detail: { top, immediate: behavior === 'instant' },
       });
       if (dispatchEvent(request)) scrollTo({ top, behavior });
+      // Tab carries on from the section: its data-focus-target, else its first heading. An empty marker keeps focus here.
+      const focusTarget = (section as HTMLElement).dataset.focusTarget;
+      let destination: HTMLElement | null = null;
+      try {
+        destination = focusTarget
+          ? document.querySelector<HTMLElement>(focusTarget)
+          : (section.querySelector<HTMLElement>('h1, h2, h3') ?? (section as HTMLElement));
+      } catch {}
+      if (destination && (destination.childElementCount || destination.textContent?.trim())) {
+        if (!destination.hasAttribute('tabindex')) destination.tabIndex = -1;
+        destination.focus({ preventScroll: true });
+      }
       schedule();
     });
     // Once faded out, a star drops its live colour so hovering it previews its own.
