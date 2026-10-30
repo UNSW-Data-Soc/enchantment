@@ -119,8 +119,8 @@ const start = events.length ? 0 : 1;
     padding-block: 3rem;
     margin-block: -3rem;
     pointer-events: none;
-    /* Horizontal swipes go to the script below; vertical ones still scroll the page. */
-    touch-action: pan-y;
+    /* Horizontal swipes go to the script below; vertical ones still scroll the page, and pinch-zoom still works. */
+    touch-action: pan-y pinch-zoom;
   }
 
   .track {
@@ -322,9 +322,9 @@ const start = events.length ? 0 : 1;
     goTo(index - Math.sign(dx));
   });
   // A swipe cancels only the click that ends it, which fires before this timeout; a touch swipe has none, and a later
-  // click (Enter on the card's link, say) must go through.
+  // click (Enter on the card's link, say) must go through. On window, so a mouse released outside the carousel ends it.
   for (const type of ['pointerup', 'pointercancel']) {
-    viewport.addEventListener(type, () => {
+    addEventListener(type, () => {
       swipeStart = null;
       setTimeout(() => (swiped = false));
     });
@@ -332,7 +332,8 @@ const start = events.length ? 0 : 1;
   // Otherwise a mouse drag drags the card's image or link instead.
   viewport.addEventListener('dragstart', (event) => event.preventDefault());
   viewport.addEventListener('click', (event) => {
-    if (!swiped) return;
+    // Keyboard and assistive-tech activations (detail 0) are never the end of a swipe.
+    if (!swiped || event.detail === 0) return;
     event.preventDefault();
     event.stopPropagation();
   }, true);
