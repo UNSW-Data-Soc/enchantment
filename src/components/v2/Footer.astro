@@ -1,86 +1,172 @@
 ---
 import { quicklinks } from './constants.js';
+import buttonImage from '../../assets/ui/buttons/rouge-up-arrow-button.svg';
 ---
 
 <footer class="v2-footer">
-<div class="footer-content">
-  <div class="footer-art" aria-hidden="true"></div>
+  <div class="footer-viewport">
+    <div class="footer-content">
+      <div class="footer-art" aria-hidden="true"></div>
 
-  <img
-    class="quicklinks-header"
-    src="/text-headers/quicklinks-header.png"
-    alt=""
-    draggable="false"
-  />
+      <img
+        class="quicklinks-header"
+        src="/text-headers/quicklinks-header.png"
+        alt=""
+        draggable="false"
+      />
 
-  <!-- The header image is decorative: the nav's label carries its words, so they're read once. -->
-  <nav class="quick-links" aria-label="Quick links">
-    {quicklinks.map((item) => (
-      <a href={`/${item.linkto}`}>{item.text}</a>
-    ))}
-  </nav>
-</div>
+      <!-- The header image is decorative: the nav's label carries its words, so they're read once. -->
+      <nav class="quick-links" aria-label="Quick links">
+        {quicklinks.map((item) => <a href={`/${item.linkto}`}>{item.text}</a>)}
+      </nav>
+    </div>
+  </div>
+  <div class="scroll-btn-wrapper">
+    <button type="button" class="scroll-btn" aria-label="Scroll to top" disabled>
+      <img src={buttonImage.src} alt="" />
+    </button>
+  </div>
 </footer>
 
+<script>
+  document.querySelectorAll<HTMLButtonElement>(".v2-footer .scroll-btn").forEach((button) => {
+    const footer = button.closest<HTMLElement>(".v2-footer")!;
+    const wrapper = button.parentElement!;
+    const observer = new IntersectionObserver(([entry]) => {
+      wrapper.classList.toggle("is-visible", entry.isIntersecting);
+      button.disabled = !entry.isIntersecting;
+    }, { threshold: 0 });
+    observer.observe(footer);
+
+    button.addEventListener("click", () => {
+      const immediate = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const request = new CustomEvent("v2-lenis-scroll-to", {
+        cancelable: true,
+        detail: { top: 0, immediate },
+      });
+
+      if (window.dispatchEvent(request)) {
+        window.scrollTo({ top: 0, behavior: immediate ? "instant" : "smooth" });
+      }
+    });
+  });
+</script>
+
 <style>
-	@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-	.v2-footer {
-		/* The links stop shrinking at 12px, and below this width they no longer fit inside the artwork's arc, so
-		   narrower screens see a crop of the footer at this width instead of a scaled-down one. */
-		--min-art-width: 56rem;
-		position: relative;
-		width: 100%;
-		aspect-ratio: 40 / 16;
-		min-height: calc(var(--min-art-width) * 16 / 40);
-		background-color: #fffcf3;
-		overflow: hidden;
-	}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+  .v2-footer {
+    /* The links stop shrinking at 12px, and below this width they no longer fit inside the artwork's arc, so
+       narrower screens see a crop of the footer at this width instead of a scaled-down one. */
+    --min-art-width: 56rem;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 40 / 16;
+    min-height: calc(var(--min-art-width) * 16 / 40);
+    background-color: #fffcf3;
+    container-type: inline-size;
+  }
 
-	.footer-content {
-		position: absolute;
-		bottom: 0;
-		/* Crops more from the left than the right, keeping the quick links in view. */
-		left: calc((100% - max(100%, var(--min-art-width))) * 0.6);
-		width: max(100%, var(--min-art-width));
-		height: 100%;
-		container-type: inline-size;
-	}
+  .footer-viewport {
+    /* Crop the responsive artwork without clipping the scroll button above the footer. */
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
 
-	.footer-art {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		display: block;
-		width: 100%;
-		aspect-ratio: 1708 / 581;
-		background-image: url('/backgrounds/footer-bg.png');
-		background-size: 100% auto;
-		background-repeat: no-repeat;
-		pointer-events: none;
-		z-index: 1;
-	}
+  .footer-content {
+    position: absolute;
+    bottom: 0;
+    /* Crops more from the left than the right, keeping the quick links in view. */
+    left: calc((100% - max(100%, var(--min-art-width))) * 0.6);
+    width: max(100%, var(--min-art-width));
+    height: 100%;
+    container-type: inline-size;
+  }
 
-	.quicklinks-header {
-		position: absolute;
-		/* Positioned so the text's arc is concentric with the art's grey ring, 66px in (derivation in #98); re-derive
-		   if either image changes. */
-		top: 19.43%;
-		left: 59.63%;
-		width: 13.21%;
-		height: auto;
-		z-index: 2;
-	}
+  .footer-art {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1708 / 581;
+    background-image: url("/backgrounds/footer-bg.png");
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 1;
+  }
 
-	.quick-links {
-		position: absolute;
-		top: 38.125%;
-		left: 53.5%;
-		display: flex;
-		flex-direction: column;
-		/* The links scale with the artwork so they stay inside its arc. */
-		gap: 1.6cqw;
-		z-index: 2;
-	}
+  .quicklinks-header {
+    position: absolute;
+    /* Positioned so the text's arc is concentric with the art's grey ring, 66px in (derivation in #98); re-derive
+       if either image changes. */
+    top: 19.43%;
+    left: 59.63%;
+    width: 13.21%;
+    height: auto;
+    z-index: 2;
+  }
+
+  .scroll-btn-wrapper {
+    position: absolute;
+    top: 10%;
+    right: 4%;
+    padding-bottom: 8px;
+    transform: translateY(-100%);
+    clip-path: inset(-30px -30px 0 -30px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .scroll-btn {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    width: clamp(48px, 5.5cqw, 80px);
+    aspect-ratio: 76 / 74;
+    cursor: pointer;
+    filter: drop-shadow(6px 6px 10px rgba(0, 0, 0, 0.3));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(calc(100% + 16px));
+    transition: transform 0.4s ease-out;
+  }
+
+  .scroll-btn-wrapper.is-visible {
+    pointer-events: auto;
+  }
+
+  .scroll-btn-wrapper.is-visible .scroll-btn {
+    transform: translateY(0);
+  }
+
+  .scroll-btn img {
+    display: block;
+    width: 75%;
+    height: auto;
+  }
+
+  .scroll-btn-wrapper.is-visible .scroll-btn:hover {
+    transform: scale(1.05);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-btn {
+      transition: none;
+    }
+  }
+  .quick-links {
+    position: absolute;
+    top: 38.125%;
+    left: 53.5%;
+    display: flex;
+    flex-direction: column;
+    /* The links scale with the artwork so they stay inside its arc. */
+    gap: 1.6cqw;
+    z-index: 2;
+  }
 
   .quick-links a {
     color: white;
