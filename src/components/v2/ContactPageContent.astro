@@ -45,7 +45,7 @@ const messages = getV2Messages(Astro.currentLocale);
   </ParallaxContainer>
 
   <ParallaxContainer speed={0.045} class="contact-card-layer">
-  <aside class="contact-card contact-details">
+  <aside class="contact-card contact-details" aria-labelledby="contact-details-heading">
     <img
       class="team-photo"
       src="/team2026.webp"
@@ -57,7 +57,7 @@ const messages = getV2Messages(Astro.currentLocale);
       decoding="async"
     />
     <div class="contact-copy">
-      <h2>{messages['contact.findUs']}</h2>
+      <h2 id="contact-details-heading">{messages['contact.findUs']}</h2>
       <a href="https://www.google.com/maps/place/UNSW+Sydney/@-33.9173425,151.2286926,17z/" target="_blank" rel="noopener noreferrer">
         {messages['contact.location']}<span class="sr-only">{messages['common.opensNewTab']}</span>
       </a>

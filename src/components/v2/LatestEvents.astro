@@ -28,23 +28,26 @@ const start = events.length ? 0 : 1;
       <!-- Update href to /v2/updates or /v2/latest-events once file created -->
       <div class="relative">
         <a href={eventsUrl} aria-label={messages['home.latestEvents']} class="peer absolute z-10 left-[20%] right-[20%] top-[20%] bottom-[30%]"></a>
-        <img src={messages['home.latestEventsHeaderImage']} alt={messages['home.latestEvents']} draggable="false" class="transition duration-300 ease-out peer-hover:scale-103 peer-focus-visible:scale-103" />
+        <!-- alt is empty because the link above already reads "Latest Events"; with both, the heading is read twice. -->
+        <img src={messages['home.latestEventsHeaderImage']} alt="" draggable="false" class="transition duration-300 ease-out peer-hover:scale-103 peer-focus-visible:scale-103" />
       </div>
     </ParallaxContainer>
 	</h2>
 
   <div class="tagline">
-    <ParallaxContainer speed={0.12}>{messages['home.latestEventsTagline']}</ParallaxContainer>
+    {/* The spaces keep the words apart where phones drop the line breaks. */}
+    <ParallaxContainer speed={0.12}>{messages['home.latestEventsTagline'].split('\n').map((line, index) => <>{index > 0 && <br />}{line}{' '}</>)}</ParallaxContainer>
   </div>
 
   <ParallaxContainer speed={0.2}>
     <div class="viewport">
       <ul class="track" style={`--i: ${start}`}>
         {slots.map((event, i) => (
-          <li class="card" data-active={i === start ? '' : undefined}>
+          <li class="card" data-active={i === start ? '' : undefined} aria-hidden={event ? undefined : 'true'}>
             {event && (
               <a href={`https://www.facebook.com/events/${event.id}`} target="_blank" rel="noopener noreferrer" tabindex={i === start ? undefined : -1}>
                 <img src={event.cover?.source ?? '/icons/datasoc/unsw-datasoc-logo-v2.png'} alt={event.name} loading="lazy" />
+                <span class="sr-only">{messages['common.opensNewTab']}</span>
               </a>
             )}
           </li>
@@ -53,13 +56,15 @@ const start = events.length ? 0 : 1;
     </div>
 
     <div class="controls">
-      <button type="button" data-dir="-1" aria-label={messages['home.previousEvent']}>
+      <!-- Disabled with no events: they would only cycle the empty placeholder slots. -->
+      <button type="button" data-dir="-1" aria-label={messages['home.previousEvent']} disabled={!events.length}>
         <img src={arrowLeft} alt="" draggable="false" />
       </button>
-      <button type="button" data-dir="1" aria-label={messages['home.nextEvent']}>
+      <button type="button" data-dir="1" aria-label={messages['home.nextEvent']} disabled={!events.length}>
         <img src={arrowRight} alt="" draggable="false" />
       </button>
     </div>
+    <p class="sr-only" aria-live="polite" data-carousel-status data-status-template={messages['home.eventStatus']}></p>
   </ParallaxContainer>
 </section>
 
@@ -100,6 +105,11 @@ const start = events.length ? 0 : 1;
     width: 34.9vw;
   }
 
+  /* Cream inside the fallback ring, which alone is too faint where it crosses the background's blue at phone widths. */
+  h2 a:focus-visible {
+    box-shadow: 0 0 0 2px #fffcf3;
+  }
+
   .tagline {
     position: absolute;
     top: -9.1vw;
@@ -108,7 +118,6 @@ const start = events.length ? 0 : 1;
     font-size: 1.5vw;
     line-height: 2.93;
     letter-spacing: 0.41em;
-    white-space: pre-line;
     text-align: right;
     /* Landing V3 uses #1995cb (3.3:1 on the cream bg); darkened to pass WCAG AA. */
     color: #137aa8;
@@ -118,9 +127,17 @@ const start = events.length ? 0 : 1;
   .viewport {
     width: 61.5vw; /* three 20.5vw cards */
     overflow-x: clip;
+    /* Room for the scaled-up centre card and its shadow, since WebKit clips this vertically too; the negative margin
+       cancels it out. The padding mustn't take taps meant for the heading's link, so only the track does. */
+    padding-block: 3rem;
+    margin-block: -3rem;
+    pointer-events: none;
+    /* Horizontal swipes go to the script below; vertical ones still scroll the page, and pinch-zoom still works. */
+    touch-action: pan-y pinch-zoom;
   }
 
   .track {
+    pointer-events: auto;
     display: flex;
     margin: 0;
     padding: 0;
@@ -146,17 +163,18 @@ const start = events.length ? 0 : 1;
     transform: scale(1.08);
   }
 
-  .card[data-active]:hover {
-    transform: scale(1.13);
-    transition-duration: 0.3s;
-  }
-
   .card a,
   .card img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  /* On the card, because its overflow: hidden clips a ring drawn around the link inside. */
+  .card:has(a:focus-visible) {
+    outline: 2px solid #243b53;
+    outline-offset: 3px;
   }
 
   .controls {
@@ -174,8 +192,16 @@ const start = events.length ? 0 : 1;
     transition: transform 0.3s;
   }
 
-  .controls button:hover {
-    transform: scale(1.1);
+  /* Hover only where it can end; on touch screens it would stick after a tap. */
+  @media (hover: hover) {
+    .controls button:hover {
+      transform: scale(1.1);
+    }
+
+    .card[data-active]:hover {
+      transform: scale(1.13);
+      transition-duration: 0.3s;
+    }
   }
 
   .controls button:active {
@@ -186,6 +212,74 @@ const start = events.length ? 0 : 1;
   .controls img {
     display: block;
     width: 4vw;
+  }
+
+  /* Phones (either way up) and small tablets: the homepage stacks its sections (see HomePage), so this one is sized
+     for reading rather than scaled with the background. Everything is sized from HomePage's phone-width --column, so
+     on wider screens the dot cloud's chevrons still sit beside the arrows. The centre card takes 62% of it, spaced so
+     its neighbours peek in at the edges of the screen, and the tagline becomes one sentence. Keep this media query
+     the same as HomePage's and LatestPublications'. */
+  @media (max-width: 48rem), (max-height: 30rem) and (pointer: coarse) {
+    .latest-events {
+      zoom: 1;
+    }
+
+    .bg {
+      top: calc(var(--column) * -0.12);
+    }
+
+    .bg img {
+      height: calc(var(--column) * 1.1);
+    }
+
+    h2 img {
+      width: calc(var(--column) * 0.7);
+    }
+
+    /* Last, below the arrows, so it isn't read over the dot cloud. */
+    .tagline {
+      order: 1;
+      position: static;
+      margin: 2.5rem 1rem 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      letter-spacing: 0.2em;
+      text-align: center;
+    }
+
+    .tagline br {
+      display: none;
+    }
+
+    /* Full width, so the side cards run off the screen rather than being cut off at the column's edges. */
+    .latest-events > :global(.parallax-container) {
+      align-self: stretch;
+    }
+
+    .viewport {
+      width: 100%;
+    }
+
+    .track {
+      --card: calc(var(--column) * 0.62);
+      --step: calc(var(--card) * 1.08);
+      gap: calc(var(--step) - var(--card));
+      transform: translateX(calc(50% - var(--card) / 2 - var(--i) * var(--step)));
+    }
+
+    .card {
+      flex-basis: var(--card);
+    }
+
+    /* Close together, clear of the chevrons in the dot cloud's artwork. */
+    .controls {
+      margin-top: 1.75rem;
+      gap: 1rem;
+    }
+
+    .controls img {
+      width: 2.75rem;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -200,6 +294,7 @@ const start = events.length ? 0 : 1;
   const section = document.querySelector('.latest-events')!;
   const track = section.querySelector<HTMLElement>('.track')!;
   const cards = Array.from(track.children);
+  const status = section.querySelector<HTMLElement>('[data-carousel-status]')!;
   let index = Number(track.style.getPropertyValue('--i'));
 
   const goTo = (next: number) => {
@@ -210,6 +305,14 @@ const start = events.length ? 0 : 1;
       card.toggleAttribute('data-active', i === index);
       card.querySelector('a')?.setAttribute('tabindex', i === index ? '0' : '-1');
     });
+    // Announces the centred event; the placeholder slots shown when there are no events stay silent.
+    const name = cards[index].querySelector('img')?.alt;
+    status.textContent = name
+      ? status.dataset.statusTemplate!
+          .replace('{name}', name)
+          .replace('{index}', String(index + 1))
+          .replace('{count}', String(cards.length))
+      : '';
   };
 
   section.querySelectorAll<HTMLButtonElement>('button[data-dir]').forEach((button) => {
@@ -224,4 +327,42 @@ const start = events.length ? 0 : 1;
       goTo(i);
     });
   });
+
+  // Swiping the cards (or dragging them with a mouse) moves one card. It only counts once the pointer has travelled
+  // further sideways than down, so a scroll that starts on a card still scrolls the page.
+  // With no events there's nothing to swipe through, only the empty placeholder slots.
+  const viewport = section.querySelector<HTMLElement>('.viewport')!;
+  const hasEvents = cards.some((card) => card.querySelector('a'));
+  let swipeStart: { x: number; y: number } | null = null;
+  let swiped = false;
+  viewport.addEventListener('pointerdown', (event) => {
+    if (event.button !== 0 || !hasEvents) return;
+    swipeStart = { x: event.clientX, y: event.clientY };
+    swiped = false;
+  });
+  viewport.addEventListener('pointermove', (event) => {
+    // No button held: a mouse drag that was released outside the carousel, whose pointerup never arrived here.
+    if (!event.buttons) swipeStart = null;
+    if (!swipeStart || swiped) return;
+    const dx = event.clientX - swipeStart.x;
+    if (Math.abs(dx) < 35 || Math.abs(dx) <= Math.abs(event.clientY - swipeStart.y)) return;
+    swiped = true;
+    goTo(index - Math.sign(dx));
+  });
+  // A swipe cancels only the click that ends it, which fires before this timeout; a touch swipe has none, and a later
+  // click (Enter on the card's link, say) must go through. On window, so a mouse released outside the carousel ends it.
+  for (const type of ['pointerup', 'pointercancel']) {
+    addEventListener(type, () => {
+      swipeStart = null;
+      setTimeout(() => (swiped = false));
+    });
+  }
+  // Otherwise a mouse drag drags the card's image or link instead.
+  viewport.addEventListener('dragstart', (event) => event.preventDefault());
+  viewport.addEventListener('click', (event) => {
+    // Keyboard and assistive-tech activations (detail 0) are never the end of a swipe.
+    if (!swiped || event.detail === 0) return;
+    event.preventDefault();
+    event.stopPropagation();
+  }, true);
 </script>

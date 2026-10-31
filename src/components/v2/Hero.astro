@@ -18,7 +18,7 @@ const {
 } = Astro.props;
 ---
 
-<section class="hero" aria-label={messages['site.dataScienceSociety']}>
+<section class="hero" aria-label={messages['site.dataScienceSociety']} data-section={messages['home.sectionTop']} data-focus-target=".hero h1">
 	<ParallaxContainer speed={0.2}>
 		<div class="hero-content">
 			<h1 class="hero-logo">
@@ -33,7 +33,13 @@ const {
 				/>
 			</h1>
 
-			<p class="hero-description">{messages['home.heroDescription']}</p>
+			<p class="hero-description">
+				<span class="caption-first-line">
+					{/* Inside the span: Astro drops whitespace after it, and on phones this line flows inline. */}
+					{messages['home.heroDescriptionFirstLine']}{' '}
+				</span>
+				{messages['home.heroDescriptionSecondLine']}
+			</p>
 
 			<div class="hero-buttons">
 				<a href={aboutHref} class="hero-button team-button">
@@ -156,14 +162,23 @@ const {
 			transition: transform 0.2s, box-shadow 0.2s;
 		}
 
-		.hero-button:hover {
-			transform: translateY(-3px);
-			box-shadow: 0 9px 16px rgb(36 45 60 / 0.35);
+		/* Hover only where it can end; on touch screens it would stick after a tap. */
+		@media (hover: hover) {
+			.hero-button:hover {
+				transform: translateY(-3px);
+				box-shadow: 0 9px 16px rgb(36 45 60 / 0.35);
+			}
 		}
 
 		.hero-button:active {
 			transform: translateY(1px);
 		}
+	}
+
+	/* A cream band inside the navy ring, which alone vanishes on the art's blue at phone widths. After the hover rule,
+	   whose shadow would otherwise replace it. */
+	.hero-button:focus-visible {
+		box-shadow: 0 0 0 4px #fffcf3;
 	}
 
 	@keyframes hero-enter {

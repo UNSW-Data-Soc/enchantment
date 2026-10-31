@@ -37,6 +37,11 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      // Astro builds with target 'esnext', so the CSS minifier drops the -webkit- prefixes Safari 16-17 need; this is
+      // Vite 8's baseline-widely-available list.
+      cssTarget: ['chrome111', 'edge111', 'firefox114', 'safari16.4', 'ios16.4'],
+    },
     resolve: {
       alias: import.meta.env.PROD ? { 'react-dom/server': 'react-dom/server.edge' } : undefined,
     },
