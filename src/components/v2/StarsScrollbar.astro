@@ -111,10 +111,11 @@ const { length = '98%', underlay, colorScheme } = Astro.props;
     background: none;
     cursor: pointer;
     pointer-events: auto;
-    /* The live scroll colour while active (kept while fading out), otherwise the star's own section colour. */
+    /* The live scroll colour while active (kept while fading out), otherwise the star's own section colour. --on's
+       fallback is for browsers without @property. */
     --tint: var(--star-colour, var(--own-colour));
-    --colour: color-mix(in oklab, var(--tint) var(--on), #fffcf3);
-    filter: drop-shadow(0 0 0.25vw color-mix(in oklab, var(--tint) var(--on), transparent));
+    --colour: color-mix(in oklab, var(--tint) var(--on, 0%), #fffcf3);
+    filter: drop-shadow(0 0 calc(var(--size) * 0.25 / 1.17) color-mix(in oklab, var(--tint) var(--on, 0%), transparent));
     transition: --on 150ms ease;
   }
 
@@ -124,8 +125,10 @@ const { length = '98%', underlay, colorScheme } = Astro.props;
     transition-duration: 250ms;
   }
 
-  .stars :global(button:not([aria-current]):hover) {
-    --on: 50%;
+  @media (hover: hover) {
+    .stars :global(button:not([aria-current]):hover) {
+      --on: 50%;
+    }
   }
 
   .stars :global(button:focus-visible) {
@@ -133,13 +136,27 @@ const { length = '98%', underlay, colorScheme } = Astro.props;
     outline-offset: -2px;
   }
 
-  /* Sizes measured from Landing V3; the offsets crop the star out of one-star.svg's padded viewBox. */
+  /* Landing V3's 1.17vw, but no smaller than 9px (or what fits in the bar with 3px either side) on narrow screens.
+     The offsets crop the star out of one-star.svg's padded viewBox and scale with it, as does the glow above. */
+  .stars {
+    --size: clamp(1.17vw, var(--width) * 1vw - 6px, 9px);
+  }
+
   .stars :global(i) {
     display: block;
-    width: 1.17vw;
-    height: 1.17vw;
+    width: var(--size);
+    height: var(--size);
     background: var(--colour);
-    mask: var(--star) -0.756vw -0.549vw / 2.8vw no-repeat;
+    mask: var(--star) calc(var(--size) * -0.756 / 1.17) calc(var(--size) * -0.549 / 1.17) / calc(var(--size) * 2.8 / 1.17)
+      no-repeat;
+  }
+
+  /* The homepage's phone layout breakpoint (see HomePage). Taller targets, because they can't be wider than the bar,
+     which clips what's inside it. */
+  @media (max-width: 48rem), (max-height: 30rem) and (pointer: coarse) {
+    .stars :global(button) {
+      min-height: 44px;
+    }
   }
 </style>
 
@@ -214,27 +231,33 @@ const { length = '98%', underlay, colorScheme } = Astro.props;
     { once: true },
   );
 
+  // A section the current layout hides (the homepage's About Us band on phones) gets no star and is left out of the
+  // highlight and the colours; checked on every paint, so turning a phone switches between the sets.
+  const shown = () => sections.flatMap((section, i) => (section.getClientRects().length ? [i] : []));
+
   const paint = () => {
     const middle = innerHeight / 2;
-    const rects = sections.map((section) => section.getBoundingClientRect());
+    const visible = shown();
+    marks.forEach((mark, i) => (mark.style.display = visible.includes(i) ? '' : 'none'));
+    const rects = visible.map((i) => sections[i].getBoundingClientRect());
     // The scrolled-to section is the last one whose top has passed the middle of the screen.
-    const reached = Math.max(rects.filter((rect) => rect.top <= middle).length - 1, 0);
+    const reached = visible[Math.max(rects.filter((rect) => rect.top <= middle).length - 1, 0)];
     if (reached === target) target = -1;
     const current = target === -1 ? reached : target;
     marks.forEach((mark, i) => (mark.ariaCurrent = i === current ? 'location' : null));
     const centres = centresOf(rects);
     // Keep each team's active star on its own palette color instead of blending by scroll distance.
     const colour = teamColorScheme
-      ? colourAt(centres[current], centres)
+      ? colourAt(centres[visible.indexOf(current)], centres)
       : colourAt(middle, centres);
     marks[current].style.setProperty('--star-colour', colour);
   };
 
-  // Each star's own colour is the one at its section's centre. Sections are fixed fractions of the page, so this only
-  // needs redoing if the page had no size when first measured.
+  // Each star's own colour is the one at its section's centre. Redone on resize, which can change the layout.
   const tint = () => {
-    const centres = centresOf(sections.map((section) => section.getBoundingClientRect()));
-    marks.forEach((mark, i) => mark.style.setProperty('--own-colour', colourAt(centres[i], centres)));
+    const visible = shown();
+    const centres = centresOf(visible.map((i) => sections[i].getBoundingClientRect()));
+    visible.forEach((i, k) => marks[i].style.setProperty('--own-colour', colourAt(centres[k], centres)));
   };
 
   let frame = 0;

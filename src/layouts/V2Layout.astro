@@ -44,6 +44,12 @@ const { title = 'UNSW DataSoc' } = Astro.props;
   :global(.lenis.lenis-smooth iframe) {
     pointer-events: none;
   }
+
+  /* No rubber-band bounce past either end of the page, where on iOS the fixed navbar stays put while the page pulls
+     away beneath it. This also turns off pull-to-refresh on Android. */
+  :global(html) {
+    overscroll-behavior-y: none;
+  }
 </style>
 
 <script>
