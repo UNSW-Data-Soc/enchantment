@@ -212,7 +212,8 @@ const portfolios = Array.from(
     const trailDot = trail?.querySelector<SVGCircleElement>('.trail-dot');
     const layers = Array.from(page?.querySelectorAll<HTMLElement>('[data-depth]') ?? []);
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-    const layerDocumentCentres = new Map<HTMLElement, number>();
+    // Each layer's centre on the page, and how far it can reach from that centre at any rotation (its half-diagonal).
+    const layerDocumentCentres = new Map<HTMLElement, { centre: number; reach: number }>();
     const refreshLayerCentres = () => {
         layers.forEach((layer) => {
             let top = 0;
@@ -221,7 +222,10 @@ const portfolios = Array.from(
                 top += ancestor.offsetTop;
                 ancestor = ancestor.offsetParent as HTMLElement | null;
             }
-            layerDocumentCentres.set(layer, top + layer.offsetHeight / 2);
+            layerDocumentCentres.set(layer, {
+                centre: top + layer.offsetHeight / 2,
+                reach: Math.hypot(layer.offsetWidth, layer.offsetHeight) / 2,
+            });
         });
     };
     const scrollUpdates = new Set<() => void>();
@@ -233,18 +237,18 @@ const portfolios = Array.from(
             scrollUpdates.forEach((update) => update());
         });
     };
-    // Only layers within a screen of the viewport move; the rest catch up in the frame they come that close, before
-    // they're visible. The scroll position is read once, before any writes, so the loop doesn't force style recalcs.
+    // Only layers whose edge is within a screen of the viewport move; the rest catch up in the frame they come that
+    // close, before they're visible (depths are small, so the offset never carries a layer half a screen). The scroll
+    // position is read once, before any writes, so the loop doesn't force style recalcs.
     const updateParallax = () => {
         if (reducedMotion.matches) {
             layers.forEach((layer) => layer.style.removeProperty('translate'));
             return;
         }
         const viewportCentre = scrollY + innerHeight / 2;
-        const range = innerHeight;
         layers.forEach((layer) => {
-            const centre = layerDocumentCentres.get(layer) ?? viewportCentre;
-            if (Math.abs(centre - viewportCentre) > range) return;
+            const { centre, reach } = layerDocumentCentres.get(layer) ?? { centre: viewportCentre, reach: 0 };
+            if (Math.abs(centre - viewportCentre) > innerHeight + reach) return;
             const speed = Number(layer.dataset.depth) || 0;
             layer.style.translate = `0 ${(viewportCentre - centre) * speed}px`;
         });
