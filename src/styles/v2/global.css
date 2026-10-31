@@ -6,6 +6,20 @@
   --cursor-text: url("/cursors/v2/text.svg") 14 14, text;
 }
 
+/* A visible focus ring for controls that don't style their own. In the base layer so component styles and Tailwind
+   utilities override it; without it, the browser's thin default ring is easy to miss on the busy backgrounds. */
+@layer base {
+  :where(a, button, summary, input, textarea, select):focus-visible {
+    outline: 2px solid #243b53;
+    outline-offset: 2px;
+  }
+
+  /* Where the skip link (main) or a scrollbar star (a heading) moves focus: a starting point for Tab, not a control. */
+  :is(main, h1, h2, h3)[tabindex='-1']:focus {
+    outline: none;
+  }
+}
+
 html,
 body {
   cursor: var(--cursor-default);

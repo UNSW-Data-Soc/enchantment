@@ -35,11 +35,11 @@ import ParallaxContainer from './ParallaxContainer.astro';
   </ParallaxContainer>
 
   <ParallaxContainer speed={0.045} class="contact-card-layer">
-  <aside class="contact-card contact-details">
+  <aside class="contact-card contact-details" aria-labelledby="contact-details-heading">
     <img
       class="team-photo"
       src="/team2026.webp"
-      alt="UNSW DataSoc team"
+      alt="The 2026 UNSW DataSoc team on the steps at UNSW Sydney, holding a banner reading “The Data Science Society of UNSW”"
       width="1200"
       height="684"
       fetchpriority="high"
@@ -47,7 +47,7 @@ import ParallaxContainer from './ParallaxContainer.astro';
       decoding="async"
     />
     <div class="contact-copy">
-      <h2>Find us around campus</h2>
+      <h2 id="contact-details-heading">Find us around campus</h2>
       <a href="https://www.google.com/maps/place/UNSW+Sydney/@-33.9173425,151.2286926,17z/" target="_blank" rel="noopener noreferrer">
         UNSW Sydney, NSW, Australia<span class="sr-only"> (opens in a new tab)</span>
       </a>
