@@ -95,7 +95,8 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
                 {...(href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               >
                 <span class="date">{date}</span>
-                {image && <img src={image} alt="" loading="lazy" draggable="false" />}
+                {/* Eager: after the strip wraps, a lazy image in the copy it lands on may not have loaded yet. */}
+                {image && <img src={image} alt="" draggable="false" />}
                 <span class="name">{title}</span>
                 {caption && <span class="caption">{caption}</span>}
               </a>
@@ -136,15 +137,22 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
     transition: transform 0.3s;
   }
 
-  .more:hover {
-    transform: scale(1.1);
+  /* Hover only where it can end; on touch screens it would stick after a tap. */
+  @media (hover: hover) {
+    .more:hover {
+      transform: scale(1.1);
+    }
+
+    .cards li:hover {
+      transform: translateY(-1vw) scale(1.05);
+    }
   }
 
   /* The button's cream square matches the page, so the shadow is what shows its edge; a little larger and darker than
-     Landing V3 so it stands out. */
+     Landing V3 so it stands out. The floor keeps it tappable. */
   .more img {
     display: block;
-    width: 3.2vw;
+    width: max(3.2vw, 2rem);
     filter: drop-shadow(0.15vw 0.3vw 0.5vw rgb(0 0 0 / 0.3));
   }
 
@@ -245,8 +253,83 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
     outline-offset: -4px;
   }
 
-  .cards li:hover {
-    transform: translateY(-1vw) scale(1.05);
+  /* Phones (either way up) and small tablets: the homepage stacks its sections (see HomePage), so this one is sized
+     for reading rather than scaled with the background. The strip draws its own band in the background's colours,
+     without the halftone fade, and shows about two cards at a time. Keep this media query the same as HomePage's and
+     LatestEvents'. */
+  @media (max-width: 48rem), (max-height: 30rem) and (pointer: coarse) {
+    .latest-publications {
+      zoom: 1;
+      margin-top: 0;
+    }
+
+    /* Side padding keeps the heading clear of the scrollbar's bar and the screen edge; the heading shrinks to fit. */
+    .title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding-inline: 1.5rem;
+    }
+
+    h2 {
+      margin: 0;
+    }
+
+    /* The same size as Latest Events' heading, from HomePage's phone-width --column. */
+    h2 img {
+      width: calc(var(--column) * 0.7);
+    }
+
+    .more {
+      position: static;
+    }
+
+    .more img {
+      width: 2.75rem;
+    }
+
+    .ticker {
+      margin: 0.75rem 0 0;
+      padding: 1rem 0;
+      mask: none;
+      background: linear-gradient(90deg, #b7e6f5, #b6c3eb 30%, #c09fd0 50%, #f0aebd 70%, #b7e6f5);
+      scroll-padding-left: 1rem;
+    }
+
+    .fade-barrier {
+      display: none;
+    }
+
+    .cards {
+      gap: 1rem;
+      padding-right: 1rem;
+    }
+
+    .cards li {
+      width: min(40vw, 11rem);
+      border-radius: 0.5rem;
+    }
+
+    .date {
+      padding: 0.5rem 0.65rem;
+      font-size: 0.75rem;
+    }
+
+    .cards img {
+      height: auto;
+      aspect-ratio: 14.84 / 8.06;
+    }
+
+    .name {
+      padding: 0.5rem 0.65rem 0;
+      font-size: 0.95rem;
+    }
+
+    .caption {
+      margin: auto 0.65rem 0.65rem;
+      font-size: 0.75rem;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -270,6 +353,13 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
   let position = ticker.scrollWidth / 3;
 
   const tick = (now: number) => {
+    // Hands off during a swipe: see touch below.
+    if (touch) {
+      position = ticker.scrollLeft;
+      last = now;
+      requestAnimationFrame(tick);
+      return;
+    }
     const copy = ticker.scrollWidth / 3;
     // scrollLeft may round, so the script keeps its own position unless something else (a swipe, focus) moved it.
     if (Math.abs(ticker.scrollLeft - position) > 1) position = ticker.scrollLeft;
@@ -303,8 +393,26 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
     card.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   });
   ticker.addEventListener('focusout', () => (focused = false));
-  ticker.addEventListener('touchstart', () => (resumeAt = Infinity), { passive: true });
-  ticker.addEventListener('touchend', () => (resumeAt = performance.now() + 1000));
+  // From a finger landing until its swipe stops coasting, the script doesn't write scrollLeft: on iOS that stops the
+  // momentum and makes the strip flash. Safari has no scrollend, so a swipe ends once the strip has been still for
+  // 150ms.
+  let touch: 'down' | 'coasting' | null = null;
+  let settle = 0;
+  const coast = () => {
+    touch = 'coasting';
+    clearTimeout(settle);
+    settle = window.setTimeout(() => {
+      touch = null;
+      resumeAt = performance.now() + 1000;
+    }, 150);
+  };
+  ticker.addEventListener('touchstart', () => {
+    touch = 'down';
+    clearTimeout(settle);
+  }, { passive: true });
+  ticker.addEventListener('touchend', coast);
+  ticker.addEventListener('touchcancel', coast);
+  ticker.addEventListener('scroll', () => touch === 'coasting' && coast(), { passive: true });
 
   // Dragging with a mouse scrolls the strip like a swipe; a drag of more than a few pixels doesn't open the card.
   let drag: { x: number; scroll: number } | null = null;
