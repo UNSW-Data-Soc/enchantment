@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --cursor-default: url("/cursors/v2/star.svg") 16 16, auto;
-  --cursor-pointer: url("/cursors/v2/hand.svg") 15 3, pointer;
-  --cursor-text: url("/cursors/v2/text.svg") 16 16, text;
+  --cursor-default: url("/cursors/v2/star.svg") 12 12, auto;
+  --cursor-pointer: url("/cursors/v2/hand.svg") 11 2, pointer;
+  --cursor-text: url("/cursors/v2/text.svg") 12 12, text;
 }
 
 html,
