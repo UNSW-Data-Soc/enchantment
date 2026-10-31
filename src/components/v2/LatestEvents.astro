@@ -24,7 +24,8 @@ const start = events.length ? 0 : 1;
       <!-- Update href to /v2/updates or /v2/latest-events once file created -->
       <div class="relative">
         <a href="/v2/events" aria-label="Latest Events" class="peer absolute z-10 left-[20%] right-[20%] top-[20%] bottom-[30%]"></a>
-        <img src="/text-headers/latest-events.png" alt="Latest Events" draggable="false" class="transition duration-300 ease-out peer-hover:scale-103 peer-focus-visible:scale-103" />
+        <!-- alt is empty because the link above already reads "Latest Events"; with both, the heading is read twice. -->
+        <img src="/text-headers/latest-events.png" alt="" draggable="false" class="transition duration-300 ease-out peer-hover:scale-103 peer-focus-visible:scale-103" />
       </div>
     </ParallaxContainer>
 	</h2>
@@ -38,10 +39,11 @@ const start = events.length ? 0 : 1;
     <div class="viewport">
       <ul class="track" style={`--i: ${start}`}>
         {slots.map((event, i) => (
-          <li class="card" data-active={i === start ? '' : undefined}>
+          <li class="card" data-active={i === start ? '' : undefined} aria-hidden={event ? undefined : 'true'}>
             {event && (
               <a href={`https://www.facebook.com/events/${event.id}`} target="_blank" rel="noopener noreferrer" tabindex={i === start ? undefined : -1}>
                 <img src={event.cover?.source ?? '/icons/datasoc/unsw-datasoc-logo-v2.png'} alt={event.name} loading="lazy" />
+                <span class="sr-only"> (opens in a new tab)</span>
               </a>
             )}
           </li>
@@ -50,13 +52,15 @@ const start = events.length ? 0 : 1;
     </div>
 
     <div class="controls">
-      <button type="button" data-dir="-1" aria-label="Previous event">
+      <!-- Disabled with no events: they would only cycle the empty placeholder slots. -->
+      <button type="button" data-dir="-1" aria-label="Previous event" disabled={!events.length}>
         <img src={arrowLeft} alt="" draggable="false" />
       </button>
-      <button type="button" data-dir="1" aria-label="Next event">
+      <button type="button" data-dir="1" aria-label="Next event" disabled={!events.length}>
         <img src={arrowRight} alt="" draggable="false" />
       </button>
     </div>
+    <p class="sr-only" aria-live="polite" data-carousel-status></p>
   </ParallaxContainer>
 </section>
 
@@ -95,6 +99,11 @@ const start = events.length ? 0 : 1;
   h2 img {
     display: block;
     width: 34.9vw;
+  }
+
+  /* Cream inside the fallback ring, which alone is too faint where it crosses the background's blue at phone widths. */
+  h2 a:focus-visible {
+    box-shadow: 0 0 0 2px #fffcf3;
   }
 
   .tagline {
@@ -156,6 +165,12 @@ const start = events.length ? 0 : 1;
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  /* On the card, because its overflow: hidden clips a ring drawn around the link inside. */
+  .card:has(a:focus-visible) {
+    outline: 2px solid #243b53;
+    outline-offset: 3px;
   }
 
   .controls {
@@ -275,6 +290,7 @@ const start = events.length ? 0 : 1;
   const section = document.querySelector('.latest-events')!;
   const track = section.querySelector<HTMLElement>('.track')!;
   const cards = Array.from(track.children);
+  const status = section.querySelector<HTMLElement>('[data-carousel-status]')!;
   let index = Number(track.style.getPropertyValue('--i'));
 
   const goTo = (next: number) => {
@@ -285,6 +301,9 @@ const start = events.length ? 0 : 1;
       card.toggleAttribute('data-active', i === index);
       card.querySelector('a')?.setAttribute('tabindex', i === index ? '0' : '-1');
     });
+    // Announces the centred event; the placeholder slots shown when there are no events stay silent.
+    const name = cards[index].querySelector('img')?.alt;
+    status.textContent = name ? `${name}, event ${index + 1} of ${cards.length}` : '';
   };
 
   section.querySelectorAll<HTMLButtonElement>('button[data-dir]').forEach((button) => {
