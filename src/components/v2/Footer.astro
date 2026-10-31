@@ -1,21 +1,24 @@
 ---
 import { quicklinks } from './constants.js';
-import buttonImage from "../../assets/ui/buttons/rouge-up-arrow-button.svg";
+import buttonImage from '../../assets/ui/buttons/rouge-up-arrow-button.svg';
 ---
 
 <footer class="v2-footer">
-  <div class="footer-content">
-    <div class="footer-art" aria-hidden="true"></div>
+  <div class="footer-viewport">
+    <div class="footer-content">
+      <div class="footer-art" aria-hidden="true"></div>
 
-    <img
-      class="quicklinks-header"
-      src="/text-headers/quicklinks-header.png"
-      alt="Quick links"
-      draggable="false"
-    />
+      <img
+        class="quicklinks-header"
+        src="/text-headers/quicklinks-header.png"
+        alt=""
+        draggable="false"
+      />
 
-    <div class="quick-links">
-      {quicklinks.map((item) => <a href={`/${item.linkto}`}>{item.text}</a>)}
+      <!-- The header image is decorative: the nav's label carries its words, so they're read once. -->
+      <nav class="quick-links" aria-label="Quick links">
+        {quicklinks.map((item) => <a href={`/${item.linkto}`}>{item.text}</a>)}
+      </nav>
     </div>
   </div>
   <div class="scroll-btn-wrapper">
@@ -50,22 +53,34 @@ import buttonImage from "../../assets/ui/buttons/rouge-up-arrow-button.svg";
 </script>
 
 <style>
-  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
   .v2-footer {
+    /* The links stop shrinking at 12px, and below this width they no longer fit inside the artwork's arc, so
+       narrower screens see a crop of the footer at this width instead of a scaled-down one. */
+    --min-art-width: 56rem;
     position: relative;
     width: 100%;
     aspect-ratio: 40 / 16;
+    min-height: calc(var(--min-art-width) * 16 / 40);
     background-color: #fffcf3;
     container-type: inline-size;
+  }
+
+  .footer-viewport {
+    /* Crop the responsive artwork without clipping the scroll button above the footer. */
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
   }
 
   .footer-content {
     position: absolute;
     bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 40cqw;
-    overflow: hidden;
+    /* Crops more from the left than the right, keeping the quick links in view. */
+    left: calc((100% - max(100%, var(--min-art-width))) * 0.6);
+    width: max(100%, var(--min-art-width));
+    height: 100%;
+    container-type: inline-size;
   }
 
   .footer-art {
@@ -84,11 +99,12 @@ import buttonImage from "../../assets/ui/buttons/rouge-up-arrow-button.svg";
 
   .quicklinks-header {
     position: absolute;
-    top: 17.3125%;
-    left: 66%;
-    width: clamp(72px, 15vw, 210px);
+    /* Positioned so the text's arc is concentric with the art's grey ring, 66px in (derivation in #98); re-derive
+       if either image changes. */
+    top: 19.43%;
+    left: 59.63%;
+    width: 13.21%;
     height: auto;
-    transform: translateX(-50%);
     z-index: 2;
   }
 
@@ -147,7 +163,8 @@ import buttonImage from "../../assets/ui/buttons/rouge-up-arrow-button.svg";
     left: 53.5%;
     display: flex;
     flex-direction: column;
-    gap: 23px;
+    /* The links scale with the artwork so they stay inside its arc. */
+    gap: 1.6cqw;
     z-index: 2;
   }
 
@@ -155,7 +172,13 @@ import buttonImage from "../../assets/ui/buttons/rouge-up-arrow-button.svg";
     color: white;
     text-decoration: underline;
     font-family: 'Inter', sans-serif;
-    font-size: 15px;
+    font-size: clamp(12px, 1.04cqw, 15px);
     cursor: pointer;
+  }
+
+  /* The links sit on the artwork's dark band, where the default navy ring would vanish. */
+  .quick-links a:focus-visible {
+    outline: 2px solid #fffcf3;
+    outline-offset: 3px;
   }
 </style>

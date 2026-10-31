@@ -228,7 +228,8 @@ const {
     }
 
     .page-header h1 {
-      font-size: clamp(2.15rem, 8vw, 3.5rem);
+      /* No rem floor, so long words like "sponsorships" fit narrow panels. */
+      font-size: min(8vw, 3.5rem);
       line-height: 0.9;
     }
 

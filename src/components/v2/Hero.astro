@@ -14,7 +14,7 @@ const {
 } = Astro.props;
 ---
 
-<section class="hero" aria-label="UNSW Data Science Society">
+<section class="hero" aria-label="UNSW Data Science Society" data-section="Top" data-focus-target=".hero h1">
 	<ParallaxContainer speed={0.2}>
 		<div class="hero-content">
 			<h1 class="hero-logo">
@@ -31,7 +31,8 @@ const {
 
 			<p class="hero-description">
 				<span class="caption-first-line">
-					Uniting students with a passion for data science,
+					{/* Inside the span: Astro drops whitespace after it, and on phones this line flows inline. */}
+					Uniting students with a passion for data science,{' '}
 				</span>
 				machine learning, and artificial intelligence.
 			</p>
@@ -157,14 +158,23 @@ const {
 			transition: transform 0.2s, box-shadow 0.2s;
 		}
 
-		.hero-button:hover {
-			transform: translateY(-3px);
-			box-shadow: 0 9px 16px rgb(36 45 60 / 0.35);
+		/* Hover only where it can end; on touch screens it would stick after a tap. */
+		@media (hover: hover) {
+			.hero-button:hover {
+				transform: translateY(-3px);
+				box-shadow: 0 9px 16px rgb(36 45 60 / 0.35);
+			}
 		}
 
 		.hero-button:active {
 			transform: translateY(1px);
 		}
+	}
+
+	/* A cream band inside the navy ring, which alone vanishes on the art's blue at phone widths. After the hover rule,
+	   whose shadow would otherwise replace it. */
+	.hero-button:focus-visible {
+		box-shadow: 0 0 0 4px #fffcf3;
 	}
 
 	@keyframes hero-enter {
