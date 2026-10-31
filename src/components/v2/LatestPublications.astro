@@ -89,7 +89,7 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
   </ParallaxContainer>
 
   <ParallaxContainer speed={0.2} class="publication-strip">
-    <div class="ticker" style={`--halftone: ${halftone}`}>
+    <div class="ticker" style={`--halftone: ${halftone}`} data-parallax-follow>
       <!-- Three copies so the strip can loop in both directions; the middle one is read out and reached by Tab, the others
            are still clickable. -->
       <ul class="cards">
@@ -114,7 +114,7 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
         )}
       </ul>
     </div>
-    <div class="fade-barrier" style={`clip-path: ${fadeBarrier}`} aria-hidden="true"></div>
+    <div class="fade-barrier" style={`clip-path: ${fadeBarrier}`} aria-hidden="true" data-parallax-follow></div>
   </ParallaxContainer>
 </section>
 
@@ -234,8 +234,8 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
     /* Clears the dark bar (4.13vw before the zoom) plus one gap when focus scrolls a card into view. */
     scroll-padding-left: 8.21vw;
     /* Cards dissolve into shrinking dots once they pass the left edge of the background's dot wave. The mask moves
-       against the parallax offset (inherited from ParallaxContainer) so the edge stays on the wave, and sits
-       --fade-offset right of the measured edge so the fade starts a little inside the wave. */
+       against the parallax offset (ParallaxContainer writes it here, via data-parallax-follow) so the edge stays on
+       the wave, and sits --fade-offset right of the measured edge so the fade starts a little inside the wave. */
     mask: var(--halftone) var(--fade-offset) calc(-12vw - var(--parallax-offset, 0px)) / 120vw 46.53vw no-repeat;
     user-select: none;
   }
