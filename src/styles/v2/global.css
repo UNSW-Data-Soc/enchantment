@@ -2,7 +2,7 @@
 
 :root {
   --cursor-default: url("/cursors/v2/star.svg") 14 14, auto;
-  --cursor-pointer: url("/cursors/v2/hand.svg") 13 3, pointer;
+  --cursor-pointer: url("/cursors/v2/hand.svg") 10 1, pointer;
   --cursor-text: url("/cursors/v2/text.svg") 14 14, text;
 }
 
