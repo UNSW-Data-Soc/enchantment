@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+:root {
+  --cursor-default: url("/cursors/v2/star.svg") 14 14, auto;
+  --cursor-pointer: url("/cursors/v2/hand.svg") 10 1, pointer;
+  --cursor-text: url("/cursors/v2/text.svg") 14 14, text;
+}
+
 /* A visible focus ring for controls that don't style their own. In the base layer so component styles and Tailwind
    utilities override it; without it, the browser's thin default ring is easy to miss on the busy backgrounds. */
 @layer base {
@@ -14,21 +20,36 @@
   }
 }
 
+html,
 body {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 20 20' shape-rendering='crispEdges'%3E%3Cpath d='M9 1h2v5h2v2h5v2h-5v2h-2v5H9v-5H7v-2H2V8h5V6h2z' fill='%23ffd84f' stroke='%23514368' stroke-width='1'/%3E%3Cpath d='M9 8h2v2H9z' fill='%23fff7cc'/%3E%3C/svg%3E") 14 14, auto;
+  cursor: var(--cursor-default);
 }
 
-body :is(a, button, summary, [role="button"]) {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 20 20' shape-rendering='crispEdges'%3E%3Cpath d='M5 19v-7H3v-2h3V8h2V2h2v8h2v2h3v5l-3 2z' fill='%23f4b6cc' stroke='%23514368' stroke-width='1'/%3E%3Cpath d='M8 3h2v6H8z' fill='%23ffe4ef'/%3E%3C/svg%3E") 13 4, pointer;
+/* Keep component styles, cursor utilities, and nested artwork on the V2 cursor set. */
+body *,
+body *::before,
+body *::after {
+  cursor: inherit !important;
 }
 
-body :is(input, textarea, [contenteditable]:not([contenteditable="false"]), [role="textbox"]) {
-  cursor: text;
+body :is(a, button, summary, label, select, [role="button"], [role="link"], input) {
+  cursor: var(--cursor-pointer) !important;
+}
+
+body :is(
+  input:not([type]),
+  input:is([type="text"], [type="search"], [type="email"], [type="url"], [type="tel"], [type="password"], [type="number"]),
+  textarea,
+  [contenteditable]:not([contenteditable="false"]),
+  [role="textbox"]
+) {
+  cursor: var(--cursor-text) !important;
 }
 
 @media (pointer: coarse) {
-  body,
-  body :is(a, button, summary, [role="button"]) {
-    cursor: auto;
+  :root {
+    --cursor-default: auto;
+    --cursor-pointer: auto;
+    --cursor-text: auto;
   }
 }
