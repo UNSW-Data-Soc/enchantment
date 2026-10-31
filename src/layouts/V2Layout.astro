@@ -3,7 +3,7 @@ import { Font } from 'astro:assets';
 import Navbar from '../components/v2/Navbar.astro';
 import '../styles/v2/global.css';
 
-const { title = 'UNSW DataSoc' } = Astro.props;
+const { title } = Astro.props;
 ---
 
 <!doctype html>
@@ -13,7 +13,7 @@ const { title = 'UNSW DataSoc' } = Astro.props;
     <link rel="icon" href="/favicon.png" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <title>{title ? `${title} | UNSW DataSoc` : 'UNSW DataSoc'}</title>
     <Font cssVariable="--font-syne" preload />
     <Font cssVariable="--font-inter" preload />
     <slot name="head" />
@@ -21,6 +21,7 @@ const { title = 'UNSW DataSoc' } = Astro.props;
   <body
     class:list={[{ 'pt-16': Astro.url.pathname.replace(/\/$/, '') !== '/v2' }]}
   >
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <Navbar />
     <slot />
   </body>
@@ -30,6 +31,31 @@ const { title = 'UNSW DataSoc' } = Astro.props;
   :global(html),
   :global(body) {
     margin: 0;
+  }
+
+  /* Keeps whatever keyboard focus scrolls to clear of the fixed navbar, which reappears when scrolling up. */
+  :global(html) {
+    scroll-padding-top: 4.5rem;
+  }
+
+  .skip-link {
+    position: fixed;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 100;
+    padding: 0.6rem 1rem;
+    border-radius: 0.35rem;
+    background: #484b70;
+    color: #fffcf3;
+    font-family: var(--font-syne), sans-serif;
+    font-weight: 700;
+    transform: translateY(calc(-100% - 1rem));
+  }
+
+  .skip-link:focus-visible {
+    transform: none;
+    outline: 2px solid #fffcf3;
+    outline-offset: -4px;
   }
 
   :global(html.lenis),
