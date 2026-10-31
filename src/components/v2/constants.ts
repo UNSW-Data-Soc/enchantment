@@ -1,29 +1,29 @@
 export const subpages = [
   {
-    text: "Meet the Team",
+    labelKey: 'nav.meetTeam',
     linkto: "v2/meet-the-team",
     fallback: "/meet-the-team/",
   },
   {
-    text: "Events",
+    labelKey: 'nav.events',
     linkto: "v2/events",
     fallback: "/updates/",
   },
   {
-    text: "Sponsorships",
+    labelKey: 'nav.sponsorships',
     linkto: "v2/sponsorships",
     fallback: "/sponsorships/",
   },
   {
-    text: "Publications",
+    labelKey: 'nav.publications',
     linkto: "v2/publications",
     fallback: "/publication/",
   },
   {
-    text: "Contact Us",
+    labelKey: 'nav.contact',
     linkto: "v2/contact-us",
     fallback: "/contact/",
   },
-];
+] as const;
 
 export const quicklinks = subpages;

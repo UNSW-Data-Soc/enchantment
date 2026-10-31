@@ -1,5 +1,9 @@
 ---
-import { quicklinks } from './constants.js';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { getV2Messages } from '../../i18n/v2';
+import { quicklinks } from './constants';
+const messages = getV2Messages(Astro.currentLocale);
+const locale = Astro.currentLocale ?? 'en';
 ---
 
 <footer class="v2-footer">
@@ -8,14 +12,14 @@ import { quicklinks } from './constants.js';
 
   <img
     class="quicklinks-header"
-    src="/text-headers/quicklinks-header.png"
-    alt="Quick links"
+    src={messages['footer.quickLinksHeaderImage']}
+    alt={messages['footer.quickLinks']}
     draggable="false"
   />
 
   <div class="quick-links">
     {quicklinks.map((item) => (
-      <a href={`/${item.linkto}`}>{item.text}</a>
+      <a href={getRelativeLocaleUrl(locale, item.linkto)}>{messages[item.labelKey]}</a>
     ))}
   </div>
 </div>

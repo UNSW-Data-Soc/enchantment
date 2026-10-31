@@ -1,7 +1,11 @@
 ---
 import { Image } from 'astro:assets';
+import { getRelativeLocaleUrl } from 'astro:i18n';
 import logo from '../../../public/favicon.png';
-import { subpages } from './constants.js';
+import { getV2Messages } from '../../i18n/v2';
+import { subpages } from './constants';
+const messages = getV2Messages(Astro.currentLocale);
+const locale = Astro.currentLocale ?? 'en';
 
 // Set to true when merch is available; controls both desktop and mobile links.
 const MERCH_ENABLED = false;
@@ -10,19 +14,22 @@ const MERCH_ENABLED = false;
 const pages = Object.keys(import.meta.glob('/src/pages/v2/**/index.astro'));
 const pageLink = (page: string, fallback: string) =>
   pages.includes(`/src/pages/v2/${page}/index.astro`)
-    ? `/v2/${page}/`
+    ? getRelativeLocaleUrl(locale, `v2/${page}/`)
     : fallback;
 
-const navigation = subpages.map(({ text, linkto, fallback }) => ({
-  text,
-  page: linkto.replace(/^v2\//, ''),
-  href: pageLink(linkto.replace(/^v2\//, ''), fallback),
-}));
+const navigation = subpages.map(({ labelKey, linkto, fallback }) => {
+  const page = linkto.replace(/^v2\//, '');
+  return {
+    text: messages[labelKey],
+    page,
+    href: pageLink(page, fallback),
+  };
+});
 const contact = navigation.find(({ page }) => page === 'contact-us')!;
 const links = [
   ...navigation.filter((item) => item !== contact),
   ...(MERCH_ENABLED
-    ? [{ text: 'Merch', href: pageLink('merch', '/merch/') }]
+    ? [{ text: messages['nav.merch'], href: pageLink('merch', '/merch/') }]
     : []),
 ];
 const currentPage = Astro.url.pathname.replace(/\/$/, '');
@@ -32,13 +39,13 @@ const isCurrent = (href: string) =>
 
 <header class="v2-navbar fixed inset-x-0 top-0 z-50 text-[#484b70] shadow-[0_16px_32px_0_#00000026]">
   <nav
-    aria-label="Main navigation"
+    aria-label={messages['nav.main']}
     class="nav-link-group relative grid h-16 grid-cols-[1fr_auto] items-center px-3 lg:grid-cols-[minmax(4rem,1fr)_auto_minmax(8rem,1fr)] lg:pr-0"
     data-nav-links
   >
     <a
-      href="/v2/"
-      aria-label="UNSW DataSoc homepage"
+      href={getRelativeLocaleUrl(locale, 'v2/')}
+      aria-label={messages['site.home']}
       class="home-link flex size-10 items-center justify-center justify-self-start"
     >
       <Image class="nav-logo" src={logo} alt="" width={32} height={32} />
@@ -68,7 +75,7 @@ const isCurrent = (href: string) =>
 
     <details class="mobile-menu lg:hidden">
       <summary class="menu-ribbon flex min-h-11 cursor-pointer list-none items-center gap-3 px-3 text-base font-bold">
-        <span>Menu</span>
+        <span>{messages['nav.menu']}</span>
         <svg
           class="size-5"
           viewBox="0 0 24 24"

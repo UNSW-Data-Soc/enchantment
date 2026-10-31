@@ -1,9 +1,13 @@
 ---
+import { getRelativeLocaleUrl } from 'astro:i18n';
 import { fetchEvents, type FacebookEvent } from '../../api/api.ts';
 import ParallaxContainer from './ParallaxContainer.astro';
 import clusterBg from '../../assets/ui/shapes/blue-red-cluster.svg?url';
 import arrowLeft from '../../assets/ui/buttons/round-arrow-grey-left.svg?url';
 import arrowRight from '../../assets/ui/buttons/round-grey-arrow-right.svg?url';
+import { getV2Messages } from '../../i18n/v2';
+const messages = getV2Messages(Astro.currentLocale);
+const eventsUrl = getRelativeLocaleUrl(Astro.currentLocale ?? 'en', 'v2/events/');
 
 // fetchEvents never throws; failures come back as { error } JSON.
 const { pastEvents = [] }: { pastEvents?: FacebookEvent[] } = await (await fetchEvents()).json();
@@ -23,14 +27,14 @@ const start = events.length ? 0 : 1;
 		<ParallaxContainer speed={0.12}>
       <!-- Update href to /v2/updates or /v2/latest-events once file created -->
       <div class="relative">
-        <a href="/v2/events" aria-label="Latest Events" class="peer absolute z-10 left-[20%] right-[20%] top-[20%] bottom-[30%]"></a>
-        <img src="/text-headers/latest-events.png" alt="Latest Events" draggable="false" class="transition duration-300 ease-out peer-hover:scale-103 peer-focus-visible:scale-103" />
+        <a href={eventsUrl} aria-label={messages['home.latestEvents']} class="peer absolute z-10 left-[20%] right-[20%] top-[20%] bottom-[30%]"></a>
+        <img src={messages['home.latestEventsHeaderImage']} alt={messages['home.latestEvents']} draggable="false" class="transition duration-300 ease-out peer-hover:scale-103 peer-focus-visible:scale-103" />
       </div>
     </ParallaxContainer>
 	</h2>
 
   <div class="tagline">
-    <ParallaxContainer speed={0.12}>Stay up<br />to date<br />with<br />our latest<br />events<br />and<br />activities!</ParallaxContainer>
+    <ParallaxContainer speed={0.12}>{messages['home.latestEventsTagline']}</ParallaxContainer>
   </div>
 
   <ParallaxContainer speed={0.2}>
@@ -49,10 +53,10 @@ const start = events.length ? 0 : 1;
     </div>
 
     <div class="controls">
-      <button type="button" data-dir="-1" aria-label="Previous event">
+      <button type="button" data-dir="-1" aria-label={messages['home.previousEvent']}>
         <img src={arrowLeft} alt="" draggable="false" />
       </button>
-      <button type="button" data-dir="1" aria-label="Next event">
+      <button type="button" data-dir="1" aria-label={messages['home.nextEvent']}>
         <img src={arrowRight} alt="" draggable="false" />
       </button>
     </div>
@@ -104,6 +108,7 @@ const start = events.length ? 0 : 1;
     font-size: 1.5vw;
     line-height: 2.93;
     letter-spacing: 0.41em;
+    white-space: pre-line;
     text-align: right;
     /* Landing V3 uses #1995cb (3.3:1 on the cream bg); darkened to pass WCAG AA. */
     color: #137aa8;

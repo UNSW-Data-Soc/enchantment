@@ -4,10 +4,11 @@ import Navbar from '../components/v2/Navbar.astro';
 import '../styles/v2/global.css';
 
 const { title = 'UNSW DataSoc' } = Astro.props;
+const locale = Astro.currentLocale ?? 'en';
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="/favicon.png" />

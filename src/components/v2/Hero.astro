@@ -1,7 +1,11 @@
 ---
 import { Image } from 'astro:assets';
+import { getRelativeLocaleUrl } from 'astro:i18n';
 import heroLogo from '../../../public/icons/datasoc/unsw-datasoc-logo-v2.png';
 import ParallaxContainer from './ParallaxContainer.astro';
+import { getV2Messages } from '../../i18n/v2';
+
+const messages = getV2Messages(Astro.currentLocale);
 
 interface Props {
 	joinHref?: string;
@@ -10,17 +14,17 @@ interface Props {
 
 const {
 	joinHref = 'https://forms.gle/3s3r3BAKBuur8LeS9',
-	aboutHref = '/v2/meet-the-team/',
+	aboutHref = getRelativeLocaleUrl(Astro.currentLocale ?? 'en', 'v2/meet-the-team/'),
 } = Astro.props;
 ---
 
-<section class="hero" aria-label="UNSW Data Science Society">
+<section class="hero" aria-label={messages['site.dataScienceSociety']}>
 	<ParallaxContainer speed={0.2}>
 		<div class="hero-content">
 			<h1 class="hero-logo">
 				<Image
 					src={heroLogo}
-					alt="UNSW Data Science Society"
+					alt={messages['site.dataScienceSociety']}
 					width={1127}
 					sizes="(max-width: 600px) 55vw, 42.5vw"
 					class="logo-image"
@@ -29,19 +33,14 @@ const {
 				/>
 			</h1>
 
-			<p class="hero-description">
-				<span class="caption-first-line">
-					Uniting students with a passion for data science,
-				</span>
-				machine learning, and artificial intelligence.
-			</p>
+			<p class="hero-description">{messages['home.heroDescription']}</p>
 
 			<div class="hero-buttons">
 				<a href={aboutHref} class="hero-button team-button">
-					Meet the Team
+					{messages['home.meetTeam']}
 				</a>
 				<a href={joinHref} class="hero-button join-button">
-					Join Us
+					{messages['home.joinUs']}
 				</a>
 			</div>
 		</div>

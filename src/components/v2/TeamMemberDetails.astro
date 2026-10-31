@@ -1,9 +1,10 @@
 ---
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
+import { getV2Messages, type V2MessageKey } from '../../i18n/v2';
 
 type Props = {
-    member: { name: string; role: string };
+    member: { name: string; role: V2MessageKey };
     image?: ImageMetadata;
     sizes: string;
     eager?: boolean;
@@ -11,12 +12,13 @@ type Props = {
 
 const { member, image, sizes, eager = false } = Astro.props;
 const widths = [240, 380, 540];
+const messages = getV2Messages(Astro.currentLocale);
 ---
 
 {image ? (
     <Image
         src={image}
-        alt={`Portrait of ${member.name}`}
+        alt={messages['team.portraitOf'].replace('{name}', member.name)}
         widths={widths}
         sizes={sizes}
         quality={75}
@@ -28,13 +30,13 @@ const widths = [240, 380, 540];
     <div
         class="member-photo photo-placeholder w-full flex items-center justify-center"
         role="img"
-        aria-label={`Photo unavailable for ${member.name}`}
+        aria-label={messages['team.photoUnavailableFor'].replace('{name}', member.name)}
     >
-        <span>Photo unavailable</span>
+        <span>{messages['team.photoUnavailable']}</span>
     </div>
 )}
 <p class="member-name">{member.name}</p>
-<p class="member-role">{member.role}</p>
+<p class="member-role">{messages[member.role]}</p>
 
 <style>
     .member-photo {

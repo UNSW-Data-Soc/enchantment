@@ -3,11 +3,14 @@ import Hero from './Hero.astro';
 import LatestEvents from './LatestEvents.astro';
 import LatestPublications from './LatestPublications.astro';
 import StarsScrollbar from './StarsScrollbar.astro';
+import { getV2Messages } from '../../i18n/v2';
+
+const messages = getV2Messages(Astro.currentLocale);
 ---
 
 <link rel="preload" as="image" href="/backgrounds/homepage-bg-v2-p00-no-sidebar.png" fetchpriority="high" />
 
-<main class="v2-home" aria-label="Homepage">
+<main class="v2-home" aria-label={messages['site.homepage']}>
   <div class="hero-slot">
     <Hero />
   </div>
@@ -20,10 +23,10 @@ import StarsScrollbar from './StarsScrollbar.astro';
     <LatestPublications />
   </div>
 
-  <div class="section-band" data-section="Top" style="top: 0; height: 28%"></div>
-  <div class="section-band" data-section="Latest Events" style="top: 28%; height: 21.6%"></div>
-  <div class="section-band" data-section="About Us" style="top: 49.6%; height: 28.2%"></div>
-  <div class="section-band" data-section="Latest Publications" style="top: 77.8%; height: 22.2%"></div>
+  <div class="section-band" data-section={messages['home.sectionTop']} style="top: 0; height: 28%"></div>
+  <div class="section-band" data-section={messages['home.sectionEvents']} style="top: 28%; height: 21.6%"></div>
+  <div class="section-band" data-section={messages['home.sectionAbout']} style="top: 49.6%; height: 28.2%"></div>
+  <div class="section-band" data-section={messages['home.sectionPublications']} style="top: 77.8%; height: 22.2%"></div>
 
   <StarsScrollbar />
 </main>
