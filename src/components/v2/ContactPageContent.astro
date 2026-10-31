@@ -1,35 +1,45 @@
 ---
 import ParallaxContainer from './ParallaxContainer.astro';
+import { getV2Messages } from '../../i18n/v2';
+
+const messages = getV2Messages(Astro.currentLocale);
 ---
 
 <div class="contact-layout">
   <ParallaxContainer speed={0.035} class="contact-card-layer">
   <section class="contact-card contact-form-card" aria-labelledby="contact-form-heading">
-    <p class="eyebrow">Let’s talk</p>
-    <h2 id="contact-form-heading">Get in touch</h2>
-    <p class="form-intro">Have a question or an idea? Send us a message and we’ll be happy to hear from you.</p>
-    <form class="contact-form" data-v2-contact-form>
-      <p class="form-note">Submitting opens your email app with your message ready to send.</p>
+    <p class="eyebrow">{messages['contact.letsTalk']}</p>
+    <h2 id="contact-form-heading">{messages['contact.getInTouch']}</h2>
+    <p class="form-intro">{messages['contact.formIntro']}</p>
+    <form
+      class="contact-form"
+      data-v2-contact-form
+      data-name-label={messages['contact.emailName']}
+      data-email-label={messages['contact.emailEmail']}
+      data-phone-label={messages['contact.emailPhone']}
+      data-email-subject={messages['contact.emailSubject']}
+    >
+      <p class="form-note">{messages['contact.formNote']}</p>
       <label>
-        <span>Full name <b aria-hidden="true">*</b><span class="sr-only"> required</span></span>
-        <input type="text" name="fullName" autocomplete="name" placeholder="Your name" required />
+        <span>{messages['contact.fullName']} <b aria-hidden="true">*</b><span class="sr-only"> {messages['contact.required']}</span></span>
+        <input type="text" name="fullName" autocomplete="name" placeholder={messages['contact.yourName']} required />
       </label>
       <label>
-        <span>Email address <b aria-hidden="true">*</b><span class="sr-only"> required</span></span>
-        <input type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
+        <span>{messages['contact.emailAddress']} <b aria-hidden="true">*</b><span class="sr-only"> {messages['contact.required']}</span></span>
+        <input type="email" name="email" autocomplete="email" placeholder={messages['contact.emailPlaceholder']} required />
       </label>
       <label>
-        <span>Phone number <small>(optional)</small></span>
-        <input type="tel" name="phone" autocomplete="tel" placeholder="Your phone number" />
+        <span>{messages['contact.phone']} <small>{messages['contact.optional']}</small></span>
+        <input type="tel" name="phone" autocomplete="tel" placeholder={messages['contact.yourPhone']} />
       </label>
       <label>
-        <span>What do you have in mind? <b aria-hidden="true">*</b><span class="sr-only"> required</span></span>
-        <textarea name="message" rows="4" placeholder="Tell us a little about your enquiry" required></textarea>
+        <span>{messages['contact.messagePrompt']} <b aria-hidden="true">*</b><span class="sr-only"> {messages['contact.required']}</span></span>
+        <textarea name="message" rows="4" placeholder={messages['contact.messagePlaceholder']} required></textarea>
       </label>
-      <button type="submit">Send message</button>
+      <button type="submit">{messages['contact.sendMessage']}</button>
     </form>
     <p class="form-status" data-v2-contact-fallback role="status" aria-live="polite" hidden>
-      If your email app didn’t open, email <a href="mailto:hello@unswdata.com">hello@unswdata.com</a>.
+      {messages['contact.emailFallback']} <a href="mailto:hello@unswdata.com">hello@unswdata.com</a>.
     </p>
   </section>
   </ParallaxContainer>
@@ -39,7 +49,7 @@ import ParallaxContainer from './ParallaxContainer.astro';
     <img
       class="team-photo"
       src="/team2026.webp"
-      alt="The 2026 UNSW DataSoc team on the steps at UNSW Sydney, holding a banner reading “The Data Science Society of UNSW”"
+      alt={messages['contact.teamPhoto']}
       width="1200"
       height="684"
       fetchpriority="high"
@@ -47,16 +57,16 @@ import ParallaxContainer from './ParallaxContainer.astro';
       decoding="async"
     />
     <div class="contact-copy">
-      <h2 id="contact-details-heading">Find us around campus</h2>
+      <h2 id="contact-details-heading">{messages['contact.findUs']}</h2>
       <a href="https://www.google.com/maps/place/UNSW+Sydney/@-33.9173425,151.2286926,17z/" target="_blank" rel="noopener noreferrer">
-        UNSW Sydney, NSW, Australia<span class="sr-only"> (opens in a new tab)</span>
+        {messages['contact.location']}<span class="sr-only">{messages['common.opensNewTab']}</span>
       </a>
       <a href="mailto:hello@unswdata.com">hello@unswdata.com</a>
-      <nav class="social-links" aria-label="Social media">
-        <a href="https://www.facebook.com/DataSoc/" target="_blank" rel="noopener noreferrer">Facebook<span class="sr-only"> (opens in a new tab)</span></a>
-        <a href="https://www.instagram.com/unswdatasoc/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr-only"> (opens in a new tab)</span></a>
-        <a href="https://www.youtube.com/@unswdatasoc" target="_blank" rel="noopener noreferrer">YouTube<span class="sr-only"> (opens in a new tab)</span></a>
-        <a href="https://linkedin.com/company/DataSoc" target="_blank" rel="noopener noreferrer">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
+      <nav class="social-links" aria-label={messages['contact.socialMedia']}>
+        <a href="https://www.facebook.com/DataSoc/" target="_blank" rel="noopener noreferrer">Facebook<span class="sr-only">{messages['common.opensNewTab']}</span></a>
+        <a href="https://www.instagram.com/unswdatasoc/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr-only">{messages['common.opensNewTab']}</span></a>
+        <a href="https://www.youtube.com/@unswdatasoc" target="_blank" rel="noopener noreferrer">YouTube<span class="sr-only">{messages['common.opensNewTab']}</span></a>
+        <a href="https://linkedin.com/company/DataSoc" target="_blank" rel="noopener noreferrer">LinkedIn<span class="sr-only">{messages['common.opensNewTab']}</span></a>
       </nav>
     </div>
   </aside>
@@ -275,14 +285,19 @@ import ParallaxContainer from './ParallaxContainer.astro';
     const email = String(values.get('email') || '');
     const phone = String(values.get('phone') || '');
     const message = String(values.get('message') || '');
+    const nameLabel = form.dataset.nameLabel ?? 'Name';
+    const emailLabel = form.dataset.emailLabel ?? 'Email';
+    const phoneLabel = form.dataset.phoneLabel ?? 'Phone';
     const body = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      ...(phone ? [`Phone: ${phone}`] : []),
+      `${nameLabel}: ${name}`,
+      `${emailLabel}: ${email}`,
+      ...(phone ? [`${phoneLabel}: ${phone}`] : []),
       '',
       message,
     ].join('\n');
-    const subject = encodeURIComponent(`Website enquiry from ${name}`);
+    const subject = encodeURIComponent(
+      (form.dataset.emailSubject ?? 'Website enquiry from {name}').replace('{name}', name),
+    );
     const encodedBody = encodeURIComponent(body);
     document.querySelector<HTMLElement>('[data-v2-contact-fallback]')?.removeAttribute('hidden');
     window.location.href = `mailto:hello@unswdata.com?subject=${subject}&body=${encodedBody}`;

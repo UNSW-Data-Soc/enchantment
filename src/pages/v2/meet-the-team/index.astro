@@ -6,6 +6,9 @@ import StarsScrollbar from '../../../components/v2/StarsScrollbar.astro';
 import TeamMemberDetails from '../../../components/v2/TeamMemberDetails.astro';
 import V2Layout from '../../../layouts/V2Layout.astro';
 import type { ImageMetadata } from 'astro';
+import { getV2Messages, type V2MessageKey } from '../../../i18n/v2';
+
+const messages = getV2Messages(Astro.currentLocale);
 
 const LEADERSHIP_SIZES = '(min-width: 1440px) 250px, (min-width: 768px) 22vw, (min-width: 640px) 150px, 42vw';
 const PORTFOLIO_SIZES = '(min-width: 1390px) 250px, (min-width: 834px) 18vw, (min-width: 640px) 150px, 44vw';
@@ -27,9 +30,9 @@ function cardDepth(index: number): number {
     return CARD_PARALLAX_DEPTHS[index % CARD_PARALLAX_DEPTHS.length];
 }
 
-type Member = { name: string; role: string; file?: string };
+type Member = { name: string; role: V2MessageKey; file?: string };
 type Section = {
-    title: string;
+    title: V2MessageKey;
     sizes: string;
     eager?: boolean;
     members: Member[];
@@ -37,49 +40,49 @@ type Section = {
 
 const leadership: Section[] = [
     {
-        title: 'President',
+        title: 'team.president',
         sizes: LEADERSHIP_SIZES,
         eager: true,
-        members: [{ name: 'Qingyuan He', role: 'President', file: 'qingyuan_h.jpg' }],
+        members: [{ name: 'Qingyuan He', role: 'team.president', file: 'qingyuan_h.jpg' }],
     },
     {
-        title: 'Executives',
+        title: 'team.executives',
         sizes: LEADERSHIP_SIZES,
         members: [
-            { name: 'Ethan Pham', role: 'Vice President (Activities)', file: 'ethan_p.jpg' },
-            { name: 'Stella Lin', role: 'Vice President (Development)', file: 'stella_l.jpg' },
-            { name: 'Naisha Kulshreshtha', role: 'Vice President (External)' },
-            { name: 'Andre Baruah', role: 'Vice President (Operations)', file: 'andre_b.jpg' },
-            { name: 'Akhil Panwar', role: 'Secretary', file: 'akhil_p.jpg' },
-            { name: 'Aaron Chen', role: 'Treasurer' },
+            { name: 'Ethan Pham', role: 'team.roles.vicePresidentActivities', file: 'ethan_p.jpg' },
+            { name: 'Stella Lin', role: 'team.roles.vicePresidentDevelopment', file: 'stella_l.jpg' },
+            { name: 'Naisha Kulshreshtha', role: 'team.roles.vicePresidentExternal' },
+            { name: 'Andre Baruah', role: 'team.roles.vicePresidentOperations', file: 'andre_b.jpg' },
+            { name: 'Akhil Panwar', role: 'team.roles.secretary', file: 'akhil_p.jpg' },
+            { name: 'Aaron Chen', role: 'team.roles.treasurer' },
         ],
     },
 ];
 
 const directors: Member[] = [
-    { name: 'Aaron Wong', role: 'Human Resources Director' },
-    { name: 'Yatha Shah', role: 'Human Resources Director', file: 'yatha_s.jpg' },
-    { name: 'Linh Pham', role: 'Social Director', file: 'linh_p.jpg' },
-    { name: 'Jason Nguyen', role: 'Social Director' },
-    { name: 'Lily Tang', role: 'Education Director', file: 'lily_t.jpg' },
-    { name: 'Minjun Kim', role: 'Education Director', file: 'minjun_k.jpg' },
-    { name: 'Anoushka Pandey', role: 'Philanthropy & Projects Director', file: 'anoushka_p.jpg' },
-    { name: 'Isabella Fan', role: 'Philanthropy & Projects Director', file: 'isabella_f.jpg' },
-    { name: 'Liam Lightfoot', role: 'Careers Director' },
-    { name: 'Vidisha Trivedi', role: 'Careers Director', file: 'vidisha_t.jpg' },
-    { name: 'Cathy Dinh', role: 'Sponsorships Director', file: 'cathy_d.jpg' },
-    { name: 'Simon Shen', role: 'Sponsorships Director' },
-    { name: 'Kai Lu', role: 'Technology Director', file: 'kai_l.jpg' },
-    { name: 'Shafquat Tabeeb', role: 'Technology Director', file: 'shafquat_t.jpg' },
-    { name: 'Jennifer Lee', role: 'Marketing Director', file: 'jennifer_l.jpg' },
-    { name: 'Shashwat Manish', role: 'Marketing Director' },
-    { name: 'Shreya Verma', role: 'Media Director', file: 'shreya_v.jpg' },
-    { name: 'Vedant Tyagi', role: 'Media Director', file: 'vedant_t.jpg' },
+    { name: 'Aaron Wong', role: 'team.roles.humanResources' },
+    { name: 'Yatha Shah', role: 'team.roles.humanResources', file: 'yatha_s.jpg' },
+    { name: 'Linh Pham', role: 'team.roles.social', file: 'linh_p.jpg' },
+    { name: 'Jason Nguyen', role: 'team.roles.social' },
+    { name: 'Lily Tang', role: 'team.roles.education', file: 'lily_t.jpg' },
+    { name: 'Minjun Kim', role: 'team.roles.education', file: 'minjun_k.jpg' },
+    { name: 'Anoushka Pandey', role: 'team.roles.philanthropyProjects', file: 'anoushka_p.jpg' },
+    { name: 'Isabella Fan', role: 'team.roles.philanthropyProjects', file: 'isabella_f.jpg' },
+    { name: 'Liam Lightfoot', role: 'team.roles.careers' },
+    { name: 'Vidisha Trivedi', role: 'team.roles.careers', file: 'vidisha_t.jpg' },
+    { name: 'Cathy Dinh', role: 'team.roles.sponsorships', file: 'cathy_d.jpg' },
+    { name: 'Simon Shen', role: 'team.roles.sponsorships' },
+    { name: 'Kai Lu', role: 'team.roles.technology', file: 'kai_l.jpg' },
+    { name: 'Shafquat Tabeeb', role: 'team.roles.technology', file: 'shafquat_t.jpg' },
+    { name: 'Jennifer Lee', role: 'team.roles.marketing', file: 'jennifer_l.jpg' },
+    { name: 'Shashwat Manish', role: 'team.roles.marketing' },
+    { name: 'Shreya Verma', role: 'team.roles.media', file: 'shreya_v.jpg' },
+    { name: 'Vedant Tyagi', role: 'team.roles.media', file: 'vedant_t.jpg' },
 ];
 
 const portfolios = Array.from(
     directors.reduce((groups, member) => {
-        const title = member.role.replace(/ Director$/, '');
+        const title = member.role;
         const members = groups.get(title) ?? [];
         members.push(member);
         groups.set(title, members);
@@ -93,7 +96,7 @@ const portfolios = Array.from(
 );
 ---
 
-<V2Layout title="Meet the team">
+<V2Layout title={messages['team.pageTitle']}>
     <div class="team-page">
         <div class="ambient-background" aria-hidden="true">
             <span class="ambient-cloud cloud-one" data-depth="0.06"></span>
@@ -130,15 +133,15 @@ const portfolios = Array.from(
                     id="main-content"
                     class="team-content"
                     data-trail-section
-                    data-section="Meet the team & President"
+                    data-section={`${messages['team.title']} ${messages['team.titleAccent']} & ${messages['team.president']}`}
                     data-scroll-top
-                    data-team-stop="Meet the team & President"
+                    data-team-stop={`${messages['team.title']} ${messages['team.titleAccent']} & ${messages['team.president']}`}
                     tabindex="-1"
                 >
                     <PageHeader
-                        title="Meet the"
-                        titleAccent="team"
-                        caption="caption caption this blah blah."
+                        title={messages['team.title']}
+                        titleAccent={messages['team.titleAccent']}
+                        caption={messages['team.caption']}
                         singleLine
                         showFlourish
                         sectionAnchor={false}
@@ -150,12 +153,12 @@ const portfolios = Array.from(
                             <section
                                 class:list={['team-section space-y-16', `leadership-section leadership-${index}`]}
                                 data-trail-section={index === 1 ? '' : undefined}
-                                data-section={index === 1 ? 'Executives' : undefined}
+                                data-section={index === 1 ? messages['team.executives'] : undefined}
                                 data-scroll-offset={index === 1 ? '48' : undefined}
-                                data-team-stop={index === 1 ? 'Executives' : undefined}
+                                data-team-stop={index === 1 ? messages['team.executives'] : undefined}
                                 tabindex={index === 1 ? -1 : undefined}
                             >
-                                <h2>{section.title}</h2>
+                                <h2>{messages[section.title]}</h2>
                                 <div class="leadership-members">
                                     {section.members.map((member, memberIndex) => {
                                         const image = photo(member.file);
@@ -169,12 +172,12 @@ const portfolios = Array.from(
                             </section>
                         ))}
 
-                        <section class="team-section directors-section space-y-12" data-trail-section data-trail-side="center" data-section="Directors" data-team-stop="Directors" tabindex="-1">
-                            <h2>Directors</h2>
+                        <section class="team-section directors-section space-y-12" data-trail-section data-trail-side="center" data-section={messages['team.directors']} data-team-stop={messages['team.directors']} tabindex="-1">
+                            <h2>{messages['team.directors']}</h2>
                             <div class="portfolio-grid">
                                 {portfolios.map((section, index) => (
                                     <section class:list={['portfolio-section', `portfolio-${index % PORTFOLIO_VARIANTS}`]} data-trail-section data-trail-side={index % 2 === 0 ? 'left' : 'right'}>
-                                        <h3>{section.title}</h3>
+                                        <h3>{messages[section.title]} {messages['team.roles.directorSuffix']}</h3>
                                         <div class="portfolio-members">
                                             {section.members.map((member, memberIndex) => {
                                                 const image = photo(member.file);

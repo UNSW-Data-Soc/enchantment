@@ -1,9 +1,13 @@
 ---
+import { getRelativeLocaleUrl } from 'astro:i18n';
 import { fetchEvents, type FacebookEvent } from '../../api/api.ts';
 import ParallaxContainer from './ParallaxContainer.astro';
 import clusterBg from '../../assets/ui/shapes/blue-red-cluster.svg?url';
 import arrowLeft from '../../assets/ui/buttons/round-arrow-grey-left.svg?url';
 import arrowRight from '../../assets/ui/buttons/round-grey-arrow-right.svg?url';
+import { getV2Messages } from '../../i18n/v2';
+const messages = getV2Messages(Astro.currentLocale);
+const eventsUrl = getRelativeLocaleUrl(Astro.currentLocale ?? 'en', 'v2/events/');
 
 // fetchEvents never throws; failures come back as { error } JSON.
 const { pastEvents = [] }: { pastEvents?: FacebookEvent[] } = await (await fetchEvents()).json();
@@ -23,16 +27,16 @@ const start = events.length ? 0 : 1;
 		<ParallaxContainer speed={0.12}>
       <!-- Update href to /v2/updates or /v2/latest-events once file created -->
       <div class="relative">
-        <a href="/v2/events" aria-label="Latest Events" class="peer absolute z-10 left-[20%] right-[20%] top-[20%] bottom-[30%]"></a>
+        <a href={eventsUrl} aria-label={messages['home.latestEvents']} class="peer absolute z-10 left-[20%] right-[20%] top-[20%] bottom-[30%]"></a>
         <!-- alt is empty because the link above already reads "Latest Events"; with both, the heading is read twice. -->
-        <img src="/text-headers/latest-events.png" alt="" draggable="false" class="transition duration-300 ease-out peer-hover:scale-103 peer-focus-visible:scale-103" />
+        <img src={messages['home.latestEventsHeaderImage']} alt="" draggable="false" class="transition duration-300 ease-out peer-hover:scale-103 peer-focus-visible:scale-103" />
       </div>
     </ParallaxContainer>
 	</h2>
 
   <div class="tagline">
     {/* The spaces keep the words apart where phones drop the line breaks. */}
-    <ParallaxContainer speed={0.12}>Stay up <br />to date <br />with <br />our latest <br />events <br />and <br />activities!</ParallaxContainer>
+    <ParallaxContainer speed={0.12}>{messages['home.latestEventsTagline'].split('\n').map((line, index) => <>{index > 0 && <br />}{line}{' '}</>)}</ParallaxContainer>
   </div>
 
   <ParallaxContainer speed={0.2}>
@@ -43,7 +47,7 @@ const start = events.length ? 0 : 1;
             {event && (
               <a href={`https://www.facebook.com/events/${event.id}`} target="_blank" rel="noopener noreferrer" tabindex={i === start ? undefined : -1}>
                 <img src={event.cover?.source ?? '/icons/datasoc/unsw-datasoc-logo-v2.png'} alt={event.name} loading="lazy" />
-                <span class="sr-only"> (opens in a new tab)</span>
+                <span class="sr-only">{messages['common.opensNewTab']}</span>
               </a>
             )}
           </li>
@@ -53,14 +57,14 @@ const start = events.length ? 0 : 1;
 
     <div class="controls">
       <!-- Disabled with no events: they would only cycle the empty placeholder slots. -->
-      <button type="button" data-dir="-1" aria-label="Previous event" disabled={!events.length}>
+      <button type="button" data-dir="-1" aria-label={messages['home.previousEvent']} disabled={!events.length}>
         <img src={arrowLeft} alt="" draggable="false" />
       </button>
-      <button type="button" data-dir="1" aria-label="Next event" disabled={!events.length}>
+      <button type="button" data-dir="1" aria-label={messages['home.nextEvent']} disabled={!events.length}>
         <img src={arrowRight} alt="" draggable="false" />
       </button>
     </div>
-    <p class="sr-only" aria-live="polite" data-carousel-status></p>
+    <p class="sr-only" aria-live="polite" data-carousel-status data-status-template={messages['home.eventStatus']}></p>
   </ParallaxContainer>
 </section>
 
@@ -303,7 +307,12 @@ const start = events.length ? 0 : 1;
     });
     // Announces the centred event; the placeholder slots shown when there are no events stay silent.
     const name = cards[index].querySelector('img')?.alt;
-    status.textContent = name ? `${name}, event ${index + 1} of ${cards.length}` : '';
+    status.textContent = name
+      ? status.dataset.statusTemplate!
+          .replace('{name}', name)
+          .replace('{index}', String(index + 1))
+          .replace('{count}', String(cards.length))
+      : '';
   };
 
   section.querySelectorAll<HTMLButtonElement>('button[data-dir]').forEach((button) => {

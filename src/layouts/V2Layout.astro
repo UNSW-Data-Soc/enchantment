@@ -1,13 +1,16 @@
 ---
 import { Font } from 'astro:assets';
 import Navbar from '../components/v2/Navbar.astro';
+import { getV2Messages } from '../i18n/v2';
 import '../styles/v2/global.css';
 
 const { title } = Astro.props;
+const locale = Astro.currentLocale ?? 'en';
+const messages = getV2Messages(locale);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="/favicon.png" />
@@ -21,7 +24,7 @@ const { title } = Astro.props;
   <body
     class:list={[{ 'pt-16': Astro.url.pathname.replace(/\/$/, '') !== '/v2' }]}
   >
-    <a class="skip-link" href="#main-content">Skip to content</a>
+    <a class="skip-link" href="#main-content">{messages['site.skipContent']}</a>
     <Navbar />
     <slot />
   </body>

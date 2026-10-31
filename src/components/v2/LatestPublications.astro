@@ -1,8 +1,12 @@
 ---
+import { getRelativeLocaleUrl } from 'astro:i18n';
 import { getCollection } from 'astro:content';
 import ParallaxContainer from './ParallaxContainer.astro';
 import outboundArrow from '../../assets/ui/buttons/white-outbound-arrow.svg?url';
 import { CAREERS_GUIDE, CAREERS_GUIDE_2021, FYG_2021_LINK, FYG_2022_LINK, FYG_2024_LINK, FYG_2025_LINK } from '../../utils/utils';
+import { getV2Messages } from '../../i18n/v2';
+const messages = getV2Messages(Astro.currentLocale);
+const publicationsUrl = getRelativeLocaleUrl(Astro.currentLocale ?? 'en', 'v2/publications/');
 
 type Publication = { date: string; title: string; href: string; caption?: string; image?: string };
 
@@ -17,12 +21,12 @@ const posts: Publication[] = (await getCollection('blog'))
   }));
 // The guides' PDFs, newest first. FYG_2023_LINK is left out: it still points at the 2021 guide.
 const guides: Publication[] = [
-  { date: '2025', title: 'First Year Guide', href: FYG_2025_LINK },
-  { date: '2024', title: 'Careers Guide', href: CAREERS_GUIDE },
-  { date: '2024', title: 'First Year Guide', href: FYG_2024_LINK },
-  { date: '2022', title: 'First Year Guide', href: FYG_2022_LINK },
-  { date: '2021', title: 'Careers Guide', href: CAREERS_GUIDE_2021 },
-  { date: '2021', title: 'First Year Guide', href: FYG_2021_LINK },
+  { date: '2025', title: messages['publications.firstYearGuide'], href: FYG_2025_LINK },
+  { date: '2024', title: messages['publications.careersGuide'], href: CAREERS_GUIDE },
+  { date: '2024', title: messages['publications.firstYearGuide'], href: FYG_2024_LINK },
+  { date: '2022', title: messages['publications.firstYearGuide'], href: FYG_2022_LINK },
+  { date: '2021', title: messages['publications.careersGuide'], href: CAREERS_GUIDE_2021 },
+  { date: '2021', title: messages['publications.firstYearGuide'], href: FYG_2021_LINK },
 ];
 const publications = [...posts, ...guides].map((publication) => ({ ...publication, external: publication.href.startsWith('http') }));
 
@@ -72,13 +76,20 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
   <ParallaxContainer speed={0.12}>
     <div class="title">
       <h2 id="latest-publications-heading">
-        <img src="/text-headers/latest-publications.png" alt="Latest Publications" />
+        <img src={messages['home.latestPublicationsHeaderImage']} alt={messages['home.latestPublications']} />
       </h2>
       <div class="title-actions">
-        <a class="more" href="/v2/publications" aria-label="All publications">
+        <a class="more" href={publicationsUrl} aria-label={messages['home.allPublications']}>
           <img src={outboundArrow} alt="" />
         </a>
-        <button class="pause" type="button" aria-label="Pause scrolling publications" data-ticker-pause>
+        <button
+          class="pause"
+          type="button"
+          aria-label={messages['home.pausePublications']}
+          data-ticker-pause
+          data-pause-label={messages['home.pausePublications']}
+          data-resume-label={messages['home.resumePublications']}
+        >
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path class="pause-icon" d="M9 7v10M15 7v10" fill="none" />
             <path class="play-icon" d="M9 6.5v11l9-5.5z" />
@@ -107,7 +118,7 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
                 {image && <img src={image} alt="" draggable="false" />}
                 <span class="name">{title}</span>
                 {caption && <span class="caption">{caption}</span>}
-                {external && <span class="sr-only"> (opens in a new tab)</span>}
+                {external && <span class="sr-only">{messages['common.opensNewTab']}</span>}
               </a>
             </li>
           )),
@@ -452,7 +463,7 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
   pause.addEventListener('click', () => {
     paused = !paused;
     pause.toggleAttribute('data-paused', paused);
-    pause.ariaLabel = paused ? 'Resume scrolling publications' : 'Pause scrolling publications';
+    pause.ariaLabel = paused ? pause.dataset.resumeLabel! : pause.dataset.pauseLabel!;
   });
 
   // The card a drag ends on doesn't count as hovered, so the strip carries on until the mouse reaches another card.

@@ -3,28 +3,31 @@ import Hero from './Hero.astro';
 import LatestEvents from './LatestEvents.astro';
 import LatestPublications from './LatestPublications.astro';
 import StarsScrollbar from './StarsScrollbar.astro';
+import { getV2Messages } from '../../i18n/v2';
+
+const messages = getV2Messages(Astro.currentLocale);
 ---
 
 <link rel="preload" as="image" href="/backgrounds/homepage-bg-v2-p00-no-sidebar.png" fetchpriority="high" />
 
-<main id="main-content" tabindex="-1" class="v2-home" aria-label="Homepage">
+<main id="main-content" tabindex="-1" class="v2-home" aria-label={messages['site.homepage']}>
   <div class="hero-slot">
     <Hero />
   </div>
 
   {/* data-section gives each section a scrollbar star, in page order (the hero's is on Hero's own section);
       data-focus-target is where a star moves keyboard focus. */}
-  <div class="latest-events-slot" data-section="Latest Events" data-focus-target="#latest-events-heading">
+  <div class="latest-events-slot" data-section={messages['home.sectionEvents']} data-focus-target="#latest-events-heading">
     <LatestEvents />
   </div>
 
   {/* Stands in for About Us, which isn't on main yet, as its band of the desktop background. When the About Us section
       lands (origin/Tony/website-v2-about-us), put this element's data-section on its slot and delete this band. */}
-  <div class="section-band" data-section="About Us" style="top: 49.6%; height: 28.2%"></div>
+  <div class="section-band" data-section={messages['home.sectionAbout']} style="top: 49.6%; height: 28.2%"></div>
 
   <div
     class="latest-publications-slot"
-    data-section="Latest Publications"
+    data-section={messages['home.sectionPublications']}
     data-focus-target="#latest-publications-heading"
   >
     <LatestPublications />

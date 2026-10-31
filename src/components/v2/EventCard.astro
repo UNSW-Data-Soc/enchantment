@@ -1,5 +1,7 @@
 ---
 import type { FacebookEvent } from '../../api/api.ts';
+import { getV2Messages } from '../../i18n/v2';
+const messages = getV2Messages(Astro.currentLocale);
 
 interface Props {
   event: FacebookEvent;
@@ -13,9 +15,9 @@ const { event } = Astro.props;
     {event.cover?.source ? (
       <img src={event.cover.source} alt="" loading="lazy" decoding="async" />
     ) : (
-      <span class="image-placeholder">Event image unavailable</span>
+      <span class="image-placeholder">{messages['events.imageUnavailable']}</span>
     )}
   </div>
   <h3>{event.name}</h3>
-  <span class="sr-only"> (opens in a new tab)</span>
+  <span class="sr-only">{messages['common.opensNewTab']}</span>
 </a>

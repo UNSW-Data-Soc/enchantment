@@ -1,12 +1,15 @@
 ---
 import ContentPage from '../../../components/v2/ContentPage.astro';
 import ContactPageContent from '../../../components/v2/ContactPageContent.astro';
+import { getV2Messages } from '../../../i18n/v2';
+
+const messages = getV2Messages(Astro.currentLocale);
 ---
 
 <ContentPage
-  title="Contact"
-  titleAccent="us"
-  caption="Questions, ideas, or just want to say hello? We'd love to hear from you."
+  title={messages['contact.title']}
+  titleAccent={messages['contact.titleAccent']}
+  caption={messages['contact.caption']}
 >
   <ContactPageContent />
 </ContentPage>

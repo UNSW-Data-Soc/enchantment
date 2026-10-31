@@ -1,13 +1,18 @@
 ---
+import { getV2Messages } from '../../i18n/v2';
+const messages = getV2Messages(Astro.currentLocale);
+
 const tiers = [
   {
-    name: 'Gold',
+    key: 'gold',
+    name: messages['sponsorships.gold'],
     sponsors: [
       { name: 'Atlassian', href: 'https://www.atlassian.com/', logo: '/icons/atlassian.png', width: '15rem' },
     ],
   },
   {
-    name: 'Silver',
+    key: 'silver',
+    name: messages['sponsorships.silver'],
     sponsors: [
       { name: 'Jane Street', href: 'https://www.janestreet.com/', logo: '/icons/janest.png', width: '12rem' },
       { name: 'Quantium', href: 'https://www.quantium.com/', logo: '/icons/quantium.svg', width: '12rem' },
@@ -15,7 +20,8 @@ const tiers = [
     ],
   },
   {
-    name: 'Bronze',
+    key: 'bronze',
+    name: messages['sponsorships.bronze'],
     sponsors: [
       { name: 'Susquehanna', href: 'https://www.sig.com/', logo: '/icons/susquehanna.png', width: '11rem' },
       { name: 'IMC', href: 'https://www.imc.com/', logo: '/icons/imc.svg', width: '11rem' },
@@ -33,16 +39,16 @@ const tiers = [
   <div class="showcase-glow glow-one" aria-hidden="true"></div>
   <div class="showcase-glow glow-two" aria-hidden="true"></div>
   <div class="showcase-inner">
-    <h2 id="sponsors-heading">Proudly sponsored by</h2>
+    <h2 id="sponsors-heading">{messages['sponsorships.proudlySponsored']}</h2>
     <div class="sponsor-tiers">
       {tiers.map((tier) => (
         <section
-          class:list={['sponsor-tier', `tier-${tier.name.toLowerCase()}`]}
-          aria-labelledby={`sponsor-tier-${tier.name.toLowerCase()}-heading`}
+          class:list={['sponsor-tier', `tier-${tier.key}`]}
+          aria-labelledby={`sponsor-tier-${tier.key}-heading`}
           data-section={tier.name}
           data-parallax-speed="0.035"
         >
-          <h3 id={`sponsor-tier-${tier.name.toLowerCase()}-heading`}>{tier.name}</h3>
+          <h3 id={`sponsor-tier-${tier.key}-heading`}>{tier.name}</h3>
           <div class="sponsor-logos">
             {tier.sponsors.map((sponsor) => (
               <a
@@ -53,7 +59,7 @@ const tiers = [
                 data-parallax-speed="0.045"
               >
                 <img src={sponsor.logo} alt={sponsor.name} style={`--logo-width: ${sponsor.width}`} loading="lazy" decoding="async" />
-                <span class="sr-only"> (opens in a new tab)</span>
+                <span class="sr-only">{messages['common.opensNewTab']}</span>
               </a>
             ))}
           </div>

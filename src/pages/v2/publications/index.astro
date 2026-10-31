@@ -17,6 +17,9 @@ import {
   ORLANDO,
   SENTIMENTAL_ANALYSIS,
 } from '../../../utils/utils';
+import { getV2Messages } from '../../../i18n/v2';
+
+const messages = getV2Messages(Astro.currentLocale);
 
 type PublicationCard = {
   title: string;
@@ -35,44 +38,44 @@ const vibeCoding = blogEntries.find(({ data }) => data.title.toLowerCase().inclu
 const categories: Category[] = [
   {
     accent: '#d94a65',
-    title: 'Careers guides',
+    title: messages['publications.careersGuides'],
     cards: [
-      { title: 'Careers Guide', label: '2021 edition', href: CAREERS_GUIDE_2021, accent: '#d94a65', date: 2021, external: true },
-      { title: 'Careers Guide', label: '2024 edition', href: CAREERS_GUIDE, accent: '#f4b000', date: 2024, external: true },
+      { title: messages['publications.careersGuide'], label: `2021 ${messages['publications.edition']}`, href: CAREERS_GUIDE_2021, accent: '#d94a65', date: 2021, external: true },
+      { title: messages['publications.careersGuide'], label: `2024 ${messages['publications.edition']}`, href: CAREERS_GUIDE, accent: '#f4b000', date: 2024, external: true },
     ],
   },
   {
     accent: '#f4b000',
-    title: 'First year guides',
+    title: messages['publications.firstYearGuides'],
     cards: [
-      { title: 'First Year Guide', label: '2021 edition', href: FYG_2021_LINK, accent: '#8c7898', date: 2021, external: true },
-      { title: 'First Year Guide', label: '2022 edition', href: FYG_2022_LINK, accent: '#3a718b', date: 2022, external: true },
-      { title: 'First Year Guide', label: '2024 edition', href: FYG_2024_LINK, accent: '#d94a65', date: 2024, external: true },
-      { title: 'First Year Guide', label: '2025 edition', href: FYG_2025_LINK, accent: '#f4b000', date: 2025, external: true },
+      { title: messages['publications.firstYearGuide'], label: `2021 ${messages['publications.edition']}`, href: FYG_2021_LINK, accent: '#8c7898', date: 2021, external: true },
+      { title: messages['publications.firstYearGuide'], label: `2022 ${messages['publications.edition']}`, href: FYG_2022_LINK, accent: '#3a718b', date: 2022, external: true },
+      { title: messages['publications.firstYearGuide'], label: `2024 ${messages['publications.edition']}`, href: FYG_2024_LINK, accent: '#d94a65', date: 2024, external: true },
+      { title: messages['publications.firstYearGuide'], label: `2025 ${messages['publications.edition']}`, href: FYG_2025_LINK, accent: '#f4b000', date: 2025, external: true },
     ],
   },
   {
     accent: '#3a718b',
-    title: 'Python resources',
+    title: messages['publications.pythonResources'],
     cards: [
-      { title: 'Pandas for Python', label: 'Python resource', href: '/resources/pandas', accent: '#3a718b' },
-      { title: 'Matplotlib for Python', label: 'Python resource', href: '/resources/matplotlib', accent: '#776b87' },
+      { title: messages['publications.pandas'], label: messages['publications.pythonResource'], href: '/resources/pandas', accent: '#3a718b' },
+      { title: messages['publications.matplotlib'], label: messages['publications.pythonResource'], href: '/resources/matplotlib', accent: '#776b87' },
     ],
   },
   {
     accent: '#8c7898',
-    title: 'Blogs',
+    title: messages['publications.blogs'],
     cards: [
-      { title: 'Data Visualization', label: '', href: DATA_VISUALIZATION, accent: '#3a718b', external: true },
-      { title: 'Ethics in Data Science', label: '', href: ETHICS_DATA_SCIENCE, accent: '#d94a65', external: true },
-      { title: 'Explainability in Data Science', label: '', href: EXPLAINABILITY, accent: '#8c7898', external: true },
-      { title: 'Machine Learning', label: '', href: MACHINE_LEARNING, accent: '#f4b000', external: true },
-      { title: 'Orlando Data Science Conference', label: '', href: ORLANDO, accent: '#3a718b', external: true },
-      { title: 'Sentimental Analysis', label: '', href: SENTIMENTAL_ANALYSIS, accent: '#d94a65', external: true },
-      { title: 'How Data Science is Quietly Shaping Your Daily Life', label: '', href: DATA_SCI_BLOG, accent: '#8c7898', external: true },
+      { title: messages['publications.dataVisualization'], label: '', href: DATA_VISUALIZATION, accent: '#3a718b', external: true },
+      { title: messages['publications.ethics'], label: '', href: ETHICS_DATA_SCIENCE, accent: '#d94a65', external: true },
+      { title: messages['publications.explainability'], label: '', href: EXPLAINABILITY, accent: '#8c7898', external: true },
+      { title: messages['publications.machineLearning'], label: '', href: MACHINE_LEARNING, accent: '#f4b000', external: true },
+      { title: messages['publications.orlando'], label: '', href: ORLANDO, accent: '#3a718b', external: true },
+      { title: messages['publications.sentimentAnalysis'], label: '', href: SENTIMENTAL_ANALYSIS, accent: '#d94a65', external: true },
+      { title: messages['publications.dailyLife'], label: '', href: DATA_SCI_BLOG, accent: '#8c7898', external: true },
       ...(vibeCoding
         ? [{
-            title: 'Vibe Coding Won’t Save You',
+            title: messages['publications.vibeCoding'],
             label: '',
             href: `/blog/${vibeCoding.id}`,
             accent: '#f4b000',
@@ -89,16 +92,16 @@ const categories: Category[] = [
 ---
 
 <ContentPage
-  title="Our"
-  titleAccent="publications"
-  caption="Guides, resources, and ideas from the DataSoc community."
+  title={messages['publications.title']}
+  titleAccent={messages['publications.titleAccent']}
+  caption={messages['publications.caption']}
 >
   <div class="publication-categories">
     <label class="publication-search">
-      <span>Search publications</span>
-      <input type="search" placeholder="Search guides, resources, and blogs" autocomplete="off" data-publication-search />
+      <span>{messages['publications.searchLabel']}</span>
+      <input type="search" placeholder={messages['publications.searchPlaceholder']} autocomplete="off" data-publication-search />
     </label>
-    <p class="search-empty" data-search-empty role="status" aria-live="polite" hidden>No publications match your search.</p>
+    <p class="search-empty" data-search-empty role="status" aria-live="polite" hidden>{messages['publications.searchEmpty']}</p>
     {categories.map((category, index) => {
       const panelId = `publication-panel-${index}`;
       return (
@@ -125,7 +128,7 @@ const categories: Category[] = [
                       href={card.href}
                       data-publication-card
                       data-search={`${category.title} ${card.title} ${card.label}`}
-                      aria-label={`${card.title}${card.label ? `, ${card.label}` : ''}${card.external ? ', opens in a new tab' : ''}`}
+                      aria-label={`${card.title}${card.label ? `, ${card.label}` : ''}${card.external ? messages['common.opensNewTab'] : ''}`}
                       {...(card.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                     >
                       <div class:list={['article-cover', { 'has-cover-image': card.image }]} style={`--cover-accent: ${card.accent}`}>
