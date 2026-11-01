@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import ParallaxContainer from './ParallaxContainer.astro';
+import TextHeader from './TextHeader.astro';
 import outboundArrow from '../../assets/ui/buttons/white-outbound-arrow.svg?url';
 import { CAREERS_GUIDE, CAREERS_GUIDE_2021, FYG_2021_LINK, FYG_2022_LINK, FYG_2024_LINK, FYG_2025_LINK } from '../../utils/utils';
 
@@ -72,7 +73,8 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
   <ParallaxContainer speed={0.12}>
     <div class="title">
       <h2 id="latest-publications-heading">
-        <img src="/text-headers/latest-publications.png" alt="Latest Publications" />
+        <TextHeader variant="publications" />
+        <span class="sr-only">Latest Publications</span>
       </h2>
       <div class="title-actions">
         <a class="more" href="/v2/publications" aria-label="All publications">
@@ -134,8 +136,7 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
     margin: 0 0 0 5.5vw;
   }
 
-  h2 img {
-    display: block;
+  h2 :global(.text-header) {
     width: 35.3vw;
   }
 
@@ -343,7 +344,7 @@ const fadeBarrier = `polygon(0 0, ${edge.map(([y, x]) => `calc(${x}vw + var(--fa
     }
 
     /* The same size as Latest Events' heading, from HomePage's phone-width --column. */
-    h2 img {
+    h2 :global(.text-header) {
       width: calc(var(--column) * 0.7);
     }
 

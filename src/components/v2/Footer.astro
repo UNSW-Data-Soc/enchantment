@@ -8,14 +8,16 @@ import buttonImage from '../../assets/ui/buttons/rouge-up-arrow-button.svg';
     <div class="footer-content">
       <div class="footer-art" aria-hidden="true"></div>
 
-      <img
-        class="quicklinks-header"
-        src="/text-headers/quicklinks-header.png"
-        alt=""
-        draggable="false"
-      />
+      <!-- The arc is the baseline of the lettering in the image this replaced (quicklinks-header.png, 278×402), fitted as
+           a circle; textLength stretches the text to that lettering's length. -->
+      <svg class="quicklinks-header" viewBox="0 0 278 402" width="278" height="402" aria-hidden="true">
+        <path id="quicklinks-arc" d="M 27.0 65.5 A 271.8 271.8 0 0 1 174.1 378.6" fill="none" />
+        <text font-size="33.8" font-weight="500" fill="#fffbf2">
+          <textPath href="#quicklinks-arc" textLength="362.9" lengthAdjust="spacingAndGlyphs">DataSoc Quicklinks</textPath>
+        </text>
+      </svg>
 
-      <!-- The header image is decorative: the nav's label carries its words, so they're read once. -->
+      <!-- The header is decorative: the nav's label carries its words, so they're read once. -->
       <nav class="quick-links" aria-label="Quick links">
         {quicklinks.map((item) => <a href={`/${item.linkto}`}>{item.text}</a>)}
       </nav>
@@ -100,11 +102,13 @@ import buttonImage from '../../assets/ui/buttons/rouge-up-arrow-button.svg';
   .quicklinks-header {
     position: absolute;
     /* Positioned so the text's arc is concentric with the art's grey ring, 66px in (derivation in #98); re-derive
-       if either image changes. */
+       if the art or the arc changes. */
     top: 19.43%;
     left: 59.63%;
     width: 13.21%;
     height: auto;
+    overflow: visible;
+    font-family: var(--font-montserrat-alternates), sans-serif;
     z-index: 2;
   }
 

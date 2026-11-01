@@ -1,0 +1,95 @@
+---
+// The homepage's two-line section headers, drawn as SVG text so they stay sharp at any size and render the same on
+// every browser. Each keeps the viewBox of the PNG it replaces, so layouts sized around that image still line up.
+// Each line was fitted to the PNG's lettering in Montserrat Alternates: "Latest" by cap height, the second line by
+// x-height (the originals' capitals run tall), then textLength stretches or narrows it to the original's ink width.
+interface Line {
+  text: string;
+  weight: number;
+  size: number;
+  length: number;
+  x: number;
+  y: number;
+  // Gradient stops run across the line's ink, left to right.
+  colours: string[];
+  from: number;
+  to: number;
+}
+
+const variants = {
+  events: {
+    width: 606,
+    height: 277,
+    lines: [
+      { text: 'Latest', weight: 700, size: 87.3, length: 327.2, x: 138, y: 126, colours: ['#cfc2b5', '#71718b', '#343b6a'], from: 146, to: 464 },
+      { text: 'Events', weight: 500, size: 92.5, length: 262.8, x: 170.9, y: 191, colours: ['#ec5169', '#ec5169'], from: 174, to: 432 },
+    ],
+  },
+  publications: {
+    width: 634,
+    height: 278,
+    lines: [
+      { text: 'Latest', weight: 700, size: 87.3, length: 327.2, x: 59, y: 127, colours: ['#333767', '#aa5562', '#f0645c'], from: 67, to: 385 },
+      { text: 'Publications', weight: 500, size: 92.5, length: 477.8, x: 86.6, y: 192, colours: ['#dc68f3', '#824fad', '#2e3769'], from: 94, to: 563 },
+    ],
+  },
+} satisfies Record<string, { width: number; height: number; lines: [Line, Line] }>;
+
+interface Props {
+  variant: keyof typeof variants;
+  class?: string;
+}
+
+const { variant, class: className } = Astro.props;
+const { width, height, lines } = variants[variant];
+const id = `text-header-${variant}`;
+---
+
+<svg
+  class:list={['text-header', className]}
+  viewBox={`0 0 ${width} ${height}`}
+  width={width}
+  height={height}
+  aria-hidden="true"
+>
+  <defs>
+    {lines.map((line, index) => (
+      <linearGradient id={`${id}-${index}`} gradientUnits="userSpaceOnUse" x1={line.from} x2={line.to} y1="0" y2="0">
+        {line.colours.map((colour, stop) => (
+          <stop offset={stop / (line.colours.length - 1)} stop-color={colour} />
+        ))}
+      </linearGradient>
+    ))}
+    <filter id={`${id}-shadow`} x="-10%" y="-20%" width="120%" height="150%">
+      <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#000" flood-opacity="0.22" />
+    </filter>
+  </defs>
+  <g filter={`url(#${id}-shadow)`}>
+    {lines.map((line, index) => (
+      <text
+        x={line.x}
+        y={line.y}
+        font-size={line.size}
+        font-weight={line.weight}
+        textLength={line.length}
+        lengthAdjust="spacingAndGlyphs"
+        fill={`url(#${id}-${index})`}
+      >
+        {line.text}
+      </text>
+    ))}
+  </g>
+</svg>
+
+<style>
+  /* Shrinks in a tight row like the img it replaced (Tailwind gives img, not svg, max-width: 100%), and isn't
+     selectable, as the image wasn't. */
+  .text-header {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    overflow: visible;
+    user-select: none;
+    font-family: var(--font-montserrat-alternates), sans-serif;
+  }
+</style>
