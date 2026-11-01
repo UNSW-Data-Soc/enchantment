@@ -1,21 +1,71 @@
 ---
+import { getImage, inferRemoteSize } from 'astro:assets';
 import type { FacebookEvent } from '../../api/api.ts';
 
 interface Props {
   event: FacebookEvent;
+  eager?: boolean;
+  hidden?: boolean;
 }
 
-const { event } = Astro.props;
+const { event, eager = false, hidden = false } = Astro.props;
+
+// Facebook's covers are full-size and their URLs expire, so they're resized into the build. If that fails the card
+// still links the original.
+let cover: Awaited<ReturnType<typeof getImage>> | undefined;
+if (event.cover?.source) {
+  try {
+    // getImage keeps an inferred height even when given a width, so the height is scaled here. Never upscaled.
+    const size = await inferRemoteSize(event.cover.source);
+    const width = Math.min(640, size.width);
+    const height = Math.round((width * size.height) / size.width);
+    cover = await getImage({ src: event.cover.source, width, height, widths: width > 320 ? [320, width] : [width], format: 'webp' });
+  } catch {
+    cover = undefined;
+  }
+}
+
+// Facebook times carry their own offset; show them in Sydney time whatever time zone the build runs in.
+const startTime = new Intl.DateTimeFormat('en-AU', {
+  timeZone: 'Australia/Sydney',
+  weekday: 'short',
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+}).format(new Date(event.start_time));
 ---
 
-<a class="event-card" href={`https://www.facebook.com/events/${event.id}`} target="_blank" rel="noopener noreferrer">
-  <div class="event-image">
-    {event.cover?.source ? (
-      <img src={event.cover.source} alt="" loading="lazy" decoding="async" />
+<a
+  class="event-card"
+  href={`https://www.facebook.com/events/${event.id}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  hidden={hidden}
+>
+  <!-- Only a resized cover drops the square backdrop: a fallback image that fails to load would leave no box at all. -->
+  <div class:list={['event-image', { 'has-cover': cover }]}>
+    {cover ? (
+      <img
+        src={cover.src}
+        srcset={cover.srcSet.attribute}
+        sizes="(min-width: 900px) 18rem, (min-width: 600px) 31vw, 48vw"
+        width={cover.attributes.width}
+        height={cover.attributes.height}
+        alt=""
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : undefined}
+        decoding="async"
+      />
+    ) : event.cover?.source ? (
+      <img src={event.cover.source} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" />
     ) : (
       <span class="image-placeholder">Event image unavailable</span>
     )}
   </div>
   <h3>{event.name}</h3>
+  {event.place?.name && <p class="event-detail">{event.place.name}</p>}
+  <p class="event-detail"><time datetime={event.start_time}>{startTime}</time></p>
   <span class="sr-only"> (opens in a new tab)</span>
 </a>
