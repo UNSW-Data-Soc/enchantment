@@ -36,18 +36,18 @@ const showSampleEvents = import.meta.env.DEV && pastEvents.length === 0;
   title="Our"
   titleAccent="events"
   caption="See what's happening at DataSoc"
-  sectionName="Back to top"
+  sectionName="Top"
   scrollToTop
 >
   <div class="events-listing">
     <ParallaxContainer speed={0.035} class="event-section-layer">
     <section class="event-section" aria-labelledby="upcoming-events-heading">
       <h2 id="upcoming-events-heading">Upcoming events</h2>
-      <div class="event-grid" data-section={upcomingEvents.length ? 'Upcoming events' : undefined}>
+      <div class="event-grid" data-section={upcomingEvents.length ? 'Upcoming events' : undefined} data-focus-target="#upcoming-events-heading">
         {upcomingEvents.map((event) => (
           <EventCard event={event} />
         ))}
-        {!upcomingEvents.length && <p class="empty-events" data-section="Upcoming events" data-scroll-position="0.34">No upcoming events right now.</p>}
+        {!upcomingEvents.length && <p class="empty-events" data-section="Upcoming events" data-focus-target="#upcoming-events-heading" data-scroll-position="0.34">No upcoming events right now.</p>}
       </div>
     </section>
     </ParallaxContainer>
@@ -55,7 +55,7 @@ const showSampleEvents = import.meta.env.DEV && pastEvents.length === 0;
     <ParallaxContainer speed={0.035} class="event-section-layer">
     <section class="event-section" aria-labelledby="past-events-heading">
       <h2 id="past-events-heading">Past events</h2>
-      <div class="event-grid" data-section={pastEvents.length || showSampleEvents ? 'Past events' : undefined}>
+      <div class="event-grid" data-section={pastEvents.length || showSampleEvents ? 'Past events' : undefined} data-focus-target="#past-events-heading">
         {pastEvents.length ? pastEvents.map((event) => (
           <EventCard event={event} />
         )) : showSampleEvents ? sampleEvents.map((name) => (
@@ -65,7 +65,7 @@ const showSampleEvents = import.meta.env.DEV && pastEvents.length === 0;
             </div>
             <h3>{name}</h3>
           </article>
-        )) : <p class="empty-events" data-section="Past events" data-scroll-position="0.34">No past events to show.</p>}
+        )) : <p class="empty-events" data-section="Past events" data-focus-target="#past-events-heading" data-scroll-position="0.34">No past events to show.</p>}
       </div>
     </section>
     </ParallaxContainer>
