@@ -66,6 +66,6 @@ const startTime = new Intl.DateTimeFormat('en-AU', {
   </div>
   <h3>{event.name}</h3>
   {event.place?.name && <p class="event-detail">{event.place.name}</p>}
-  <p class="event-detail"><time datetime={event.start_time}>{startTime}</time></p>
+  <p class="event-detail"><time datetime={new Date(event.start_time).toISOString()}>{startTime}</time></p>
   <span class="sr-only"> (opens in a new tab)</span>
 </a>

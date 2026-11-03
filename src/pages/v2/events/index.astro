@@ -55,7 +55,7 @@ const eagerCount = (section: FacebookEvent[]) => (section === (upcomingEvents.le
         ))}
         {!upcomingEvents.length && <p class="empty-events" data-section="Upcoming events" data-focus-target="#upcoming-events-heading" data-scroll-position="0.34">No upcoming events right now.</p>}
       </div>
-      {upcomingEvents.length > BATCH_SIZE && <button type="button" class="show-more" data-batch={BATCH_SIZE} aria-label="Show more upcoming events">Show more</button>}
+      {upcomingEvents.length > BATCH_SIZE && <button type="button" class="show-more" data-batch={BATCH_SIZE} aria-label="Show more upcoming events" hidden>Show more</button>}
     </section>
     </ParallaxContainer>
 
@@ -74,7 +74,7 @@ const eagerCount = (section: FacebookEvent[]) => (section === (upcomingEvents.le
           </article>
         )) : <p class="empty-events" data-section="Past events" data-focus-target="#past-events-heading" data-scroll-position="0.34">No past events to show.</p>}
       </div>
-      {pastEvents.length > BATCH_SIZE && <button type="button" class="show-more" data-batch={BATCH_SIZE} aria-label="Show more past events">Show more</button>}
+      {pastEvents.length > BATCH_SIZE && <button type="button" class="show-more" data-batch={BATCH_SIZE} aria-label="Show more past events" hidden>Show more</button>}
     </section>
     </ParallaxContainer>
   </div>
@@ -118,7 +118,9 @@ const eagerCount = (section: FacebookEvent[]) => (section === (upcomingEvents.le
     });
     cards.forEach((card) => observer.observe(card));
 
+    // Rendered hidden, so it only appears where this script can make it work.
     const button = grid.parentElement?.querySelector<HTMLButtonElement>(':scope > .show-more');
+    if (button) button.hidden = false;
     button?.addEventListener('click', () => {
       const next = Array.from(grid.querySelectorAll<HTMLElement>(':scope > .event-card[hidden]'))
         .slice(0, Number(button.dataset.batch));
