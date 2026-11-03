@@ -25,6 +25,9 @@ if (event.cover?.source) {
   }
 }
 
+// The img's sizes are card widths measured on the Events page's grid at each breakpoint; re-measure if its padding,
+// gaps or breakpoints change.
+
 // Facebook times carry their own offset; show them in Sydney time whatever time zone the build runs in.
 const startTime = new Intl.DateTimeFormat('en-AU', {
   timeZone: 'Australia/Sydney',
@@ -50,7 +53,7 @@ const startTime = new Intl.DateTimeFormat('en-AU', {
       <img
         src={cover.src}
         srcset={cover.srcSet.attribute}
-        sizes="(min-width: 900px) 18rem, (min-width: 600px) 31vw, 48vw"
+        sizes="(min-width: 1500px) 280px, (min-width: 900px) calc(19.7vw - 14px), (min-width: 600px) calc(27.5vw - 24px), calc(45.8vw - 48px)"
         width={cover.attributes.width}
         height={cover.attributes.height}
         alt=""
