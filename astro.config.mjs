@@ -31,7 +31,7 @@ export default defineConfig({
       provider: fontProviders.google(),
       name: 'Montserrat Alternates',
       cssVariable: '--font-montserrat-alternates',
-      weights: ['400', '500', '700'],
+      weights: ['500', '700'],
       styles: ['normal'],
     },
   ],
