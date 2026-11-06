@@ -26,14 +26,6 @@ export default defineConfig({
       weights: ['400', '700', '800'],
       styles: ['normal'],
     },
-    {
-      // The homepage's section headers and the footer's Quicklinks title (TextHeader.astro, Footer.astro).
-      provider: fontProviders.google(),
-      name: 'Montserrat Alternates',
-      cssVariable: '--font-montserrat-alternates',
-      weights: ['500', '700'],
-      styles: ['normal'],
-    },
   ],
 
   vite: {
