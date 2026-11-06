@@ -60,7 +60,7 @@ import buttonImage from '../../assets/ui/buttons/rouge-up-arrow-button.svg';
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
   .v2-footer {
     /* The links stop shrinking at 12px, and below this width they no longer fit inside the artwork's arc, so
-       screens down to phone width see a crop of the footer at this width instead of a scaled-down one. */
+       screens down to portrait phones see a crop of the footer at this width instead of a scaled-down one. */
     --min-art-width: 56rem;
     position: relative;
     width: 100%;
@@ -217,8 +217,9 @@ import buttonImage from '../../assets/ui/buttons/rouge-up-arrow-button.svg';
   }
 
   /* On phones each panel stacks at full width with its own crop of the artwork. --art-unit is one pixel of the
-     1708-wide image, scaled so the panel's section fills the width but never past its native size. */
-  @media (max-width: 48rem) {
+     1708-wide image, scaled so the panel's section fills the width but never past its native size. Portrait only:
+     stacked, the footer is taller than a landscape phone's screen, which would push the scroll button out of view. */
+  @media (max-width: 48rem) and (orientation: portrait) {
     .v2-footer {
       aspect-ratio: auto;
       min-height: 0;
@@ -254,10 +255,6 @@ import buttonImage from '../../assets/ui/buttons/rouge-up-arrow-button.svg';
       min-height: calc(var(--art-unit) * 581);
       background: #384151 url("/backgrounds/footer-bg.png") no-repeat;
       background-size: calc(var(--art-unit) * 1708) auto;
-    }
-
-    .footer-panel:empty {
-      display: none;
     }
 
     .footer-panel-info {
