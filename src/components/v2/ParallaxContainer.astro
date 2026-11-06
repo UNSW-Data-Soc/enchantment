@@ -117,9 +117,11 @@ const positionStyle = hasCenter
 		update();
 		source.addEventListener('scroll', update, { passive: true });
 		if (source === window) source.addEventListener('v2-lenis-scroll', update, { passive: true });
-		// Sizes change once images load and on resize (layouts here are in vw).
+		// Sizes change once images and fonts load, when content is added (Events' "Show more"), and on resize (layouts
+		// here are in vw).
 		window.addEventListener('load', remeasure);
 		window.addEventListener('resize', remeasure);
+		new ResizeObserver(remeasure).observe(document.body);
 	});
 
 	motionPreference.addEventListener('change', () =>
