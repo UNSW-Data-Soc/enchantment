@@ -11,6 +11,11 @@ export default defineConfig({
   site: 'https://unsw-data-soc.github.io',
   base: '/',
 
+  // Event covers come from Facebook's CDN and are resized at build time.
+  image: {
+    remotePatterns: [{ protocol: 'https', hostname: '**.fbcdn.net' }],
+  },
+
   fonts: [
     {
       provider: fontProviders.google(),
