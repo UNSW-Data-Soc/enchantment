@@ -30,6 +30,12 @@ const pastEvents = events.pastEvents.toSorted(
 );
 const sampleEvents = ['Sample event — preview', 'Another sample event', 'Sample workshop', 'Sample social event'];
 const showSampleEvents = import.meta.env.DEV && pastEvents.length === 0;
+
+// Each section shows this many events at first, and "Show more" reveals the next batch. Hidden cards' lazy images
+// don't load until they're shown.
+const BATCH_SIZE = 8;
+// The first row of the first section with events is usually on screen when the page opens, so its images load first.
+const eagerCount = (section: FacebookEvent[]) => (section === (upcomingEvents.length ? upcomingEvents : pastEvents) ? 4 : 0);
 ---
 
 <ContentPage
@@ -44,11 +50,12 @@ const showSampleEvents = import.meta.env.DEV && pastEvents.length === 0;
     <section class="event-section" aria-labelledby="upcoming-events-heading">
       <h2 id="upcoming-events-heading">Upcoming events</h2>
       <div class="event-grid" data-section={upcomingEvents.length ? 'Upcoming events' : undefined} data-focus-target="#upcoming-events-heading">
-        {upcomingEvents.map((event) => (
-          <EventCard event={event} />
+        {upcomingEvents.map((event, index) => (
+          <EventCard event={event} eager={index < eagerCount(upcomingEvents)} hidden={index >= BATCH_SIZE} />
         ))}
         {!upcomingEvents.length && <p class="empty-events" data-section="Upcoming events" data-focus-target="#upcoming-events-heading" data-scroll-position="0.34">No upcoming events right now.</p>}
       </div>
+      {upcomingEvents.length > BATCH_SIZE && <button type="button" class="show-more" data-batch={BATCH_SIZE} aria-label="Show more upcoming events" hidden>Show more</button>}
     </section>
     </ParallaxContainer>
 
@@ -56,8 +63,8 @@ const showSampleEvents = import.meta.env.DEV && pastEvents.length === 0;
     <section class="event-section" aria-labelledby="past-events-heading">
       <h2 id="past-events-heading">Past events</h2>
       <div class="event-grid" data-section={pastEvents.length || showSampleEvents ? 'Past events' : undefined} data-focus-target="#past-events-heading">
-        {pastEvents.length ? pastEvents.map((event) => (
-          <EventCard event={event} />
+        {pastEvents.length ? pastEvents.map((event, index) => (
+          <EventCard event={event} eager={index < eagerCount(pastEvents)} hidden={index >= BATCH_SIZE} />
         )) : showSampleEvents ? sampleEvents.map((name) => (
           <article class="event-card sample-event">
             <div class="event-image sample-image">
@@ -67,10 +74,64 @@ const showSampleEvents = import.meta.env.DEV && pastEvents.length === 0;
           </article>
         )) : <p class="empty-events" data-section="Past events" data-focus-target="#past-events-heading" data-scroll-position="0.34">No past events to show.</p>}
       </div>
+      {pastEvents.length > BATCH_SIZE && <button type="button" class="show-more" data-batch={BATCH_SIZE} aria-label="Show more past events" hidden>Show more</button>}
     </section>
     </ParallaxContainer>
   </div>
 </ContentPage>
+
+<script>
+  // Stacks each grid's cards in columns, so every card has the same gap beneath it whatever its cover's shape. Each
+  // card goes under the shortest column, in page order, so reading and tab order still run left to right. Without this
+  // script the grid falls back to aligned rows.
+  const packGrid = (grid: HTMLElement) => {
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>(':scope > .event-card:not([hidden])'));
+    // The last placement is cleared first: after a breakpoint drops a column, a card still placed in it would add an
+    // implicit track, which would be counted as a column and packed into again.
+    cards.forEach((card) => card.style.removeProperty('grid-area'));
+    const style = getComputedStyle(grid);
+    const gap = Math.round(parseFloat(style.columnGap) || 0);
+    // Heights are read before any placement is written, so the loop doesn't force a layout per card.
+    const heights = cards.map((card) => Math.ceil(card.getBoundingClientRect().height));
+    const columnEnds = new Array(style.gridTemplateColumns.split(' ').length).fill(0);
+    cards.forEach((card, index) => {
+      const column = columnEnds.indexOf(Math.min(...columnEnds));
+      card.style.gridColumn = `${column + 1}`;
+      card.style.gridRow = `${columnEnds[column] + 1} / span ${heights[index]}`;
+      columnEnds[column] += heights[index] + gap;
+    });
+  };
+
+  document.querySelectorAll<HTMLElement>('.events-listing .event-grid').forEach((grid) => {
+    const cards = grid.querySelectorAll<HTMLElement>(':scope > .event-card');
+    if (!cards.length) return;
+
+    grid.classList.add('is-packed');
+    packGrid(grid);
+    // Cards change height as the grid's width, fonts or fallback images change, and when "Show more" reveals them.
+    let frame = 0;
+    const observer = new ResizeObserver(() => {
+      if (!frame) frame = requestAnimationFrame(() => {
+        frame = 0;
+        packGrid(grid);
+      });
+    });
+    cards.forEach((card) => observer.observe(card));
+
+    // Rendered hidden, so it only appears where this script can make it work.
+    const button = grid.parentElement?.querySelector<HTMLButtonElement>(':scope > .show-more');
+    if (button) button.hidden = false;
+    button?.addEventListener('click', () => {
+      const next = Array.from(grid.querySelectorAll<HTMLElement>(':scope > .event-card[hidden]'))
+        .slice(0, Number(button.dataset.batch));
+      next.forEach((card) => (card.hidden = false));
+      // Placed before focus moves, so the browser scrolls to where the first new card ends up.
+      packGrid(grid);
+      next[0]?.focus();
+      if (!grid.querySelector(':scope > .event-card[hidden]')) button.remove();
+    });
+  });
+</script>
 
 <style>
   .events-listing {
@@ -78,7 +139,7 @@ const showSampleEvents = import.meta.env.DEV && pastEvents.length === 0;
     gap: clamp(3rem, 7vw, 5.5rem);
     max-width: 78rem;
     margin: 0 auto;
-    padding-inline: clamp(0.75rem, 2vw, 1.75rem);
+    padding: clamp(1rem, 3vw, 2.5rem) clamp(0.75rem, 2vw, 1.75rem) 0;
   }
 
   .event-section h2 {
@@ -98,6 +159,13 @@ const showSampleEvents = import.meta.env.DEV && pastEvents.length === 0;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
     gap: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  /* Set by the script: 1px rows that each card spans by its own height. */
+  .event-grid.is-packed {
+    grid-auto-rows: 1px;
+    row-gap: 0;
+    align-items: start;
   }
 
   .events-listing :global(.event-card) {
@@ -133,6 +201,27 @@ const showSampleEvents = import.meta.env.DEV && pastEvents.length === 0;
     object-fit: contain;
   }
 
+  /* A cover sets the card's shape, with no backdrop behind it. */
+  .events-listing :global(.event-image.has-cover) {
+    display: block;
+    aspect-ratio: auto;
+    border: 0;
+    background: none;
+    box-shadow: 0 2px 8px rgb(52 57 75 / 0.15);
+  }
+
+  .events-listing :global(.event-image.has-cover img) {
+    display: block;
+    height: auto;
+  }
+
+  .events-listing :global(.event-detail) {
+    margin: 0.25rem 0 0;
+    color: #596073;
+    font-size: clamp(0.8rem, 1vw, 0.9rem);
+    line-height: 1.35;
+  }
+
   .events-listing :global(.event-card h3) {
     margin: 0.75rem 0 0;
     font-size: clamp(0.9rem, 1.2vw, 1.05rem);
@@ -150,6 +239,25 @@ const showSampleEvents = import.meta.env.DEV && pastEvents.length === 0;
   .sample-image span {
     padding: 1rem;
     border: 1px dashed rgb(52 57 75 / 0.35);
+  }
+
+  .show-more {
+    display: block;
+    margin: clamp(1.5rem, 3vw, 2.25rem) auto 0;
+    padding: 0.7rem 1.75rem;
+    border: 1px solid #34394b;
+    border-radius: 0.35rem;
+    background: transparent;
+    color: #34394b;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 180ms ease, color 180ms ease;
+  }
+
+  .show-more:hover {
+    background: #34394b;
+    color: #fffcf3;
   }
 
   .empty-events {
