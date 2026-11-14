@@ -1,6 +1,7 @@
 ---
 import { fetchEvents, type FacebookEvent } from '../../api/api.ts';
 import ParallaxContainer from './ParallaxContainer.astro';
+import TextHeader from './TextHeader.astro';
 import clusterBg from '../../assets/ui/shapes/blue-red-cluster.svg?url';
 import arrowLeft from '../../assets/ui/buttons/round-arrow-grey-left.svg?url';
 import arrowRight from '../../assets/ui/buttons/round-grey-arrow-right.svg?url';
@@ -24,8 +25,8 @@ const start = events.length ? 0 : 1;
       <!-- Update href to /v2/updates or /v2/latest-events once file created -->
       <div class="relative">
         <a href="/v2/events" aria-label="Latest Events" class="peer absolute z-10 left-[20%] right-[20%] top-[20%] bottom-[30%]"></a>
-        <!-- alt is empty because the link above already reads "Latest Events"; with both, the heading is read twice. -->
-        <img src="/text-headers/latest-events.png" alt="" draggable="false" class="transition duration-300 ease-out peer-hover:scale-103 peer-focus-visible:scale-103" />
+        <!-- The header is hidden from screen readers because the link above already reads "Latest Events". -->
+        <TextHeader variant="events" class="transition duration-300 ease-out peer-hover:scale-103 peer-focus-visible:scale-103" />
       </div>
     </ParallaxContainer>
 	</h2>
@@ -96,8 +97,7 @@ const start = events.length ? 0 : 1;
     margin: 0;
   }
 
-  h2 img {
-    display: block;
+  h2 :global(.text-header) {
     width: 34.9vw;
   }
 
@@ -228,7 +228,7 @@ const start = events.length ? 0 : 1;
       height: calc(var(--column) * 1.1);
     }
 
-    h2 img {
+    h2 :global(.text-header) {
       width: calc(var(--column) * 0.7);
     }
 
